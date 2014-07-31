@@ -1,0 +1,1175 @@
+%%
+%% This is file `arydshln.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% arydshln.dtx  (with options: `package')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from arydshln.sty.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file arydshln.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%% Style file `arydshln'
+%% Copyright (C) 1993,1998-2004
+%%       Hiroshi Nakashima <nakasima'AT'tutics'DOT'tut'DOT'ac'DOT'jp>
+%%       (Kyoto Univ. / Toyohashi Univ. of Tech.)
+%% This program can be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License Distributed from CTAN
+%% archives in directory macros/latex/base/lppl.txt; either
+%% version 1 of the License, or any later version.
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+%%
+\def\next{LaTeX2e}
+\ifx\fmtname\next\def\next{
+\NeedsTeXFormat{LaTeX2e}[1994/12/01]
+\ProvidesPackage{arydshln}}
+\else\def\next[#1]{}\fi\next
+[2004/08/31 v1.71 ]
+%% Register Declaration
+
+\newdimen\dashlinedash \dashlinedash4pt %
+\newdimen\dashlinegap \dashlinegap4pt %
+\let\hdashlinewidth\dashlinedash
+\let\hdashlinegap\dashlinegap
+
+\newif\ifadl@leftrule
+\newif\ifadl@connected
+\newif\ifadl@doublerule
+\newif\ifadl@zwvrule
+\newif\ifadl@zwhrule
+\newif\ifadl@usingarypkg
+\ifx\extrarowheight\undefined \adl@usingarypkgfalse
+\else                         \adl@usingarypkgtrue  \fi
+\newif\ifadl@inactive \adl@inactivefalse
+
+\def\ADLnullwide{\adl@zwvruletrue}
+\def\ADLsomewide{\adl@zwvrulefalse}
+\ifadl@usingarypkg \ADLsomewide \else \ADLnullwide \fi
+\def\ADLnullwidehline{\adl@zwhruletrue}
+\def\ADLsomewidehline{\adl@zwhrulefalse}
+\ADLsomewidehline
+
+\def\ADLactivate{\adl@inactivefalse}
+\def\ADLinactivate{\adl@inactivetrue}
+
+\newbox\adl@box
+\newdimen\adl@height \newdimen\adl@heightsave
+\newdimen\adl@depth \newdimen\adl@depthsave
+\newdimen\adl@finaldepth
+\newcount\adl@columns \newcount\adl@ncol
+\newcount\adl@currentcolumn \newcount\adl@currentcolumnsave
+\newcount\adl@totalheight \newcount\adl@totalheightsave
+\newcount\adl@dash \newcount\adl@gap
+\newcount\adl@cla \newcount\adl@clb
+\newtoks\adl@everyvbox
+
+\let\adl@org@arrayclassz\@arrayclassz
+\let\adl@org@tabclassz\@tabclassz
+\let\adl@org@classz\@classz
+\let\adl@org@@startpbox\@@startpbox
+\let\adl@org@@endpbox\@@endpbox
+\let\adl@org@endpbox\@endpbox
+\let\adl@org@cline\cline
+
+%%^L
+
+%% Initialization
+
+\let\adl@array\@array
+\def\@array{\adl@everyvbox\everyvbox
+        \everyvbox{\adl@arrayinit \the\adl@everyvbox \everyvbox\adl@everyvbox}%
+        \ifadl@inactive \adl@inactivate \else \adl@activate \fi
+        \let\adl@noalign\noalign
+        \adl@array}
+\let\@@array\@array
+
+\def\adl@arrayinit{%
+        \adl@arraysave
+        \global\adl@height\z@ \global\adl@depth\z@
+        \global\adl@currentcolumn\@ne \global\adl@totalheight\z@
+        \gdef\adl@rowsL{}\gdef\adl@rowsR{}\gdef\adl@colsL{}\gdef\adl@colsR{}%
+        \let\@elt\relax \let\adl@connect\relax \def\adl@discard{\adl@connect}%
+        \adl@columns\adl@ncol}
+\def\adl@arraysave{%
+        \adl@heightsave\adl@height
+        \adl@depthsave\adl@depth
+        \adl@currentcolumnsave\adl@currentcolumn
+        \adl@totalheightsave\adl@totalheight
+        \let\adl@rowsLsave\adl@rowsL
+        \let\adl@rowsRsave\adl@rowsR
+        \let\adl@colsLsave\adl@colsL
+        \let\adl@colsRsave\adl@colsR}
+
+\def\adl@inactivate{%
+        \let\@arrayclassz\adl@org@arrayclassz
+        \let\@tabclassz\adl@org@tabclassz
+        \ifadl@usingarypkg \let\@classz\adl@org@classz \fi
+        \let\@@startpbox\adl@org@@startpbox
+        \let\@@endpbox\adl@org@@endpbox
+        \let\@endpbox\adl@org@endpbox
+        \def\adl@cr{\cr}%
+        \def\adl@argcr##1{\cr}%
+        \def\adl@endarray{\crcr}%
+        \let\adl@hline\@gobbletwo
+        \let\adl@ihdashline\adl@inactivehdl
+        \let\adl@cdline\adl@inactivecdl
+        \let\adl@@vlineL\adl@inactivevl
+        \let\adl@@vlineR\adl@inactivevl
+        \let\adl@vlineL\adl@inactivevl
+        \let\adl@vlineR\adl@inactivevl}
+\def\adl@activate{%
+        \let\@arrayclassz\adl@act@arrayclassz
+        \let\@tabclassz\adl@act@tabclassz
+        \ifadl@usingarypkg \let\@classz\adl@act@classz \fi
+        \let\@@startpbox\adl@act@@startpbox
+        \let\@@endpbox\adl@act@@endpbox
+        \let\@endpbox\adl@act@endpbox
+        \let\adl@cr\adl@act@cr
+        \let\adl@argcr\adl@act@argcr
+        \let\adl@endarray\adl@act@endarray
+        \let\adl@hline\adl@act@hline
+        \let\adl@ihdashline\adl@act@ihdashline
+        \let\adl@cdline\adl@act@cdline
+        \let\adl@@vlineL\adl@act@@vlineL
+        \let\adl@@vlineR\adl@act@@vlineR
+        \let\adl@vlineL\adl@act@@vlineL
+        \let\adl@vlineR\adl@act@@vlineR}
+
+%%^L
+
+%% Making Preamble
+
+\let\adl@mkpream\@mkpream
+\def\@mkpream#1{\let\adl@colhtdp\relax
+        \let\adl@vlineL\relax \let\adl@vlineR\relax
+        \let\adl@startmbox\relax \let\adl@endmbox\relax
+        \global\adl@ncol\@ne \adl@leftruletrue
+        \adl@mkpream{#1}\adl@columns\adl@ncol \afterassignment\adl@preaminit}
+
+\def\@addamp{\if@firstamp\@firstampfalse \else
+        \@addtopreamble{\global\advance\adl@currentcolumn\@ne &}%
+        \global\advance\adl@ncol\@ne \fi}
+
+\ifadl@usingarypkg
+\def\@testpach{\@chclass
+ \ifnum \@lastchclass=6 \@ne \@chnum \@ne \else
+  \ifnum \@lastchclass=7 5 \else
+   \ifnum \@lastchclass=8 \tw@ \else
+    \ifnum \@lastchclass=9 \thr@@
+   \else \z@
+   \ifnum \@lastchclass = 10 \else
+   \edef\@nextchar{\expandafter\string\@nextchar}%
+   \@chnum
+   \if \@nextchar c\z@ \else
+    \if \@nextchar l\@ne \else
+     \if \@nextchar r\tw@ \else
+   \z@ \@chclass
+   \if\@nextchar |\@ne \let\@arrayrule\adl@arrayrule \else
+   \if\@nextchar :\@ne \let\@arrayrule\adl@arraydashrule \else
+   \if\@nextchar ;\@ne \let\@arrayrule\adl@argarraydashrule \else
+    \if \@nextchar !6 \else
+     \if \@nextchar @7 \else
+      \if \@nextchar <8 \else
+       \if \@nextchar >9 \else
+  10
+  \@chnum
+  \if \@nextchar m\thr@@\else
+   \if \@nextchar p4 \else
+    \if \@nextchar b5 \else
+   \z@ \@chclass \z@ \@preamerr \z@ \fi \fi \fi \fi \fi \fi
+   \fi \fi  \fi  \fi  \fi  \fi  \fi \fi \fi \fi \fi \fi}
+
+\def\@classz{\@classx
+   \@tempcnta \count@
+   \prepnext@tok
+   \@addtopreamble{\ifcase \@chnum
+      \hfil
+      \adl@putlrc{\d@llarbegin \insert@column \d@llarend}\hfil \or
+      \hskip1sp\adl@putlrc{\d@llarbegin \insert@column \d@llarend}\hfil \or
+      \hfil\hskip1sp\adl@putlrc{\d@llarbegin \insert@column \d@llarend}\or
+   \setbox\adl@box\hbox \adl@startmbox{\@nextchar}\insert@column
+        \adl@endmbox\or
+   \setbox\adl@box\vtop \@startpbox{\@nextchar}\insert@column \@endpbox \or
+   \setbox\adl@box\vbox \@startpbox{\@nextchar}\insert@column \@endpbox
+  \fi}\prepnext@tok}
+\def\adl@class@start{4}
+\def\adl@class@iiiorvii{7}
+
+\else
+\def\@testpach#1{\@chclass \ifnum \@lastchclass=\tw@ 4\relax \else
+        \ifnum \@lastchclass=\thr@@ 5\relax \else
+                \z@ \if #1c\@chnum \z@ \else
+                    \if #1l\@chnum \@ne \else
+                    \if #1r\@chnum \tw@ \else
+                \@chclass
+                    \if #1|\@ne \let\@arrayrule\adl@arrayrule \else
+                    \if #1:\@ne \let\@arrayrule\adl@arraydashrule \else
+                    \if #1;\@ne \let\@arrayrule\adl@argarraydashrule \else
+                    \if #1@\tw@ \else
+                    \if #1p\thr@@ \else \z@ \@preamerr 0\fi
+        \fi  \fi  \fi  \fi  \fi  \fi  \fi  \fi  \fi}
+
+\def\@arrayclassz{\ifcase \@lastchclass \@acolampacol \or \@ampacol \or
+                \or \or \@addamp \or
+                \@acolampacol \or \@firstampfalse \@acol \fi
+        \edef\@preamble{\@preamble
+                \ifcase \@chnum
+                    \hfil\adl@putlrc{$\relax\@sharp$}\hfil
+                \or \adl@putlrc{$\relax\@sharp$}\hfil
+                \or \hfil\adl@putlrc{$\relax\@sharp$}\fi}}
+\def\@tabclassz{\ifcase \@lastchclass \@acolampacol \or \@ampacol \or
+                \or \or \@addamp \or
+                \@acolampacol \or \@firstampfalse \@acol \fi
+        \edef\@preamble{\@preamble
+        \ifcase \@chnum
+                    \hfil\adl@putlrc{\@sharp\unskip}\hfil
+                \or \adl@putlrc{\@sharp\unskip}\hfil
+                \or \hfil\hskip\z@ \adl@putlrc{\@sharp\unskip}\fi}}
+\def\adl@class@start{6}
+\def\adl@class@iiiorvii{3}
+\fi
+
+\def\adl@putlrc#1{\setbox\adl@box\hbox{#1}\adl@colhtdp \unhbox\adl@box}
+
+\def\adl@arrayrule{%
+        \adl@xarraydashrule
+                {\@ne}{\adl@ncol}{{\z@/\z@}}}
+\def\adl@arraydashrule{%
+        \adl@xarraydashrule
+                {\@ne}{\adl@ncol}%
+                {{\dashlinedash/\dashlinegap}}}
+\def\adl@argarraydashrule{%
+        \adl@xarraydashrule
+                {\@ne}{\adl@ncol}{}%
+        \@chclass\adl@class@iiiorvii \let\@classv\adl@classvfordash}
+\def\adl@xarraydashrule#1#2#3{%
+        \ifnum\@lastchclass=\adl@class@start\else
+        \ifnum\@lastchclass=\@ne\else
+                \adl@leftrulefalse \fi\fi
+        \ifadl@zwvrule\else \ifadl@inactive\else
+                \@addtopreamble{\vrule\@width\arrayrulewidth
+                        \@height\z@ \@depth\z@}\fi \fi
+        \ifadl@leftrule
+                \@addtopreamble{\adl@vlineL{\CT@arc@}{\adl@dashgapcolor}%
+                        {\number#1}#3}%
+        \else   \@addtopreamble{\adl@vlineR{\CT@arc@}{\adl@dashgapcolor}%
+                        {\number#2}#3}\fi}
+\let\adl@classv\@classv
+\def\adl@classvfordash{\@addtopreamble{{\@nextchar}}\let\@classv\adl@classv
+        \@chclass\@ne}
+
+%%^L
+
+%% Building Columns
+
+\def\adl@preaminit{\let\adl@colhtdp\adl@@colhtdp
+        \let\adl@vlineL\adl@@vlineL \let\adl@vlineR\adl@@vlineR}
+
+\def\adl@@colhtdp{%
+        \ifdim\adl@height<\ht\adl@box \global\adl@height\ht\adl@box \fi
+        \ifdim\adl@depth<\dp\adl@box \global\adl@depth\dp\adl@box\fi}
+
+\def\adl@@vlineL#1#2#3#4{\adl@ivline#4\@nil{#1}{#2}%
+        \xdef\adl@colsL{\adl@colsL
+                \@elt{#3}{\number\@tempcnta}{\number\@tempcntb}%
+                        {\adl@dashcolor}{\adl@gapcolor}}}
+\def\adl@@vlineR#1#2#3#4{\adl@ivline#4\@nil{#1}{#2}%
+        \xdef\adl@colsR{%
+                \@elt{#3}{\number\@tempcnta}{\number\@tempcntb}%
+                        {\adl@dashcolor}{\adl@gapcolor}%
+                \adl@colsR}}
+\def\adl@ivline#1/#2\@nil#3#4{%
+        \@tempdima#1\relax \@tempcnta\@tempdima
+        \@tempdima#2\relax \@tempcntb\@tempdima
+        \ifnum\@tempcnta>\z@ \else \@tempcnta\z@ \@tempcntb\z@ \fi
+        \ifnum\@tempcntb>\z@ \else \@tempcnta\z@ \@tempcntb\z@ \fi
+        \adl@setcolor\adl@dashcolor{#3}\adl@setcolor\adl@gapcolor{#4}}
+\def\adl@setcolor#1#2{\def\@tempa{#2}\ifx\@tempa\adl@nocolor \def#1{\relax}%
+        \else{#2\xdef#1{\current@color}}\fi}
+\def\adl@nocolor{\relax}
+\adl@preaminit
+
+\def\adl@inactivevl#1#2#3#4{\ifadl@zwvrule \hskip-.5\arrayrulewidth \fi
+        {#1\vline}\ifadl@zwvrule \hskip-.5\arrayrulewidth \fi}
+
+\def\@@startpbox#1{\setbox\adl@box\vtop\bgroup \hsize#1\@arrayparboxrestore}
+\def\@@endpbox{\unskip \ifhmode \nobreak
+        \vrule\@width\z@\@height\z@\@depth\dp\@arstrutbox \fi
+        \par \egroup \adl@colhtdp \box\adl@box \hfil}
+\let\@endpbox\@@endpbox
+\def\adl@startmbox{\bgroup $\vcenter\@startpbox}
+\def\adl@endmbox{\adl@org@endpbox $\egroup \adl@colhtdp \box\adl@box \hfil}
+
+%%^L
+
+%% Multi-Columns
+
+\def\multicolumn#1#2#3{\multispan{#1}\begingroup \begingroup
+        \def\adl@arrayrule{\adl@mcarrayrule{#1}}%
+        \def\adl@arraydashrule{\adl@mcarraydashrule{#1}}%
+        \def\adl@argarraydashrule{\adl@mcargarraydashrule{#1}}%
+        \let\@addamp\adl@mcaddamp
+        \@mkpream{#2}\@addtopreamble\@empty
+        \global\let\adl@preamble\@preamble \endgroup
+        \let\@preamble\adl@preamble
+        \def\@sharp{#3}\let\protect\relax
+        \adl@activatepbox
+        \adl@preaminit
+        \@arstrut \@preamble\hbox{}\endgroup
+        \global\advance\adl@currentcolumn#1\ignorespaces}
+\ifadl@usingarypkg
+        \def\adl@mcaddamp{\if@firstamp\@firstampfalse \else\@preamerror5\fi}
+        \let\adl@activatepbox\relax
+\else
+        \let\adl@mcaddamp\@addamp
+        \def\adl@activatepbox{\let\@startpbox\@@startpbox
+                \let\@endpbox\@@endpbox}
+\fi
+
+\def\adl@mcarrayrule#1{\@tempcnta#1\advance\@tempcnta\adl@currentcolumn
+        \advance\@tempcnta\m@ne
+        \adl@xarraydashrule
+                {\adl@currentcolumn}{\@tempcnta}{{\z@/\z@}}}
+\def\adl@mcarraydashrule#1{\@tempcnta#1\advance\@tempcnta\adl@currentcolumn
+        \advance\@tempcnta\m@ne
+        \adl@xarraydashrule
+                {\adl@currentcolumn}{\@tempcnta}%
+                {{\dashlinedash/\dashlinegap}}}
+\def\adl@mcargarraydashrule#1{\@tempcnta#1\advance\@tempcnta\adl@currentcolumn
+        \advance\@tempcnta\m@ne
+        \adl@xarraydashrule
+                {\adl@currentcolumn}{\@tempcnta}{}%
+        \@chclass\adl@class@iiiorvii \let\@classv\adl@classvfordash}
+
+%%^L
+
+%% End of row
+
+\ifadl@usingarypkg
+\def\@xarraycr{\@ifnextchar[{\@argarraycr}{\ifnum0=`{}\fi\adl@cr}}
+\else
+\def\@xarraycr{\@ifnextchar[{\@argarraycr}{\ifnum0=`{\fi}${}\adl@cr}}
+\fi
+\def\@xtabularcr{\@ifnextchar[{\@argtabularcr}{\ifnum0=`{\fi}\adl@cr}}
+\def\@xargarraycr#1{\@tempdima#1\advance\@tempdima\dp\@arstrutbox
+        \vrule\@height\z@\@depth\@tempdima\@width\z@
+        \adl@cr}
+\def\@yargarraycr#1{\adl@argcr{#1}\noalign{\vskip #1}}
+
+\def\adl@cr{\cr\noalign{\adl@@cr\z@}}
+\def\adl@argcr#1{\cr\noalign{\adl@@cr{#1}}}
+\def\adl@@cr#1{
+        \ifdim\adl@height<\ht\@arstrutbox \adl@height\ht\@arstrutbox\fi
+        \ifdim\adl@depth<\dp\@arstrutbox \adl@depth\dp\@arstrutbox\fi
+        \advance\adl@height\adl@depth
+        \global\advance\adl@totalheight\adl@height
+        \@tempdima#1\relax \global\advance\adl@totalheight\@tempdima
+        \xdef\adl@rowsL{\adl@rowsL
+                (\adl@colsL/\number\adl@height);%
+                \ifdim#1=\z@\else (\adl@discard/\number\@tempdima);\fi}%
+        \xdef\adl@rowsR{\adl@rowsR
+                (\adl@colsR/\number\adl@height);%
+                \ifdim#1=\z@\else (\adl@discard/\number\@tempdima);\fi}%
+        \gdef\adl@colsL{}\gdef\adl@colsR{}
+        \global\adl@currentcolumn\@ne
+        \ifdim#1=\z@ \global\adl@finaldepth\adl@depth
+        \else        \global\adl@finaldepth\z@\fi
+        \global\adl@height\z@ \global\adl@depth\z@}
+
+%%^L
+
+%% Horizontal Lines
+
+\def\hline{\noalign{\ifnum0=`}\fi
+        \ifadl@zwhrule \vskip-\arrayrulewidth
+        \else \adl@hline\adl@connect\arrayrulewidth \fi
+        \hrule\@height\arrayrulewidth
+        \global\adl@finaldepth\z@
+        \futurelet\@tempa\adl@xhline}
+\def\cline#1{\noalign{\global\adl@finaldepth\z@
+                \ifadl@zwhrule \vskip-\arrayrulewidth\fi}
+        \adl@org@cline{#1}%
+        \noalign{\ifadl@zwhrule \vskip\arrayrulewidth\fi}}
+
+\def\hdashline{\adl@hdashline\adl@ihdashline}
+\def\adl@hdashline#1{\noalign{\ifnum0=`}\fi
+        \ifadl@zwhrule \vskip-\arrayrulewidth
+        \else \adl@hline\adl@connect\arrayrulewidth \fi
+        \@ifnextchar[%]
+                     {#1}%
+                     {#1[\dashlinedash/\dashlinegap]}}
+\def\adl@ihdashline[#1/#2]{\ifnum0=`{\fi}%
+        \multispan{\adl@columns}\unskip \adl@hcline\z@[#1/#2]%
+        \noalign{\ifnum0=`}\fi
+        \futurelet\@tempa\adl@xhline}
+\def\adl@inactivehdl[#1/#2]{\ifadl@zwhrule \vskip-\arrayrulewidth \fi
+        \hrule\@height\arrayrulewidth
+        \futurelet\@tempa\adl@xhline}
+
+\def\adl@xhline{\ifx\@tempa\hline \adl@ixhline\fi
+        \ifx\@tempa\hdashline \adl@ixhline\fi
+        \ifnum0=`{\fi}}
+\def\adl@ixhline{\vskip\doublerulesep \adl@hline\relax\doublerulesep}
+
+\def\adl@hline#1#2{\@tempcnta#2
+        \global\advance\adl@totalheight\@tempcnta
+        \xdef\adl@rowsL{\adl@rowsL
+                (#1/\number\@tempcnta);}%
+        \xdef\adl@rowsR{\adl@rowsR
+                (#1/\number\@tempcnta);}}
+
+\def\cdashline#1{\noalign{\ifnum0=`}\fi
+        \@ifnextchar[%]
+                     {\adl@cdline[#1]}%
+                     {\adl@cdline[#1][\dashlinedash/\dashlinegap]}}
+\def\adl@cdline[#1-#2]{\ifadl@zwhrule \vskip-\arrayrulewidth \fi
+        \global\adl@cla#1\relax
+        \global\advance\adl@cla\m@ne
+        \ifnum\adl@cla>\z@ \global\let\@gtempa\adl@cdlinea
+        \else              \global\let\@gtempa\adl@cdlineb\fi
+        \global\adl@clb#2\relax
+        \global\advance\adl@clb-\adl@cla \ifnum0=`{\fi}
+        \@gtempa{-\arrayrulewidth}}
+\def\adl@cdlinea{\multispan\adl@cla &\multispan\adl@clb \unskip \adl@hcline}
+\def\adl@cdlineb{\multispan\adl@clb \unskip \adl@hcline}
+
+\def\adl@inactivecdl[#1-#2][#3]{\ifnum0=`{\fi}\cline{#1-#2}}
+
+\def\adl@hcline#1[#2/#3]{\@tempdima#2\relax \@tempdimb#3\relax
+        \adl@draw\adl@vrule\hskip\hbox \cr
+        \noalign{\global\adl@finaldepth\z@ \ifdim#1=\z@\else
+                \ifadl@zwhrule\else \vskip#1\fi\fi}}
+
+\ifadl@usingarypkg
+\def\firsthdashline{\adl@hdashline{\ifnum0=`{\fi}\adl@firsthdashline}}
+\def\lasthdashline{\adl@hdashline{\ifnum0=`{\fi}\adl@lasthdashline}}
+
+\def\adl@defflhdl#1{\def\@tempa{#1}
+        \expandafter\adl@idefflhdl}
+\def\adl@idefflhdl#1\hline#2\@nil{%
+        \@namedef\@tempa[##1/##2]{#1\adl@hdashline\adl@ihdashline[##1/##2]#2}}
+\adl@defflhdl{adl@firsthdashline}\firsthline\@nil
+\adl@defflhdl{adl@lasthdashline}\lasthline\@nil
+\fi
+
+%%^L
+
+%% End of Environment
+
+\def\endarray{\adl@endarray \egroup \adl@arrayrestore \egroup}
+\def\endtabular{\endarray $\egroup}
+\expandafter\let\csname endtabular*\endcsname\endtabular
+
+\def\adl@endarray{\crcr \noalign{
+        \ifdim\adl@height=\z@
+        \ifdim\adl@depth=\z@  \else \adl@@cr\z@ \fi
+                              \else \adl@@cr\z@ \fi
+        \let\adl@vl\relax
+        \def\adl@vlrow{}\adl@currentcolumn\@ne
+                \let\adl@rows\adl@rowsL
+                \let\adl@addvl\adl@addvlL
+                \adl@makevlrL \global\let\adl@vlrowL\adl@vlrow
+        \def\adl@vlrow{}\adl@currentcolumn\adl@columns
+                \let\adl@rows\adl@rowsR
+                \let\adl@addvl\adl@addvlR
+                \adl@makevlrR \global\let\adl@vlrowR\adl@vlrow
+        \global\let\adl@vl\adl@@vl}%
+        \adl@drawvl
+        \noalign{\vskip-\adl@finaldepth}%
+        \omit\vrule\@width\z@\@height\z@\@depth\adl@finaldepth\cr}
+
+\def\adl@arrayrestore{%
+        \global\adl@height\adl@heightsave
+        \global\adl@depth\adl@depthsave
+        \global\adl@currentcolumn\adl@currentcolumnsave
+        \global\adl@totalheight\adl@totalheightsave
+        \global\let\adl@rowsL\adl@rowsLsave
+        \global\let\adl@rowsR\adl@rowsRsave
+        \global\let\adl@colsL\adl@colsLsave
+        \global\let\adl@colsR\adl@colsRsave}
+
+%%^L
+
+%% Drawing Vertical Lines
+
+\def\adl@makevlrL{\adl@makevlr
+        \ifadl@doublerule
+                \edef\adl@vlrow{\adl@vlrow \hskip\doublerulesep}%
+                \let\next\adl@makevlrL
+        \else
+                \advance\adl@currentcolumn\@ne
+                \ifnum\adl@currentcolumn>\adl@columns \let\next\relax
+                        \edef\adl@vlrow{\adl@vlrow \hss}%
+                \else \let\next\adl@makevlrL
+                        \edef\adl@vlrow{\adl@vlrow \hss &\omit}%
+        \fi\fi\next}
+\def\adl@makevlrR{\adl@makevlr
+        \ifadl@doublerule
+                \edef\adl@vlrow{\hskip\doublerulesep \adl@vlrow}%
+                \let\next\adl@makevlrR
+        \else
+                \advance\adl@currentcolumn\m@ne
+                \ifnum\adl@currentcolumn=\z@ \let\next\relax
+                        \edef\adl@vlrow{\hss \adl@vlrow}%
+                \else \let\next\adl@makevlrR
+                        \edef\adl@vlrow{&\omit \hss \adl@vlrow}%
+        \fi\fi\next}
+
+\def\adl@makevlr{\@tempcnta\adl@totalheight \@tempcntb\adl@totalheight
+        \adl@dash\m@ne \adl@gap\m@ne
+        \let\adl@dashcolor\relax \let\adl@gapcolor\relax
+        \adl@connectedfalse \adl@doublerulefalse \def\@tempb{}%
+        \expandafter\adl@imakevlr\adl@rows\@nil;%
+        \adl@addvl
+        \edef\adl@rows{\@tempb}}
+
+\def\adl@imakevlr#1;{\def\@tempa{#1}\ifx\@tempa\@nnil \let\next\relax
+        \else \adl@iimakevlr#1\let\next\adl@imakevlr \fi \next}
+\def\adl@iimakevlr(#1/#2){\let\@elt\adl@iiimakevlr
+        \let\adl@connect\adl@@connect
+        \let\adl@endmakevlr\adl@endmakevlrcut
+         #1\adl@endmakevlr
+        \let\@elt\relax \let\adl@connect\relax
+        \advance\@tempcntb-#2\edef\@tempb{\@tempb(\@tempc/#2);}}
+
+\def\adl@iiimakevlr#1#2#3#4#5{\let\@elt\adl@ivmakevlr \let\next\relax
+        \ifnum#1=\adl@currentcolumn\relax
+                \let\adl@endmakevlr\adl@endmakevlrconn
+                \@tempswafalse
+                \ifnum#2=\adl@dash\relax
+                \ifnum#3=\adl@gap\relax
+                \def\@tempa{#4}\ifx\@tempa\adl@dashcolor
+                \def\@tempa{#5}\ifx\@tempa\adl@gapcolor
+                        \@tempswatrue
+                \fi\fi\fi\fi
+                \if@tempswa
+                        \ifadl@connected\else
+                                \@tempcnta\@tempcntb \adl@connectedtrue \fi
+                \else
+                        \adl@addvl
+                        \adl@dash#2\relax \adl@gap#3\relax
+                        \def\adl@dashcolor{#4}\def\adl@gapcolor{#5}%
+                        \@tempcnta\@tempcntb \adl@connectedtrue
+                \fi
+        \else
+                \adl@addvl
+                \def\next{\adl@vmakevlr\@elt{#1}{#2}{#3}{#4}{#5}}%
+        \fi\next}
+\def\adl@ivmakevlr#1{%
+        \ifnum#1=\adl@currentcolumn \adl@doubleruletrue \fi
+        \adl@vmakevlr\@elt{#1}}
+\def\adl@vmakevlr#1\adl@endmakevlr{\def\@tempc{#1}}
+\def\adl@endmakevlrcut{\adl@addvl \def\@tempc{}}
+\def\adl@endmakevlrconn{\def\@tempc{}}
+\def\adl@@connect\adl@endmakevlr{\def\@tempc{\adl@connect}}
+
+\def\adl@addvlL{\ifadl@connected
+        \advance\@tempcnta-\@tempcntb
+        \edef\adl@vlrow{\adl@vlrow
+                \adl@vl{\number\@tempcntb}{\number\@tempcnta}%
+                       {\number\adl@dash}{\number\adl@gap}%
+                       {\adl@dashcolor}{\adl@gapcolor}}%
+        \adl@connectedfalse \fi}
+\def\adl@addvlR{\ifadl@connected
+        \advance\@tempcnta-\@tempcntb
+        \edef\adl@vlrow{\adl@vl{\number\@tempcntb}{\number\@tempcnta}%
+                               {\number\adl@dash}{\number\adl@gap}%
+                               {\adl@dashcolor}{\adl@gapcolor}\adl@vlrow}%
+        \adl@connectedfalse \fi}
+
+\def\adl@drawvl{%
+        \omit \relax \ifadl@zwvrule
+                        \gdef\adl@vl@leftskip{.5\arrayrulewidth}%
+                        \global\let\adl@vl@rightskip\adl@vl@leftskip
+                \else   \global\let\adl@vl@leftskip\z@
+                        \global\let\adl@vl@rightskip\arrayrulewidth
+                \fi \adl@vlrowL \cr
+        \omit \relax \ifadl@zwvrule
+                        \gdef\adl@vl@leftskip{.5\arrayrulewidth}%
+                        \global\let\adl@vl@rightskip\adl@vl@leftskip
+                \else   \global\let\adl@vl@leftskip\arrayrulewidth
+                        \global\let\adl@vl@rightskip\z@
+                \fi \adl@vlrowR \cr}
+
+\def\adl@@vl#1#2#3#4#5#6{\vbox to\z@{\vss\hbox{%
+        \hskip-\adl@vl@leftskip
+        \ifnum#3=\z@\else \def\@tempa{#6}\ifx\@tempa\adl@nocolor\else
+                \raise#1sp\hbox{\let\current@color\@tempa \set@color
+                        \vrule height#2sp width\arrayrulewidth}%
+                \hskip-\arrayrulewidth \fi \fi
+        \raise#1sp\vbox to#2sp{
+                \def\@tempa{#5}\ifx\@tempa\adl@nocolor\else
+                        \let\current@color\@tempa \set@color \fi
+                \ifnum#3=\z@
+                        \hrule height#2sp depth\z@ width\arrayrulewidth
+                \else   \@tempdima#3sp \@tempdimb#4sp
+                        \adl@draw\adl@hrule\vskip\vbox
+                \fi}%
+        \hskip-\adl@vl@rightskip}}}
+
+%%^L
+
+%% Draw Dash Lines (\adl@vrule/\adl@hrule, \hskip/\vskip, \hbox/\vbox)
+
+\def\adl@vrule#1{\vrule\@width#1\@tempdima\@height\arrayrulewidth\relax}
+\def\adl@hrule#1{\hrule\@height#1\@tempdima\@width\arrayrulewidth\relax}
+\def\adl@drawi#1#2#3{%
+        #1{.5}#2.5\@tempdimb
+        \xleaders#3{#2.5\@tempdimb #1{1}#2.5\@tempdimb}%
+                #2\z@ plus1fil minus1fil\relax
+        #2.5\@tempdimb #1{.5}}
+\def\adl@drawii#1#2#3{%
+        \setbox\adl@box#3{#2.5\@tempdimb #1{1}#2.5\@tempdimb}%
+        #1{.5}#2.5\@tempdimb
+        \copy\adl@box #2-\@tempdima #2-\@tempdimb
+        \xleaders\copy\adl@box#2\z@ plus1fil minus1fil\relax
+        #2-\@tempdima #2-\@tempdimb \copy\adl@box
+        #2.5\@tempdimb #1{.5}}
+\def\adl@drawiii#1#2#3{{\let\xleaders\cleaders \adl@drawi#1#2#3}}
+\let\adl@draw\adl@drawi
+
+\def\ADLdrawingmode#1{\ifcase #1%
+        \let\adl@draw\adl@drawi \or
+        \let\adl@draw\adl@drawi \or
+        \let\adl@draw\adl@drawii \or
+        \let\adl@draw\adl@drawiii \else
+        \let\adl@draw\adl@drawi \fi}
+
+%%^L
+
+%% Shorthand Activation
+
+\def\adl@Array{\adl@inactivefalse \array}
+\def\adl@Tabular{\adl@inactivefalse \tabular}
+\def\adl@Tabularstar{\adl@inactivefalse \@nameuse{tabular*}}
+\def\adl@Longtable{\adl@inactivefalse \longtable}
+
+\begingroup
+\def\@notdefinable{\gdef\adl@notdefinable{}}
+\@ifdefinable\Array\relax
+\@ifdefinable\Tabular\relax
+\expandafter\@ifdefinable\csname Tabular*\endcsname\relax
+\ifx\longtable\undefined\else \@ifdefinable\Longtable\relax \fi
+\endgroup
+
+\ifx\adl@notdefinable\undefined
+        \let\Array\adl@Array
+        \let\Tabular\adl@Tabular
+        \expandafter\let\csname Tabular*\endcsname\adl@Tabularstar
+        \let\endArray\endarray
+        \let\endTabular\endtabular
+        \expandafter\let\csname endTabular*\endcsname\endtabular
+        \ifx\longtable\undefined\else
+                \let\Longtable\adl@Longtable
+                \def\endLongtable{\endlongtable}
+        \fi
+\else
+\begingroup
+\ifx\longtable\undefined
+\def\@tempa{Array and Tabular are not defined because one of them\MessageBreak
+        has been defined}
+\else
+\def\@tempa{Array/Tabular/Longtable are not defined because \MessageBreak
+        one of them has been defined}
+\fi
+\ifx\PackageWarning\undefined
+        \def\MessageBreak{^^J}
+        \@warning\@tempa
+\else
+        \let\on@line\empty
+        \PackageWarning{arydshln}\@tempa
+\fi
+\endgroup
+\fi
+
+\def\ADLnoshorthanded{%
+        \let\Array\relax
+        \let\Tabular\relax
+        \expandafter\let\csname Tabular*\endcsname\relax
+        \let\endArray\relax
+        \let\endTabular\relax
+        \expandafter\let\csname endTabular*\endcsname\relax
+        \ifx\longtable\undefined\else
+                \let\Longtable\relax
+                \let\endLongtable\relax \fi}
+
+\let\adl@act@arrayclassz\@arrayclassz
+\let\adl@act@tabclassz\@tabclassz
+\ifadl@usingarypkg \let\adl@act@classz\@classz \fi
+\let\adl@act@@startpbox\@@startpbox
+\let\adl@act@@endpbox\@@endpbox
+\let\adl@act@endpbox\@endpbox
+\let\adl@act@cr\adl@cr
+\let\adl@act@argcr\adl@argcr
+\let\adl@act@endarray\adl@endarray
+\let\adl@act@hline\adl@hline
+\let\adl@act@ihdashline\adl@ihdashline
+\let\adl@act@cdline\adl@cdline
+\let\adl@act@@vlineL\adl@@vlineL
+\let\adl@act@@vlineR\adl@@vlineR
+
+%%^L
+
+%% Compatibility with colortab
+
+\def\adl@CC@#1#2#3{%
+  \ifcolortab
+    \noalign{%
+      \adl@arraysave
+      \setbox\CT@box=\vbox{#1#3\crcr\egroup}%
+      \adl@arrayrestore
+      \CT@dim=\ht\CT@box
+      \global\advance\CT@dim by \dp\CT@box
+      \def\CT@next{}%
+      \futurelet\next\CT@columncolor#2&\@nil}%
+    \CT@next\cr
+    \noalign{\vskip-\CT@dim}%
+  \fi
+  #3}
+\ifx\ColortabLoaded\undefined\else
+\let\CC@\adl@CC@
+\fi
+
+%%^L
+
+%% Compatibility with longtable: initialization
+
+\newif\ifadl@LTfirstpage
+\newdimen\adl@LTpagetotal
+
+\ifx\longtable\undefined\else
+
+\let\adl@LT@array\LT@array
+\def\LT@array{\adl@arrayinit \adl@LTfirstpagetrue
+        \let\adl@discard\relax \let\adl@ihdashline\adl@LTihdashline
+        \ifadl@inactive \adl@LTinactivate \fi
+        \adl@LT@array}
+\def\adl@LTinactivate{\adl@inactivate
+        \let\endlongtable\adl@org@endlongtable
+        \let\LT@make@row\adl@org@LT@make@row
+        \let\LT@echunk\adl@org@LT@echunk
+        \let\LT@end@hd@ft\adl@org@LT@end@hd@ft
+        \let\LT@kill\adl@org@LT@kill
+        \let\LT@output\adl@org@LT@output
+        \let\adl@ihdashline\adl@LTinactivehdl}
+
+\let\adl@org@LT@make@row\LT@make@row
+\def\LT@make@row{\let\LT@make@row\adl@org@LT@make@row
+        \adl@columns\adl@ncol
+        \ifadl@usingarypkg\else
+                \let\@@startpbox\adl@LTstartpbox
+                \let\@startpbox\adl@LTstartpbox \fi
+        \let\@@endpbox\adl@LTendpbox
+        \let\@endpbox\adl@LTendpbox
+        \adl@org@LT@make@row}
+
+%%^L
+
+%% Compatibility with longtable: end chunk
+
+\let\adl@org@endlongtable\endlongtable
+\def\endlongtable{\adl@LTlastrow \adl@org@endlongtable}
+
+\let\adl@org@LT@echunk\LT@echunk
+\def\LT@echunk{\adl@LTlastrow \adl@org@LT@echunk}
+
+\def\adl@LTlastrow{\crcr \noalign{
+        \ifdim\adl@height=\z@
+        \ifdim\adl@depth=\z@  \else \adl@@cr\z@ \fi
+                              \else \adl@@cr\z@ \fi}}
+
+\let\adl@org@LT@end@hd@ft\LT@end@hd@ft
+\def\LT@end@hd@ft#1{\adl@LTlastrow
+        \noalign{\edef\adl@LTth{\number\adl@totalheight}%
+                \adl@LThfsave#1\adl@LTth \global\adl@totalheight\z@
+                \adl@LThfsave#1\adl@rowsL\gdef\adl@rowsL{}%
+                \adl@LThfsave#1\adl@rowsR\gdef\adl@rowsR{}}
+        \adl@org@LT@end@hd@ft#1}
+\def\adl@LThfsave#1#2{\expandafter\global\expandafter\let
+        \csname\string#2\string#1\endcsname#2}
+
+\let\adl@org@LT@kill\LT@kill
+\def\LT@kill{\adl@LTlastrow \noalign{
+            \def\@tempb{}\expandafter\adl@LTkill\adl@rowsL\@nil\adl@rowsL
+            \def\@tempb{}\expandafter\adl@LTkill\adl@rowsR\@nil\adl@rowsR
+            \global\advance\adl@totalheight-\@tempcnta}%
+        \adl@org@LT@kill}
+\def\adl@LTkill#1;#2{\def\@tempa{#2}%
+        \ifx\@tempa\@nnil\def\next{\adl@LTkillend#1}%
+        \else\edef\@tempb{\@tempb#1;}\def\next{\adl@LTkill#2}\fi
+        \next}
+\def\adl@LTkillend(#1/#2)#3{\global\let#3\@tempb \@tempcnta#2\relax}
+
+%%^L
+
+%% Compatibility with longtable: horizontal lines and p-boxes
+
+\def\LT@hline{\noalign{\ifnum0=`}\fi
+        \gdef\adl@LThdlrow{\multispan{\LT@cols}\unskip
+                \leaders\hrule\@height\arrayrulewidth\hfill\cr}%
+        \adl@LThdline}
+\def\adl@hdashline#1{\noalign{\ifnum0=`}\fi
+        \@ifnextchar[%]
+                     {#1}%
+                     {#1[\dashlinedash/\dashlinegap]}}
+\def\adl@LTihdashline[#1/#2]{%
+        \gdef\adl@LThdlrow{\multispan{\LT@cols}\unskip
+                \adl@hcline\z@[#1/#2]}%
+        \adl@LThdline}
+\def\adl@LTinactivehdl[#1/#2]{%
+        \gdef\adl@LThdlrow{\multispan{\LT@cols}\unskip
+                \leaders\hrule\@height\arrayrulewidth\hfill\cr}%
+        \adl@LThdline}
+
+\def\adl@LThdline{\penalty\@M
+        \ifadl@zwhrule \vskip-\arrayrulewidth \penalty\@M
+        \else          \adl@hline\adl@connect\arrayrulewidth \fi
+        \ifnum0=`{\fi}%
+        \adl@LThdlrow
+        \noalign{\ifnum0=`}\fi
+        \futurelet\@tempa\adl@LTxhline}
+\def\adl@LTxhline{\ifx\@tempa\hline \adl@LTixhline
+        \else\ifx\@tempa\hdashline \adl@LTixhline
+        \else \penalty-\@lowpenalty \vskip-\arrayrulewidth
+                \adl@hline\adl@discard{-\arrayrulewidth}%
+                \adl@hline\adl@connect\arrayrulewidth
+        \fi\fi \ifnum0=`{\fi}%
+        \adl@LThdlrow \noalign{\penalty\@M}}
+\def\adl@LTixhline{\penalty-\@medpenalty \vskip\doublerulesep
+        \adl@hline\relax\doublerulesep \global\let\adl@LThdlrow\@empty}
+
+\def\adl@LTstartpbox#1{%
+        \adl@act@@startpbox{#1}\let\@footnotetext\LT@p@ftntext}
+\def\adl@LTendpbox{\adl@act@@endpbox \the\LT@p@ftn \global\LT@p@ftn{}}
+
+%%^L
+
+%% Compatibility with longtable: first chunk
+
+\def\LT@start{%
+        \let\LT@start\endgraf
+        \endgraf \penalty\z@ \vskip\LTpre \endgraf
+        \dimen@\pagetotal
+        \advance\dimen@ \ht\ifvoid\LT@firsthead\LT@head\else\LT@firsthead\fi
+        \advance\dimen@ \dp\ifvoid\LT@firsthead\LT@head\else\LT@firsthead\fi
+        \advance\dimen@ \ht\LT@foot
+        \dimen@ii\vfuzz \@tempcnta\vbadness
+        \vfuzz\maxdimen \vbadness\@M
+        \setbox\tw@\copy\z@
+        \setbox\tw@\vsplit\tw@ to \ht\@arstrutbox
+        \setbox\tw@\vbox{\unvbox\tw@}%
+        \vfuzz\dimen@ii \vbadness\@tempcnta
+        \advance\dimen@\ht
+                \ifdim\ht\@arstrutbox>\ht\tw@\@arstrutbox\else\tw@\fi
+        \advance\dimen@\dp
+                \ifdim\dp\@arstrutbox>\dp\tw@\@arstrutbox\else\tw@\fi
+        \advance\dimen@ -\pagegoal
+        \ifdim \dimen@>\z@\vfil\break \fi
+        \global\adl@LTpagetotal\pagetotal
+        \global\@colroom\@colht
+        \ifvoid\LT@foot\else
+                \advance\vsize-\ht\LT@foot
+                \global\advance\@colroom-\ht\LT@foot
+                \dimen@\pagegoal\advance\dimen@-\ht\LT@foot\pagegoal\dimen@
+                \maxdepth\z@
+        \fi
+        \copy\ifvoid\LT@firsthead \LT@head \else \LT@firsthead \fi
+        \output{\LT@output}}
+
+%%^L
+
+%% Compatibility with longtable: output routine
+
+\let\adl@org@LT@output\LT@output
+\def\LT@output{%
+        \ifnum\outputpenalty <-\@Mi
+            \ifnum\outputpenalty > -\LT@end@pen
+                \LT@err{floats and marginpars not allowed in a longtable}\@ehc
+            \else
+                \setbox\z@\vbox{\unvbox\@cclv}%
+                \ifdim \ht\LT@lastfoot>\ht\LT@foot
+                    \dimen@\pagegoal
+                    \advance\dimen@-\ht\LT@lastfoot
+                    \ifdim\dimen@<\ht\z@
+                        \setbox\@cclv\vbox{\unvbox\z@\copy\LT@foot}%
+                        \adl@LTdraw\LT@foot\vss
+                        \@makecol
+                        \@outputpage
+                        \setbox\z@\vbox{\copy\LT@head}%
+                    \fi
+                \fi
+                \global\@colroom\@colht
+                \global\vsize\@colht
+                \setbox\@cclv\vbox{\unvbox\z@
+                    \copy\ifvoid\LT@lastfoot\LT@foot\else\LT@lastfoot\fi}%
+                \adl@LTdraw\LT@lastfoot\@empty \box\@cclv
+            \fi
+        \else
+            \setbox\@cclv\vbox{\unvbox\@cclv\copy\LT@foot}%
+            \adl@LTdraw\LT@foot\vss
+            \@makecol
+            \@outputpage
+            \global\vsize\@colroom
+            \copy\LT@head
+        \fi}
+
+\def\adl@LTdraw#1#2{%
+        \@tempswatrue
+        \ifadl@LTfirstpage\ifdim\adl@LTpagetotal>\z@\@tempswafalse \fi\fi
+        \if@tempswa
+                \setbox\z@\vbox{\hrule height1sp\unvcopy\@cclv}
+                \splittopskip\z@
+                \setbox\@ne\vsplit\z@ to1sp\relax
+                \@tempdima\ht\z@
+        \else   \@tempdima\ht\@cclv \fi
+        \advance\@tempdima\dp\@cclv
+        \adl@totalheight\@tempdima
+        \let\adl@LTheadL\@empty \let\adl@LTheadR\@empty
+        \let\adl@LTfootL\@empty \let\adl@LTfootR\@empty
+        \ifadl@LTfirstpage
+                \global\adl@LTfirstpagefalse
+                \advance\@tempdima-\adl@LTpagetotal
+                \adl@totalheight\@tempdima
+                \ifvoid\LT@firsthead
+                        \adl@LTinit{head}\LT@head
+                \else   \adl@LTinit{head}\LT@firsthead
+                \fi
+        \else   \adl@LTinit{head}\LT@head \fi
+        \ifvoid#1%
+                \adl@LTinit{foot}\LT@foot
+        \else   \adl@LTinit{foot}#1\fi
+        \let\adl@vl\relax \def\adl@discard{\adl@connect}%
+        \def\adl@vlrow{}\adl@currentcolumn\@ne
+                \adl@LTsplit\adl@rowsL\adl@LTheadL\adl@LTfootL
+                \let\adl@addvl\adl@addvlL
+                \adl@makevlrL \let\adl@vlrowL\adl@vlrow
+        \def\adl@vlrow{}\adl@currentcolumn\adl@columns
+                \adl@LTsplit\adl@rowsR\adl@LTheadR\adl@LTfootR
+                \let\adl@addvl\adl@addvlR
+                \adl@makevlrR \let\adl@vlrowR\adl@vlrow
+        \let\adl@vl\adl@@vl
+        \@tempcnta\LT@rows
+        \LT@bchunk \adl@drawvl
+        \LT@save@row\cr \egroup \setbox\@ne\lastbox \unskip \egroup
+        \global\advance\c@LT@chunks\m@ne
+        \global\LT@rows\@tempcnta
+        \@tempdima\dp\@cclv
+        \setbox\@cclv\vbox{\unvbox\@cclv \box\z@ \vskip-\@tempdima
+                \hrule\@width\z@\@height\z@\@depth\@tempdima#2}}
+\def\adl@LTinit#1#2{\ifvoid#2\else
+        \advance\@tempdima-\csname\string\adl@LTth\string#2\endcsname sp%
+        \expandafter\edef\csname adl@LT#1L\endcsname{%
+                \csname\string\adl@rowsL\string#2\endcsname}%
+        \expandafter\edef\csname adl@LT#1R\endcsname{%
+                \csname\string\adl@rowsR\string#2\endcsname}\fi}
+
+\def\adl@LTsplit#1#2#3{\def\adl@rows{}\@tempdimb\z@
+        \expandafter\adl@LTxsplit#1\@nil;%
+        \edef\adl@rows{#2\adl@rows#3}%
+        \global\let#1\@tempb}
+\def\adl@LTxsplit#1;{\def\@tempa{#1}%
+        \ifx\@tempa\@nnil \def\@tempb{}\let\next\relax
+        \else\ifx\adl@LTheadL\@empty \def\next{\adl@LTysplit#1}%
+        \else \def\next{\adl@LTisplit#1;}\fi \fi
+        \next}
+\def\adl@LTrowrelax{\relax}
+\def\adl@LTrowdiscard{\adl@discard}
+\def\adl@LTysplit(#1/#2){\def\@tempa{#1}%
+        \ifx\@tempa\adl@LTrowrelax \let\next\adl@LTxsplit
+        \else\ifx\@tempa\adl@LTrowdiscard \let\next\adl@LTxsplit
+        \else \def\next{\adl@LTisplit(#1/#2);}\fi \fi
+        \next}
+\def\adl@LTisplit#1;{\def\@tempa{#1}%
+        \ifx\@tempa\@nnil \def\@tempb{}\let\next\relax
+        \else\ifdim\@tempdimb<\@tempdima
+                \adl@LTiisplit#1\let\next\adl@LTisplit
+        \else   \def\next{\adl@LTsplitend#1;}\fi \fi
+        \next}
+\def\adl@LTiisplit(#1/#2){\edef\adl@rows{\adl@rows(#1/#2);}%
+        \advance\@tempdimb#2sp}
+\def\adl@LTsplitend#1;\@nil;{\def\@tempb{#1;}}
+\fi
+
+%%^L
+
+%% Compatibility with colortbl
+
+\def\CT@arc@{\relax}
+\def\adl@dashgapcolor{\relax}
+\@ifpackageloaded{colortbl}\@tempswatrue\@tempswafalse
+\if@tempswa
+\let\adl@org@inactivate\adl@inactivate
+\let\adl@org@activate\adl@activate
+\def\adl@inactivate{\adl@org@inactivate \let\CT@setup\adl@CT@setup}
+\def\adl@activate{\adl@org@activate \let\CT@setup\adl@act@CT@setup
+        \let\@endpbox\adl@org@endpbox}
+
+\let\adl@CT@setup\CT@setup
+\def\CT@setup{\adl@CT@setup
+        \@tempdima\ht\z@ \advance\@tempdima\minrowclearance
+        \ifdim\adl@height<\@tempdima \global\adl@height\@tempdima \fi
+        \ifdim\adl@depth<\dp\z@ \global\adl@depth\dp\z@\fi}
+\let\adl@act@CT@setup\CT@setup
+
+\def\adl@activatepbox{\let\CT@cell@color\relax
+        \let\CT@column@color\relax
+        \let\CT@do@color\relax}
+
+\let\adl@CT@start\CT@start
+\def\CT@start{\adl@CT@start \let\adl@dashgapcolor@save\adl@dashgapcolor}
+\let\adl@CT@end\CT@end
+\def\CT@end{\adl@CT@end \global\let\adl@dashgapcolor\adl@dashgapcolor@save}
+\def\endarray{\adl@endarray \egroup \adl@arrayrestore \CT@end \egroup}
+\ifx\adl@notdefinable\undefined \let\endArray\endarray \fi
+
+\def\hline{\noalign{\ifnum0=`}\fi
+        \ifadl@zwhrule \vskip-\arrayrulewidth
+        \else \adl@hline\adl@connect\arrayrulewidth \fi
+        {\CT@arc@ \hrule\@height\arrayrulewidth}%
+        \global\adl@finaldepth\z@
+        \futurelet\@tempa\adl@xhline}
+\def\adl@inactivehdl[#1/#2]{\ifadl@zwhrule \vskip-\arrayrulewidth \fi
+        {\CT@arc@ \hrule\@height\arrayrulewidth}%
+        \futurelet\@tempa\adl@xhline}
+\def\adl@ixhline{{\ifx\CT@drsc@\relax \vskip \else
+        \CT@drsc@\hrule\@height \fi \doublerulesep}%
+        \adl@hline\relax\doublerulesep}
+\def\adl@ihdashline[#1/#2]{\adl@hclinesetup\@ne\adl@columns
+        \adl@hcline\z@[#1/#2]%
+        \noalign{\ifnum0=`}\fi
+        \futurelet\@tempa\adl@xhline}
+\let\adl@act@ihdashline\adl@ihdashline
+\def\adl@cdline[#1-#2]{\ifadl@zwhrule \vskip-\arrayrulewidth \fi
+        \adl@hclinesetup{#1}{#2}%
+        \adl@hcline{-\arrayrulewidth}}
+\let\adl@act@cdline\adl@cdline
+\def\adl@hclinesetup#1#2{\global\adl@cla#1\relax
+        \global\advance\adl@cla\m@ne
+        \ifnum\adl@cla>\z@ \global\let\@gtempa\adl@cdlinea
+        \else              \global\let\@gtempa\adl@cdlineb\fi
+        \global\adl@clb#2\relax
+        \global\advance\adl@clb-\adl@cla \ifnum0=`{\fi}}
+\def\adl@cdlinea{\multispan\adl@cla &\multispan\adl@clb \unskip}
+\def\adl@cdlineb{\multispan\adl@clb \unskip}
+\def\adl@hcline#1[#2/#3]{\@gtempa
+        \ifx\adl@dashgapcolor\adl@nocolor \else \adl@paintdashgap \fi
+        {\@tempdima#2\relax \@tempdimb#3\relax
+                \CT@arc@ \adl@draw\adl@vrule\hskip\hbox}\cr
+        \noalign{\global\adl@finaldepth\z@ \ifdim#1=\z@\else
+                \ifadl@zwhrule\else \vskip#1\fi\fi}}
+\def\adl@paintdashgap{{\adl@dashgapcolor
+        \leaders\hrule\@height\arrayrulewidth\hfill}\cr
+        \noalign{\penalty\@M \vskip-\arrayrulewidth}\@gtempa}
+
+\def\arrayrulecolor{\adl@defcolor\CT@arc@}
+\def\doublerulesepcolor{\adl@defcolor\CT@drsc@}
+\def\dashgapcolor{\adl@defcolor\adl@dashgapcolor}
+\def\adl@defcolor#1#2#{\adl@idefcolor{#1}{#2}}
+\def\adl@idefcolor#1#2#3{\adl@noalign{\gdef#1{\color#2{#3}}}}
+\let\adl@noalign\relax
+\def\nodashgapcolor{\adl@noalign{\gdef\adl@dashgapcolor{\relax}}}
+
+\def\@classz{\@classx
+        \@tempcnta\count@ \prepnext@tok
+        \expandafter\CT@extract\the\toks\@tempcnta\columncolor!\@nil
+        \expandafter\adl@extract@arc\the\toks\@tempcnta\arrayrulecolor!\@nil
+        \expandafter\adl@extract@drsc
+                \the\toks\@tempcnta\doublerulesepcolor!\@nil
+        \expandafter\adl@extract@dgc\the\toks\@tempcnta\dashgapcolor!\@nil
+        \@addtopreamble{%
+                \setbox\z@\hbox\bgroup\bgroup
+                \ifcase \@chnum
+                        \hskip\stretch{.5}\kern\z@
+                        \d@llarbegin
+                        \insert@column
+                        \d@llarend\hskip\stretch{.5}%
+                \or \d@llarbegin \insert@column \d@llarend \hfill
+                \or \hfill \kern\z@ \d@llarbegin \insert@column \d@llarend
+                \or  $\vcenter
+                        \@startpbox{\@nextchar}\insert@column \@endpbox $%
+                \or  \vtop \@startpbox{\@nextchar}\insert@column \@endpbox
+                \or  \vbox \@startpbox{\@nextchar}\insert@column \@endpbox
+                \fi
+                \egroup\egroup
+                \begingroup
+                        \CT@setup
+                        \CT@column@color
+                        \CT@row@color
+                        \CT@cell@color
+                        \CT@do@color
+                \endgroup
+                \@tempdima\ht\z@
+                \advance\@tempdima\minrowclearance
+                \vrule\@height\@tempdima\@width\z@
+                \unhbox\z@}%
+        \prepnext@tok}
+\let\adl@act@classz\@classz
+\let\adl@org@classz\@classz
+
+\def\adl@def@extract#1#2#3{%
+        \expandafter\def\csname adl@extract@#1\endcsname##1#2##2##3\@nil{%
+                \if!##2\toks\@tempcnta{##1}\let\@tempa\relax
+                \else\if[##2%]
+                        \def\@tempa{\@nameuse{adl@extract@#1@b}{##1}##3\@nil}%
+                \else   \def#3{\color{##2}}%
+                        \def\@tempa{\@nameuse{adl@extract@#1}##1##3\@nil}%
+                \fi\fi \@tempa}
+        \expandafter\def\csname adl@extract@#1@b\endcsname##1##2]##3{%
+                \def#3{\color[##2]{##3}}%
+                \@nameuse{adl@extract@#1}##1}}
+\adl@def@extract{arc}\arrayrulecolor\CT@arc@
+\adl@def@extract{drsc}\doublerulesepcolor\CT@drsc@
+\adl@def@extract{dgc}\dashgapcolor\adl@dashgapcolor
+
+\ifx\longtable\undefined\else
+\def\LT@hline{\noalign{\ifnum0=`}\fi
+        \gdef\adl@LThdlrow{\multispan{\LT@cols}\unskip{\CT@arc@
+                \leaders\hrule\@height\arrayrulewidth\hfill}\cr}%
+        \adl@LThdline}
+\def\adl@LTihdashline[#1/#2]{\adl@hclinesetup\@ne\adl@columns
+        \noalign{\ifnum0=`}\fi
+        \gdef\adl@LThdlrow{\adl@hcline\z@[#1/#2]}%
+        \adl@LThdline}
+\def\adl@LTinactivehdl[#1/#2]{%
+        \gdef\adl@LThdlrow{\multispan{\LT@cols}\unskip{\CT@arc@
+                \leaders\hrule\@height\arrayrulewidth\hfill}\cr}%
+        \adl@LThdline}
+\def\adl@LTixhline{%
+        \ifx\CT@drsc@\relax \gdef\adl@LThdlrow{\noalign{
+                \penalty-\@medpenalty \vskip\doublerulesep}}
+        \else \gdef\adl@LThdlrow{\noalign{\penalty\@M}%
+                \multispan{\LT@cols}\unskip{\CT@drsc@
+                \leaders\hrule\@height\doublerulesep\hfill}\cr}\fi
+        \ifnum0=`{\fi}\adl@LThdlrow \noalign{\ifnum0=`}\fi
+        \adl@hline\relax\doublerulesep \global\let\adl@LThdlrow\@empty}
+\fi
+\fi
+\endinput
+%%
+%% End of file `arydshln.sty'.

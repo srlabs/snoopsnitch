@@ -1,0 +1,227 @@
+%%%%%%%%%%%%%%%%%
+% Security Research Labs
+% Latex Report Template v.3.3
+%%%%%%%%%%%%%%%%%
+
+%\usepackage[ngerman]{babel}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{microtype}
+% Color definitions from the logo
+\usepackage{colortbl}
+\usepackage{booktabs} %for nice tables
+\usepackage{xcolor}
+\usepackage{enumerate}
+\definecolor{srldark}{rgb}{.5725, .2117, .1647} % Left, darker, part
+\definecolor{srllight}{rgb}{.8078, .5764, .5058} % Lighter text "security"
+\definecolor{srlgrey}{rgb}{.302, .302, .302} % Darker grey
+\usepackage[
+pdfstartview=Fit,
+bookmarks=true,
+bookmarksopen=true,
+pdfpagemode=UseNone,
+colorlinks=true,
+linkcolor=srldark,
+urlcolor=srldark,
+citecolor=srldark,
+%allcolors=srllight
+linkbordercolor=srldark,
+urlbordercolor=srldark,
+citebordercolor=srldark,
+%allbordercolors=srldark,
+pdfborder={0 0 0},
+pdftex]{hyperref}
+\parskip=10pt
+\parindent=0pt
+%\usepackage[bookmarks=true, citecolor=black, linkcolor=black, colorlinks=true]{hyperref}
+\usepackage{amsfonts} 
+\usepackage{amssymb} 
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{fancyvrb}
+\usepackage{appendix}
+\usepackage{textpos}
+\usepackage{wasysym} % Circles
+\usepackage{arydshln} % Dotted lines
+\usepackage{listings} % Code blocks
+\TPGrid{10}{10}
+\renewcommand{\UrlFont}{\normalsize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom styles
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\imagetop#1{\vtop{\null\hbox{#1}}}
+\renewcommand\paragraph[1]{\textbf{#1}\ }
+
+\usepackage{color}
+\usepackage{listings}
+\lstset{ %
+language=C,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it is 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,   		% adds a frame around the code
+tabsize=2,  		% sets default tabsize to 2 spaces
+captionpos=b,   		% sets the caption-position to bottom
+breaklines=true,    	% sets automatic line breaking
+breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+%escapeinside={\%}{)}          % if you want to add a comment within your code
+}
+
+%%%%%%%%%%%%%%%%
+% Prepare title
+%%%%%%%%%%%%%%%%
+\title{Network security and IMSI catcher detection metrics}
+\newcommand{\confidentiality}{Confidential}
+\author{Alexander Senier}
+\newcommand{\emailaddresses}{alex@srlabs.de}
+\newcommand{\institute}{Security Research Labs, Berlin}
+\newcommand{\documentversion}{v0.1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Watermark and logo on title page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{eso-pic}
+\makeatletter
+\AddToShipoutPicture*{%
+\setlength{\@tempdimb}{.53\paperwidth}%
+\setlength{\@tempdimc}{.7\paperheight}%
+\setlength{\unitlength}{1pt}%
+\put(\strip@pt\@tempdimb,\strip@pt\@tempdimc){%
+\makebox(0,0){\hskip 0.7cm
+\includegraphics[width=0.65\paperwidth]{logos/SRL_logo_single_wm}}}}
+\makeatother
+
+\setlength{\TPHorizModule}{30mm}
+\setlength{\TPVertModule}{\TPHorizModule}
+%\textblockorigin{0mm}{0mm} % start everything near the top-left corner
+%\setlength{\parindent}{0pt}
+
+
+\makeatletter
+\def\maketitle{%
+\null
+\thispagestyle{empty}%
+\vskip 3cm
+\begin{center}\leavevmode
+  \normalfont
+  \begin{minipage}{0.6\textwidth}
+  \centering
+  \LARGE \bf \@title\par
+  \end{minipage}
+  \vskip 0.1cm
+  {\bf \large -- \confidentiality -- \par}
+  {\large \@author \\ \emailaddresses \par}
+  {\large \institute\par}
+  {\large \@date \\ \documentversion \par}
+  \vspace{5cm}
+  \begin{textblock}{5}(0,3.15)
+  % Option 1: Only SRLabs logo
+  \centering
+  \includegraphics[width=0.3\textwidth]{logos/SRL_logo}
+  % Option 2: Client logo + SRLabs logo
+%   \begin{table}
+%    \centering
+%       \begin{tabular}{l | r}
+%         \imagetop{\includegraphics[width=0.25\textwidth]{logos/CLIENT_logo}} & 
+%         \imagetop{\includegraphics[width=0.3\textwidth]{logos/SRL_logo}}
+%       \end{tabular}  
+%    \end{table}
+  \end{textblock}
+  
+  \begin{minipage}{0.6\textwidth}
+  { \bf Abstract.}
+  
+  TODO safkhj asdkfjhkjah fkjasf kaf kajsh fkjsadhf skjaf kjashf asdkf hasdkjf
+asd askljd hfkjsadhfksadfkjhas f askjfh ksajdhf sadkjf ksajhf kjsadhfk asdh fkjsdhf  akdjshf skadjhf 
+asdfkjh skajdhf a skfh asdkjfhsdaf eoirzwqers areoiw asdjkfoweiru
+ 
+  \end{minipage}
+\end{center}%
+\vfill
+\null
+\cleardoublepage
+}
+\makeatother
+
+
+% \maketitle erases \@title, so make a copy of it
+\makeatletter
+\let\titlecopy\@title\relax
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set up header and footer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\rhead{\includegraphics[height=0.9\baselineskip]{logos/SRL_logo_wide}}
+\lfoot{\color{srldark} {\bfseries \titlecopy}, \documentversion}
+\rfoot{\color{srldark} \confidentiality, \thepage}
+\renewcommand{\headrule}{{\color{srldark}\hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
+\renewcommand{\footrule}{{\color{srldark}\vskip-\footruleskip\vskip-\footrulewidth \hrule width\headwidth height\footrulewidth\vskip\footruleskip}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set up some KOMA elements
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\addtokomafont{section}{\color{srldark}}
+\addtokomafont{subsection}{\color{srldark}}
+\addtokomafont{captionlabel}{\color{srldark}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\arrayrulecolor{srldark} % Color for table rules
+\newcommand{\light}[1]{\textcolor{srllight}{#1}}
+\newcommand{\dark}[1]{\textcolor{srldark}{#1}}
+\newcommand{\srlbullet}[0]{{\color{srldark}$\bullet$}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set up PDF meta-data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\PrerenderUnicode{ß}
+\makeatletter
+\hypersetup{
+  pdftitle={\@title},
+  pdfauthor={\@author},
+  pdfsubject={\@subtitle},
+  pdfkeywords={},
+  %pdflang=de,
+  pdfdisplaydoctitle=true
+}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Criticality levels
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\critcrit}{$\CIRCLE \CIRCLE \CIRCLE$}
+\newcommand{\highcrit}{$\CIRCLE \CIRCLE \Circle$}
+\newcommand{\medicrit}{$\CIRCLE \Circle \Circle$}
+\newcommand{\noticrit}{$\Circle \Circle \Circle$}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Moons
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\circa}{\raisebox{-0.25\height}{\includegraphics[width=12pt]{logos//circles//circle_empty.pdf}} }
+\newcommand{\circb}{\raisebox{-0.25\height}{\includegraphics[width=12pt]{logos//circles//circle_onequarter.pdf}} }
+\newcommand{\circc}{\raisebox{-0.25\height}{\includegraphics[width=12pt]{logos//circles//circle_half.pdf}} }
+\newcommand{\circd}{\raisebox{-0.25\height}{\includegraphics[width=12pt]{logos//circles//circle_threequarter.pdf}} }
+\newcommand{\circe}{\raisebox{-0.25\height}{\includegraphics[width=12pt]{logos//circles//circle_full.pdf}} }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Decrease page margins
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\addtolength{\textheight}{0.7in}
+
+

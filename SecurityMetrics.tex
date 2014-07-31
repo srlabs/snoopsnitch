@@ -1,0 +1,478 @@
+\documentclass[a4paper,11pt,notitlepage,bigheadings,oneside]{scrartcl}
+\input{srlabs}
+
+\begin{document}
+
+\newcommand{\TBD}{{\color{srldark}\textbf{TBD}}}
+\newcommand{\FIXME}[1]{{\color{srldark}\textit{FIXME: #1}\par}}
+
+\maketitle
+\pagebreak
+
+\tableofcontents
+\pagebreak
+
+\section{Introduction}
+\label{sec:introduction}
+
+\section{Background}
+\label{sec:background}
+
+% explain GSM/3G connection setup
+% (formal) syntax and semantics of traces
+% which protocol layer are we considering?
+
+\section{2G Security Metrics}
+\label{sec:2g_security_metrics}
+
+\section{3G Security Metrics}
+\label{sec:3g_security_metrics}
+
+\section{IMSI Catcher Detection}
+\label{sec:imsi_catcher_detection}
+
+\subsection{Setup}
+
+\subsubsection{[S1] Encryption Downgrade}
+
+After using an encryption algorithm with an operator previously, encryption got
+downgraded to a weaker algorithm.
+
+\paragraph{Rationale}
+
+Encryption may be disabled completely (A5/0) or limited to a deliberately
+weakened algorithm (A5/2) due to legal restrictions in a country. Furthermore,
+an operator may not yet have the technical capabilities to use the more secure
+A5/3 algorithm in favor of the broken A5/1 one. However, if a weaker encryption
+algorithm is observed with the same operator at a later time, this may be an
+indication for an attacker forcing the ME into an encryption mode she can
+attack (more easily).
+
+\paragraph{False Positives}
+
+\TBD
+
+\FIXME{May an operator support A5/3 only for part of its network?}
+\FIXME{How about transitioning from one network to another network (e.g. different countries) of the same operator?}
+
+\paragraph{Required Information}
+
+Encryption algorithms previously used with a given operator.
+
+\FIXME{How can we distinguish operators?}
+
+\paragraph{Expression}
+
+\TBD
+
+\paragraph{Score}
+
+\TBD{} (Red)
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[S2] Multiple cipher-mode complete message}
+
+Cipher-mode complete messages are sent multiple times.
+
+\paragraph{Rationale}
+
+\TBD
+
+\paragraph{False Positives}
+
+\TBD
+
+\paragraph{Required Information}
+
+Trace of the cipher-mode complete message. (for the current connection setup?)
+
+\paragraph{Expression}
+
+\TBD
+
+\paragraph{Score}
+
+\TBD{} (\textgreater 2 - Yellow, \textgreater 4 - Red)
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[S3] Cipher-mode complete message without IMEI}
+
+In the cipher-mode complete message no IMEI was requested.
+
+\paragraph{Rationale}
+
+\TBD
+
+\paragraph{False Positives}
+
+\TBD
+
+\FIXME{What if we received multiple cipher-mode complete messages?}
+
+\paragraph{Required Information}
+
+\TBD
+
+Trace of the cipher-mode complete messages (for the current connection setup?)
+
+\paragraph{Expression}
+
+\TBD
+
+\paragraph{Score}
+
+\TBD{} (Yellow)
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[S4] No neighboring cells}
+
+The current cell is not advertising any neighbor cells.
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\TBD{}
+
+\FIXME{What do femtocells advertise as neighbor cells?}
+\FIXME{Other legit cells without neighboring cells?}
+
+\paragraph{Required Information}
+
+Neighboring information for the current cell.
+
+\paragraph{Expression}
+
+\TBD
+
+\paragraph{Score}
+
+\TBD{} (Yellow)
+
+\paragraph{Weight}
+
+\TBD{}
+
+%%%%%%%
+%%%%%%%
+
+\subsubsection{[S5] Large cell reselection offset}
+
+The cell reselection offset is large.
+
+\paragraph{Rationale}
+
+\TBD
+
+\paragraph{False Positives}
+
+\TBD
+
+\paragraph{Required Information}
+
+\TBD
+
+\paragraph{Expression}
+
+\TBD
+
+\paragraph{Score}
+
+\TBD{} (\textgreater 80dB - Yellow)
+
+\FIXME{Need to validate this value or even create dynamic calculation adding to overall score.}
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsection{Location update}
+
+\subsubsection{[L1] Changing LAC}
+
+The LAC of a base station changes.
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\TBD{}
+
+\paragraph{Required Information}
+
+\TBD{}
+
+LAC of the current base station and previous LACs of the same base station (how do we identify the base station?)
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{} (\textgreater 0 - Yellow, \textgreater 1 - Red)
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[L2] Inconsistent LAC}
+
+The LAC of the current base station differs from the LAC of all neighboring cells.
+
+\FIXME{Should "all" really be the criterion? This does not hold anymore if only one single other fake BTS exists with the same LAC...}
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\TBD{}
+
+\paragraph{Required Information}
+
+Neighboring cell information. LAC of the current cell.
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{} (Yellow)
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[L3] IMEI during location update}
+
+The network queries the IMEI during location update.
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\TBD{}
+
+\paragraph{Required Information}
+
+\TBD{}
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{} (Yellow)
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[L4] Short registration time}
+
+The registration timer is set to a low value.
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\TBD{}
+
+\paragraph{Required Information}
+
+\TBD{}
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{} (Yellow)
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[L5] "IMSI attack procedure" flag}
+
+The IMSI attach procedure flag is set. (where?)
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\TBD{}
+
+\paragraph{Required Information}
+
+\TBD{}
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{}
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsection{Tracking}
+
+\subsubsection{[T1] Silent text message received}
+
+Silent text messages have been received.
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\FIXME{Any other good (i.e. non surveillance) reasons for silent SMS messages?}
+
+\paragraph{Required Information}
+
+\TBD{}
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{} (Yellow)
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[T2] Paging without transaction}
+
+The ME is paged without entering a transaction.
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\TBD{}
+
+\paragraph{Required Information}
+
+\TBD{}
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{} (Red)
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[T3] Orphaned traffic channel}
+
+A traffic channel is assigned, but no call control state is entered or test
+message received.
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\TBD{}
+
+\paragraph{Required Information}
+
+\TBD{}
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{} (\textgreater 2s - Red, \textgreater 10s - Black)
+
+\FIXME{Need to validate those times or even make dynamic calculation adding to overall score.}
+
+\paragraph{Weight}
+
+\TBD{}
+
+\subsubsection{[T4] Missing call setup message}
+
+No call setup message is received while already being on the traffic channel.
+
+\paragraph{Rationale}
+
+\TBD{}
+
+\paragraph{False Positives}
+
+\TBD{}
+
+\paragraph{Required Information}
+
+\TBD{}
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{} (\textgreater 2s - Red, \textgreater 10s - Black)
+
+\FIXME{Need to validate those times or even make dynamic calculation adding to overall score.}
+
+\paragraph{Weight}
+
+\TBD{}
+
+%%%%%%%
+%%%%%%%
+
+\section{Model Validation}
+
+\end{document}
+
+% \subsubsection{[Sx] ...}
+% \paragraph{Rationale}
+% \paragraph{False Positives}
+% \paragraph{Required Information}
+% \paragraph{Expression}
+% \paragraph{Score}
+% \paragraph{Weight}
