@@ -69,9 +69,6 @@ Encryption algorithms previously used with a given operator.
 
 \TBD{} (Red)
 
-\paragraph{Weight}
-
-\TBD{}
 
 \subsubsection{[S2] Multiple cipher-mode complete message}
 
@@ -97,9 +94,6 @@ Trace of the cipher-mode complete message. (for the current connection setup?)
 
 \TBD{} (\textgreater 2 - Yellow, \textgreater 4 - Red)
 
-\paragraph{Weight}
-
-\TBD{}
 
 \subsubsection{[S3] Cipher-mode complete message without IMEI}
 
@@ -129,10 +123,6 @@ Trace of the cipher-mode complete messages (for the current connection setup?)
 
 \TBD{} (Yellow)
 
-\paragraph{Weight}
-
-\TBD{}
-
 \subsubsection{[S4] No neighboring cells}
 
 The current cell is not advertising any neighbor cells.
@@ -160,13 +150,6 @@ Neighboring information for the current cell.
 
 \TBD{} (Yellow)
 
-\paragraph{Weight}
-
-\TBD{}
-
-%%%%%%%
-%%%%%%%
-
 \subsubsection{[S5] Large cell reselection offset}
 
 The cell reselection offset is large.
@@ -192,10 +175,6 @@ The cell reselection offset is large.
 \TBD{} (\textgreater 80dB - Yellow)
 
 \FIXME{Need to validate this value or even create dynamic calculation adding to overall score.}
-
-\paragraph{Weight}
-
-\TBD{}
 
 \subsection{Location update}
 
@@ -225,10 +204,6 @@ LAC of the current base station and previous LACs of the same base station (how 
 
 \TBD{} (\textgreater 0 - Yellow, \textgreater 1 - Red)
 
-\paragraph{Weight}
-
-\TBD{}
-
 \subsubsection{[L2] Inconsistent LAC}
 
 The LAC of the current base station differs from the LAC of all neighboring cells.
@@ -255,10 +230,6 @@ Neighboring cell information. LAC of the current cell.
 
 \TBD{} (Yellow)
 
-\paragraph{Weight}
-
-\TBD{}
-
 \subsubsection{[L3] IMEI during location update}
 
 The network queries the IMEI during location update.
@@ -282,10 +253,6 @@ The network queries the IMEI during location update.
 \paragraph{Score}
 
 \TBD{} (Yellow)
-
-\paragraph{Weight}
-
-\TBD{}
 
 \subsubsection{[L4] Short registration time}
 
@@ -311,10 +278,6 @@ The registration timer is set to a low value.
 
 \TBD{} (Yellow)
 
-\paragraph{Weight}
-
-\TBD{}
-
 \subsubsection{[L5] "IMSI attack procedure" flag}
 
 The IMSI attach procedure flag is set. (where?)
@@ -336,10 +299,6 @@ The IMSI attach procedure flag is set. (where?)
 \TBD{}
 
 \paragraph{Score}
-
-\TBD{}
-
-\paragraph{Weight}
 
 \TBD{}
 
@@ -369,10 +328,6 @@ Silent text messages have been received.
 
 \TBD{} (Yellow)
 
-\paragraph{Weight}
-
-\TBD{}
-
 \subsubsection{[T2] Paging without transaction}
 
 The ME is paged without entering a transaction.
@@ -396,10 +351,6 @@ The ME is paged without entering a transaction.
 \paragraph{Score}
 
 \TBD{} (Red)
-
-\paragraph{Weight}
-
-\TBD{}
 
 \subsubsection{[T3] Orphaned traffic channel}
 
@@ -428,10 +379,6 @@ message received.
 
 \FIXME{Need to validate those times or even make dynamic calculation adding to overall score.}
 
-\paragraph{Weight}
-
-\TBD{}
-
 \subsubsection{[T4] Missing call setup message}
 
 No call setup message is received while already being on the traffic channel.
@@ -458,7 +405,6 @@ No call setup message is received while already being on the traffic channel.
 
 \FIXME{Need to validate those times or even make dynamic calculation adding to overall score.}
 
-\paragraph{Weight}
 
 \TBD{}
 
