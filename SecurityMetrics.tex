@@ -405,11 +405,89 @@ No call setup message is received while already being on the traffic channel.
 
 \FIXME{Need to validate those times or even make dynamic calculation adding to overall score.}
 
+\subsubsection{[T5] MS sends on high power}
+
+The MS sends on high power.
+
+\paragraph{Rationale}
 
 \TBD{}
 
+\paragraph{False Positives}
+
+\TBD{}
+
+\paragraph{Required Information}
+
+\TBD{}
+
+\paragraph{Expression}
+
+\TBD{}
+
+\paragraph{Score}
+
+\TBD{} (Highest TX power - Yellow)
+
 %%%%%%%
 %%%%%%%
+
+\subsection{Other (TODO: Check)}
+
+Ideas labeled with id \emph{Xi} taken from "Marcus Prem, Diplomarbeit: Erkennen
+und Abwehren von Angriffen im Mobilfunknetz auf Smartphones, Wilhelm Büchner
+Hochschule Darmstadt Fachbereich Informatik". We should check them for
+plausibility, relevance and feasibility.
+
+Ideas labeled with id \emph{Yi} taken from "XCell Dynamic IMEI v2 User Manual",
+xcell technologies.
+
+Ideas labeled with id \emph{Zi} are own thoughts.
+
+\subsubsection{[X1] Forced Connection}
+
+Detect if BTS with weakest signal is imitated or a  raise of signal strength
+(RSS) of this BTS is measured (FB02).
+
+\subsubsection{[X2] Inconsistent neighbor tables}
+
+Neighboring cell information of \emph{neighboring stations} should be
+consistent with current BTS, i.e it should be listed as strongest neighboring
+BTS (FB03).
+
+\FIXME{"The MS shall attempt to decode the BCCH data block that contains the
+parameters affecting cell reselection for each of the 6 strongest non-serving
+cell BCCH carriers at least every 5 minutes." \cite[section 6.6.1]{tc1996gsm}
+Theoretically, we should have the neighboring information of these 6
+non-serving cells available for correlation with our current neighboring
+cells.}
+
+\subsubsection{[X3] Rejection by IMSI catcher}
+
+No uplink is possible via PRACH (FB04). \FIXME{What does Prem mean with "mind
+Aloah"?}
+
+\subsubsection{[X4] Signal run time difference}
+
+Send a "Hello packet-delay" to the BTS and try to detect duplicate and delayed
+answers (FB05).
+
+\subsubsection{[X5] E-OTD localization (???)}
+
+Test the network using localization services (LBS), e.g. a non-responding BTS
+or multiple, overlapping answers (FB06).
+
+\subsubsection{[Y1] Many network re-registration requests}
+
+An abnormal number of re-registration requests is received from the GSM
+network.
+
+\subsubsection{[Z1] No UMTS/LTE available}
+
+As IMSI catchers often are GSM only, they rely on jamming other technologies
+like UMTS and LTE. Having only GSM available should add to the overall score.
+
+\subsection{Weighting}
 
 \section{Model Validation}
 
