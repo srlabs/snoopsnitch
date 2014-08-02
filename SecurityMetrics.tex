@@ -69,10 +69,9 @@ Encryption algorithms previously used with a given operator.
 
 \TBD{} (Red)
 
+\subsubsection{[S2] Multiple CIPHER MODE COMPLETE messages}
 
-\subsubsection{[S2] Multiple cipher-mode complete message}
-
-Cipher-mode complete messages are sent multiple times.
+CIPHER MODE COMPLETE messages are sent multiple times.
 
 \paragraph{Rationale}
 
@@ -84,7 +83,7 @@ Cipher-mode complete messages are sent multiple times.
 
 \paragraph{Required Information}
 
-Trace of the cipher-mode complete message. (for the current connection setup?)
+Trace of the CIPHER MODE COMPLETE messages. (for the current connection setup?)
 
 \paragraph{Expression}
 
@@ -94,10 +93,11 @@ Trace of the cipher-mode complete message. (for the current connection setup?)
 
 \TBD{} (\textgreater 2 - Yellow, \textgreater 4 - Red)
 
+\subsubsection{[S3] CIPHER MODE COMPLETE message without IMEI}
 
-\subsubsection{[S3] Cipher-mode complete message without IMEI}
+In the CIPHER MODE COMPLETE message no IMEI was requested.
 
-In the cipher-mode complete message no IMEI was requested.
+\FIXME{Shouldn't that be CIPHER MODE COMMAND?}
 
 \paragraph{Rationale}
 
@@ -107,13 +107,13 @@ In the cipher-mode complete message no IMEI was requested.
 
 \TBD
 
-\FIXME{What if we received multiple cipher-mode complete messages?}
+\FIXME{What if we sent multiple CIPHER MODE COMPLETE messages?}
 
 \paragraph{Required Information}
 
 \TBD
 
-Trace of the cipher-mode complete messages (for the current connection setup?)
+Trace of the CIPHER MODE COMPLETE messages (for the current connection setup?)
 
 \paragraph{Expression}
 
