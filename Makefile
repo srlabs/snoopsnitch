@@ -4,7 +4,7 @@ all: $(FILES)
 
 clean:
 	latexmk -c *.tex
-	rm -f $(FILES)
+	rm -f $(FILES) *.bbl
 
 %.pdf: %.tex
 	latexmk -pdf $<
