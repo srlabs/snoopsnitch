@@ -4,7 +4,10 @@ all: $(FILES)
 
 clean:
 	latexmk -c *.tex
-	rm -f $(FILES) *.bbl
+	rm -f $(FILES) *.bbl bibliography.bib
 
-%.pdf: %.tex
+%.pdf: %.tex bibliography.bib
 	latexmk -pdf $<
+
+bibliography.bib:
+	cat bibliography/* > $@
