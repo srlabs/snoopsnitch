@@ -5,7 +5,7 @@
 \begin{document}
 
 \newcommand{\TBD}{{\color{srldark}\textbf{TBD}}}
-\newcommand{\FIXME}[1]{{\color{srldark}\textit{FIXME: #1}\par}}
+\newcommand{\FIXME}[1]{{\color{srldark}\textit{TODO: #1}\par}}
 
 \maketitle
 \pagebreak
@@ -119,10 +119,10 @@ $s_2 = p(t_{enc\_msg_0} - t_{CIPH\_MOD\_COM_0})$
 
 where $p(t)$ is the likelihood of the delay $t$ to be abnormal behaviour.
 
-\TBD{} Graph the delays between CIPHER MODE COMPLETE and first encrypted
+\FIXME{Graph the delays between CIPHER MODE COMPLETE and first encrypted
 message based on GSMmap data over all data sets. Approximate a formula of that
 empiric data and invert and scale it such that abnormally long and abnormally
-short delays yield to a score of 1. The resulting formula is $p(t)$.
+short delays yield a score of 1. The resulting formula is $p(t)$.}
 
 \subsubsection{[S3] CIPHER MODE COMMAND message without IMEISV}
 
@@ -179,8 +179,8 @@ ARFCN not used by any BTS in that area.
 Only few regular situations, like small islands with only a single call, are
 thinkable where no neighboring cells may be announced.
 
-\TBD{} As part of the validation, search for cells announcing 0 neighboring
-cells an check their location.
+\FIXME{As part of the validation, search for cells announcing 0 neighboring
+cells an check their location.}
 
 \paragraph{Required Information}
 
@@ -194,10 +194,12 @@ where $p(n)$ is the likelihood of a cell to announce $n$ neighboring cells.
 This formula is approximated from the GSMmap sample set. $N$ is the number of
 neighboring cells announced by the serving cell.
 
+\FIXME{Extract and graph the number of neighboring cells for all cells in the
+GSMmap sample set.}
 
 \subsubsection{[S5] High cell reselect offset}
 
-The cell reselection offset is high.
+The cell reselect offset is high.
 
 \paragraph{Rationale}
 
@@ -210,7 +212,10 @@ communication on uplink and downlink." \cite[6.4]{gsm0508}
 In cases where an IMSI catcher e.g. announces real, available neighboring
 cells, it might choose to announce a CELL RESELECTION OFFSET that would require
 the signal quality of any neighboring cell to be impossibly good to consider it
-as an alternative to the cell spawned by the IMSI catcher.
+as an alternative to the cell spawned by the IMSI catcher. This makes the MS
+camp on that cell until the desired information has been collected.
+
+\FIXME{Add cell reselection formula to explain the above statement.}
 
 % Explanation by Andreas Eversberg on Thu Jan 26 17:28:30 CET 2012
 % (CatcherCatcher mailing list):
@@ -239,7 +244,7 @@ $s5 = p(C2)$
 where $p(x)$ is a function expressing the likelihood for the $C2$ value of the
 current cell to be abnormal.
 
-\TBD{} Derive the function $p(x)$ from the distribution of all C2 values
+\FIXME{Derive the function $p(x)$ from the distribution of all C2 values
 calculated from the cell reselection parameters in the GSMmap sample set, such
 that C2 values found in real networks get a low score (0) and abnormal values
 get a high score (1).}
@@ -300,40 +305,41 @@ Qualcomm (more precisely, we cannot correlate them from the data we get).}
 
 \subsubsection{[L2] Inconsistent LAC}
 
-The LAC of the current base station differs from the LAC of all neighboring cells.
+The LAC of the current base station differs from the LAC of many neighboring cells.
 
 \FIXME{For an IMSI catcher announcing no or non-existing neighboring cells,
-this makes no sense. If the catcher announces, but prevents transition to them
-e.g. by sending suitable cell reselection parameters, most of those real cells
-likely have a different LAC. Trouble is, that neighbor list just consist of
-ARFCN and the LAC needs to be read from the respective BCCHs. Unfortunately on
-Qualcomm we cannot correlate the cell ID data with the ARFCN it was received
-from an thus may not be able to obtain this information. Should we find a way,
-it might be worthwhile to empirically derive a function $p(N)$ that estimates
-the likelihood that $N$ of a cells neighboring stations have a different LAC.}
+this makes no sense. If the catcher announces neighboring cells, but prevents
+transition to them e.g. by sending suitable cell reselection parameters, most
+of those real cells likely have a different LAC. Trouble is, that neighbor list
+just consist of ARFCN and the LAC needs to be read from the respective BCCHs.
+Unfortunately on Qualcomm we cannot correlate the cell ID data with the ARFCN
+it was received from an thus may not be able to obtain this information.}
 
 \paragraph{Rationale}
 
 A MS will only perform a location update when changing to a different area,
-i.e. a BTS with a different LAC. An IMSI needs to force a location update to be
-able to interact with the phone. Therefore it must span a cell with a LAC
-different to all surrounding cells and with a much better signal strength. If
-the IMSI catcher announces realistic neighboring cells, this difference between
-the LAC of the serving cell and all neighboring cell could be detected.
+i.e. a BTS with a different LAC. An IMSI catcher needs to force a location
+update to be able to interact with the phone and derived the desired
+information. Therefore, it must span a cell with a LAC different to all
+surrounding cells and with a much better signal strength than the other cells.
+If the IMSI catcher announces realistic neighboring cells, this difference
+between the LAC of the serving cell and all neighboring cell could be detected.
 
 \paragraph{False Positives}
 
-\TBD{}
+\FIXME{Investigate.}
 
 \paragraph{Required Information}
 
-Neighboring cell list ($NCL$). The LAC of the service cell ($LAC_{sc}$). The
-LACs of the neighboring cells ($LACNC_i$).
+Neighboring cell list $BA$. The LAC of the service cell $LAC_{sc}$ and the LACs
+of the $i$ neighboring cells in the BA $[LAC_1,…,LAC_i]$.
 
 \paragraph{Expression}
 
 $l_2 = ?$
 
+\FIXME{Empirically derive a function $p(N)$ that estimates the likelihood that
+$N$ of a cells neighboring stations have a different LAC from the GSMmap data.}
 
 \subsubsection{[L3] ID requests during location update}
 
