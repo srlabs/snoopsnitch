@@ -90,10 +90,6 @@ where $s(a)$ -- the strength of the encryption algorithm $a$ -- is defined as
 
 $s(A5/0) < s(A5/2) < s(A5/1) < s(A5/3)$.
 
-\paragraph{Score}
-
-\TBD{} (Red)
-
 \subsubsection{[S2] Delayed CIPHER MODE COMPLETE acknowledgement}
 
 CIPHER MODE COMPLETE messages may be acknowledged by an IMSI Catcher with
@@ -122,8 +118,6 @@ Time stamp of the first encrypted message ($t_{enc\_msg_0}$).
 $s_2 = p(t_{enc\_msg_0} - t_{CIPH\_MOD\_COM_0})$
 
 where $p(t)$ is the likelihood of the delay $t$ to be abnormal behaviour.
-
-\paragraph{Score}
 
 \TBD{} Graph the delays between CIPHER MODE COMPLETE and first encrypted
 message based on GSMmap data over all data sets. Approximate a formula of that
@@ -162,12 +156,8 @@ $s_3 =
 where $p_{IMEISV}$ is the likelihood that operators request the IMEISV in their
 normal CIPHER MODE COMPLETE messages.
 
-\TBD{} From the GSMmap sample set, calculate the likelihood $p_{IMEISV}$ that
-the IMEISV will be requested during normal operation.
-
-\paragraph{Score}
-
-\TBD{} (Yellow)
+\FIXME{From the GSMmap sample set, calculate the likelihood $p_{IMEISV}$ that
+the IMEISV will be requested during normal operation.}
 
 \subsubsection{[S4] No neighboring cells}
 
@@ -204,9 +194,6 @@ where $p(n)$ is the likelihood of a cell to announce $n$ neighboring cells.
 This formula is approximated from the GSMmap sample set. $N$ is the number of
 neighboring cells announced by the serving cell.
 
-\paragraph{Score}
-
-\TBD{} (Yellow)
 
 \subsubsection{[S5] High cell reselect offset}
 
@@ -255,11 +242,7 @@ current cell to be abnormal.
 \TBD{} Derive the function $p(x)$ from the distribution of all C2 values
 calculated from the cell reselection parameters in the GSMmap sample set, such
 that C2 values found in real networks get a low score (0) and abnormal values
-get a high score (1).
-
-\paragraph{Score}
-
-\TBD{} (\textgreater 80dB - Yellow)
+get a high score (1).}
 
 \subsection{Location update}
 
@@ -315,10 +298,6 @@ observe neighboring cells for a much longer time, potentially. Also, we cannot
 get the respective AFCAN/CID combinations for neighboring cells right now on
 Qualcomm (more precisely, we cannot correlate them from the data we get).}
 
-\paragraph{Score}
-
-\TBD{} (\textgreater 0 - Yellow, \textgreater 1 - Red)
-
 \subsubsection{[L2] Inconsistent LAC}
 
 The LAC of the current base station differs from the LAC of all neighboring cells.
@@ -355,11 +334,6 @@ LACs of the neighboring cells ($LACNC_i$).
 
 $l_2 = ?$
 
-\TBD{}
-
-\paragraph{Score}
-
-\TBD{} (Yellow)
 
 \subsubsection{[L3] ID requests during location update}
 
@@ -395,10 +369,6 @@ REQUEST prior to the CIPHER MODE COMPLETE message. In the resulting set,
 correlate type of the LOCATION UPDATE REQUEST (Attach, Periodic, Normal) with
 the cause of the LOCATION UPDATE REJECT and the identity information requested
 (IMEI, IMSI, both).}
-
-\paragraph{Score}
-
-\TBD{} (Yellow)
 
 \subsubsection{[L4] Low registration timer}
 
@@ -440,10 +410,6 @@ observed in the GSMmap sample set. \FIXME{We do not have this information in
 the current data, we need to check the xgoldmon traces or create new traces
 using Qualcomm}
 
-\paragraph{Score}
-
-\TBD{} (\textless 10 minutes - Yellow)
-
 \subsection{Tracking}
 
 \subsubsection{[T1] Paging without transaction}
@@ -466,10 +432,6 @@ The MS is paged without entering a transaction.
 
 \TBD{}
 
-\paragraph{Score}
-
-\TBD{} (Red)
-
 \subsubsection{[T2] Orphaned traffic channel}
 
 A traffic channel is assigned, but no call control state is entered or test
@@ -490,10 +452,6 @@ message received.
 \paragraph{Expression}
 
 \TBD{}
-
-\paragraph{Score}
-
-\TBD{} (\textgreater 2s - Red, \textgreater 10s - Black)
 
 \FIXME{Need to validate those times or even make dynamic calculation adding to overall score.}
 
@@ -517,10 +475,6 @@ No call setup message is received while already being on the traffic channel.
 
 \TBD{}
 
-\paragraph{Score}
-
-\TBD{} (\textgreater 2s - Red, \textgreater 10s - Black)
-
 \FIXME{Need to validate those times or even make dynamic calculation adding to overall score.}
 
 \subsubsection{[T4] MS sends on high power}
@@ -542,10 +496,6 @@ The MS sends on high power.
 \paragraph{Expression}
 
 \TBD{}
-
-\paragraph{Score}
-
-\TBD{} (Highest TX power - Yellow)
 
 %%%%%%%
 %%%%%%%
@@ -676,10 +626,6 @@ Silent text messages have been received.
 \paragraph{Expression}
 
 \TBD{}
-
-\paragraph{Score}
-
-\TBD{} (Yellow)
 
 \section{Model Validation}
 
