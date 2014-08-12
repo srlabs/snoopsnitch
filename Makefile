@@ -9,5 +9,8 @@ clean:
 %.pdf: %.tex bibliography.bib
 	latexmk -pdf $<
 
+%.pdf: %.dot
+	dot -Tpdf -o $@ $<
+
 bibliography.bib:
 	cat bibliography/* > $@
