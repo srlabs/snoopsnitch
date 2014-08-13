@@ -36,9 +36,229 @@
 \section{IMSI Catcher Detection Metric}
 \label{sec:imsi_catcher_detection_metric}
 
-\subsection{Setup}
+\subsection{Attract}
 
-\subsubsection{[S1] Encryption Downgrade}
+This section covers detectable behavior that is geared towards attracting
+mobile phones to register with an IMSI catcher instead of a regular network.
+
+\subsubsection{[A1] Different cell ID for the same ARFCN}
+
+The cell ID recently seen on an ARFCN suddenly changed.
+
+\paragraph{Rationale}
+
+An IMSI catcher may use the ARFCN of an existing BTS which has a weak signal in
+the area the catcher operates. To force the MS into a location update, a LAC
+different from all neighboring stations is chosen by the IMSI catcher.
+
+The change of the LAC on a given ARFCN can be detected. Note, that for resource
+efficiency, GSM reuses ARFCN in different geographic areas very frequently.
+Hence, changes of the cell ID for a given ARFCN are specific to the geographic
+location of the cell.
+
+As associating an ARFCN/cell id combination with a precise location reliably
+can be challenging, a simpler approach should be taken. The ARFCN and cell ID
+is recorded together with a time stamp. If the same ARFCN is used with a
+different cell ID within a certain time frame, this is considered an attack.
+
+\paragraph{False Positives}
+
+Multiple BTS operating on the same ARFCN may be receivable in the same
+locations, e.g. in elevated places. Furthermore, an operator may reconfigure
+the cell to use a different cell ID.
+
+\paragraph{Required Information}
+
+The ARFCN ($ARFCN_{curr}$) and CID ($CID_{curr}$) of the serving cell.
+
+\paragraph{Expression}
+
+$a_1 =
+\begin{cases}
+	0 & \text{if } cid(ARFCN_{curr}) = \varnothing \vee cid(ARFCN_{curr}) = CID_{curr} \\
+	1 & \text{otherwise} \\
+\end{cases}$
+
+where $cid$ is a database that maps the ARFCNs used during the last $\Delta$
+seconds to their respective CID.
+
+\FIXME{$\Delta$ has to be chosen small enough so that it is unlikely to
+encounter the same ARFCN twice when the MS is moving quickly. This could be
+approximated by the average distance of cells with the same ARFCN and the
+maximum travel speed supported by GSM.}
+
+\FIXME{In theory we could also monitor neighboring cells in the same way.
+Coming up with a decent $\Delta$ seems to be even more challenging as you
+observe neighboring cells for a much longer time, potentially. Also, we cannot
+get the respective AFCAN/CID combinations for neighboring cells right now on
+Qualcomm (more precisely, we cannot correlate them from the data we get).}
+
+\subsubsection{[A2] Inconsistent LAC}
+
+The LAC of the current base station differs from the LAC of many neighboring cells.
+
+\FIXME{For an IMSI catcher announcing no or non-existing neighboring cells,
+this makes no sense. If the catcher announces neighboring cells, but prevents
+transition to them e.g. by sending suitable cell reselection parameters, most
+of those real cells likely have a different LAC. Trouble is, that neighbor list
+just consist of ARFCN and the LAC needs to be read from the respective BCCHs.
+Unfortunately on Qualcomm we cannot correlate the cell ID data with the ARFCN
+it was received from an thus may not be able to obtain this information.}
+
+\paragraph{Rationale}
+
+A MS will only perform a location update when changing to a different area,
+i.e. a BTS with a different LAC. An IMSI catcher needs to force a location
+update to be able to interact with the phone and derived the desired
+information. Therefore, it must span a cell with a LAC different to all
+surrounding cells and with a much better signal strength than the other cells.
+If the IMSI catcher announces realistic neighboring cells, this difference
+between the LAC of the serving cell and all neighboring cell could be detected.
+
+\paragraph{False Positives}
+
+\FIXME{Investigate.}
+
+\paragraph{Required Information}
+
+Neighboring cell list $BA$. The LAC of the service cell $LAC_{sc}$ and the LACs
+of the $i$ neighboring cells in the BA $[LAC_1,…,LAC_i]$.
+
+\paragraph{Expression}
+
+$a_2 = ?$
+
+\FIXME{Empirically derive a function $p(N)$ that estimates the likelihood that
+$N$ of a cells neighboring stations have a different LAC from the GSMmap data.}
+
+\subsubsection{[A3] Only 2G available}
+
+No other technologies like 3G or 4G are available.
+
+\paragraph{Rationale}
+
+As of today, effective IMSI catchers are available for GSM only. Even the ones
+advertised as 3G capable, rely on the fact that mobile phones fall back to GSM
+in areas with no 3G available. To attack 3G or 4G capable phones, these
+services are jammed by the IMSI catcher and an attack against GSM is mounted.
+Having only GSM available should add to the overall score.
+
+\paragraph{False Positives}
+
+Bad network coverage. Areas without 3G and 4G.
+
+\paragraph{Required Information}
+
+\FIXME{Investigate.}
+
+\paragraph{Expression}
+
+\FIXME{TBD.}
+
+\subsection{Keep}
+
+Especially when a MS is tracked or tapped for a longer period of time, an IMSI
+catcher must ensure it does not revert to a regular network cell. This section
+describes detectable techniques IMSI catchers employ to keep mobile phones
+registered.
+
+\subsubsection{[K1] No neighboring cells}
+
+The serving cell is not advertising any neighbor cells.
+
+\paragraph{Rationale}
+
+Active IMSI catchers which record voice and data will try to prevent an MS from
+transitioning back to a regular cell. For that reason an IMSI catcher might
+announce no neighboring cells such that the MS will use the cell spawned by the
+IMSI catcher until its signal level is too low.
+
+Note, that less suspicious options exist for an IMSI catcher to solve that
+problem. It could announce a normal amount of neighboring cells, but choose
+ARFCN not used by any BTS in that area.
+
+\paragraph{False Positives}
+
+Only few regular situations, like small islands with only a single call, are
+thinkable where no neighboring cells may be announced.
+
+\FIXME{As part of the validation, search for cells announcing 0 neighboring
+cells an check their location.}
+
+\paragraph{Required Information}
+
+Neighboring cell list for the serving cell.
+
+\paragraph{Expression}
+
+$k1 = 1 - p(N)$,
+
+where $p(n)$ is the likelihood of a cell to announce $n$ neighboring cells.
+This formula is approximated from the GSMmap sample set. $N$ is the number of
+neighboring cells announced by the serving cell.
+
+\FIXME{Extract and graph the number of neighboring cells for all cells in the
+GSMmap sample set.}
+
+\subsubsection{[K2] High cell reselect offset}
+
+The cell reselect offset is high.
+
+\paragraph{Rationale}
+
+The goal of announcing a large CELL RESELECT OFFSET is similar to K1. The CELL
+RESELECT OFFSET is used to calculate the reselection criterion C2. Together
+with the path loss criterion parameter C1 it is "used to ensure that the MS is
+camped on the cell with which it has the highest probability of successful
+communication on uplink and downlink." \cite[6.4]{gsm0508}
+
+In cases where an IMSI catcher e.g. announces real, available neighboring
+cells, it might choose to announce a CELL RESELECTION OFFSET that would require
+the signal quality of any neighboring cell to be impossibly good to consider it
+as an alternative to the cell spawned by the IMSI catcher. This makes the MS
+camp on that cell until the desired information has been collected.
+
+\FIXME{Add cell reselection formula to explain the above statement.}
+
+% Explanation by Andreas Eversberg on Thu Jan 26 17:28:30 CET 2012
+% (CatcherCatcher mailing list):
+%
+% - a catcher uses a high CRO (cell reselection offset). an offset up to
+% 126 db makes a neighbour cell (catcher) +126 db "better" than the actual
+% receive level from the catcher. a better cell is then selected by the
+% phone, because "rx(cather)+CRO > rx(regual cell)+CRH". (CRH is used when
+% changing location areas. it is generally set to 6db.)
+
+\paragraph{False Positives}
+
+Networks may announce a high CELL RESELECTION OFFSET in areas with poor
+coverage.
+
+\FIXME{Check what exactly is done with C1/C2/CELL RESELECTION OFFSET/TEMPORARY OFFSET}
+
+\paragraph{Required Information}
+
+Cell reselection parameter for the serving cell from BCCH (SI4).
+
+\paragraph{Expression}
+
+$k2 = p(C2)$
+
+where $p(x)$ is a function expressing the likelihood for the $C2$ value of the
+current cell to be abnormal.
+
+\FIXME{Derive the function $p(x)$ from the distribution of all C2 values
+calculated from the cell reselection parameters in the GSMmap sample set, such
+that C2 values found in real networks get a low score (0) and abnormal values
+get a high score (1).}
+
+\subsection{Collect}
+
+This section describes criteria related to the information collection process
+of an IMSI catcher. This includes actions necessary to break encryption as well
+as direct information gathering.
+
+\subsubsection{[C1] Encryption Downgrade}
 
 After using an encryption algorithm with a cell previously, encryption got
 downgraded to a weaker algorithm.
@@ -80,7 +300,7 @@ currently in use ($a_{curr}$).
 
 \paragraph{Expression}
 
-$s_1 =
+$c_1 =
 \begin{cases}
 	1 & \text{if } s(a_{curr}) < s(a_{best}) \\
 	0 & \text{otherwise}
@@ -90,7 +310,7 @@ where $s(a)$ -- the strength of the encryption algorithm $a$ -- is defined as
 
 $s(A5/0) < s(A5/2) < s(A5/1) < s(A5/3)$.
 
-\subsubsection{[S2] Delayed CIPHER MODE COMPLETE acknowledgement}
+\subsubsection{[C2] Delayed CIPHER MODE COMPLETE acknowledgement}
 
 CIPHER MODE COMPLETE messages may be acknowledged by an IMSI Catcher with
 significant delay.
@@ -115,7 +335,7 @@ Time stamp of the first encrypted message ($t_{enc\_msg_0}$).
 
 \paragraph{Expression}
 
-$s_2 = p(t_{enc\_msg_0} - t_{CIPH\_MOD\_COM_0})$
+$c_2 = p(t_{enc\_msg_0} - t_{CIPH\_MOD\_COM_0})$
 
 where $p(t)$ is the likelihood of the delay $t$ to be abnormal behaviour.
 
@@ -124,7 +344,7 @@ message based on GSMmap data over all data sets. Approximate a formula of that
 empiric data and invert and scale it such that abnormally long and abnormally
 short delays yield a score of 1. The resulting formula is $p(t)$.}
 
-\subsubsection{[S3] CIPHER MODE COMMAND message without IMEISV}
+\subsubsection{[C3] CIPHER MODE COMMAND message without IMEISV}
 
 In the CIPHER MODE COMMAND message from the network no IMEISV was requested.
 
@@ -147,7 +367,7 @@ The value of the "cipher response" field of the CIPHER MODE COMPLETE message.
 
 \paragraph{Expression}
 
-$s_3 =
+$c_3 =
 \begin{cases}
 	0 		& \text{if the IMEISV was requested} \\
 	1 - p_{IMEISV}	& \text{otherwise}
@@ -159,189 +379,7 @@ normal CIPHER MODE COMPLETE messages.
 \FIXME{From the GSMmap sample set, calculate the likelihood $p_{IMEISV}$ that
 the IMEISV will be requested during normal operation.}
 
-\subsubsection{[S4] No neighboring cells}
-
-The serving cell is not advertising any neighbor cells.
-
-\paragraph{Rationale}
-
-Active IMSI catchers which record voice and data will try to prevent an MS from
-transitioning back to a regular cell. For that reason an IMSI catcher might
-announce no neighboring cells such that the MS will use the cell spawned by the
-IMSI catcher until its signal level is too low.
-
-Note, that less suspicious options exist for an IMSI catcher to solve that
-problem. It could announce a normal amount of neighboring cells, but choose
-ARFCN not used by any BTS in that area.
-
-\paragraph{False Positives}
-
-Only few regular situations, like small islands with only a single call, are
-thinkable where no neighboring cells may be announced.
-
-\FIXME{As part of the validation, search for cells announcing 0 neighboring
-cells an check their location.}
-
-\paragraph{Required Information}
-
-Neighboring cell list for the serving cell.
-
-\paragraph{Expression}
-
-$s4 = 1 - p(N)$,
-
-where $p(n)$ is the likelihood of a cell to announce $n$ neighboring cells.
-This formula is approximated from the GSMmap sample set. $N$ is the number of
-neighboring cells announced by the serving cell.
-
-\FIXME{Extract and graph the number of neighboring cells for all cells in the
-GSMmap sample set.}
-
-\subsubsection{[S5] High cell reselect offset}
-
-The cell reselect offset is high.
-
-\paragraph{Rationale}
-
-The goal of announcing a large CELL RESELECT OFFSET is similar to S4. The CELL
-RESELECT OFFSET is used to calculate the reselection criterion C2. Together
-with the path loss criterion parameter C1 it is "used to ensure that the MS is
-camped on the cell with which it has the highest probability of successful
-communication on uplink and downlink." \cite[6.4]{gsm0508}
-
-In cases where an IMSI catcher e.g. announces real, available neighboring
-cells, it might choose to announce a CELL RESELECTION OFFSET that would require
-the signal quality of any neighboring cell to be impossibly good to consider it
-as an alternative to the cell spawned by the IMSI catcher. This makes the MS
-camp on that cell until the desired information has been collected.
-
-\FIXME{Add cell reselection formula to explain the above statement.}
-
-% Explanation by Andreas Eversberg on Thu Jan 26 17:28:30 CET 2012
-% (CatcherCatcher mailing list):
-%
-% - a catcher uses a high CRO (cell reselection offset). an offset up to
-% 126 db makes a neighbour cell (catcher) +126 db "better" than the actual
-% receive level from the catcher. a better cell is then selected by the
-% phone, because "rx(cather)+CRO > rx(regual cell)+CRH". (CRH is used when
-% changing location areas. it is generally set to 6db.)
-
-\paragraph{False Positives}
-
-Networks may announce a high CELL RESELECTION OFFSET in areas with poor
-coverage.
-
-\FIXME{Check what exactly is done with C1/C2/CELL RESELECTION OFFSET/TEMPORARY OFFSET}
-
-\paragraph{Required Information}
-
-Cell reselection parameter for the serving cell from BCCH (SI4).
-
-\paragraph{Expression}
-
-$s5 = p(C2)$
-
-where $p(x)$ is a function expressing the likelihood for the $C2$ value of the
-current cell to be abnormal.
-
-\FIXME{Derive the function $p(x)$ from the distribution of all C2 values
-calculated from the cell reselection parameters in the GSMmap sample set, such
-that C2 values found in real networks get a low score (0) and abnormal values
-get a high score (1).}
-
-\subsection{Location update}
-
-\subsubsection{[L1] Different cell ID for the same ARFCN}
-
-The cell ID recently seen on an ARFCN suddenly changed.
-
-\paragraph{Rationale}
-
-An IMSI catcher may use the ARFCN of an existing BTS which has a weak signal in
-the area the catcher operates. To force the MS into a location update, a LAC
-different from all neighboring stations is chosen by the IMSI catcher.
-
-The change of the LAC on a given ARFCN can be detected. Note, that for resource
-efficiency, GSM reuses ARFCN in different geographic areas very frequently.
-Hence, changes of the cell ID for a given ARFCN are specific to the geographic
-location of the cell.
-
-As associating an ARFCN/cell id combination with a precise location reliably
-can be challenging, a simpler approach should be taken. The ARFCN and cell ID
-is recorded together with a time stamp. If the same ARFCN is used with a
-different cell ID within a certain time frame, this is considered an attack.
-
-\paragraph{False Positives}
-
-Multiple BTS operating on the same ARFCN may be receivable in the same
-locations, e.g. in elevated places. Furthermore, an operator may reconfigure
-the cell to use a different cell ID.
-
-\paragraph{Required Information}
-
-The ARFCN ($ARFCN_{curr}$) and CID ($CID_{curr}$) of the serving cell.
-
-\paragraph{Expression}
-
-$l_1 =
-\begin{cases}
-	0 & \text{if } cid(ARFCN_{curr}) = \varnothing \vee cid(ARFCN_{curr}) = CID_{curr} \\
-	1 & \text{otherwise} \\
-\end{cases}$
-
-where $cid$ is a database that maps the ARFCNs used during the last $\Delta$
-seconds to their respective CID.
-
-\FIXME{$\Delta$ has to be chosen small enough so that it is unlikely to
-encounter the same ARFCN twice when the MS is moving quickly. This could be
-approximated by the average distance of cells with the same ARFCN and the
-maximum travel speed supported by GSM.}
-
-\FIXME{In theory we could also monitor neighboring cells in the same way.
-Coming up with a decent $\Delta$ seems to be even more challenging as you
-observe neighboring cells for a much longer time, potentially. Also, we cannot
-get the respective AFCAN/CID combinations for neighboring cells right now on
-Qualcomm (more precisely, we cannot correlate them from the data we get).}
-
-\subsubsection{[L2] Inconsistent LAC}
-
-The LAC of the current base station differs from the LAC of many neighboring cells.
-
-\FIXME{For an IMSI catcher announcing no or non-existing neighboring cells,
-this makes no sense. If the catcher announces neighboring cells, but prevents
-transition to them e.g. by sending suitable cell reselection parameters, most
-of those real cells likely have a different LAC. Trouble is, that neighbor list
-just consist of ARFCN and the LAC needs to be read from the respective BCCHs.
-Unfortunately on Qualcomm we cannot correlate the cell ID data with the ARFCN
-it was received from an thus may not be able to obtain this information.}
-
-\paragraph{Rationale}
-
-A MS will only perform a location update when changing to a different area,
-i.e. a BTS with a different LAC. An IMSI catcher needs to force a location
-update to be able to interact with the phone and derived the desired
-information. Therefore, it must span a cell with a LAC different to all
-surrounding cells and with a much better signal strength than the other cells.
-If the IMSI catcher announces realistic neighboring cells, this difference
-between the LAC of the serving cell and all neighboring cell could be detected.
-
-\paragraph{False Positives}
-
-\FIXME{Investigate.}
-
-\paragraph{Required Information}
-
-Neighboring cell list $BA$. The LAC of the service cell $LAC_{sc}$ and the LACs
-of the $i$ neighboring cells in the BA $[LAC_1,…,LAC_i]$.
-
-\paragraph{Expression}
-
-$l_2 = ?$
-
-\FIXME{Empirically derive a function $p(N)$ that estimates the likelihood that
-$N$ of a cells neighboring stations have a different LAC from the GSMmap data.}
-
-\subsubsection{[L3] ID requests during location update}
+\subsubsection{[C4] ID requests during location update}
 
 The network queries identity information (like IMSI and IMEI) after a LOCATION
 UPDATE REQUEST and then rejects that request.
@@ -352,6 +390,14 @@ This is a fingerprint of a type 1 IMSI catcher, which ends the transaction as
 soon as the identity of the MS has been recorded. In a sound network setup, one
 can assume that an identity request only happens when encryption is in place,
 i.e. after a CIPHER MODE COMPLETE.
+
+A MS has to perform a cell reselection when a LOCATION UPDATE REQUEST has been
+rejected with a "location area not allowed". This may be used by the IMSI
+catcher to force the MS so select a different cell after the desired
+information was collected.
+
+\FIXME{Are there other LOCATION UPDATE REJECT causes that force a cell
+reselection?}
 
 \paragraph{False Positives}
 
@@ -367,7 +413,7 @@ REJECT (purged from idle messages). The type of LOCATION UPDATE REQUEST
 
 \paragraph{Expression}
 
-$l_3 = ?$
+$c_4 = ?$
 
 \FIXME{This needs more research. A first step could be to filter all
 transactions resulting in a LOCATION UPDATE REJECT and containing an IDENTITY
@@ -376,7 +422,13 @@ correlate type of the LOCATION UPDATE REQUEST (Attach, Periodic, Normal) with
 the cause of the LOCATION UPDATE REJECT and the identity information requested
 (IMEI, IMSI, both).}
 
-\subsubsection{[L4] Low registration timer}
+\subsection{Track}
+
+Besides the collection of information, IMSI catchers are used to determine the
+location of a MS or to just detect the presence of a MS in the range of the
+IMSI catcher. This section outlines detectable side-effects of this process.
+
+\subsubsection{[T1] Low registration timer}
 
 The initial value of the registration timer T3212 is low.
 
@@ -405,129 +457,150 @@ Channel Description} part of the serving cells SI3.
 
 \paragraph{Expression}
 
-$l4 =
+$t1 =
 \begin{cases}
 	0 	 	& \text{if } T3212_0 = 0 \\
 	p(T3212_0) 	& \text{otherwise}
 \end{cases}$
 
 where $p(x)$ is derived from the distribution of $T3212$ initialization values
-observed in the GSMmap sample set. \FIXME{We do not have this information in
-the current data, we need to check the xgoldmon traces or create new traces
-using Qualcomm}
+observed in the GSMmap sample set.
 
-\subsection{Tracking}
+\FIXME{We do not have this information in the current data, we need to check
+the xgoldmon traces or create new traces using Qualcomm}
 
-\subsubsection{[T1] Paging without transaction}
+\subsubsection{[T2] High LOCATION UPDATE REQUEST rate}
+
+The MS performs LOCATION UPDATE REQUESTs at a high rate.
+
+\paragraph{Rationale}
+
+\FIXME{TBD.}
+
+\paragraph{Required Information}
+
+\FIXME{TBD.}
+
+\paragraph{Expression}
+
+$t2 = ?$
+
+\subsubsection{[T3] Paging without transaction}
 
 The MS is paged without entering a transaction.
 
 \paragraph{Rationale}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{False Positives}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{Required Information}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{Expression}
 
-\TBD{}
+$t3 = ?$
 
-\subsubsection{[T2] Orphaned traffic channel}
+\subsubsection{[T4] Orphaned traffic channel}
 
-A traffic channel is assigned, but no call control state is entered or test
+A traffic channel is assigned, but no call control state is entered or text
 message received.
 
 \paragraph{Rationale}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{False Positives}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{Required Information}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{Expression}
 
-\TBD{}
+$t4 = ?$
 
-\FIXME{Need to validate those times or even make dynamic calculation adding to overall score.}
-
-\subsubsection{[T3] Missing call setup message}
+\subsubsection{[T5] Missing call setup message}
 
 No call setup message is received while already being on the traffic channel.
 
 \paragraph{Rationale}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{False Positives}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{Required Information}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{Expression}
 
-\TBD{}
+$t5 = ?$
 
-\FIXME{Need to validate those times or even make dynamic calculation adding to overall score.}
+\subsubsection{[T6] RACH requests not acknowledged}
 
-\subsubsection{[T4] MS sends on high power}
+Requests on the RACH do not get acknowledged on the AGCH.
+
+\paragraph{Rationale}
+
+\FIXME{TBD.}
+
+\paragraph{False Positives}
+
+\FIXME{TBD.}
+
+\paragraph{Required Information}
+
+\FIXME{TBD.}
+
+\paragraph{Expression}
+
+$t6 = ?$
+
+\subsubsection{[T7] MS sends on high power}
 
 The MS sends on high power.
 
 \paragraph{Rationale}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{False Positives}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{Required Information}
 
-\TBD{}
+\FIXME{TBD.}
 
 \paragraph{Expression}
 
-\TBD{}
+$t6 = ?$
 
-%%%%%%%
-%%%%%%%
+\subsection{Reject}
 
-\subsection{Other (TODO: Check)}
+After an MS was registered with an IMSI catcher, the operator of the device
+might want to disassociate certain phone from the catcher while leaving others
+under surveillance. This section covers detectable traces of this process.
 
-Ideas labeled with id \emph{Xi} taken from "Marcus Prem, Diplomarbeit: Erkennen
-und Abwehren von Angriffen im Mobilfunknetz auf Smartphones, Wilhelm Büchner
-Hochschule Darmstadt Fachbereich Informatik". We should check them for
-plausibility, relevance and feasibility.
+\subsubsection{[R1] Inconsistent BA list}
 
-Ideas labeled with id \emph{Yi} taken from "XCell Dynamic IMEI v2 User Manual",
-xcell technologies.
+The BA list of most neighboring cell does not contain serving cell.
 
-Ideas labeled with id \emph{Zi} are own thoughts.
+\paragraph{Rationale}
 
-\subsubsection{[X1] Forced Connection}
-
-Detect if BTS with weakest signal is imitated or a  raise of signal strength
-(RSS) of this BTS is measured (FB02).
-
-\subsubsection{[X2] Inconsistent neighbor tables}
-
-Neighboring cell information of \emph{neighboring stations} should be
-consistent with current BTS, i.e it should be listed as strongest neighboring
-BTS (FB03).
+In a regular network one can assume that the majority of neighboring cells of
+the current serving cell also announce the current cell as one of their
+neighboring stations. 
 
 A strategy of an IMSI catcher to prevent an MS that was already connected to
 register again, is to send a BA list over the BCCH that contains only
@@ -536,39 +609,60 @@ their own BA list \cite[0027]{bott2000verfahren}. When the MS selects one of
 those neighboring cells, it will not consider the IMSI catcher at least for the
 next cell reselection.
 
-\FIXME{"The MS shall attempt to decode the BCCH data block that contains the
+\paragraph{False Positives}
+
+\FIXME{Investigate.}
+
+\paragraph{Required Information}
+
+BA lists of all neighboring cells. ARFCN of the serving cell.
+
+\FIXME{Theoretically, we should have the neighboring information of these 6
+non-serving cells available for correlation with our current neighboring cells:
+"The MS shall attempt to decode the BCCH data block that contains the
 parameters affecting cell reselection for each of the 6 strongest non-serving
-cell BCCH carriers at least every 5 minutes." \cite[section 6.6.1]{gsm0508}
-Theoretically, we should have the neighboring information of these 6
-non-serving cells available for correlation with our current neighboring
-cells.}
+cell BCCH carriers at least every 5 minutes." \cite[section 6.6.1]{gsm0508} }
 
-\subsubsection{[X3] Rejection by IMSI catcher}
+\paragraph{Expression}
 
-No uplink is possible via PRACH (FB04). \FIXME{What does Prem mean with "mind
-Aloah"?}
+$r1 = ?$
 
-\subsubsection{[X4] Signal run time difference}
+\subsubsection{[R2] High number of paging groups}
 
-Send a "Hello packet-delay" to the BTS and try to detect duplicate and delayed
-answers (FB05).
+The cell is configured in a way that maximizes the number of paging groups.
 
-\subsubsection{[X5] E-OTD localization (???)}
+\paragraph{Rationale}
 
-Test the network using localization services (LBS), e.g. a non-responding BTS
-or multiple, overlapping answers (FB06).
+When an IMSI catcher uses the technique described in
+\cite[0021]{bott2000verfahren} to force the MS back into a regular network,
+invalid data is send on the PCH of the respective paging group of that MS until
+the MS performs a cell reselection. This has the side effect that any other MS
+on the same paging group also selects a different cell. Hence, the cell spawned
+by an IMSI catcher using this technique will try to maximize the number of
+paging groups ($N$) in that cell to increase the granularity at which MSes can
+be disconnected.
 
-\subsubsection{[Y1] Many network re-registration requests}
+${N} = (9 - {\text{BS\_AG\_BLKS\_RES}} - 6\times {\text{BS\_CCCH\_SDCCH\_COMB}})\times {\text{BS\_PA\_MFRMS}}$
 
-An abnormal number of re-registration requests is received from the GSM
-network.
+\paragraph{False Positives}
 
-\subsubsection{[Z1] No UMTS/LTE available}
+\FIXME{Investigate.}
 
-As IMSI catchers often are GSM only, they rely on jamming other technologies
-like UMTS and LTE. Having only GSM available should add to the overall score.
+\paragraph{Required Information}
 
-\subsubsection{[Z2] Low downlink signaling counter}
+BS\_AG\_BLKS\_RES, BS\_CCCH\_SDCCH\_COMB and BS\_PA\_MFRRS
+
+\FIXME{Analyze GSMmap data for abnormally high $N$}
+
+\paragraph{Expression}
+
+$r2 = ?$
+
+\subsubsection{[R3] High PCH downlink error rate}
+
+Many errors are detected on the PCH downlink channel
+
+\paragraph{Rationale}
 
 The downlink signaling counter (DSC) is a failure criterion the MS maintains
 for the paging channel (PCH). The DSC is initialized to
@@ -583,30 +677,17 @@ catchers to force the MS to connect to the real network again, after the IMSI
 catcher has collected the desired information. In order to do this, the IMSI
 catcher sends invalid data on the PCH until the DSC has reached 0.
 
-\subsubsection{[Z3] Maximum number of paging groups}
+\paragraph{False Positives}
 
-When an IMSI catcher uses the technique described in
-\cite[0021]{bott2000verfahren} to force the MS back into a regular network,
-invalid data is send on the PCH of the respective paging group of that MS until
-the MS performs a cell reselection. This has the side effect that any other MS
-on the same paging group also selects a different cell. Hence, the cell spawned
-by an IMSI catcher using this technique will try to maximize the number of
-paging groups ($N$) in that cell to increase the granularity at which MSes can
-be disconnected.
+\FIXME{Investigate.}
 
-${N} = (9 - {\text{BS\_AG\_BLKS\_RES}} - 6\times {\text{BS\_CCCH\_SDCCH\_COMB}})\times {\text{BS\_PA\_MFRS}}$
+\paragraph{Required Information}
 
-\FIXME{Analyze GSMmap data for abnormally high $N$}
+DSC value of the MS (\FIXME{maybe history on the DSC})
 
-\subsubsection{[Z4] Reject with "location area not allowed"}
+\paragraph{Expression}
 
-A MS performs a cell reselection when a LOCATION UPDATE REQUEST has been
-rejected with a "location area not allowed". This may be used by an IMSI
-catcher to force the MS so select a different cell after information was
-collected.
-
-\FIXME{Are there other LOCATION UPDATE REJECT causes that force a cell
-reselection?}
+$r3 = ?$
 
 \subsection{Weighting}
 
