@@ -5,7 +5,7 @@
 \begin{document}
 
 \newcommand{\TBD}{{\color{srldark}\textbf{TBD}}}
-\newcommand{\FIXME}[1]{{\color{srldark}\textit{TODO: #1}\par}}
+\newcommand{\FIXME}[1]{{\color{srldark}\textit{TODO: #1}}}
 
 \maketitle
 \pagebreak
@@ -109,7 +109,7 @@ it was received from an thus may not be able to obtain this information.}
 
 A MS will only perform a location update when changing to a different area,
 i.e. a BTS with a different LAC. An IMSI catcher needs to force a location
-update to be able to interact with the phone and derived the desired
+update to be able to interact with the phone and derive the desired
 information. Therefore, it must span a cell with a LAC different to all
 surrounding cells and with a much better signal strength than the other cells.
 If the IMSI catcher announces realistic neighboring cells, this difference
@@ -363,7 +363,7 @@ be retrieved through a subsequent IDENTITY REQUEST at any later time.
 
 \paragraph{Required Information}
 
-The value of the "cipher response" field of the CIPHER MODE COMPLETE message.
+The value of the Cipher Response field (CR) of the CIPHER MODE COMMAND message.
 
 \paragraph{Expression}
 
@@ -374,7 +374,7 @@ $c_3 =
 \end{cases}$
 
 where $p_{IMEISV}$ is the likelihood that operators request the IMEISV in their
-normal CIPHER MODE COMPLETE messages.
+normal CIPHER MODE COMMAND messages.
 
 \FIXME{From the GSMmap sample set, calculate the likelihood $p_{IMEISV}$ that
 the IMEISV will be requested during normal operation.}
@@ -477,6 +477,10 @@ The MS performs LOCATION UPDATE REQUESTs at a high rate.
 
 \FIXME{TBD.}
 
+\paragraph{False Positives}
+
+\FIXME{TBD.}
+
 \paragraph{Required Information}
 
 \FIXME{TBD.}
@@ -490,10 +494,6 @@ $t2 = ?$
 The MS is paged without entering a transaction.
 
 \paragraph{Rationale}
-
-\FIXME{TBD.}
-
-\paragraph{False Positives}
 
 \FIXME{TBD.}
 
@@ -588,9 +588,9 @@ $t6 = ?$
 
 \subsection{Reject}
 
-After an MS was registered with an IMSI catcher, the operator of the device
-might want to disassociate certain phone from the catcher while leaving others
-under surveillance. This section covers detectable traces of this process.
+After an MS was registered with an IMSI catcher, the operator of the device may
+want to disassociate certain phones from the catcher while leaving others under
+surveillance. This section covers detectable traces of this process.
 
 \subsubsection{[R1] Inconsistent BA list}
 
@@ -720,14 +720,13 @@ Silent text messages have been received.
 \section{Document History}
 \label{sec:document_history}
 
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} l l l l}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} p{0.1\linewidth} p{0.1\linewidth} p{0.1\linewidth} p{0.8\linewidth}}
 \toprule
 {\bf Version} 	& {\bf Date} 		& {\bf Editor} 		& {\bf Changes} \\
 \midrule
 0.2		& August 6th, 2014 	& Alexander Senier 	& Extend IMSI catcher criteria \\
 \bottomrule
 \end{tabular*}
-
 
 \bibliographystyle{plain}
 \bibliography{bibliography}
