@@ -41,9 +41,9 @@
 This section covers detectable behavior that is geared towards attracting
 mobile phones to register with an IMSI catcher instead of a regular network.
 
-\subsubsection{[A1] Different cell ID for the same ARFCN}
+\subsubsection{[A1] Different LAC/CID for the same ARFCN}
 
-The cell ID recently seen on an ARFCN suddenly changed.
+The LAC/CID recently seen on an ARFCN suddenly changed.
 
 \paragraph{Rationale}
 
@@ -53,34 +53,34 @@ different from all neighboring stations is chosen by the IMSI catcher.
 
 The change of the LAC on a given ARFCN can be detected. Note, that for resource
 efficiency, GSM reuses ARFCN in different geographic areas very frequently.
-Hence, changes of the cell ID for a given ARFCN are specific to the geographic
+Hence, changes of the LAC/CID for a given ARFCN are specific to the geographic
 location of the cell.
 
-As associating an ARFCN/cell id combination with a precise location reliably
-can be challenging, a simpler approach should be taken. The ARFCN and cell ID
+As associating an ARFCN/LAC/CID combination with a precise location reliably
+can be challenging, a simpler approach should be taken. The ARFCN and LAC/CID
 is recorded together with a time stamp. If the same ARFCN is used with a
-different cell ID within a certain time frame, this is considered an attack.
+different LAC/CID within a certain time frame, this is considered an attack.
 
 \paragraph{False Positives}
 
 Multiple BTS operating on the same ARFCN may be receivable in the same
 locations, e.g. in elevated places. Furthermore, an operator may reconfigure
-the cell to use a different cell ID.
+the cell to use a different LAC/CID.
 
 \paragraph{Required Information}
 
-The ARFCN ($ARFCN_{curr}$) and CID ($CID_{curr}$) of the serving cell.
+The ARFCN ($ARFCN_{curr}$) and LAC/CID ($LAC+CID_{curr}$) of the serving cell.
 
 \paragraph{Expression}
 
 $a_1 =
 \begin{cases}
-	0 & \text{if } cid(ARFCN_{curr}) = \varnothing \vee cid(ARFCN_{curr}) = CID_{curr} \\
+	0 & \text{if } id(ARFCN_{curr}) = \varnothing \vee id(ARFCN_{curr}) = LAC+CID_{curr} \\
 	1 & \text{otherwise} \\
 \end{cases}$
 
-where $cid$ is a database that maps the ARFCNs used during the last $\Delta$
-seconds to their respective CID.
+where $id$ is a database that maps the ARFCNs used during the last $\Delta$
+seconds to their respective LAC/CID.
 
 \FIXME{$\Delta$ has to be chosen small enough so that it is unlikely to
 encounter the same ARFCN twice when the MS is moving quickly. This could be
@@ -90,8 +90,8 @@ maximum travel speed supported by GSM.}
 \FIXME{In theory we could also monitor neighboring cells in the same way.
 Coming up with a decent $\Delta$ seems to be even more challenging as you
 observe neighboring cells for a much longer time, potentially. Also, we cannot
-get the respective AFCAN/CID combinations for neighboring cells right now on
-Qualcomm (more precisely, we cannot correlate them from the data we get).}
+get the respective AFCAN/LAC/CID combinations for neighboring cells right now
+on Qualcomm (more precisely, we cannot correlate them from the data we get).}
 
 \subsubsection{[A2] Inconsistent LAC}
 
@@ -102,7 +102,7 @@ this makes no sense. If the catcher announces neighboring cells, but prevents
 transition to them e.g. by sending suitable cell reselection parameters, most
 of those real cells likely have a different LAC. Trouble is, that neighbor list
 just consist of ARFCN and the LAC needs to be read from the respective BCCHs.
-Unfortunately on Qualcomm we cannot correlate the cell ID data with the ARFCN
+Unfortunately on Qualcomm we cannot correlate the LAC/CID data with the ARFCN
 it was received from an thus may not be able to obtain this information.}
 
 \paragraph{Rationale}
@@ -277,7 +277,7 @@ IMSI catcher is a downgrade to A5/0, i.e. null encryption. A downgrade from
 A5/3 to A5/1 is expected to be rare, as for an active attacker it is much
 easier to disable encryption all together instead of cracking A5/1.
 
-This metric is relevant and applicable only when an existing cell id is reused
+This metric is relevant and applicable only when an existing LAC/CID is reused
 for an IMSI catcher. This is not very common, though, as IMSI catchers usually
 create a new cell with different LAC to force the MS into a location update.
 However, if an encryption downgrade happens, this is a very strong sign for an
@@ -594,7 +594,7 @@ surveillance. This section covers detectable traces of this process.
 
 \subsubsection{[R1] Inconsistent BA list}
 
-The BA list of most neighboring cell does not contain serving cell.
+The BA list of most neighboring cells does not contain serving cell.
 
 \paragraph{Rationale}
 
@@ -720,8 +720,9 @@ Silent text messages have been received.
 \toprule
 {\bf Information}                               & {\bf Criterion}       & {\bf Qualcomm}        & {\bf Android} \\
 \midrule
-CID of service cell                              & A1, A2               &                       &               \\
-CIDs of all neighboring cells                    & A2                   &                       &               \\
+CID of service cell                              & A1                   &                       &               \\
+LAC of service cell                              & A1, A2               &                       &               \\
+LACs of all neighboring cells                    & A2                   &                       &               \\
 BA list of serving cell                          & A2, K1               &                       &               \\
 BA lists of neighboring cells                    & R1                   &                       &               \\
 ARFCN of serving cell                            & A1, R1               &                       &               \\
