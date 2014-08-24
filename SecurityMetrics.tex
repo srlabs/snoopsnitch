@@ -7,6 +7,14 @@
 \newcommand{\TBD}{{\color{srldark}\textbf{TBD}}}
 \newcommand{\FIXME}[1]{{\color{srldark}\textit{TODO: #1}}}
 
+\newcommand{\criterion}[2]{#2 [#1]}
+\newcommand{\crita}[2]{\criterion{A#1}{#2}}
+\newcommand{\critk}[2]{\criterion{K#1}{#2}}
+\newcommand{\critc}[2]{\criterion{C#1}{#2}}
+\newcommand{\critt}[2]{\criterion{T#1}{#2}}
+\newcommand{\critr}[2]{\criterion{R#1}{#2}}
+\newcommand{\critp}[2]{\criterion{P#1}{#2}}
+
 \maketitle
 \pagebreak
 
@@ -41,7 +49,7 @@
 This section covers detectable behavior that is geared towards attracting
 mobile phones to register with an IMSI catcher instead of a regular network.
 
-\subsubsection{[A1] Different LAC/CID for the same ARFCN}
+\subsubsection{\crita{1}{Different LAC/CID for the same ARFCN}}
 
 The LAC/CID recently seen on an ARFCN suddenly changed.
 
@@ -93,7 +101,7 @@ observe neighboring cells for a much longer time, potentially. Also, we cannot
 get the respective AFCAN/LAC/CID combinations for neighboring cells right now
 on Qualcomm (more precisely, we cannot correlate them from the data we get).}
 
-\subsubsection{[A2] Inconsistent LAC}
+\subsubsection{\crita{2}{Inconsistent LAC}}
 
 The LAC of the current base station differs from the LAC of many neighboring cells.
 
@@ -121,7 +129,7 @@ between the LAC of the serving cell and all neighboring cell could be detected.
 
 \paragraph{Required Information}
 
-Neighboring cell list $BA$. The LAC of the service cell $LAC_{sc}$ and the LACs
+Neighboring cell list $BA$. The LAC of the serving cell $LAC_{sc}$ and the LACs
 of the $i$ neighboring cells in the BA $[LAC_1,…,LAC_i]$.
 
 \paragraph{Expression}
@@ -131,7 +139,7 @@ $a_2 = ?$
 \FIXME{Empirically derive a function $p(N)$ that estimates the likelihood that
 $N$ of a cells neighboring stations have a different LAC from the GSMmap data.}
 
-\subsubsection{[A3] Only 2G available}
+\subsubsection{\crita{3}{Only 2G available}}
 
 No other technologies like 3G or 4G are available.
 
@@ -162,7 +170,7 @@ catcher must ensure it does not revert to a regular network cell. This section
 describes detectable techniques IMSI catchers employ to keep mobile phones
 registered.
 
-\subsubsection{[K1] No neighboring cells}
+\subsubsection{\critk{1}{No neighboring cells}}
 
 The serving cell is not advertising any neighbor cells.
 
@@ -200,7 +208,7 @@ neighboring cells announced by the serving cell.
 \FIXME{Extract and graph the number of neighboring cells for all cells in the
 GSMmap sample set.}
 
-\subsubsection{[K2] High cell reselect offset}
+\subsubsection{\critk{2}{High cell reselect offset}}
 
 The cell reselect offset is high.
 
@@ -258,7 +266,7 @@ This section describes criteria related to the information collection process
 of an IMSI catcher. This includes actions necessary to break encryption as well
 as direct information gathering.
 
-\subsubsection{[C1] Encryption Downgrade}
+\subsubsection{\critc{1}{Encryption Downgrade}}
 
 After using an encryption algorithm with a cell previously, encryption got
 downgraded to a weaker algorithm.
@@ -310,7 +318,7 @@ where $s(a)$ -- the strength of the encryption algorithm $a$ -- is defined as
 
 $s(A5/0) < s(A5/2) < s(A5/1) < s(A5/3)$.
 
-\subsubsection{[C2] Delayed CIPHER MODE COMPLETE acknowledgement}
+\subsubsection{\critc{2}{Delayed CIPHER MODE COMPLETE acknowledgement}}
 
 CIPHER MODE COMPLETE messages may be acknowledged by an IMSI Catcher with
 significant delay.
@@ -344,7 +352,7 @@ message based on GSMmap data over all data sets. Approximate a formula of that
 empiric data and invert and scale it such that abnormally long and abnormally
 short delays yield a score of 1. The resulting formula is $p(t)$.}
 
-\subsubsection{[C3] CIPHER MODE COMMAND message without IMEISV}
+\subsubsection{\critc{3}{CIPHER MODE COMMAND message without IMEISV}}
 
 In the CIPHER MODE COMMAND message from the network no IMEISV was requested.
 
@@ -379,7 +387,7 @@ normal CIPHER MODE COMMAND messages.
 \FIXME{From the GSMmap sample set, calculate the likelihood $p_{IMEISV}$ that
 the IMEISV will be requested during normal operation.}
 
-\subsubsection{[C4] ID requests during location update}
+\subsubsection{\critc{4}{ID requests during location update}}
 
 The network queries identity information (like IMSI and IMEI) after a LOCATION
 UPDATE REQUEST and then rejects that request.
@@ -428,7 +436,7 @@ Besides the collection of information, IMSI catchers are used to determine the
 location of a MS or to just detect the presence of a MS in the range of the
 IMSI catcher. This section outlines detectable side-effects of this process.
 
-\subsubsection{[T1] Low registration timer}
+\subsubsection{\critt{1}{Low registration timer}}
 
 The initial value of the registration timer T3212 is low.
 
@@ -438,7 +446,7 @@ The registration timer T3212 controls the interval a MS performs a periodic
 LOCATION UPDATE, i.e. one that is performed regularly when the location area of
 the MS does not change. The T3212 of an MS is initialized from the time-out
 value in the \emph{Control Channel Description} which is broadcast as part of
-SI3 on the service cells BCCH. It can be set at a granularity of decihours
+SI3 on the serving cells BCCH. It can be set at a granularity of decihours
 (6~minutes) and supports a maximum value of 25.5 hours (255~decihours). The
 value of 0 disables periodic location updates completely.
 
@@ -469,7 +477,7 @@ observed in the GSMmap sample set.
 \FIXME{We do not have this information in the current data, we need to check
 the xgoldmon traces or create new traces using Qualcomm}
 
-\subsubsection{[T2] High LOCATION UPDATE REQUEST rate}
+\subsubsection{\critt{2}{High LOCATION UPDATE REQUEST rate}}
 
 The MS performs LOCATION UPDATE REQUESTs at a high rate.
 
@@ -489,7 +497,7 @@ The MS performs LOCATION UPDATE REQUESTs at a high rate.
 
 $t2 = ?$
 
-\subsubsection{[T3] Paging without transaction}
+\subsubsection{\critt{3}{Paging without transaction}}
 
 The MS is paged without entering a transaction.
 
@@ -505,7 +513,7 @@ The MS is paged without entering a transaction.
 
 $t3 = ?$
 
-\subsubsection{[T4] Orphaned traffic channel}
+\subsubsection{\critt{4}{Orphaned traffic channel}}
 
 A traffic channel is assigned, but no call control state is entered or text
 message received.
@@ -526,7 +534,7 @@ message received.
 
 $t4 = ?$
 
-\subsubsection{[T5] Missing call setup message}
+\subsubsection{\critt{5}{Missing call setup message}}
 
 No call setup message is received while already being on the traffic channel.
 
@@ -546,7 +554,7 @@ No call setup message is received while already being on the traffic channel.
 
 $t5 = ?$
 
-\subsubsection{[T6] RACH requests not acknowledged}
+\subsubsection{\critt{6}{RACH requests not acknowledged}}
 
 Requests on the RACH do not get acknowledged on the AGCH.
 
@@ -566,7 +574,7 @@ Requests on the RACH do not get acknowledged on the AGCH.
 
 $t6 = ?$
 
-\subsubsection{[T7] MS sends on high power}
+\subsubsection{\critt{7}{MS sends on high power}}
 
 The MS sends on high power.
 
@@ -592,7 +600,7 @@ After an MS was registered with an IMSI catcher, the operator of the device may
 want to disassociate certain phones from the catcher while leaving others under
 surveillance. This section covers detectable traces of this process.
 
-\subsubsection{[R1] Inconsistent BA list}
+\subsubsection{\critr{1}{Inconsistent BA list}}
 
 The BA list of most neighboring cells does not contain serving cell.
 
@@ -627,7 +635,7 @@ cell BCCH carriers at least every 5 minutes." \cite[section 6.6.1]{gsm0508} }
 
 $r1 = ?$
 
-\subsubsection{[R2] High number of paging groups}
+\subsubsection{\critr{2}{High number of paging groups}}
 
 The cell is configured in a way that maximizes the number of paging groups.
 
@@ -635,7 +643,7 @@ The cell is configured in a way that maximizes the number of paging groups.
 
 When an IMSI catcher uses the technique described in
 \cite[0021]{bott2000verfahren} to force the MS back into a regular network,
-invalid data is send on the PCH of the respective paging group of that MS until
+invalid data is sent on the PCH of the respective paging group of that MS until
 the MS performs a cell reselection. This has the side effect that any other MS
 on the same paging group also selects a different cell. Hence, the cell spawned
 by an IMSI catcher using this technique will try to maximize the number of
@@ -658,7 +666,7 @@ BS\_AG\_BLKS\_RES, BS\_CCCH\_SDCCH\_COMB and BS\_PA\_MFRRS
 
 $r2 = ?$
 
-\subsubsection{[R3] High PCH downlink error rate}
+\subsubsection{\critr{3}{High PCH downlink error rate}}
 
 Many errors are detected on the PCH downlink channel
 
@@ -694,7 +702,7 @@ $r3 = ?$
 \section{Detection of Privacy Breaches}
 \label{sec:detection_of_privacy_breaches}
 
-\subsubsection{[P1] Silent text message received}
+\subsubsection{\critp{1}{Silent text message received}}
 
 Silent text messages have been received.
 
@@ -720,8 +728,8 @@ Silent text messages have been received.
 \toprule
 {\bf Information}                               & {\bf Criterion}       & {\bf Qualcomm}        & {\bf Android} \\
 \midrule
-CID of service cell                              & A1                   &                       &               \\
-LAC of service cell                              & A1, A2               &                       &               \\
+CID of serving cell                              & A1                   &                       &               \\
+LAC of serving cell                              & A1, A2               &                       &               \\
 LACs of all neighboring cells                    & A2                   &                       &               \\
 BA list of serving cell                          & A2, K1               &                       &               \\
 BA lists of neighboring cells                    & R1                   &                       &               \\
