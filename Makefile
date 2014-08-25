@@ -13,4 +13,6 @@ clean:
 	dot -Tpdf -o $@ $<
 
 bibliography.bib:
-	cat bibliography/* > $@
+	echo '%%% DO NOT EDIT  --  GENERATED AUTOMATICALLY %%%'  > $@
+	echo '%%% REFER TO bibliography/ DIRECTORY INSTEAD %%%' >> $@
+	cat bibliography/*                                      >> $@
