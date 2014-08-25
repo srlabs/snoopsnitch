@@ -483,11 +483,24 @@ The MS is paged without entering a transaction.
 
 \paragraph{Rationale}
 
-\FIXME{TBD.}
+Paging by IMSI and subsequently releasing the transaction without SMS or call
+data being transmitted may be a pattern of a tracking IMSI catcher trying to
+detect whether a particular user is in the area of the catcher.
+
+\paragraph{False Positives}
+
+A similar pattern occurs when a MS is called, but the caller releases the call
+quickly enough such that the MS is paged, but no ALARM is signaled.
 
 \paragraph{Required Information}
 
-\FIXME{TBD.}
+Timestamp of the PAGING REQUEST. The mobile identity type used in this PAGING
+REQUEST. The cause of the CHANNEL RELEASE.
+
+% - What do you mean with "no service specified"
+% - How do we measure that the transaction was released with no SMS/call happening?
+% - What do we need to check for being absent/present?
+% - What is the PAGING REQUEST timestamp needed for?
 
 \paragraph{Expression}
 
@@ -723,6 +736,9 @@ Cipher Response field of CIPHER MODE COMMAND     & C3                   &       
 Last LOCATION UPDATE REQUEST                     & C4                   &                       &               \\
 Cause of LOCATION UPDATE REJECT (if applicable)  & C4                   &                       &               \\
 Initial value of T3212                           & T1                   &                       &               \\
+Timestamp of PAGING REQUEST                      & T3                   &                       &               \\
+Mobile identity type of PAGING REQUEST           & T3                   &                       &               \\
+Cause of CHANNEL RELEASE                         & T3                   &                       &               \\
 Tx power level                                   & T7                   &                       &               \\
 BS\_AG\_BLKS\_RES                                & R2                   &                       &               \\
 BS\_CCCH\_SDCCH\_COMB                            & R2                   &                       &               \\
