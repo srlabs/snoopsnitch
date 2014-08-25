@@ -547,26 +547,6 @@ No call setup message is received while already being on the traffic channel.
 
 $t5 = ?$
 
-\subsubsection{\critt{6}{RACH requests not acknowledged}}
-
-Requests on the RACH do not get acknowledged on the AGCH.
-
-\paragraph{Rationale}
-
-\FIXME{TBD.}
-
-\paragraph{False Positives}
-
-\FIXME{TBD.}
-
-\paragraph{Required Information}
-
-\FIXME{TBD.}
-
-\paragraph{Expression}
-
-$t6 = ?$
-
 \subsubsection{\critt{7}{MS sends on high power}}
 
 The MS sends on high power.
@@ -659,37 +639,6 @@ BS\_AG\_BLKS\_RES, BS\_CCCH\_SDCCH\_COMB and BS\_PA\_MFRRS
 
 $r2 = ?$
 
-\subsubsection{\critr{3}{High PCH downlink error rate}}
-
-Many errors are detected on the PCH downlink channel
-
-\paragraph{Rationale}
-
-The downlink signaling counter (DSC) is a failure criterion the MS maintains
-for the paging channel (PCH). The DSC is initialized to
-$Round(90/\text{BS\_PA\_MFRMS})$, where BS\_PA\_MFRMS is a parameter broadcast
-on the BCCH. Whenever the MS successfully decodes a message in its paging
-subchannel, DSC is increased by 1, otherwise DSC is decreased by 4. As soon as
-DSC reaches 0, a downlink failure is declared which results in the selection of
-a different cell.
-
-As outlined in \cite{bott2000verfahren}, this behavior may be used by IMSI
-catchers to force the MS to connect to the real network again, after the IMSI
-catcher has collected the desired information. In order to do this, the IMSI
-catcher sends invalid data on the PCH until the DSC has reached 0.
-
-\paragraph{False Positives}
-
-\FIXME{Investigate.}
-
-\paragraph{Required Information}
-
-DSC value of the MS (\FIXME{maybe history on the DSC})
-
-\paragraph{Expression}
-
-$r3 = ?$
-
 \subsection{Weighting}
 
 \section{Detection of Privacy Breaches}
@@ -743,7 +692,7 @@ Tx power level                                   & T7                   &       
 BS\_AG\_BLKS\_RES                                & R2                   &                       &               \\
 BS\_CCCH\_SDCCH\_COMB                            & R2                   &                       &               \\
 BS\_PA\_MFRRS                                    & R2                   &                       &               \\
-DSC                                              & R3                   &                       &               \\
+Packet timestamps                                &                      &                       &               \\
 \bottomrule
 \end{tabular*}
 
