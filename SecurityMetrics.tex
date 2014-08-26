@@ -77,13 +77,13 @@ the cell to use a different LAC/CID.
 
 \paragraph{Required Information}
 
-The ARFCN ($ARFCN_{curr}$) and LAC/CID ($LAC+CID_{curr}$) of the serving cell.
+The ARFCN ($ARFCN_{curr}$) and LAC/CID ($LAC,CID_{curr}$) of the serving cell.
 
 \paragraph{Expression}
 
 $a_1 =
 \begin{cases}
-	0 & \text{if } id(ARFCN_{curr}) = \varnothing \vee id(ARFCN_{curr}) = LAC+CID_{curr} \\
+	0 & \text{if } id(ARFCN_{curr}) = \varnothing \vee id(ARFCN_{curr}) = LAC,CID_{curr} \\
 	1 & \text{otherwise} \\
 \end{cases}$
 
