@@ -7,7 +7,7 @@ clean:
 	rm -f $(FILES) *.bbl bibliography.bib
 
 %.pdf: %.tex bibliography.bib
-	latexmk -pdf $<
+	latexmk -gg -pdf $<
 
 %.pdf: %.dot
 	dot -Tpdf -o $@ $<
