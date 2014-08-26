@@ -105,40 +105,40 @@ on Qualcomm (more precisely, we cannot correlate them from the data we get).}
 
 The LAC of the current base station differs from the LAC of many neighboring cells.
 
-\FIXME{For an IMSI catcher announcing no or non-existing neighboring cells,
-this makes no sense. If the catcher announces neighboring cells, but prevents
-transition to them e.g. by sending suitable cell reselection parameters, most
-of those real cells likely have a different LAC. Trouble is, that neighbor list
-just consist of ARFCN and the LAC needs to be read from the respective BCCHs.
-Unfortunately on Qualcomm we cannot correlate the LAC/CID data with the ARFCN
-it was received from an thus may not be able to obtain this information.}
-
 \paragraph{Rationale}
 
 A MS will only perform a location update when changing to a different area,
 i.e. a BTS with a different LAC. An IMSI catcher needs to force a location
 update to be able to interact with the phone and derive the desired
 information. Therefore, it must span a cell with a LAC different to all
-surrounding cells and with a much better signal strength than the other cells.
-If the IMSI catcher announces realistic neighboring cells, this difference
-between the LAC of the serving cell and all neighboring cell could be detected.
+neighboring cells, but with a much better signal strength than the other cells.
+For an IMSI catcher announcing realistic neighboring cells, this difference
+between the LAC of the serving cell and all neighboring cell can be detected.
 
 \paragraph{False Positives}
 
-\FIXME{Investigate.}
+Femto cells may or may not announce a LAC different from all their neighboring
+cells. Their may be other special situations, like in-house cells where this is
+the case.
 
 \paragraph{Required Information}
 
-Neighboring cell list $BA$. The LAC of the serving cell $LAC_{sc}$ and the LACs
-of the $i$ neighboring cells in the BA $[LAC_1,\dots,LAC_i]$.
+Neighboring cell list $BA$ to derive $LAC_i$ values. The LAC of the serving
+cell $LAC_{sc}$ and the LACs of the $k$ neighboring cells in the BA $LAC_i$.
 
 \paragraph{Expression}
 
-$a_2 = ?$
-
-\FIXME{Empirically derive a function $p(N)$ that estimates the likelihood that
-$N$ of a cells neighboring stations have a different LAC from the GSMmap data.}
-
+$a_2 =
+\begin{cases}
+	1 & \text{if } \displaystyle\sum_{i=1}^{k}
+                        \begin{cases}
+	                        1 & \text{if } LAC_i = LAC_{sc} \\
+	                        0 & \text{otherwise}
+                        \end{cases} = 0\\
+        0 & \text{otherwise}
+        \end{cases}
+$
+        
 \subsubsection{\crita{3}{Only 2G available}}
 
 No other technologies like 3G or 4G are available.
