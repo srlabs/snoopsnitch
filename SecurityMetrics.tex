@@ -665,35 +665,54 @@ Silent text messages have been received.
 \TBD{}
 
 \section{Model Validation}
+\definecolor{srlred}{rgb}   {.804, .576, .506}
+\definecolor{srlorange}{rgb}{.945, .439, .102}
+\definecolor{srlyellow}{rgb}{1, .808, .373}
+\definecolor{srlgreen}{rgb} {.576, .808, .506}
 
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} p{0.6\linewidth} lcc}
-\toprule
-{\bf Information}                               & {\bf Criterion}       & {\bf Qualcomm}        & {\bf Android} \\
-\midrule
-CID of serving cell                              & A1                   &                       &               \\
-LAC of serving cell                              & A1, A2               &                       &               \\
-LACs of all neighboring cells                    & A2                   &                       &               \\
-BA list of serving cell                          & A2, K1               &                       &               \\
-BA lists of neighboring cells                    & R1                   &                       &               \\
-ARFCN of serving cell                            & A1, R1               &                       &               \\
-3G/4G availability                               & A3                   &                       &               \\
-CELL RESELECT OFFSET                             & K2                   &                       &               \\
-Encryption algorithm in use                      & C1                   &                       &               \\
-Timestamp of first CIPHER MODE COMPLETE message  & C2                   &                       &               \\
-Timestamp of first encrypted message             & C2                   &                       &               \\
-Cipher Response field of CIPHER MODE COMMAND     & C3                   &                       &               \\
-Last LOCATION UPDATE REQUEST                     & C4                   &                       &               \\
-Cause of LOCATION UPDATE REJECT (if applicable)  & C4                   &                       &               \\
-Initial value of T3212                           & T1                   &                       &               \\
-Timestamp of PAGING REQUEST                      & T3                   &                       &               \\
-Mobile identity type of PAGING REQUEST           & T3                   &                       &               \\
-Cause of CHANNEL RELEASE                         & T3                   &                       &               \\
-Tx power level                                   & T7                   &                       &               \\
-BS\_AG\_BLKS\_RES                                & R2                   &                       &               \\
-BS\_CCCH\_SDCCH\_COMB                            & R2                   &                       &               \\
-BS\_PA\_MFRRS                                    & R2                   &                       &               \\
-Packet timestamps                                &                      &                       &               \\
+\colorlet{missing}{black}
+\colorlet{unknown}{srlgrey}
+\colorlet{research}{srlred}
+\colorlet{inprog}{srlyellow}
+\colorlet{avail}{srlgreen}
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} p{0.6\linewidth} lp{0.1\linewidth}p{0.1\linewidth}}
+{\bf Information}                                & {\bf Criterion}      & {\bf Samples}       & {\bf Phone}         \\\hline
+CID of serving cell                              & A1                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+LAC of serving cell                              & A1, A2               & \cellcolor{srldark} & \cellcolor{srldark} \\
+LACs of all neighboring cells                    & A2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+BA list of serving cell                          & A2, K1               & \cellcolor{srldark} & \cellcolor{srldark} \\
+BA lists of neighboring cells                    & R1                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+ARFCN of serving cell                            & A1, R1               & \cellcolor{srldark} & \cellcolor{srldark} \\
+3G/4G availability                               & A3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+CELL RESELECT OFFSET                             & K2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Encryption algorithm in use                      & C1                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Timestamp of first CIPHER MODE COMPLETE message  & C2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Timestamp of first encrypted message             & C2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Cipher Response field of CIPHER MODE COMMAND     & C3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Last LOCATION UPDATE REQUEST                     & C4                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Cause of LOCATION UPDATE REJECT (if applicable)  & C4                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Initial value of T3212                           & T1                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Timestamp of PAGING REQUEST                      & T3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Mobile identity type of PAGING REQUEST           & T3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Cause of CHANNEL RELEASE                         & T3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+Tx power level                                   & T7                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+BS\_AG\_BLKS\_RES                                & R2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+BS\_CCCH\_SDCCH\_COMB                            & R2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+BS\_PA\_MFRRS                                    & R2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
 \bottomrule
+\end{tabular*}
+
+\renewcommand{\arraystretch}{1}
+
+\begin{tabular*}{\textwidth}{p{0.05\linewidth}l p{0.05\linewidth}l p{0.05\linewidth}l p{0.05\linewidth}l p{0.05\linewidth}l}
+\cellcolor{black}      & missing &
+\cellcolor{srlgrey}    & unknown &
+\cellcolor{srlred}     & research &
+\cellcolor{srlyellow}  & in progress &
+\cellcolor{srlgreen}   & available \\
 \end{tabular*}
 
 \appendix
