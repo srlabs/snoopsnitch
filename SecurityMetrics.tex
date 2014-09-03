@@ -77,13 +77,13 @@ the cell to use a different LAC/CID.
 
 \paragraph{Required Information}
 
-The ARFCN ($ARFCN_{curr}$) and LAC/CID ($LAC,CID_{curr}$) of the serving cell.
+The ARFCN ($ARFCN_{sc}$) and LAC/CID ($LAC_{sc}sc,CID_{sc}$) of the serving cell.
 
 \paragraph{Expression}
 
 $a_1 =
 \begin{cases}
-	0 & \text{if } id(ARFCN_{curr}) = \varnothing \vee id(ARFCN_{curr}) = LAC,CID_{curr} \\
+	0 & \text{if } id(ARFCN_{sc}) = \varnothing \vee id(ARFCN_{sc}) = LAC_{sc},CID_{sc} \\
 	1 & \text{otherwise} \\
 \end{cases}$
 
@@ -157,11 +157,15 @@ Bad network coverage. Areas without 3G and 4G.
 
 \paragraph{Required Information}
 
-\FIXME{Investigate.}
+List $RAT$ of radio access technologies currently available.
 
 \paragraph{Expression}
 
-\FIXME{TBD.}
+$A_3 =
+\begin{cases}
+	0 & \text{if } 3G \in RAT \vee 4G \in RAT \\
+	1 & \text{otherwise}
+\end{cases}$
 
 \subsection{Keep}
 
@@ -195,18 +199,19 @@ cells an check their location.}
 
 \paragraph{Required Information}
 
-Neighboring cell list for the serving cell.
+Neighboring cell list $BA_{sc}$ of serving cell.
 
 \paragraph{Expression}
 
-$k1 = 1 - p(N)$,
-
-where $p(n)$ is the likelihood of a cell to announce $n$ neighboring cells.
-This formula is approximated from the GSMmap sample set. $N$ is the number of
-neighboring cells announced by the serving cell.
+$k1 =
+\begin{cases}
+	1 & \text{if } \left|BA_{sc}\right| = 0 \\
+	0 & \text{otherwise}
+\end{cases}$
 
 \FIXME{Extract and graph the number of neighboring cells for all cells in the
-GSMmap sample set.}
+GSMmap sample set to get the function $p(n)$ expressing the likelihood of a
+cell to announce $n$ neighboring cells.}
 
 \subsubsection{\critk{2}{High cell reselect offset}}
 
@@ -246,7 +251,7 @@ coverage.
 
 \paragraph{Required Information}
 
-Cell reselection parameter for the serving cell from BCCH (SI4).
+Cell reselection parameter $CRO_{sc}$ for the serving cell from BCCH (SI4).
 
 \paragraph{Expression}
 
@@ -303,14 +308,14 @@ perform encryption?}
 \paragraph{Required Information}
 
 A record of the strongest encryption algorithm that was observed for a given
-cell ($a_{best}$). The CIPHER MODE COMMAND to extract the encryption algorithm
-currently in use ($a_{curr}$).
+cell ($A_{best}$). The CIPHER MODE COMMAND to extract the encryption algorithm
+currently in use ($A$).
 
 \paragraph{Expression}
 
 $c_1 =
 \begin{cases}
-	1 & \text{if } s(a_{curr}) < s(a_{best}) \\
+	1 & \text{if } s(A) < s(A_{best}) \\
 	0 & \text{otherwise}
 \end{cases}$
 
@@ -338,8 +343,8 @@ Lost CIPHER MODE COMPLETE packets due to bad network reception.
 
 \paragraph{Required Information}
 
-Time stamp of the first CIPHER MODE COMPLETE message ($t_{CIPH\_MOD\_COM_0}$).
-Time stamp of the first encrypted message ($t_{enc\_msg_0}$).
+Time stamp of the first CIPHER MODE COMPLETE message ($t_{CMCP_0}$).
+Time stamp of the first encrypted message ($t_{enc_0}$).
 
 \paragraph{Expression}
 
@@ -371,14 +376,15 @@ be retrieved through a subsequent IDENTITY REQUEST at any later time.
 
 \paragraph{Required Information}
 
-The value of the Cipher Response field (CR) of the CIPHER MODE COMMAND message.
+The value of the Cipher Response field (CR) of the last CIPHER MODE COMMAND
+message $CR$.
 
 \paragraph{Expression}
 
 $c_3 =
 \begin{cases}
-	0 		& \text{if the IMEISV was requested} \\
-	1 - p_{IMEISV}	& \text{otherwise}
+	0 		                & \text{if the IMEISV was requested} \\
+	1 - p_{IMEISV} (CR)	& \text{otherwise}
 \end{cases}$
 
 where $p_{IMEISV}$ is the likelihood that operators request the IMEISV in their
@@ -417,7 +423,8 @@ necessary on the exact message patterns in this case.}
 
 The sequence of messages between LOCATION UPDATE REQUEST and LOCATION UPDATE
 REJECT (purged from idle messages). The type of LOCATION UPDATE REQUEST
-(attach, periodic or normal) and the cause of the LOCATION UPDATE REJECT.
+(attach, periodic or normal) $T_{LURQ}$ and the cause of the LOCATION
+UPDATE REJECT $C_{LURJ}$.
 
 \paragraph{Expression}
 
@@ -494,13 +501,9 @@ quickly enough such that the MS is paged, but no ALARM is signaled.
 
 \paragraph{Required Information}
 
-Timestamp of the PAGING REQUEST. The mobile identity type used in this PAGING
-REQUEST. The cause of the CHANNEL RELEASE.
-
-% - What do you mean with "no service specified"
-% - How do we measure that the transaction was released with no SMS/call happening?
-% - What do we need to check for being absent/present?
-% - What is the PAGING REQUEST timestamp needed for?
+Timestamp of the PAGING REQUEST $t_PRQ$. The mobile identity type used
+in this PAGING REQUEST $MI_PRQ$. The cause of the CHANNEL RELEASE
+$C_CR$.
 
 \paragraph{Expression}
 
@@ -673,47 +676,49 @@ Silent text messages have been received.
 \colorlet{missing}{black}
 \colorlet{unknown}{srlgrey}
 \colorlet{research}{srlred}
-\colorlet{inprog}{srlyellow}
+\colorlet{tbd}{srlyellow}
 \colorlet{avail}{srlgreen}
 
 \renewcommand{\arraystretch}{1.5}
 
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} p{0.6\linewidth} lp{0.1\linewidth}p{0.1\linewidth}}
-{\bf Information}                                & {\bf Criterion}      & {\bf Samples}       & {\bf Phone}         \\\hline
-CID of serving cell                              & A1                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-LAC of serving cell                              & A1, A2               & \cellcolor{srldark} & \cellcolor{srldark} \\
-LACs of all neighboring cells                    & A2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-BA list of serving cell                          & A2, K1               & \cellcolor{srldark} & \cellcolor{srldark} \\
-BA lists of neighboring cells                    & R1                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-ARFCN of serving cell                            & A1, R1               & \cellcolor{srldark} & \cellcolor{srldark} \\
-3G/4G availability                               & A3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-CELL RESELECT OFFSET                             & K2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Encryption algorithm in use                      & C1                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Timestamp of first CIPHER MODE COMPLETE message  & C2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Timestamp of first encrypted message             & C2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Cipher Response field of CIPHER MODE COMMAND     & C3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Last LOCATION UPDATE REQUEST                     & C4                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Cause of LOCATION UPDATE REJECT (if applicable)  & C4                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Initial value of T3212                           & T1                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Timestamp of PAGING REQUEST                      & T3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Mobile identity type of PAGING REQUEST           & T3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Cause of CHANNEL RELEASE                         & T3                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-Tx power level                                   & T7                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-BS\_AG\_BLKS\_RES                                & R2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-BS\_CCCH\_SDCCH\_COMB                            & R2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
-BS\_PA\_MFRRS                                    & R2                   & \cellcolor{srldark} & \cellcolor{srldark} \\
+{\tiny
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} p{0.5\linewidth} llp{0.1\linewidth}p{0.1\linewidth}}
+{\bf Information}                                & {\bf Value}     & {\bf Criterion}      & {\bf Model}         & {\bf Analysis}       \\\hline
+CID of serving cell                              & $CID_{sc}$      & A1                   & \cellcolor{tbd}     & \cellcolor{research} \\
+LAC of serving cell                              & $LAC_{sc}$      & A1, A2               & \cellcolor{tbd}     & \cellcolor{research} \\
+LACs of all neighboring cells                    & $LAC_i$         & A2                   & \cellcolor{missing} & \cellcolor{research} \\
+BA list of serving cell                          & $BA_{sc}$       & A2, K1               & \cellcolor{missing} & \cellcolor{research} \\
+BA lists of neighboring cells                    & $BA_i$          & R1                   & \cellcolor{missing} & \cellcolor{research} \\
+ARFCN of serving cell                            & $ARFCN_{sc}$    & A1, R1               & \cellcolor{missing} & \cellcolor{research} \\
+Current radio access technology (RAT) list       & $RAT$           & A3                   & \cellcolor{missing} & \cellcolor{unknown} \\
+CELL RESELECT OFFSET of serving cell             & $CRO_{sc}$      & K2                   & \cellcolor{missing} & \cellcolor{research} \\
+Encryption algorithm in use                      & $A$             & C1                   & \cellcolor{avail}   & \cellcolor{tbd} \\
+Timestamp of first CIPHER MODE COMPLETE message  & $t_{CMCP_0}$    & C2                   & \cellcolor{avail}   & \cellcolor{tbd} \\
+Timestamp of first encrypted message             & $t_{enc_0}$     & C2                   & \cellcolor{avail}   & \cellcolor{tbd} \\
+Cipher Response field of CIPHER MODE COMMAND     & $CR$            & C3                   & \cellcolor{avail}   & \cellcolor{tbd} \\
+Last LOCATION UPDATE REQUEST type                & $T_{LURQ}$      & C4                   & \cellcolor{tbd}     & \cellcolor{tbd} \\
+Cause of LOCATION UPDATE REJECT (if applicable)  & $C_{LURJ}$      & C4                   & \cellcolor{tbd}     & \cellcolor{tbd} \\
+Initial value of T3212                           & $T3212_0$       & T1                   & \cellcolor{unknown} & \cellcolor{unknown} \\
+Timestamp of PAGING REQUEST                      & $t_{PRQ}$       & T3                   & \cellcolor{unknown} & \cellcolor{unknown} \\
+Mobile identity type of PAGING REQUEST           & $MI_{PRQ}$      & T3                   & \cellcolor{unknown} & \cellcolor{unknown} \\
+Cause of CHANNEL RELEASE                         & $C_{CR}$        & T3                   & \cellcolor{unknown} & \cellcolor{unknown} \\
+Tx power level                                   & $TX$            & T7                   & \cellcolor{missing} & \cellcolor{unknown} \\
+BS\_AG\_BLKS\_RES                                &                 & R2                   & \cellcolor{missing} & \cellcolor{unknown} \\
+BS\_CCCH\_SDCCH\_COMB                            &                 & R2                   & \cellcolor{missing} & \cellcolor{unknown} \\
+BS\_PA\_MFRRS                                    &                 & R2                   & \cellcolor{missing} & \cellcolor{unknown} \\
 \bottomrule
-\end{tabular*}
+\end{tabular*}}
 
 \renewcommand{\arraystretch}{1}
 
+{\tiny
 \begin{tabular*}{\textwidth}{p{0.05\linewidth}l p{0.05\linewidth}l p{0.05\linewidth}l p{0.05\linewidth}l p{0.05\linewidth}l}
-\cellcolor{black}      & missing &
-\cellcolor{srlgrey}    & unknown &
-\cellcolor{srlred}     & research &
-\cellcolor{srlyellow}  & in progress &
-\cellcolor{srlgreen}   & available \\
-\end{tabular*}
+\cellcolor{missing}  & missing &
+\cellcolor{unknown}  & unknown &
+\cellcolor{research} & research &
+\cellcolor{tbd}      & TBD &
+\cellcolor{avail}    & available \\
+\end{tabular*}}
 
 \appendix
 \section{Document History}
