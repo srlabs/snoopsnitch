@@ -87,19 +87,28 @@ $a_1 =
 	1 & \text{otherwise} \\
 \end{cases}$
 
-where $id$ is a database that maps the ARFCNs used during the last $\Delta$
-seconds to their respective LAC/CID.
+where $id$ is a database that maps the ARFCNs used during the last
+$\Delta_{ARFCN}$ seconds to their respective LAC/CID.
 
-\FIXME{$\Delta$ has to be chosen small enough so that it is unlikely to
-encounter the same ARFCN twice when the MS is moving quickly. This could be
-approximated by the average distance of cells with the same ARFCN and the
-maximum travel speed supported by GSM.}
+The value of $\Delta_{ARFCN}$ has to be chosen small enough so that it is
+unlikely to encounter the same ARFCN twice when the MS is moving quickly. This
+could be approximated by the average distance of cells with the same ARFCN and
+the maximum travel speed supported by GSM. We do not have this information
+right now, so $\Delta_{ARFCN}$ must be configurable.
 
-\FIXME{In theory we could also monitor neighboring cells in the same way.
-Coming up with a decent $\Delta$ seems to be even more challenging as you
-observe neighboring cells for a much longer time, potentially. Also, we cannot
-get the respective AFCAN/LAC/CID combinations for neighboring cells right now
-on Qualcomm (more precisely, we cannot correlate them from the data we get).}
+\paragraph{Source}
+
+$LAC_{sc}$: Android API
+
+\FIXME{Add Android API call to retrieve $LAC_{sc}$.}
+
+$CID_{sc}$: Android API
+
+\FIXME{Add Android API call to retrieve $CID_{sc}$.}
+
+$ARFCN_{sc}$: ???
+
+\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving cell.}
 
 \subsubsection{\crita{2}{Inconsistent LAC}}
 
@@ -123,8 +132,8 @@ the case.
 
 \paragraph{Required Information}
 
-Neighboring cell list $BA$ to derive $LAC_i$ values. The LAC of the serving
-cell $LAC_{sc}$ and the LACs of the $k$ neighboring cells in the BA $LAC_i$.
+Neighboring cell list $NL$ to derive $LAC_i$ values. The LAC of the serving
+cell $LAC_{sc}$ and the LACs of the $k$ neighboring cells in the NL $LAC_i$.
 
 \paragraph{Expression}
 
@@ -138,6 +147,16 @@ $a_2 =
         0 & \text{otherwise}
         \end{cases}
 $
+
+\paragraph{Source}
+
+$LAC_{sc}$: Android API
+
+\FIXME{Add Android API call to retrieve $LAC_{sc}$.}
+        
+$NL$: Android API
+
+\FIXME{Add Android API call to retrieve $NL$.}
         
 \subsubsection{\crita{3}{Only 2G available}}
 
@@ -161,11 +180,21 @@ List $RAT$ of radio access technologies currently available.
 
 \paragraph{Expression}
 
-$A_3 =
+$a_3 =
 \begin{cases}
 	0 & \text{if } 3G \in RAT \vee 4G \in RAT \\
 	1 & \text{otherwise}
 \end{cases}$
+
+\paragraph{Source}
+
+$RAT$: Android API or Android RIL
+
+\FIXME{Add Android API call or RIL call to retrieve $RAT$.}
+
+\subsubsection{Score}
+
+$A = \frac{a_1 + a_2}{2} + a_3$
 
 \subsection{Keep}
 
@@ -194,24 +223,27 @@ ARFCN not used by any BTS in that area.
 Only few regular situations, like small islands with only a single call, are
 thinkable where no neighboring cells may be announced.
 
-\FIXME{As part of the validation, search for cells announcing 0 neighboring
-cells an check their location.}
-
 \paragraph{Required Information}
 
-Neighboring cell list $BA_{sc}$ of serving cell.
+Neighboring cell list $NL_{sc}$ of serving cell.
 
 \paragraph{Expression}
 
 $k1 =
 \begin{cases}
-	1 & \text{if } \left|BA_{sc}\right| = 0 \\
+	1 & \text{if } \left|NL_{sc}\right| = 0 \\
 	0 & \text{otherwise}
 \end{cases}$
 
-\FIXME{Extract and graph the number of neighboring cells for all cells in the
-GSMmap sample set to get the function $p(n)$ expressing the likelihood of a
-cell to announce $n$ neighboring cells.}
+% \FIXME{Extract and graph the number of neighboring cells for all cells in the
+% GSMmap sample set to get the function $p(n)$ expressing the likelihood of a
+% cell to announce $n$ neighboring cells.}
+
+\paragraph{Source}
+
+$NL_{sc}$: Android API
+
+\FIXME{Add Android API call to retrieve $NL_{sc}$.}
 
 \subsubsection{\critk{2}{High cell reselect offset}}
 
@@ -231,7 +263,7 @@ the signal quality of any neighboring cell to be impossibly good to consider it
 as an alternative to the cell spawned by the IMSI catcher. This makes the MS
 camp on that cell until the desired information has been collected.
 
-\FIXME{Add cell reselection formula to explain the above statement.}
+% \FIXME{Add cell reselection formula to explain the above statement.}
 
 % Explanation by Andreas Eversberg on Thu Jan 26 17:28:30 CET 2012
 % (CatcherCatcher mailing list):
@@ -247,23 +279,38 @@ camp on that cell until the desired information has been collected.
 Networks may announce a high CELL RESELECTION OFFSET in areas with poor
 coverage.
 
-\FIXME{Check what exactly is done with C1/C2/CELL RESELECTION OFFSET/TEMPORARY OFFSET}
+% \FIXME{Check what exactly is done with C1/C2/CELL RESELECTION OFFSET/TEMPORARY OFFSET}
 
 \paragraph{Required Information}
 
-Cell reselection parameter $CRO_{sc}$ for the serving cell from BCCH (SI4).
+Cell reselection parameter $CRO_{sc}$ for the serving cell from BCCH/SI3.
 
 \paragraph{Expression}
 
-$k2 = p(C2)$
+$k2 =
+\begin{cases}
+	0 & CRO_{sc} < CRO_{max}\\
+	1 & \text{otherwise}
+\end{cases}$
 
-where $p(x)$ is a function expressing the likelihood for the $C2$ value of the
-current cell to be abnormal.
+where $CRO_{max}$ is the value still considered normal for the CRO. As a
+suitable value for is not yet known, this value must be configurable.
 
-\FIXME{Derive the function $p(x)$ from the distribution of all C2 values
-calculated from the cell reselection parameters in the GSMmap sample set, such
-that C2 values found in real networks get a low score (0) and abnormal values
-get a high score (1).}
+\paragraph{Source}
+
+$CRO_{sc}$: Qualcomm DIAG, BCCH/SI3
+
+\FIXME{Implement.}
+
+\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving
+cell, i.e. we cannot distinguish serving cell SI3 information from neighboring
+cell SI3 information.}
+
+\FIXME{Which DB field?}
+
+\subsubsection{Score}
+
+$K = k_1 + k_2$
 
 \subsection{Collect}
 
@@ -302,8 +349,7 @@ An operator may mis-configure some of its base stations to use a weaker
 encryption algorithm. In rare cases A5/0 transaction are observed, most likely
 caused by hardware faults.
 
-\FIXME{May A5/0 transactions be caused by mobiles not supporting / refusing to
-perform encryption?}
+%\FIXME{May A5/0 transactions be caused by mobiles not supporting / refusing to perform encryption?}
 
 \paragraph{Required Information}
 
@@ -322,6 +368,12 @@ $c_1 =
 where $s(a)$ -- the strength of the encryption algorithm $a$ -- is defined as
 
 $s(A5/0) < s(A5/2) < s(A5/1) < s(A5/3)$.
+
+\paragraph{Source}
+
+$A$: Transaction database
+
+\FIXME{Which DB field?}
 
 \subsubsection{\critc{2}{Delayed CIPHER MODE COMPLETE acknowledgement}}
 
@@ -343,19 +395,36 @@ Lost CIPHER MODE COMPLETE packets due to bad network reception.
 
 \paragraph{Required Information}
 
-Time stamp of the first CIPHER MODE COMPLETE message ($t_{CMCP_0}$).
-Time stamp of the first encrypted message ($t_{enc_0}$).
+Time stamp of the first CIPHER MODE COMPLETE message ($t_{CMCP_0}$) and the
+last CIPHER MODE COMPLETE message ($t_{CMCP_l}$).
 
 \paragraph{Expression}
 
-$c_2 = p(t_{enc\_msg_0} - t_{CIPH\_MOD\_COM_0})$
+$c_2 =
+\begin{cases}
+	0 	&  \text{if } t_{CMCP_l} - t_{CMCP_0} < \Delta_{CMCP} \\
+	1       &  \text{otherwise}
+\end{cases}$
 
-where $p(t)$ is the likelihood of the delay $t$ to be abnormal behaviour.
+where $\Delta_{CMCP}$ is the maximum time for accepting a CIPHER MODE COMPLETE
+message considered normal for a network. We do not have this information right
+now, so $\Delta_{CMCP}$ must be configurable.
 
-\FIXME{Graph the delays between CIPHER MODE COMPLETE and first encrypted
-message based on GSMmap data over all data sets. Approximate a formula of that
-empiric data and invert and scale it such that abnormally long and abnormally
-short delays yield a score of 1. The resulting formula is $p(t)$.}
+% \FIXME{Graph the delays between CIPHER MODE COMPLETE and first encrypted
+% message based on GSMmap data over all data sets. Approximate a formula of that
+% empiric data and invert and scale it such that abnormally long and abnormally
+% short delays yield a score of 1. The resulting formula is $p(t)$.}
+
+\paragraph{Source}
+
+$t_{CMCP_0}$: Transaction database
+
+\FIXME{Which DB field?}
+
+$t_{CMCP_l}$: Transaction database
+
+\FIXME{Implement.}
+\FIXME{Which DB field?}
 
 \subsubsection{\critc{3}{CIPHER MODE COMMAND message without IMEISV}}
 
@@ -377,21 +446,27 @@ be retrieved through a subsequent IDENTITY REQUEST at any later time.
 \paragraph{Required Information}
 
 The value of the Cipher Response field (CR) of the last CIPHER MODE COMMAND
-message $CR$.
+message $CR$ (cf. \cite[10.5.2.10]{gsm0408}).
 
 \paragraph{Expression}
 
 $c_3 =
 \begin{cases}
-	0 		                & \text{if the IMEISV was requested} \\
-	1 - p_{IMEISV} (CR)	& \text{otherwise}
+	0       & \text{if } CR = 1 \\
+	1	& \text{otherwise}
 \end{cases}$
 
-where $p_{IMEISV}$ is the likelihood that operators request the IMEISV in their
-normal CIPHER MODE COMMAND messages.
+% where $p_{IMEISV}$ is the likelihood that operators request the IMEISV in their
+% normal CIPHER MODE COMMAND messages.
 
-\FIXME{From the GSMmap sample set, calculate the likelihood $p_{IMEISV}$ that
-the IMEISV will be requested during normal operation.}
+% \FIXME{From the GSMmap sample set, calculate the likelihood $p_{IMEISV}$ that
+% the IMEISV will be requested during normal operation.}
+
+\paragraph{Source}
+
+$CR$: Transaction database
+
+\FIXME{Which DB field?}
 
 \subsubsection{\critc{4}{ID requests during location update}}
 
@@ -410,32 +485,40 @@ rejected with a "location area not allowed". This may be used by the IMSI
 catcher to force the MS so select a different cell after the desired
 information was collected.
 
-\FIXME{Are there other LOCATION UPDATE REJECT causes that force a cell
-reselection?}
-
 \paragraph{False Positives}
 
-\FIXME{A LOCATION UPDATE REJECT may happen when an MS is not accepted for
-roaming, when it is stolen or the contract expired. However, more research is
-necessary on the exact message patterns in this case.}
+Unknown.
 
 \paragraph{Required Information}
 
-The sequence of messages between LOCATION UPDATE REQUEST and LOCATION UPDATE
-REJECT (purged from idle messages). The type of LOCATION UPDATE REQUEST
-(attach, periodic or normal) $T_{LURQ}$ and the cause of the LOCATION
-UPDATE REJECT $C_{LURJ}$.
+Whether the IMSI was requested \emph{before} ciphering ($ID_{IMSI}$) and
+whether IMEI was requested \emph{before} ciphering ($ID_{IMEI}$).
+
+% The type of LOCATION UPDATE REQUEST (attach, periodic or normal) $T_{LURQ}$
+% and the cause of the LOCATION UPDATE REJECT $C_{LURJ}$.
 
 \paragraph{Expression}
 
-$c_4 = ?$
+$c_4 =
+\begin{cases}
+	1 	& \text{if } ID_{IMSI} \wedge ID_{IMEI} \\
+	0.7     & \text{if } ID_{IMSI} \oplus ID_{IMEI} \\
+	0       & \text{otherwise}
+\end{cases}$
 
-\FIXME{This needs more research. A first step could be to filter all
-transactions resulting in a LOCATION UPDATE REJECT and containing an IDENTITY
-REQUEST prior to the CIPHER MODE COMPLETE message. In the resulting set,
-correlate type of the LOCATION UPDATE REQUEST (Attach, Periodic, Normal) with
-the cause of the LOCATION UPDATE REJECT and the identity information requested
-(IMEI, IMSI, both).}
+\paragraph{Source}
+
+$ID_{IMSI}$: Transaction database
+
+\FIXME{Which DB field?}
+
+$ID_{IMEI}$: Transaction database
+
+\FIXME{Which DB field?}
+
+\subsubsection{Score}
+
+$C = c_1 + c_2 + c_3 + c_4$
 
 \subsection{Track}
 
@@ -463,7 +546,7 @@ often, e.g. every 6 minutes. This allows for rather precise presence tracking.
 
 \paragraph{False Positives}
 
-None known.
+Unknown.
 
 \paragraph{Required Information}
 
@@ -474,15 +557,24 @@ Channel Description} part of the serving cells SI3.
 
 $t1 =
 \begin{cases}
-	0 	 	& \text{if } T3212_0 = 0 \\
-	p(T3212_0) 	& \text{otherwise}
+	1 	& \text{if } T3212_0 < T3212_{min} \\
+	0       & \text{otherwise}
 \end{cases}$
 
-where $p(x)$ is derived from the distribution of $T3212$ initialization values
-observed in the GSMmap sample set.
+where $T3212_{min}$ is the minimum value of $T3212$ considered "normal". We do
+not have this information right now, so $T3212_{min}$ must be configurable.
 
-\FIXME{We do not have this information in the current data, we need to check
-the xgoldmon traces or create new traces using Qualcomm}
+\paragraph{Source}
+
+$T3212_0$: Qualcomm DIAG, BCCH/SI3
+
+\FIXME{Implement.}
+
+\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving
+cell, i.e. we cannot distinguish serving cell SI3 information from neighboring
+cell SI3 information.}
+
+\FIXME{Which DB field?}
 
 \subsubsection{\critt{3}{Paging without transaction}}
 
@@ -501,54 +593,119 @@ quickly enough such that the MS is paged, but no ALARM is signaled.
 
 \paragraph{Required Information}
 
-Timestamp of the PAGING REQUEST $t_PRQ$. The mobile identity type used
-in this PAGING REQUEST $MI_PRQ$. The cause of the CHANNEL RELEASE
-$C_CR$.
+The mobile identity type used in this PAGING RESPONSE $MI_{PRS}$, $M_{IA}$
+indicating whether an RR IMMEDIATE ASSIGNMENT message was received and $M_{CR}$
+indicating whether a RR CHANNEL RELEASE message was received.
 
 \paragraph{Expression}
 
-$t3 = ?$
+$t3 =
+\begin{cases}
+	1 & \text{if } MI_{PRS} = \text{"IMSI"} \wedge \neg M_{IA} \wedge M_{CR} \\
+	0 & \text{otherwise}
+\end{cases}$
+
+\FIXME{Check for sanity.}
+
+\paragraph{Source}
+
+$MI_{PRS}$: Transaction database
+
+\FIXME{Which DB field?}
+
+$M_{IA}$: Transaction database
+
+\FIXME{Which DB field?}
+
+$M_{CR}$: Transaction database
+
+\FIXME{Which DB field?}
 
 \subsubsection{\critt{4}{Orphaned traffic channel}}
 
 A traffic channel is assigned, but no call control state is entered or text
-message received.
+message received for a long time.
 
 \paragraph{Rationale}
 
-\FIXME{TBD.}
+When a traffic channel is assigned, the MS is constantly sending (idle
+messages) until the channel is released. This constant transmission can be
+exploited by an IMSI catcher to perform a more accurate localization of the MS.
 
 \paragraph{False Positives}
 
-\FIXME{TBD.}
+Unknown.
 
 \paragraph{Required Information}
 
-\FIXME{TBD.}
+$M_i$ indicates whether message of type $i$ was received in a transaction and
+$t_i$ designates the timestamp message of type $i$ was received:
+
+\begin{tabular}{ll}
+\hline
+$t_{IA}$ & Timestamp of RR IMMEDIATE ASSIGNMENT for TCH \\
+$t_{CR}$ & Timestamp of RR CHANNEL RELEASE for TCH \\
+$M_{IA}$ & RR IMMEDIATE ASSIGNMENT for TCH \\
+$M_{CR}$ & RR CHANNEL RELEASE for TCH \\
+$M_{AR}$ & MM AUTHENTICATION REQUEST \\
+$M_{IR}$ & IDENTITY REQUEST \\
+$M_{CM}$ & RR CIPHER MODE COMMAND \\
+$M_{SD}$ & SMS-DELIVER \\
+$M_{SU}$ & CC SETUP \\
+\hline
+\end{tabular}
+
+\FIXME{Check this list for correctness and completeness.}
 
 \paragraph{Expression}
 
-$t4 = ?$
+$t4 =
+\begin{cases}
+	1 & \text{if } M_{IA} \wedge M_{CR} \wedge \neg M_{AR} \wedge \neg M_{IR} \wedge \neg M_{CM} \wedge \neg M_{SD} \wedge \neg M_{SU} \wedge (t_{CR} - t_{IA} > \Delta_{TCH}) \\
+	0 & \text{otherwise}
+\end{cases}$
 
-\subsubsection{\critt{5}{Missing call setup message}}
+where $\Delta_{TCH}$ is the maximum value an idle traffic channel is considered
+"normal". We do not have this information right now, so $\Delta_{TCH}$ must be
+configurable.
 
-No call setup message is received while already being on the traffic channel.
+\paragraph{Source}
 
-\paragraph{Rationale}
+$t_{IA}$: Transaction database
 
-\FIXME{TBD.}
+\FIXME{Which DB field?}
 
-\paragraph{False Positives}
+$t_{CR}$: Transaction database
 
-\FIXME{TBD.}
+\FIXME{Which DB field?}
 
-\paragraph{Required Information}
+$M_{IA}$: Transaction database
 
-\FIXME{TBD.}
+\FIXME{Which DB field?}
 
-\paragraph{Expression}
+$M_{CR}$: Transaction database
 
-$t5 = ?$
+\FIXME{Which DB field?}
+
+$M_{AR}$: Transaction database
+
+\FIXME{Which DB field?}
+
+$M_{IR}$: Transaction database
+
+\FIXME{Which DB field?}
+
+$M_{CM}$: Transaction database
+
+\FIXME{Which DB field?}
+
+$M_{SD}$: Transaction database
+
+\FIXME{Which DB field?}
+
+$M_{SU}$: Transaction database
+
+\FIXME{Which DB field?}
 
 \subsubsection{\critt{7}{MS sends on high power}}
 
@@ -556,19 +713,37 @@ The MS sends on high power.
 
 \paragraph{Rationale}
 
-\FIXME{TBD.}
+An IMSI catcher may instruct the MS to send at high power to maximize the range
+of the catcher.
 
 \paragraph{False Positives}
 
-\FIXME{TBD.}
+Bad reception, e.g. in rural areas.
 
 \paragraph{Required Information}
 
-Current Tx level.
+Current transmission level $TX$.
 
 \paragraph{Expression}
 
-$t6 = ?$
+$t6 =
+\begin{cases}
+	1 & \text{if } TX > TX_{max} \\
+	0 & \text{otherwise}
+\end{cases}$
+
+where $TX_{max}$ is the maximum $TX$ value that is considered "normal". We do
+not have this information right now, so $TX_{max}$ must be configurable.
+
+\paragraph{Source}
+
+$TX$: Android?
+
+\FIXME{Find Android API call or Android RIL call to retrieve $TX$.}
+
+\subsubsection{Score}
+
+$T = t_1 + t_3 + t_7$
 
 \subsection{Reject}
 
@@ -576,9 +751,9 @@ After an MS was registered with an IMSI catcher, the operator of the device may
 want to disassociate certain phones from the catcher while leaving others under
 surveillance. This section covers detectable traces of this process.
 
-\subsubsection{\critr{1}{Inconsistent BA list}}
+\subsubsection{\critr{1}{Inconsistent neighbor list}}
 
-The BA list of most neighboring cells does not contain serving cell.
+The neighbor list of most neighboring cells does not contain serving cell.
 
 \paragraph{Rationale}
 
@@ -587,29 +762,53 @@ the current serving cell also announce the current cell as one of their
 neighboring stations. 
 
 A strategy of an IMSI catcher to prevent an MS that was already connected to
-register again, is to send a BA list over the BCCH that contains only
+register again, is to send a neighbor list over the BCCH that contains only
 neighboring cells which do \emph{not} have the ARFCN of the IMSI catcher in
-their own BA list \cite[0027]{bott2000verfahren}. When the MS selects one of
+their own neighbor list \cite[0027]{bott2000verfahren}. When the MS selects one of
 those neighboring cells, it will not consider the IMSI catcher at least for the
 next cell reselection.
 
 \paragraph{False Positives}
 
-\FIXME{Investigate.}
+Unknown.
 
 \paragraph{Required Information}
 
-BA lists of all neighboring cells. ARFCN of the serving cell.
-
-\FIXME{Theoretically, we should have the neighboring information of these 6
-non-serving cells available for correlation with our current neighboring cells:
-"The MS shall attempt to decode the BCCH data block that contains the
-parameters affecting cell reselection for each of the 6 strongest non-serving
-cell BCCH carriers at least every 5 minutes." \cite[section 6.6.1]{gsm0508} }
+Neighbor lists of all $k$ neighboring cells $NL_i$. ARFCN of the serving cell
+$ARFCN_{sc}$.
 
 \paragraph{Expression}
 
-$r1 = ?$
+$r1 =
+\begin{cases}
+	1 & \text{if } \left(\frac{1}{k}\displaystyle\sum_{i=1}^{k}
+                                \begin{cases}
+	                                1 & \text{if } ARFCN_{sc} \in NL_i \\
+	                                0 & \text{otherwise}
+                                \end{cases}\right) < NL_{min} \\
+        0 & \text{otherwise}
+        \end{cases}
+$
+
+where $NL_{min}$ is the minimum fraction of neighboring cell neighbor lists
+containing the serving cells $ARFCN$. We do not have this information right
+now, so $NL_{min}$ must be configurable.
+
+\paragraph{Source}
+
+$NL_i$: Qualcomm DIAG, BCCH/SI2
+
+\FIXME{Implement.}
+
+\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving
+cell, i.e. we cannot distinguish serving cell SI2 information from neighboring
+cell SI2 information.}
+
+\FIXME{Which DB field?}
+
+$ARFCN_{sc}$: ???
+
+\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving cell.}
 
 \subsubsection{\critr{2}{High number of paging groups}}
 
@@ -630,107 +829,41 @@ ${N} = (9 - {\text{BS\_AG\_BLKS\_RES}} - 6\times {\text{BS\_CCCH\_SDCCH\_COMB}})
 
 \paragraph{False Positives}
 
-\FIXME{Investigate.}
+Unknown.
 
 \paragraph{Required Information}
 
 BS\_AG\_BLKS\_RES, BS\_CCCH\_SDCCH\_COMB and BS\_PA\_MFRRS
 
-\FIXME{Analyze GSMmap data for abnormally high $N$}
-
 \paragraph{Expression}
 
-$r2 = ?$
+$r2 =
+\begin{cases}
+	1 & \text{if } N > N_{norm} \\
+        0 & \text{otherwise}
+        \end{cases}
+$
 
-\subsection{Weighting}
+where $N_{norm}$ is the maximum number of paging groups considered "normal". We
+do not have this information right now, so $N_{norm}$ must be configurable.
 
-\section{Detection of Privacy Breaches}
-\label{sec:detection_of_privacy_breaches}
+\paragraph{Source}
 
-\subsubsection{\critp{1}{Silent text message received}}
+BS\_AG\_BLKS\_RES:
 
-Silent text messages have been received.
+BS\_CCCH\_SDCCH\_COMB:
 
-\paragraph{Rationale}
+BS\_PA\_MFRRS:
 
-\TBD{}
+\FIXME{Implement.}
 
-\paragraph{False Positives}
+\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving
+cell, i.e. we cannot distinguish serving cell SI2 information from neighboring
+cell SI2 information.}
 
-\FIXME{Any other good (i.e. non surveillance) reasons for silent SMS messages?}
+\FIXME{Which DB field?}
 
-\paragraph{Required Information}
-
-\TBD{}
-
-\paragraph{Expression}
-
-\TBD{}
-
-\section{Model Validation}
-\definecolor{srlred}{rgb}   {.804, .576, .506}
-\definecolor{srlorange}{rgb}{.945, .439, .102}
-\definecolor{srlyellow}{rgb}{1, .808, .373}
-\definecolor{srlgreen}{rgb} {.576, .808, .506}
-
-\colorlet{missing}{black}
-\colorlet{unknown}{srlgrey}
-\colorlet{research}{srlred}
-\colorlet{tbd}{srlyellow}
-\colorlet{avail}{srlgreen}
-
-\renewcommand{\arraystretch}{1.5}
-
-{\tiny
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} p{0.5\linewidth} llp{0.1\linewidth}p{0.1\linewidth}}
-{\bf Information}                                & {\bf Value}     & {\bf Criterion}      & {\bf Model}         & {\bf Analysis}       \\\hline
-CID of serving cell                              & $CID_{sc}$      & A1                   & \cellcolor{tbd}     & \cellcolor{research} \\
-LAC of serving cell                              & $LAC_{sc}$      & A1, A2               & \cellcolor{tbd}     & \cellcolor{research} \\
-LACs of all neighboring cells                    & $LAC_i$         & A2                   & \cellcolor{missing} & \cellcolor{research} \\
-BA list of serving cell                          & $BA_{sc}$       & A2, K1               & \cellcolor{missing} & \cellcolor{research} \\
-BA lists of neighboring cells                    & $BA_i$          & R1                   & \cellcolor{missing} & \cellcolor{research} \\
-ARFCN of serving cell                            & $ARFCN_{sc}$    & A1, R1               & \cellcolor{missing} & \cellcolor{research} \\
-Current radio access technology (RAT) list       & $RAT$           & A3                   & \cellcolor{missing} & \cellcolor{unknown} \\
-CELL RESELECT OFFSET of serving cell             & $CRO_{sc}$      & K2                   & \cellcolor{missing} & \cellcolor{research} \\
-Encryption algorithm in use                      & $A$             & C1                   & \cellcolor{avail}   & \cellcolor{tbd} \\
-Timestamp of first CIPHER MODE COMPLETE message  & $t_{CMCP_0}$    & C2                   & \cellcolor{avail}   & \cellcolor{tbd} \\
-Timestamp of first encrypted message             & $t_{enc_0}$     & C2                   & \cellcolor{avail}   & \cellcolor{tbd} \\
-Cipher Response field of CIPHER MODE COMMAND     & $CR$            & C3                   & \cellcolor{avail}   & \cellcolor{tbd} \\
-Last LOCATION UPDATE REQUEST type                & $T_{LURQ}$      & C4                   & \cellcolor{tbd}     & \cellcolor{tbd} \\
-Cause of LOCATION UPDATE REJECT (if applicable)  & $C_{LURJ}$      & C4                   & \cellcolor{tbd}     & \cellcolor{tbd} \\
-Initial value of T3212                           & $T3212_0$       & T1                   & \cellcolor{unknown} & \cellcolor{unknown} \\
-Timestamp of PAGING REQUEST                      & $t_{PRQ}$       & T3                   & \cellcolor{unknown} & \cellcolor{unknown} \\
-Mobile identity type of PAGING REQUEST           & $MI_{PRQ}$      & T3                   & \cellcolor{unknown} & \cellcolor{unknown} \\
-Cause of CHANNEL RELEASE                         & $C_{CR}$        & T3                   & \cellcolor{unknown} & \cellcolor{unknown} \\
-Tx power level                                   & $TX$            & T7                   & \cellcolor{missing} & \cellcolor{unknown} \\
-BS\_AG\_BLKS\_RES                                &                 & R2                   & \cellcolor{missing} & \cellcolor{unknown} \\
-BS\_CCCH\_SDCCH\_COMB                            &                 & R2                   & \cellcolor{missing} & \cellcolor{unknown} \\
-BS\_PA\_MFRRS                                    &                 & R2                   & \cellcolor{missing} & \cellcolor{unknown} \\
-\bottomrule
-\end{tabular*}}
-
-\renewcommand{\arraystretch}{1}
-
-{\tiny
-\begin{tabular*}{\textwidth}{p{0.05\linewidth}l p{0.05\linewidth}l p{0.05\linewidth}l p{0.05\linewidth}l p{0.05\linewidth}l}
-\cellcolor{missing}  & missing &
-\cellcolor{unknown}  & unknown &
-\cellcolor{research} & research &
-\cellcolor{tbd}      & TBD &
-\cellcolor{avail}    & available \\
-\end{tabular*}}
-
-\appendix
-\section{Document History}
-\label{sec:document_history}
-
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} p{0.1\linewidth} p{0.1\linewidth} p{0.1\linewidth} p{0.8\linewidth}}
-\toprule
-{\bf Version} 	& {\bf Date} 		& {\bf Editor} 		& {\bf Changes} \\
-\midrule
-0.2		& August 6th, 2014 	& Alexander Senier 	& Extend IMSI catcher criteria \\
-\bottomrule
-\end{tabular*}
+\subsection{Overall Score}
 
 \bibliographystyle{plain}
 \bibliography{bibliography}
