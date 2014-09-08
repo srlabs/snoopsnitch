@@ -864,15 +864,32 @@ BS\_CCCH\_SDCCH\_COMB: BCCH/???
 
 \TODO{Luca}{Which DB field?}
 
-BS\_CCCH\_SDCCH\_COMB:
+BS\_PA\_MFRRS: BCCH/???
 
 \TODO{Luca}{Add to parser and transaction database.}
 
 \TODO{Luca}{Which DB field?}
 
+\subsubsection{Score}
 
+$R = r_1 + r_2$
 
 \subsection{Overall Score}
+
+$S = A + K + C + T + R$
+
+$Catcher =
+\begin{cases}
+	\text{red}   & \text{if } M_{red} \leq S \\
+        \text{amber} & \text{if } M_{amber} \leq S < M_{red} \\
+        \text{green} & \text{if } S < M_{amber} \\
+\end{cases}
+$
+
+where $M_{amber}$ and $M_{red}$ are the respective margins for the traffic
+light classification of the overall score $S$ with $M_{amber} < M_{red}$. We do
+not have this information right now, so $M_{amber}$ and $M_{red}$ must be
+configurable.
 
 \bibliographystyle{plain}
 \bibliography{bibliography}
