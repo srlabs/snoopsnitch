@@ -5,7 +5,7 @@
 \begin{document}
 
 \newcommand{\TBD}{{\color{srldark}\textbf{TBD}}}
-\newcommand{\FIXME}[1]{{\color{srldark}\textit{TODO: #1}}}
+\newcommand{\TODO}[2]{{\color{srldark}\textit{TODO (#1): #2}}}
 
 \newcommand{\criterion}[2]{#2 [#1]}
 \newcommand{\crita}[2]{\criterion{A#1}{#2}}
@@ -100,15 +100,15 @@ right now, so $\Delta_{ARFCN}$ must be configurable.
 
 $LAC_{sc}$: Android API
 
-\FIXME{Add Android API call to retrieve $LAC_{sc}$.}
+\TODO{Milan}{Find and document Android API call to retrieve $LAC_{sc}$.}
 
 $CID_{sc}$: Android API
 
-\FIXME{Add Android API call to retrieve $CID_{sc}$.}
+\TODO{Milan}{Find and document Android API call to retrieve $CID_{sc}$.}
 
 $ARFCN_{sc}$: ???
 
-\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving cell.}
+\TODO{Luca}{Find way to correlate ARFCN with the serving cell with Qualcomm DIAG.}
 
 \subsubsection{\crita{2}{Inconsistent LAC}}
 
@@ -152,11 +152,11 @@ $
 
 $LAC_{sc}$: Android API
 
-\FIXME{Add Android API call to retrieve $LAC_{sc}$.}
+\TODO{Milan}{Find and document Android API call to retrieve $LAC_{sc}$.}
         
 $NL$: Android API
 
-\FIXME{Add Android API call to retrieve $NL$.}
+\TODO{Milan}{Find and document Android API call to retrieve $NL$.}
         
 \subsubsection{\crita{3}{Only 2G available}}
 
@@ -190,7 +190,7 @@ $a_3 =
 
 $RAT$: Android API or Android RIL
 
-\FIXME{Add Android API call or RIL call to retrieve $RAT$.}
+\TODO{Milan/Lukas}{Find and document Android API call or RIL call to retrieve $RAT$.}
 
 \subsubsection{Score}
 
@@ -243,7 +243,7 @@ $k1 =
 
 $NL_{sc}$: Android API
 
-\FIXME{Add Android API call to retrieve $NL_{sc}$.}
+\TODO{Milan}{Find and document Android API call to retrieve $NL_{sc}$.}
 
 \subsubsection{\critk{2}{High cell reselect offset}}
 
@@ -263,7 +263,7 @@ the signal quality of any neighboring cell to be impossibly good to consider it
 as an alternative to the cell spawned by the IMSI catcher. This makes the MS
 camp on that cell until the desired information has been collected.
 
-% \FIXME{Add cell reselection formula to explain the above statement.}
+% \TODO{Add cell reselection formula to explain the above statement.}
 
 % Explanation by Andreas Eversberg on Thu Jan 26 17:28:30 CET 2012
 % (CatcherCatcher mailing list):
@@ -279,7 +279,7 @@ camp on that cell until the desired information has been collected.
 Networks may announce a high CELL RESELECTION OFFSET in areas with poor
 coverage.
 
-% \FIXME{Check what exactly is done with C1/C2/CELL RESELECTION OFFSET/TEMPORARY OFFSET}
+% \TODO{Check what exactly is done with C1/C2/CELL RESELECTION OFFSET/TEMPORARY OFFSET}
 
 \paragraph{Required Information}
 
@@ -300,13 +300,13 @@ suitable value for is not yet known, this value must be configurable.
 
 $CRO_{sc}$: Qualcomm DIAG, BCCH/SI3
 
-\FIXME{Implement.}
+\TODO{Luca}{Add to parser and transaction database.}
 
-\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving
-cell, i.e. we cannot distinguish serving cell SI3 information from neighboring
-cell SI3 information.}
+\TODO{Luca}{We cannot distinguish serving cell SI3 information from neighboring
+cell SI3 information. Find way to correlate ARFCN with the serving cell with
+Qualcomm DIAG.}
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 \subsubsection{Score}
 
@@ -373,7 +373,7 @@ $s(A5/0) < s(A5/2) < s(A5/1) < s(A5/3)$.
 
 $A$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 \subsubsection{\critc{2}{Delayed CIPHER MODE COMPLETE acknowledgement}}
 
@@ -410,7 +410,7 @@ where $\Delta_{CMCP}$ is the maximum time for accepting a CIPHER MODE COMPLETE
 message considered normal for a network. We do not have this information right
 now, so $\Delta_{CMCP}$ must be configurable.
 
-% \FIXME{Graph the delays between CIPHER MODE COMPLETE and first encrypted
+% \TODO{Graph the delays between CIPHER MODE COMPLETE and first encrypted
 % message based on GSMmap data over all data sets. Approximate a formula of that
 % empiric data and invert and scale it such that abnormally long and abnormally
 % short delays yield a score of 1. The resulting formula is $p(t)$.}
@@ -419,12 +419,13 @@ now, so $\Delta_{CMCP}$ must be configurable.
 
 $t_{CMCP_0}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $t_{CMCP_l}$: Transaction database
 
-\FIXME{Implement.}
-\FIXME{Which DB field?}
+\TODO{Luca}{Add to parser and transaction database.}
+
+\TODO{Luca}{Which DB field?}
 
 \subsubsection{\critc{3}{CIPHER MODE COMMAND message without IMEISV}}
 
@@ -459,14 +460,14 @@ $c_3 =
 % where $p_{IMEISV}$ is the likelihood that operators request the IMEISV in their
 % normal CIPHER MODE COMMAND messages.
 
-% \FIXME{From the GSMmap sample set, calculate the likelihood $p_{IMEISV}$ that
+% \TODO{From the GSMmap sample set, calculate the likelihood $p_{IMEISV}$ that
 % the IMEISV will be requested during normal operation.}
 
 \paragraph{Source}
 
 $CR$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 \subsubsection{\critc{4}{ID requests during location update}}
 
@@ -510,11 +511,11 @@ $c_4 =
 
 $ID_{IMSI}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $ID_{IMEI}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 \subsubsection{Score}
 
@@ -568,13 +569,13 @@ not have this information right now, so $T3212_{min}$ must be configurable.
 
 $T3212_0$: Qualcomm DIAG, BCCH/SI3
 
-\FIXME{Implement.}
+\TODO{Luca}{Add to parser and transaction database.}
 
-\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving
-cell, i.e. we cannot distinguish serving cell SI3 information from neighboring
-cell SI3 information.}
+\TODO{Luca}{We cannot distinguish serving cell SI3 information from neighboring
+cell SI3 information. Find way to correlate ARFCN with the serving cell with
+Qualcomm DIAG.}
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 \subsubsection{\critt{3}{Paging without transaction}}
 
@@ -605,21 +606,21 @@ $t3 =
 	0 & \text{otherwise}
 \end{cases}$
 
-\FIXME{Check for sanity.}
+\TODO{Luca}{Check for sanity.}
 
 \paragraph{Source}
 
 $MI_{PRS}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $M_{IA}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $M_{CR}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 \subsubsection{\critt{4}{Orphaned traffic channel}}
 
@@ -655,7 +656,7 @@ $M_{SU}$ & CC SETUP \\
 \hline
 \end{tabular}
 
-\FIXME{Check this list for correctness and completeness.}
+\TODO{Luca}{Check this list for correctness and completeness.}
 
 \paragraph{Expression}
 
@@ -673,39 +674,39 @@ configurable.
 
 $t_{IA}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $t_{CR}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $M_{IA}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $M_{CR}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $M_{AR}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $M_{IR}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $M_{CM}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $M_{SD}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $M_{SU}$: Transaction database
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 \subsubsection{\critt{7}{MS sends on high power}}
 
@@ -739,7 +740,7 @@ not have this information right now, so $TX_{max}$ must be configurable.
 
 $TX$: Android?
 
-\FIXME{Find Android API call or Android RIL call to retrieve $TX$.}
+\TODO{Milan/Lukas}{Find and document Android API call or Android RIL call to retrieve $TX$.}
 
 \subsubsection{Score}
 
@@ -798,17 +799,18 @@ now, so $NL_{min}$ must be configurable.
 
 $NL_i$: Qualcomm DIAG, BCCH/SI2
 
-\FIXME{Implement.}
+\TODO{Luca}{Add to parser and transaction database.}
 
-\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving
-cell, i.e. we cannot distinguish serving cell SI2 information from neighboring
-cell SI2 information.}
+\TODO{Luca}{We cannot distinguish serving cell SI2 information from neighboring
+cell SI2 information. Find way to correlate ARFCN with the serving cell with
+Qualcomm DIAG.}
 
-\FIXME{Which DB field?}
+\TODO{Luca}{Which DB field?}
 
 $ARFCN_{sc}$: ???
 
-\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving cell.}
+\TODO{Luca}{Find way to correlate ARFCN with the serving cell with Qualcomm
+DIAG.}
 
 \subsubsection{\critr{2}{High number of paging groups}}
 
@@ -849,19 +851,26 @@ do not have this information right now, so $N_{norm}$ must be configurable.
 
 \paragraph{Source}
 
-BS\_AG\_BLKS\_RES:
+BS\_AG\_BLKS\_RES: BCCH/???
+
+\TODO{Luca}{Add to parser and transaction database.}
+
+\TODO{Luca}{Which DB field?}
+
+
+BS\_CCCH\_SDCCH\_COMB: BCCH/???
+
+\TODO{Luca}{Add to parser and transaction database.}
+
+\TODO{Luca}{Which DB field?}
 
 BS\_CCCH\_SDCCH\_COMB:
 
-BS\_PA\_MFRRS:
+\TODO{Luca}{Add to parser and transaction database.}
 
-\FIXME{Implement.}
+\TODO{Luca}{Which DB field?}
 
-\FIXME{On Qualcomm we currently cannot correlate an ARFCN with the serving
-cell, i.e. we cannot distinguish serving cell SI2 information from neighboring
-cell SI2 information.}
 
-\FIXME{Which DB field?}
 
 \subsection{Overall Score}
 
