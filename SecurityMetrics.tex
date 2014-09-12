@@ -298,15 +298,13 @@ suitable value for is not yet known, this value must be configurable.
 
 \paragraph{Source}
 
-$CRO_{sc}$: Qualcomm DIAG, BCCH/SI3
+$CRO_{sc}$: Qualcomm DIAG, BCCH/SI3, Cell database field \verb|cell_info.cro|
 
-\TODO{Luca}{Add to parser and transaction database.}
+\TODO{Luca}{Store to cell info database.}
 
 \TODO{Luca}{We cannot distinguish serving cell SI3 information from neighboring
 cell SI3 information. Find way to correlate ARFCN with the serving cell with
 Qualcomm DIAG.}
-
-\TODO{Luca}{Which DB field?}
 
 \subsubsection{Score}
 
@@ -371,9 +369,7 @@ $s(A5/0) < s(A5/2) < s(A5/1) < s(A5/3)$.
 
 \paragraph{Source}
 
-$A$: Transaction database
-
-\TODO{Luca}{Which DB field?}
+$A$: Transaction database field \verb|session_info.cipher|
 
 \subsubsection{\critc{2}{Delayed CIPHER MODE COMPLETE acknowledgement}}
 
@@ -417,15 +413,9 @@ now, so $\Delta_{CMCP}$ must be configurable.
 
 \paragraph{Source}
 
-$t_{CMCP_0}$: Transaction database
+$t_{CMCP_0}$: Transaction database field \verb|session_info.cipher_comp_first|
 
-\TODO{Luca}{Which DB field?}
-
-$t_{CMCP_l}$: Transaction database
-
-\TODO{Luca}{Add to parser and transaction database.}
-
-\TODO{Luca}{Which DB field?}
+$t_{CMCP_l}$: Transaction database field \verb|session_info.cipher_comp_last|
 
 \subsubsection{\critc{3}{CIPHER MODE COMMAND message without IMEISV}}
 
@@ -465,9 +455,7 @@ $c_3 =
 
 \paragraph{Source}
 
-$CR$: Transaction database
-
-\TODO{Luca}{Which DB field?}
+$CR$: Transaction database field \verb|session_info.cmc_imeisv|
 
 \subsubsection{\critc{4}{ID requests during location update}}
 
@@ -509,13 +497,9 @@ $c_4 =
 
 \paragraph{Source}
 
-$ID_{IMSI}$: Transaction database
+$ID_{IMSI}$: Transaction database field \verb|session_info.iden_imsi_bc|
 
-\TODO{Luca}{Which DB field?}
-
-$ID_{IMEI}$: Transaction database
-
-\TODO{Luca}{Which DB field?}
+$ID_{IMEI}$: Transaction database field \verb|session_info.iden_imei_bc|
 
 \subsubsection{Score}
 
@@ -567,15 +551,13 @@ not have this information right now, so $T3212_{min}$ must be configurable.
 
 \paragraph{Source}
 
-$T3212_0$: Qualcomm DIAG, BCCH/SI3
+$T3212_0$: Qualcomm DIAG, BCCH/SI3, Cell database field \verb|cell_info.t3212|
 
-\TODO{Luca}{Add to parser and transaction database.}
+\TODO{Luca}{Store to cell database.}
 
 \TODO{Luca}{We cannot distinguish serving cell SI3 information from neighboring
 cell SI3 information. Find way to correlate ARFCN with the serving cell with
 Qualcomm DIAG.}
-
-\TODO{Luca}{Which DB field?}
 
 \subsubsection{\critt{3}{Paging without transaction}}
 
@@ -594,33 +576,28 @@ quickly enough such that the MS is paged, but no ALARM is signaled.
 
 \paragraph{Required Information}
 
-The mobile identity type used in this PAGING RESPONSE $MI_{PRS}$, $M_{IA}$
-indicating whether an RR IMMEDIATE ASSIGNMENT message was received and $M_{CR}$
+The mobile identity type used in this PAGING RESPONSE $MI_{PRS}$ and $M_{CR}$
 indicating whether a RR CHANNEL RELEASE message was received.
 
 \paragraph{Expression}
 
+\TODO{Alex}{The following formula should look like the one for Orphaned traffic channel
+but no TCH involved, only PAG RESP, followed by a CHAN REL and no CALL, SMS, etc.
+The condition of paging response is expressed by the mobile terminated flag}
+
 $t3 =
 \begin{cases}
-	1 & \text{if } MI_{PRS} = \text{"IMSI"} \wedge \neg M_{IA} \wedge M_{CR} \\
+	1 & \text{if } MI_{PRS} = \text{"IMSI"} \wedge M_{PR} \wedge M_{CR} \\
 	0 & \text{otherwise}
 \end{cases}$
 
-\TODO{Luca}{Check for sanity.}
-
 \paragraph{Source}
 
-$MI_{PRS}$: Transaction database
+$MI_{PRS}$: Transaction database field \verb|session_info.paging_mi|
 
-\TODO{Luca}{Which DB field?}
+$M_{PR}$: Transaction database \verb|session_info.mobile_term|
 
-$M_{IA}$: Transaction database
-
-\TODO{Luca}{Which DB field?}
-
-$M_{CR}$: Transaction database
-
-\TODO{Luca}{Which DB field?}
+$M_{CR}$: Transaction database \verb|session_info.t_release|
 
 \subsubsection{\critt{4}{Orphaned traffic channel}}
 
@@ -644,10 +621,9 @@ $t_i$ designates the timestamp message of type $i$ was received:
 
 \begin{tabular}{ll}
 \hline
-$t_{IA}$ & Timestamp of RR IMMEDIATE ASSIGNMENT for TCH \\
-$t_{CR}$ & Timestamp of RR CHANNEL RELEASE for TCH \\
-$M_{IA}$ & RR IMMEDIATE ASSIGNMENT for TCH \\
-$M_{CR}$ & RR CHANNEL RELEASE for TCH \\
+$t_{TR}$ & Transaction duration \\
+$M_{AC}$ & RR ASSIGNMENT COMPLETE for TCH \\
+$M_{CR}$ & RR CHANNEL RELEASE \\
 $M_{AR}$ & MM AUTHENTICATION REQUEST \\
 $M_{IR}$ & IDENTITY REQUEST \\
 $M_{CM}$ & RR CIPHER MODE COMMAND \\
@@ -662,7 +638,7 @@ $M_{SU}$ & CC SETUP \\
 
 $t4 =
 \begin{cases}
-	1 & \text{if } M_{IA} \wedge M_{CR} \wedge \neg M_{AR} \wedge \neg M_{IR} \wedge \neg M_{CM} \wedge \neg M_{SD} \wedge \neg M_{SU} \wedge (t_{CR} - t_{IA} > \Delta_{TCH}) \\
+	1 & \text{if } M_{AC} \wedge M_{CR} \wedge \neg M_{AR} \wedge \neg M_{IR} \wedge \neg M_{CM} \wedge \neg M_{SD} \wedge \neg M_{SU} \wedge (t_{TR} > \Delta_{TCH}) \\
 	0 & \text{otherwise}
 \end{cases}$
 
@@ -672,41 +648,23 @@ configurable.
 
 \paragraph{Source}
 
-$t_{IA}$: Transaction database
+$t_{TR}$: Transaction database field \verb|session_info.duration|
 
-\TODO{Luca}{Which DB field?}
+$M_{AC}$: Transaction database
 
-$t_{CR}$: Transaction database
+\TODO{Luca}{Add new field for ASSIGN COMPLETE}
 
-\TODO{Luca}{Which DB field?}
+$M_{CR}$: Transaction database field \verb|session_info.t_release|
 
-$M_{IA}$: Transaction database
+$M_{AR}$: Transaction database field \verb|session_info.auth|
 
-\TODO{Luca}{Which DB field?}
+$M_{IR}$: Transaction database fields \verb|session_info.iden_im{e,s}i_{a,b}c|
 
-$M_{CR}$: Transaction database
+$M_{CM}$: Transaction database field \verb|session_info.cipher > 0|
 
-\TODO{Luca}{Which DB field?}
+$M_{SD}$: Transaction database field \verb|session_info.sms_presence|
 
-$M_{AR}$: Transaction database
-
-\TODO{Luca}{Which DB field?}
-
-$M_{IR}$: Transaction database
-
-\TODO{Luca}{Which DB field?}
-
-$M_{CM}$: Transaction database
-
-\TODO{Luca}{Which DB field?}
-
-$M_{SD}$: Transaction database
-
-\TODO{Luca}{Which DB field?}
-
-$M_{SU}$: Transaction database
-
-\TODO{Luca}{Which DB field?}
+$M_{SU}$: Transaction database field \verb|session_info.call_presence|
 
 \subsubsection{\critt{7}{MS sends on high power}}
 
@@ -835,7 +793,7 @@ Unknown.
 
 \paragraph{Required Information}
 
-BS\_AG\_BLKS\_RES, BS\_CCCH\_SDCCH\_COMB and BS\_PA\_MFRRS
+BS\_AG\_BLKS\_RES, BS\_CCCH\_SDCCH\_COMB and BS\_PA\_MFRMS
 
 \paragraph{Expression}
 
@@ -851,24 +809,11 @@ do not have this information right now, so $N_{norm}$ must be configurable.
 
 \paragraph{Source}
 
-BS\_AG\_BLKS\_RES: BCCH/???
+BS\_AG\_BLKS\_RES: BCCH/SI3, Cell database field \verb|cell_info.agch_blocks|
 
-\TODO{Luca}{Add to parser and transaction database.}
+BS\_CCCH\_SDCCH\_COMB: BCCH/SI3, Cell database field \verb|cell_info.combined|
 
-\TODO{Luca}{Which DB field?}
-
-
-BS\_CCCH\_SDCCH\_COMB: BCCH/???
-
-\TODO{Luca}{Add to parser and transaction database.}
-
-\TODO{Luca}{Which DB field?}
-
-BS\_PA\_MFRRS: BCCH/???
-
-\TODO{Luca}{Add to parser and transaction database.}
-
-\TODO{Luca}{Which DB field?}
+BS\_PA\_MFRMS: BCCH/SI3, Cell database field \verb|cell_info.pag_mframes|
 
 \subsubsection{Score}
 
