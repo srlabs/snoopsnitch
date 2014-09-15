@@ -576,18 +576,26 @@ quickly enough such that the MS is paged, but no ALARM is signaled.
 
 \paragraph{Required Information}
 
-The mobile identity type used in this PAGING RESPONSE $MI_{PRS}$ and $M_{CR}$
-indicating whether a RR CHANNEL RELEASE message was received.
+$M_i$ indicates whether message of type $i$ was received in a transaction:
+
+\begin{tabular}{ll}
+\hline
+$M_{CR}$   & RR CHANNEL RELEASE \\
+$M_{AR}$   & MM AUTHENTICATION REQUEST \\
+$M_{IR}$   & IDENTITY REQUEST \\
+$M_{CM}$   & RR CIPHER MODE COMMAND \\
+$M_{SD}$   & SMS-DELIVER \\
+$M_{SU}$   & CC SETUP \\
+$M_{PRS}$  & PAGING RESPONSE \\
+$MI_{PRS}$ & Mobile identity type used in PAGING RESPONSE \\
+\hline
+\end{tabular}
 
 \paragraph{Expression}
 
-\TODO{Alex}{The following formula should look like the one for Orphaned traffic channel
-but no TCH involved, only PAG RESP, followed by a CHAN REL and no CALL, SMS, etc.
-The condition of paging response is expressed by the mobile terminated flag}
-
 $t3 =
 \begin{cases}
-	1 & \text{if } MI_{PRS} = \text{"IMSI"} \wedge M_{PR} \wedge M_{CR} \\
+	1 & \text{if } MI_{PRS} = \text{"IMSI"} \wedge M_{PRS} \wedge M_{CR} \wedge \neg M_{AR} \wedge \neg M_{IR} \wedge \neg M_{CM} \wedge \neg M_{SD} \wedge \neg M_{SU} \\
 	0 & \text{otherwise}
 \end{cases}$
 
@@ -595,9 +603,19 @@ $t3 =
 
 $MI_{PRS}$: Transaction database field \verb|session_info.paging_mi|
 
-$M_{PR}$: Transaction database \verb|session_info.mobile_term|
+$M_{PRS}$: Transaction database field \verb|session_info.mobile_term|
 
-$M_{CR}$: Transaction database \verb|session_info.t_release|
+$M_{CR}$: Transaction database field \verb|session_info.t_release|
+
+$M_{AR}$: Transaction database field \verb|session_info.auth|
+
+$M_{IR}$: Transaction database fields \verb|session_info.iden_im{e,s}i_{a,b}c|
+
+$M_{CM}$: Transaction database field \verb|session_info.cipher > 0|
+
+$M_{SD}$: Transaction database field \verb|session_info.sms_presence|
+
+$M_{SU}$: Transaction database field \verb|session_info.call_presence|
 
 \subsubsection{\critt{4}{Orphaned traffic channel}}
 
@@ -621,14 +639,15 @@ $t_i$ designates the timestamp message of type $i$ was received:
 
 \begin{tabular}{ll}
 \hline
-$t_{TR}$ & Transaction duration \\
-$M_{AC}$ & RR ASSIGNMENT COMPLETE for TCH \\
-$M_{CR}$ & RR CHANNEL RELEASE \\
-$M_{AR}$ & MM AUTHENTICATION REQUEST \\
-$M_{IR}$ & IDENTITY REQUEST \\
-$M_{CM}$ & RR CIPHER MODE COMMAND \\
-$M_{SD}$ & SMS-DELIVER \\
-$M_{SU}$ & CC SETUP \\
+$t_{TR} $ & Transaction duration \\
+$M_{AC} $ & RR ASSIGNMENT COMPLETE for TCH \\
+$M_{CR} $ & RR CHANNEL RELEASE \\
+$M_{AR} $ & MM AUTHENTICATION REQUEST \\
+$M_{IR} $ & IDENTITY REQUEST \\
+$M_{CM} $ & RR CIPHER MODE COMMAND \\
+$M_{SD} $ & SMS-DELIVER \\
+$M_{SU} $ & CC SETUP \\
+$M_{PRS}$ & PAGING RESPONSE \\
 \hline
 \end{tabular}
 
@@ -638,7 +657,7 @@ $M_{SU}$ & CC SETUP \\
 
 $t4 =
 \begin{cases}
-	1 & \text{if } M_{AC} \wedge M_{CR} \wedge \neg M_{AR} \wedge \neg M_{IR} \wedge \neg M_{CM} \wedge \neg M_{SD} \wedge \neg M_{SU} \wedge (t_{TR} > \Delta_{TCH}) \\
+	1 & \text{if } (M_{AC} \vee M_{PR}) \wedge M_{CR} \wedge \neg M_{AR} \wedge \neg M_{IR} \wedge \neg M_{CM} \wedge \neg M_{SD} \wedge \neg M_{SU} \wedge (t_{TR} > \Delta_{TCH}) \\
 	0 & \text{otherwise}
 \end{cases}$
 
