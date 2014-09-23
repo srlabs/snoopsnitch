@@ -3,6 +3,8 @@ LIBVERSION=0:0:0
 INCLUDES = $(all_includes) -I/usr/share/asn1c -I$(top_srcdir)/include
 AM_CFLAGS = -fPIC -O3 -Wall
 
+libosmo_asn1_rrc_la_LDFLAGS=-lasn1c
+
 libosmo_asn1_rrc_la_SOURCES=	\
 	DL-DCCH-Message.c	\
 	DL-DCCH-MessageType.c	\
