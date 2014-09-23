@@ -1,0 +1,59 @@
+diff --git a/src/ctrl/control_if.c b/src/ctrl/control_if.c
+index c20c1e0..305ca4d 100644
+--- a/src/ctrl/control_if.c
++++ b/src/ctrl/control_if.c
+@@ -34,7 +34,7 @@
+ #include <netinet/tcp.h>
+ #include <netinet/in.h>
+ 
+-#include <sys/fcntl.h>
++#include <fcntl.h>
+ #include <sys/ioctl.h>
+ #include <sys/socket.h>
+ #include <sys/types.h>
+diff --git a/src/macaddr.c b/src/macaddr.c
+index 7bc4401..3cd3541 100644
+--- a/src/macaddr.c
++++ b/src/macaddr.c
+@@ -24,6 +24,8 @@
+ #include <string.h>
+ #include <stdlib.h>
+ #include <unistd.h>
++#include <sys/types.h>
++#include <sys/socket.h>
+ 
+ 
+ int osmo_macaddr_parse(uint8_t *out, const char *in)
+diff --git a/src/socket.c b/src/socket.c
+index 844ebd3..7d295cf 100644
+--- a/src/socket.c
++++ b/src/socket.c
+@@ -48,7 +48,8 @@
+ #include <string.h>
+ #include <errno.h>
+ #include <netdb.h>
+-#include <ifaddrs.h>
++// JL
++// #include <ifaddrs.h>
+ 
+ /*! \brief Initialize a socket (including bind/connect)
+  *  \param[in] family Address Family like AF_INET, AF_INET6, AF_UNSPEC
+@@ -262,7 +263,8 @@ static int sockaddr_equal(const struct sockaddr *a,
+  */
+ int osmo_sockaddr_is_local(struct sockaddr *addr, unsigned int addrlen)
+ {
+-	struct ifaddrs *ifaddr, *ifa;
++  // JL: getifaddrs not available in Android bionic
++  /*	struct ifaddrs *ifaddr, *ifa;
+ 
+ 	if (getifaddrs(&ifaddr) == -1) {
+ 		perror("getifaddrs");
+@@ -274,7 +276,7 @@ int osmo_sockaddr_is_local(struct sockaddr *addr, unsigned int addrlen)
+ 			continue;
+ 		if (sockaddr_equal(ifa->ifa_addr, addr, addrlen))
+ 			return 1;
+-	}
++			}*/
+ 
+ 	return 0;
+ }

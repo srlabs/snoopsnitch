@@ -1,0 +1,367 @@
+diff --git a/include/osmocom/core/gsmtap.h b/include/osmocom/core/gsmtap.h
+index 69bd108..67f027c 100644
+--- a/include/osmocom/core/gsmtap.h
++++ b/include/osmocom/core/gsmtap.h
+@@ -219,6 +219,19 @@ enum {
+ 	GSMTAP_RRC_SUB_MAX
+ };
+ 
++enum {
++        GSMTAP_LTE_RRC_SUB_DL_CCCH = 0,
++        GSMTAP_LTE_RRC_SUB_DL_DCCH,
++        GSMTAP_LTE_RRC_SUB_UL_CCCH,
++        GSMTAP_LTE_RRC_SUB_UL_DCCH,
++        GSMTAP_LTE_RRC_SUB_BCCH_BCH,
++        GSMTAP_LTE_RRC_SUB_BCCH_DL_SCH,
++        GSMTAP_LTE_RRC_SUB_PCCH,
++        GSMTAP_LTE_RRC_SUB_MCCH,
++
++        GSMTAP_LTE_RRC_SUB_MAX
++};
++
+ /* ====== DO NOT MAKE UNAPPROVED MODIFICATIONS HERE ===== */
+ struct gsmtap_hdr {
+ 	uint8_t version;	/* version, set to 0x01 currently */
+diff --git a/include/osmocom/gsm/gsm0808.h b/include/osmocom/gsm/gsm0808.h
+index a7e102c..facbdc4 100644
+--- a/include/osmocom/gsm/gsm0808.h
++++ b/include/osmocom/gsm/gsm0808.h
+@@ -46,3 +46,5 @@ const struct tlv_definition *gsm0808_att_tlvdef(void);
+ 
+ const char *gsm0808_bssmap_name(uint8_t msg_type);
+ const char *gsm0808_bssap_name(uint8_t msg_type);
++
++const char *bssmap_cause_name(uint8_t cause);
+diff --git a/include/osmocom/gsm/gsm48.h b/include/osmocom/gsm/gsm48.h
+index a4522d7..d99782c 100644
+--- a/include/osmocom/gsm/gsm48.h
++++ b/include/osmocom/gsm/gsm48.h
+@@ -21,6 +21,8 @@ extern const struct tlv_definition gsm48_mm_att_tlvdef;
+ const char *gsm48_cc_state_name(uint8_t state);
+ const char *gsm48_cc_msg_name(uint8_t msgtype);
+ const char *rr_cause_name(uint8_t cause);
++const char *mm_cause_name(uint8_t cause);
++const char *cc_cause_name(uint8_t cause);
+ 
+ int gsm48_decode_lai(struct gsm48_loc_area_id *lai, uint16_t *mcc,
+ 		     uint16_t *mnc, uint16_t *lac);
+diff --git a/include/osmocom/gsm/protocol/gsm_04_08.h b/include/osmocom/gsm/protocol/gsm_04_08.h
+index 9fcdddc..eefaf2b 100644
+--- a/include/osmocom/gsm/protocol/gsm_04_08.h
++++ b/include/osmocom/gsm/protocol/gsm_04_08.h
+@@ -514,6 +514,12 @@ struct gsm48_system_information_type_2ter {
+ 	uint8_t rest_octets[0];
+ } __attribute__ ((packed));
+ 
++/* Section 9.1.34a System information Type 2quater */
++struct gsm48_system_information_type_2quater {
++	struct gsm48_system_information_type_header header;
++	uint8_t rest_octets[0];
++} __attribute__ ((packed));
++
+ /* Section 9.1.35 System information Type 3 */
+ struct gsm48_system_information_type_3 {
+ 	struct gsm48_system_information_type_header header;
+@@ -792,6 +798,7 @@ struct gsm48_rr_status {
+ 
+ #define GSM48_MT_RR_SYSINFO_2bis	0x02
+ #define GSM48_MT_RR_SYSINFO_2ter	0x03
++#define GSM48_MT_RR_SYSINFO_2quater	0x07
+ #define GSM48_MT_RR_SYSINFO_5bis	0x05
+ #define GSM48_MT_RR_SYSINFO_5ter	0x06
+ #define GSM48_MT_RR_SYSINFO_9		0x04
+diff --git a/src/gsm/gsm0411_smc.c b/src/gsm/gsm0411_smc.c
+index 297850e..d98e94a 100644
+--- a/src/gsm/gsm0411_smc.c
++++ b/src/gsm/gsm0411_smc.c
+@@ -64,7 +64,7 @@ static void cp_timer_expired(void *data);
+ 
+ #define MAX_SMS_RETRY 2
+ 
+-#define SMC_LOG_STR "SMC(%" PRIu64 ") "
++#define SMC_LOG_STR "SMC(%llu) "
+ 
+ /* init a new instance */
+ void gsm411_smc_init(struct gsm411_smc_inst *inst, uint64_t id, int network,
+diff --git a/src/gsm/gsm0808.c b/src/gsm/gsm0808.c
+index 29cca82..497bb25 100644
+--- a/src/gsm/gsm0808.c
++++ b/src/gsm/gsm0808.c
+@@ -533,6 +533,49 @@ static const struct value_string gsm0808_msgt_names[] = {
+ 	{ 0, NULL }
+ };
+ 
++static const struct value_string bssmap_cause_names[] = {
++	{ GSM0808_CAUSE_RADIO_INTERFACE_MESSAGE_FAILURE,		"Radio interface message failure" },
++	{ GSM0808_CAUSE_RADIO_INTERFACE_FAILURE,			"Radio interface failure" },
++	{ GSM0808_CAUSE_UPLINK_QUALITY,					"Uplink quality" },
++	{ GSM0808_CAUSE_UPLINK_STRENGTH,				"Uplink strenght" },
++	{ GSM0808_CAUSE_DOWNLINK_QUALITY,				"Downlink quality" },
++	{ GSM0808_CAUSE_DOWNLINK_STRENGTH,				"Downlink strenght" },
++	{ GSM0808_CAUSE_DISTANCE,					"Distance" },
++	{ GSM0808_CAUSE_O_AND_M_INTERVENTION,				"O&M intervention" },
++	{ GSM0808_CAUSE_RESPONSE_TO_MSC_INVOCATION,			"Response to MSC invocation" },
++	{ GSM0808_CAUSE_CALL_CONTROL,					"Call control" },
++	{ GSM0808_CAUSE_RADIO_INTERFACE_FAILURE_REVERSION,		"Radio interface failure reversion" },
++	{ GSM0808_CAUSE_HANDOVER_SUCCESSFUL,				"Handover successful" },
++	{ GSM0808_CAUSE_BETTER_CELL,					"Better cell" },
++	{ GSM0808_CAUSE_DIRECTED_RETRY,					"Directed retry" },
++	{ GSM0808_CAUSE_JOINED_GROUP_CALL_CHANNEL,			"Joined group call channel" },
++	{ GSM0808_CAUSE_TRAFFIC,					"Traffic" },
++	{ GSM0808_CAUSE_EQUIPMENT_FAILURE,				"Equipment failure" },
++	{ GSM0808_CAUSE_NO_RADIO_RESOURCE_AVAILABLE,			"No radio resource available" },
++	{ GSM0808_CAUSE_RQSTED_TERRESTRIAL_RESOURCE_UNAVAILABLE,	"Requested terrestrial resource unavailable" },
++	{ GSM0808_CAUSE_CCCH_OVERLOAD,					"CCCH overload" },
++	{ GSM0808_CAUSE_PROCESSOR_OVERLOAD,				"Processor overload" },
++	{ GSM0808_CAUSE_BSS_NOT_EQUIPPED,				"BSS not equipped" },
++	{ GSM0808_CAUSE_MS_NOT_EQUIPPED,				"MS not equipped" },
++	{ GSM0808_CAUSE_INVALID_CELL,					"Invalid cell" },
++	{ GSM0808_CAUSE_TRAFFIC_LOAD,					"Traffic load" },
++	{ GSM0808_CAUSE_PREEMPTION,					"Preemption" },
++	{ GSM0808_CAUSE_RQSTED_TRANSCODING_RATE_ADAPTION_UNAVAILABLE,	"Requested transcoding rate adapt. unavailable" },
++	{ GSM0808_CAUSE_CIRCUIT_POOL_MISMATCH,				"Circuit pool mismatch" },
++	{ GSM0808_CAUSE_SWITCH_CIRCUIT_POOL,				"Switch ciruit pool" },
++	{ GSM0808_CAUSE_RQSTED_SPEECH_VERSION_UNAVAILABLE,		"Requested speech version unavailable" },
++	{ GSM0808_CAUSE_LSA_NOT_ALLOWED,				"LSA not allowed" },
++	{ GSM0808_CAUSE_CIPHERING_ALGORITHM_NOT_SUPPORTED,		"Ciphering algorithm not supported" },
++	{ GSM0808_CAUSE_TERRESTRIAL_CIRCUIT_ALREADY_ALLOCATED,		"Terrestrial circuit already allocated" },
++	{ GSM0808_CAUSE_INVALID_MESSAGE_CONTENTS,			"Invalid message contents" },
++	{ GSM0808_CAUSE_INFORMATION_ELEMENT_OR_FIELD_MISSING,		"Information element or field missing" },
++	{ GSM0808_CAUSE_INCORRECT_VALUE,				"Incorrect value" },
++	{ GSM0808_CAUSE_UNKNOWN_MESSAGE_TYPE,				"Unknown message type" },
++	{ GSM0808_CAUSE_UNKNOWN_INFORMATION_ELEMENT,			"Unknown information element" },
++	{ GSM0808_CAUSE_PROTOCOL_ERROR_BETWEEN_BSS_AND_MSC,		"Protocol error between BSS and MSC" },
++	{ 0,								NULL },
++};
++
+ const char *gsm0808_bssmap_name(uint8_t msg_type)
+ {
+ 	return get_value_string(gsm0808_msgt_names, msg_type);
+@@ -547,3 +590,8 @@ const char *gsm0808_bssap_name(uint8_t msg_type)
+ {
+ 	return get_value_string(gsm0808_bssap_names, msg_type);
+ }
++
++const char *bssmap_cause_name(uint8_t cause)
++{
++	return get_value_string(bssmap_cause_names, cause);
++}
+diff --git a/src/gsm/gsm48.c b/src/gsm/gsm48.c
+index 80f7502..3554b17 100644
+--- a/src/gsm/gsm48.c
++++ b/src/gsm/gsm48.c
+@@ -161,6 +161,125 @@ static const struct value_string rr_cause_names[] = {
+ 	{ 0,					NULL },
+ };
+ 
++static const struct value_string mm_cause_names[] = {
++	{ GSM48_REJECT_IMSI_UNKNOWN_IN_HLR,		"IMSI unknown in HLR" },
++	{ GSM48_REJECT_ILLEGAL_MS,			"Illegal MS" },
++	{ GSM48_REJECT_IMSI_UNKNOWN_IN_VLR,		"IMSI unknown in VLR" },
++	{ GSM48_REJECT_IMEI_NOT_ACCEPTED,		"IMEI not accepted" },
++	{ GSM48_REJECT_ILLEGAL_ME,			"Illegal ME" },
++	{ GSM48_REJECT_PLMN_NOT_ALLOWED,		"PLMN not allowed" },
++	{ GSM48_REJECT_LOC_NOT_ALLOWED,			"Location not allowed" },
++	{ GSM48_REJECT_ROAMING_NOT_ALLOWED,		"Roaming not allowed" },
++	{ GSM48_REJECT_NETWORK_FAILURE,			"Network failure" },
++	{ GSM48_REJECT_CONGESTION,			"Congestion" },
++	{ GSM48_REJECT_SRV_OPT_NOT_SUPPORTED,		"Service option not supported" },
++	{ GSM48_REJECT_RQD_SRV_OPT_NOT_SUPPORTED,	"Requested serv. opt. not supported" },
++	{ GSM48_REJECT_SRV_OPT_TMP_OUT_OF_ORDER,	"Service option temp. out of order" },
++	{ GSM48_REJECT_CALL_CAN_NOT_BE_IDENTIFIED,	"Call can not be identified" },
++	{ GSM48_REJECT_INCORRECT_MESSAGE,		"Incorrect message" },
++	{ GSM48_REJECT_INVALID_MANDANTORY_INF,		"Invalid mandatory information" },
++	{ GSM48_REJECT_MSG_TYPE_NOT_IMPLEMENTED,	"Msg. type not implemented" },
++	{ GSM48_REJECT_MSG_TYPE_NOT_COMPATIBLE,		"Msg. type not compatible" },
++	{ GSM48_REJECT_INF_ELEME_NOT_IMPLEMENTED,	"Information elem. not implemeneted" },
++	{ GSM48_REJECT_CONDTIONAL_IE_ERROR,		"Conditional IE error" },
++	{ GSM48_REJECT_MSG_NOT_COMPATIBLE,		"Message not compatible" },
++	{ GSM48_REJECT_PROTOCOL_ERROR,			"Protocol error" },
++	{ GSM48_REJECT_GPRS_NOT_ALLOWED,		"GPRS not allowed" },
++	{ GSM48_REJECT_SERVICES_NOT_ALLOWED,		"Services not allowed" },
++	{ GSM48_REJECT_MS_IDENTITY_NOT_DERVIVABLE,	"MS identity not derivable" },
++	{ GSM48_REJECT_IMPLICITLY_DETACHED,		"Implicitly detached" },
++	{ GSM48_REJECT_GPRS_NOT_ALLOWED_IN_PLMN,	"GPRS not allowed in PLMN" },
++	{ GSM48_REJECT_MSC_TMP_NOT_REACHABLE,		"MSC temporary not reachable" },
++	{ 0,						NULL },
++};
++
++static const struct value_string cc_cause_names[] = {
++	{ GSM48_CC_CAUSE_UNASSIGNED_NR,		"Unassigned number" },
++	{ GSM48_CC_CAUSE_NO_ROUTE,		"No route" },
++	{ GSM48_CC_CAUSE_CHAN_UNACCEPT,		"Channel unacceptable" },
++	{ GSM48_CC_CAUSE_OP_DET_BARRING,	"Oper. determ. barring" },
++	{ GSM48_CC_CAUSE_NORM_CALL_CLEAR,	"Normal" },
++	{ GSM48_CC_CAUSE_USER_BUSY,		"User busy" },
++	{ GSM48_CC_CAUSE_USER_NOTRESPOND,	"User no reply" },
++	{ GSM48_CC_CAUSE_USER_ALERTING_NA,	"User alerting not avail." },
++	{ GSM48_CC_CAUSE_CALL_REJECTED,		"Call rejected" },
++	{ GSM48_CC_CAUSE_NUMBER_CHANGED,	"Number changed" },
++	{ GSM48_CC_CAUSE_PRE_EMPTION,		"Preemption" },
++	{ GSM48_CC_CAUSE_NONSE_USER_CLR,	"Non user TODO" },
++	{ GSM48_CC_CAUSE_DEST_OOO,		"Destination overload" },
++	{ GSM48_CC_CAUSE_INV_NR_FORMAT,		"Invalid number format" },
++	{ GSM48_CC_CAUSE_FACILITY_REJ,		"Facility rejected" },
++	{ GSM48_CC_CAUSE_RESP_STATUS_INQ,	"Response status inquiry" },
++	{ GSM48_CC_CAUSE_NORMAL_UNSPEC,		"Normal (unspec)" },
++	{ GSM48_CC_CAUSE_NO_CIRCUIT_CHAN,	"No circuit" },
++	{ GSM48_CC_CAUSE_NETWORK_OOO,		"Network overload" },
++	{ GSM48_CC_CAUSE_TEMP_FAILURE,		"Temporary failure" },
++	{ GSM48_CC_CAUSE_SWITCH_CONG,		"Switch congestion" },
++	{ GSM48_CC_CAUSE_ACC_INF_DISCARD,	"Accounting info discard" },
++	{ GSM48_CC_CAUSE_REQ_CHAN_UNAVAIL,	"Requested channel unavailable" },
++	{ GSM48_CC_CAUSE_RESOURCE_UNAVAIL,	"Resource unavailable" },
++	{ GSM48_CC_CAUSE_QOS_UNAVAIL,		"QOS unavailable" },
++	{ GSM48_CC_CAUSE_REQ_FAC_NOT_SUBSC,	"Requested facility not subscribed" },
++	{ GSM48_CC_CAUSE_INC_BARRED_CUG,	"Incoming barred CUG" },
++	{ GSM48_CC_CAUSE_BEARER_CAP_UNAUTH,	"Bearer cap. unauthenticated" },
++	{ GSM48_CC_CAUSE_BEARER_CA_UNAVAIL,	"Bearer cap. unavailable" },
++	{ GSM48_CC_CAUSE_SERV_OPT_UNAVAIL,	"Service option unavailable" },
++	{ GSM48_CC_CAUSE_BEARERSERV_UNIMPL,	"Bearer service unimplemented" },
++	{ GSM48_CC_CAUSE_ACM_GE_ACM_MAX,	"ACM >= ACM_MAX" },
++	{ GSM48_CC_CAUSE_REQ_FAC_NOTIMPL,	"Requested facility not implemented" },
++	{ GSM48_CC_CAUSE_RESTR_BCAP_AVAIL,	"Requestor bearer cap. unavailable" },
++	{ GSM48_CC_CAUSE_UNASSIGNED_NR,		"Unassigned number" },
++	{ GSM48_CC_CAUSE_NO_ROUTE,		"No route" },
++	{ GSM48_CC_CAUSE_CHAN_UNACCEPT,		"Channel unacceptable" },
++	{ GSM48_CC_CAUSE_OP_DET_BARRING,	"Oper. determ. barring" },
++	{ GSM48_CC_CAUSE_NORM_CALL_CLEAR,	"Normal" },
++	{ GSM48_CC_CAUSE_USER_BUSY,		"User busy" },
++	{ GSM48_CC_CAUSE_USER_NOTRESPOND,	"User no reply" },
++	{ GSM48_CC_CAUSE_USER_ALERTING_NA,	"User alerting not avail." },
++	{ GSM48_CC_CAUSE_CALL_REJECTED,		"Call rejected" },
++	{ GSM48_CC_CAUSE_NUMBER_CHANGED,	"Number changed" },
++	{ GSM48_CC_CAUSE_PRE_EMPTION,		"Preemption" },
++	{ GSM48_CC_CAUSE_NONSE_USER_CLR,	"Non user TODO" },
++	{ GSM48_CC_CAUSE_DEST_OOO,		"Destination overload" },
++	{ GSM48_CC_CAUSE_INV_NR_FORMAT,		"Invalid number format" },
++	{ GSM48_CC_CAUSE_FACILITY_REJ,		"Facility rejected" },
++	{ GSM48_CC_CAUSE_RESP_STATUS_INQ,	"Response status inquiry" },
++	{ GSM48_CC_CAUSE_NORMAL_UNSPEC,		"Normal (unspec)" },
++	{ GSM48_CC_CAUSE_NO_CIRCUIT_CHAN,	"No circuit" },
++	{ GSM48_CC_CAUSE_NETWORK_OOO,		"Network overload" },
++	{ GSM48_CC_CAUSE_TEMP_FAILURE,		"Temporary failure" },
++	{ GSM48_CC_CAUSE_SWITCH_CONG,		"Switch congestion" },
++	{ GSM48_CC_CAUSE_ACC_INF_DISCARD,	"Accounting info discard" },
++	{ GSM48_CC_CAUSE_REQ_CHAN_UNAVAIL,	"Requested channel unavailable" },
++	{ GSM48_CC_CAUSE_RESOURCE_UNAVAIL,	"Resource unavailable" },
++	{ GSM48_CC_CAUSE_QOS_UNAVAIL,		"QOS unavailable" },
++	{ GSM48_CC_CAUSE_REQ_FAC_NOT_SUBSC,	"Requested facility not subscribed" },
++	{ GSM48_CC_CAUSE_INC_BARRED_CUG,	"Incoming barred CUG" },
++	{ GSM48_CC_CAUSE_BEARER_CAP_UNAUTH,	"Bearer cap. unauthenticated" },
++	{ GSM48_CC_CAUSE_BEARER_CA_UNAVAIL,	"Bearer cap. unavailable" },
++	{ GSM48_CC_CAUSE_SERV_OPT_UNAVAIL,	"Service option unavailable" },
++	{ GSM48_CC_CAUSE_BEARERSERV_UNIMPL,	"Bearer service unimplemented" },
++	{ GSM48_CC_CAUSE_ACM_GE_ACM_MAX,	"ACM >= ACM_MAX" },
++	{ GSM48_CC_CAUSE_REQ_FAC_NOTIMPL,	"Requested facility not implemented" },
++	{ GSM48_CC_CAUSE_RESTR_BCAP_AVAIL,	"Requestor bearer cap. unavailable" },
++	{ GSM48_CC_CAUSE_SERV_OPT_UNIMPL,	"Service option unimplemented" },
++	{ GSM48_CC_CAUSE_INVAL_TRANS_ID,	"Invalid transaction ID" },
++	{ GSM48_CC_CAUSE_USER_NOT_IN_CUG,	"User not in CUG" },
++	{ GSM48_CC_CAUSE_INCOMPAT_DEST,		"Incompatible destination" },
++	{ GSM48_CC_CAUSE_INVAL_TRANS_NET,	"Invalid transaction network" },
++	{ GSM48_CC_CAUSE_SEMANTIC_INCORR,	"Semantic incorrect" },
++	{ GSM48_CC_CAUSE_INVAL_MAND_INF,	"Invalid mandatory information" },
++	{ GSM48_CC_CAUSE_MSGTYPE_NOTEXIST,	"Msg. type not existent" },
++	{ GSM48_CC_CAUSE_MSGTYPE_INCOMPAT,	"Msg. type incompatilble" },
++	{ GSM48_CC_CAUSE_IE_NOTEXIST,		"Information element not existing" },
++	{ GSM48_CC_CAUSE_COND_IE_ERR,		"Conditional IE error" },
++	{ GSM48_CC_CAUSE_MSG_INCOMP_STATE,	"Msg. in incompatible state" },
++	{ GSM48_CC_CAUSE_RECOVERY_TIMER,	"Recovery timer" },
++	{ GSM48_CC_CAUSE_PROTO_ERR,		"Protocol error" },
++	{ GSM48_CC_CAUSE_INTERWORKING,		"Interworking" },
++	{ 0,					NULL },
++};
++
+ /* FIXME: convert to value_string */
+ static const char *cc_state_names[32] = {
+ 	"NULL",
+@@ -254,6 +373,16 @@ const char *rr_cause_name(uint8_t cause)
+ 	return get_value_string(rr_cause_names, cause);
+ }
+ 
++const char *mm_cause_name(uint8_t cause)
++{
++	return get_value_string(mm_cause_names, cause);
++}
++
++const char *cc_cause_name(uint8_t cause)
++{
++	return get_value_string(cc_cause_names, cause);
++}
++
+ static void to_bcd(uint8_t *bcd, uint16_t val)
+ {
+ 	bcd[2] = val % 10;
+diff --git a/src/gsm/gsm48_ie.c b/src/gsm/gsm48_ie.c
+index 2cc0645..2371d9c 100644
+--- a/src/gsm/gsm48_ie.c
++++ b/src/gsm/gsm48_ie.c
+@@ -791,8 +791,8 @@ int gsm48_decode_freq_list(struct gsm_sysinfo_freq *f, uint8_t *cd,
+ 		return 0;
+ 	}
+ 
+-	/* 10..0XX. */
+-	if ((cd[0] & 0xc8 & mask) == 0x80) {
++	/* 1...0XX. */
++	if ((cd[0] & 0x88 & mask) == 0x80) {
+ 		/* Range 1024 format */
+ 		uint16_t w[17]; /* 1..16 */
+ 		struct gsm48_range_1024 *r = (struct gsm48_range_1024 *)cd;
+@@ -868,8 +868,8 @@ int gsm48_decode_freq_list(struct gsm_sysinfo_freq *f, uint8_t *cd,
+ 
+ 		return 0;
+ 	}
+-	/* 10..100. */
+-	if ((cd[0] & 0xce & mask) == 0x88) {
++	/* 1...100. */
++	if ((cd[0] & 0x8e & mask) == 0x88) {
+ 		/* Range 512 format */
+ 		uint16_t w[18]; /* 1..17 */
+ 		struct gsm48_range_512 *r = (struct gsm48_range_512 *)cd;
+@@ -949,8 +949,8 @@ int gsm48_decode_freq_list(struct gsm_sysinfo_freq *f, uint8_t *cd,
+ 
+ 		return 0;
+ 	}
+-	/* 10..101. */
+-	if ((cd[0] & 0xce & mask) == 0x8a) {
++	/* 1...101. */
++	if ((cd[0] & 0x8e & mask) == 0x8a) {
+ 		/* Range 256 format */
+ 		uint16_t w[22]; /* 1..21 */
+ 		struct gsm48_range_256 *r = (struct gsm48_range_256 *)cd;
+@@ -1046,8 +1046,8 @@ int gsm48_decode_freq_list(struct gsm_sysinfo_freq *f, uint8_t *cd,
+ 
+ 		return 0;
+ 	}
+-	/* 10..110. */
+-	if ((cd[0] & 0xce & mask) == 0x8c) {
++	/* 1...110. */
++	if ((cd[0] & 0x8e & mask) == 0x8c) {
+ 		/* Range 128 format */
+ 		uint16_t w[29]; /* 1..28 */
+ 		struct gsm48_range_128 *r = (struct gsm48_range_128 *)cd;
+@@ -1171,8 +1171,8 @@ int gsm48_decode_freq_list(struct gsm_sysinfo_freq *f, uint8_t *cd,
+ 
+ 		return 0;
+ 	}
+-	/* 10..111. */
+-	if ((cd[0] & 0xce & mask) == 0x8e) {
++	/* 1...111. */
++	if ((cd[0] & 0x8e & mask) == 0x8e) {
+ 		/* Variable bitmap format (can be any length >= 3) */
+ 		uint16_t orig = 0;
+ 		struct gsm48_var_bit *r = (struct gsm48_var_bit *)cd;
+diff --git a/src/gsm/gsm_utils.c b/src/gsm/gsm_utils.c
+index 198ec69..387da7f 100644
+--- a/src/gsm/gsm_utils.c
++++ b/src/gsm/gsm_utils.c
+@@ -137,7 +137,7 @@ int gsm_7bit_decode_n_hdr(char *text, size_t n, const uint8_t *user_data, uint8_
+ 	const char *text_buf_end = text + n;
+ 	int nchars;
+ 
+-	OSMO_ASSERT (n > 0);
++	//OSMO_ASSERT (n > 0);
+ 
+ 	/* skip the user data header */
+ 	if (ud_hdr_ind) {

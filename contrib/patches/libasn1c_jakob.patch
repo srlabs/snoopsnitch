@@ -1,0 +1,13 @@
+diff --git a/configure.ac b/configure.ac
+index 6fc752a..66a0897 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -15,7 +15,7 @@ AC_PROG_LIBTOOL
+ 
+ AC_CONFIG_MACRO_DIR([m4])
+ 
+-PKG_CHECK_MODULES(LIBOSMOCORE, libosmocore >= 0.1.13)
++#PKG_CHECK_MODULES(LIBOSMOCORE, libosmocore >= 0.1.13)
+ 
+ # The following test is taken from WebKit's webkit.m4
+ saved_CFLAGS="$CFLAGS"

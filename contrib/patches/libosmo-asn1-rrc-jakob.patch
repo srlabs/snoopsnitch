@@ -1,0 +1,11 @@
+--- compile1/libosmo-asn1-rrc/src/Makefile.am	2013-09-28 01:07:45.000000000 +0200
++++ compile2/libosmo-asn1-rrc/src/Makefile.am	2014-09-16 14:34:44.224690248 +0200
+@@ -3,6 +3,8 @@
+ INCLUDES = $(all_includes) -I/usr/share/asn1c -I$(top_srcdir)/include
+ AM_CFLAGS = -fPIC -O3 -Wall
+ 
++libosmo_asn1_rrc_la_LDFLAGS=-lasn1c
++
+ libosmo_asn1_rrc_la_SOURCES=	\
+ 	DL-DCCH-Message.c	\
+ 	DL-DCCH-MessageType.c	\
