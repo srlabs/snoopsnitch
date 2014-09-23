@@ -1,5 +1,5 @@
 #! /bin/bash -x
 set -e
-git clone ssh://gitolite@git.srlabs.de/metagsm.git
-cd metagsm
-make -f Makefile.Android -j 4
+
+cd ${BASE_DIR}/metagsm
+make -f Makefile.Android -j 4 DESTDIR=${OUTPUT_DIR}/out/metagsm install
