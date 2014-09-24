@@ -19,6 +19,22 @@ fi
 
 BASE_DIR="$( cd "$( dirname $0 )" && pwd )"
 
+# update submodules if necessary
+if [ -e libasn1c ];
+then
+	(cd .. && git submodule init contrib/libasn1c)
+fi
+
+if [ -e libosmocore ];
+then
+	(cd .. && git submodule init contrib/libosmocore)
+fi
+
+if [ -e metagsm];
+then
+	(cd .. && git submodule init contrib/metagsm)
+fi
+
 mkdir $1
 cd $1
 
