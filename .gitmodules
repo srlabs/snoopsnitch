@@ -1,9 +1,9 @@
 [submodule "contrib/libasn1c"]
 	path = contrib/libasn1c
-	url = /home/alex/Devel/msd-app/../../build/libasn1c
+	url = git://git.osmocom.org/libasn1c
 [submodule "contrib/libosmocore"]
 	path = contrib/libosmocore
-	url = /home/alex/Devel/msd-app/../../build/libosmocore
+	url = git://git.osmocom.org/libosmocore/
 [submodule "contrib/metagsm"]
 	path = contrib/metagsm
-	url = /home/alex/Devel/msd-app/../../build/metagsm
+	url = ssh://gitolite@git.srlabs.de/metagsm.git
