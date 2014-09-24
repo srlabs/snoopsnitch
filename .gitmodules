@@ -1,9 +1,12 @@
 [submodule "contrib/libasn1c"]
 	path = contrib/libasn1c
 	url = git://git.osmocom.org/libasn1c
+	ignore = dirty
 [submodule "contrib/libosmocore"]
 	path = contrib/libosmocore
 	url = git://git.osmocom.org/libosmocore/
+	ignore = dirty
 [submodule "contrib/metagsm"]
 	path = contrib/metagsm
 	url = ssh://gitolite@git.srlabs.de/metagsm.git
+	ignore = dirty
