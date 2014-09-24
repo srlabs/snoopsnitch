@@ -1,0 +1,11 @@
+To build the native part of the app (GSM parser and required libraries), invoke
+the compile script with an Android base directory and an output directory
+specified, e.g.:
+
+$ NDK_DIR=~/Devel/android-ndk-r10b ./compile.sh build_dir
+
+The result of the build is put into <build_dir>/parser. The ./prebuild
+directory contains a checked-in binary version of parser and libraries. Note,
+that this directory is not updated automatically by the build process. The
+files in <build_dir>/parser need to be copied to ./prebuild and checked in
+manually.
