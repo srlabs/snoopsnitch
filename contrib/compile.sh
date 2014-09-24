@@ -22,17 +22,17 @@ BASE_DIR="$( cd "$( dirname $0 )" && pwd )"
 # update submodules if necessary
 if [ -e libasn1c ];
 then
-	(cd .. && git submodule init contrib/libasn1c)
+	(cd .. && git submodule init contrib/libasn1c && git submodule update contrib/libasn1c)
 fi
 
 if [ -e libosmocore ];
 then
-	(cd .. && git submodule init contrib/libosmocore)
+	(cd .. && git submodule init contrib/libosmocore && git submodule update contrib/libosmocore)
 fi
 
-if [ -e metagsm];
+if [ -e metagsm ];
 then
-	(cd .. && git submodule init contrib/metagsm)
+	(cd .. && git submodule init contrib/metagsm && git submodule update contrib/metagsm)
 fi
 
 mkdir $1
