@@ -2,7 +2,8 @@
 set -e
 
 cd $BASE_DIR/libasn1c
-git checkout -f
+git reset --hard
+git clean -f
 patch -p1 < $BASE_DIR/patches/libasn1c_jakob.patch
 
 autoreconf -fi
