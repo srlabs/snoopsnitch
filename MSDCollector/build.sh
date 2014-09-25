@@ -1,12 +1,15 @@
-#! /bin/sh
-rm /vbshared/MSDCollector-debug.apk 
-#rm -r tmp
-set -e
-#mkdir tmp
-#mkdir tmp/lib
-#mkdir tmp/lib/armeabi
-#cp ~/msd/parser/compile4/parser/* tmp/lib/armeabi/
-ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -Dndk.dir=/home/user/android-ndk-r10 debug
-#cp bin/qgsmmap-debug.apk /vbshared/
-#cd tmp;aapt add ../bin/MSDCollector-debug.apk lib/armeabi/*;cd ..
-cp bin/MSDCollector-debug.apk /vbshared/
+#! /bin/sh -e
+
+if [ x${NDK_DIR} = x ];
+then
+	echo "NDK_DIR not set!";
+	exit 1;
+fi
+
+if [ x${ANDROID_HOME} = x ];
+then
+	echo "ANDROID_HOME not set!";
+	exit 1;
+fi
+
+ant "-Djava.compilerargs=-Xlint:unchecked -Xlint:deprecation" -Dndk.dir=${NDK_DIR} debug
