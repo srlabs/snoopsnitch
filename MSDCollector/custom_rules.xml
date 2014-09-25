@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="custom_rules" default="debug">
+  <target name="-pre-build">
+    <exec executable="${ndk.dir}/ndk-build" failonerror="true"/>
+    <copy
+        file="${sdk.dir}/extras/android/support/v4/android-support-v4.jar"
+        toDir="${jar.libs.absolute.dir}" />
+    <!--    <property name="parser.dir" value="/home/user/msd/parser/compile4/parser/"/>
+    <copy file="${parser.dir}/diag_import" toDir="-->
+    <exec executable="/bin/sh">
+      <arg value="copy_native.sh"/>
+    </exec>
+  </target>
+
+  <target name="clean" depends="android_rules.clean">
+    <exec executable="${ndk.dir}/ndk-build" failonerror="true">
+      <arg value="clean"/>
+    </exec>
+  </target>
+</project>
