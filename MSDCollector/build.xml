@@ -89,4 +89,10 @@
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 
+    <!-- Set NDK directory from the environment -->
+    <property environment="env" />
+    <condition property="ndk.dir" value="${env.NDK_DIR}">
+        <isset property="env.NDK_DIR" />
+    </condition>
+
 </project>
