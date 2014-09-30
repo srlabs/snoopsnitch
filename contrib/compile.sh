@@ -1,16 +1,6 @@
-#! /bin/bash
+#! /bin/bash -e
 
-set -e
-
-if test -z $1; then
-    echo "Usage: $0 <compile directory>"
-    exit 1;
-fi
-
-if test -e $1; then
-    echo "Compile directory $1 already exists"
-    exit 1;
-fi
+BUILD_DIR=$(mktemp -d build-XXXXXXXXXX)
 
 if test -z $NDK_DIR; then
     echo "No NDK_DIR set"
@@ -35,9 +25,7 @@ then
 	(cd .. && git submodule init contrib/metagsm && git submodule update contrib/metagsm)
 fi
 
-mkdir $1
-cd $1
-
+cd ${BUILD_DIR}
 OUTPUT_DIR=`pwd`
 
 echo "export BASE_DIR=$BASE_DIR" > $OUTPUT_DIR/env.sh
