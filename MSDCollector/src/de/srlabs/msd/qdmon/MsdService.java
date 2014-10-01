@@ -749,7 +749,6 @@ public class MsdService extends Service{
 	class MyPhoneStateListener extends PhoneStateListener{
 		@Override
 		public void onCellLocationChanged(CellLocation location) {
-			sendErrorMessage("onCellLocationChanged() called: " + location);
 			if (location instanceof GsmCellLocation) {
 				GsmCellLocation gsmLoc = (GsmCellLocation) location;
 				String networkOperator = telephonyManager.getNetworkOperator();
@@ -782,6 +781,11 @@ public class MsdService extends Service{
 
 		@Override
 		public void onCellInfoChanged(List<CellInfo> cellInfo) {
+			if(cellInfo == null || cellInfo.size() == 0)
+				return;
+			// I do not know whether this code will be reached at all. Most
+			// phones only call this method with null as a parameter. So let's
+			// send a message so that we find out when it is called.
 			String msg = "onCellInfoChanged(" + ((cellInfo == null) ? "null" : cellInfo.size()) + ")"; 
 			sendErrorMessage(msg);
 		}
