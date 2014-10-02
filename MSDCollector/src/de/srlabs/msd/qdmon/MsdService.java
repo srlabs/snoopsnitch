@@ -969,11 +969,6 @@ public class MsdService extends Service{
 	private void sendErrorMessage(String msg, Exception e){
 		if(e == null){
 			Log.e(TAG,msg);
-			try{
-				((String)null).toString();
-			} catch(Exception e1){
-				Log.e(TAG, "Dummy Exception to get stack trace of fatal error:",e1);
-			}
 		} else{
 			Log.e(TAG,msg,e);
 			msg += e.getMessage();
