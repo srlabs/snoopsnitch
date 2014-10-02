@@ -364,10 +364,6 @@ public class MsdService extends Service{
 				handleFatalError("Failed to stop parser, calling destroy(): " + e.getMessage());
 				parser.destroy();
 			}
-			parser = null;
-			parserStdin = null;
-			parserStdout = null;
-			parserStderr = null;
 			this.fromParserThread.interrupt();
 			this.fromParserThread.join(3000);
 			if(this.fromParserThread.isAlive()){
@@ -377,6 +373,10 @@ public class MsdService extends Service{
 			if(this.parserErrorThread.isAlive()){
 				handleFatalError("Failed to stop parserErrorThread");
 			}
+			parser = null;
+			parserStdin = null;
+			parserStdout = null;
+			parserStderr = null;
 			stopLocationRecording();
 			stopPhoneStateRecording();
 			sqliteThread.shuttingDown = true;
