@@ -1,0 +1,2 @@
+--  K2: N/A
+--  CRO not yet stored in DB, can't distinguish SI3 messages
