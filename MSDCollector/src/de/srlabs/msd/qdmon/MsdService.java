@@ -549,6 +549,8 @@ public class MsdService extends Service{
 					// Calendar.MONTH starts counting with 0
 					String filename = String.format(Locale.US, "qdmon_%04d-%02d-%02d_%02d-%02dUTC.gz",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), 10*(c.get(Calendar.MINUTE) / 10));
 					if(currentDumpfileName == null || !filename.equals(currentDumpfileName)){
+						if(out != null)
+							out.close();
 						info("Opening new raw file " + filename);
 						// Use MODE_APPEND so that it appends to the existing
 						// file if the file already exists (e.g. because the
@@ -559,6 +561,9 @@ public class MsdService extends Service{
 						out = new GZIPOutputStream(openFileOutput(filename, Context.MODE_APPEND));
 						currentDumpfileName = filename;
 					}
+					// Flush after each write, this may decrease the compression rate
+					// Maybe we have to write stuff to a temporary file ang gzip it as a whole file when opening a new file.
+					out.flush();
 					out.write(msg.buf);
 				}
 			} catch (InterruptedException e) {
