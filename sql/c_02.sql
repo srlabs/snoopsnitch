@@ -9,8 +9,6 @@ SELECT
         si.mcc,
         si.mnc,
         si.lac,
-        si.cipher_delta as c2_value,
-        si.cipher_delta > 100 as c2
+        si.cipher_delta as value,
+        si.cipher_delta > 2000 as score
 FROM session_info AS si;
-
-select * from c2;

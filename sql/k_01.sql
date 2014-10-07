@@ -8,6 +8,7 @@ SELECT
         sci.lac,
         sci.cid,
         sci.timestamp AS timestamp,
+        count(*) as value,
         count(*) = 0 as score
 FROM serving_cell_info AS sci, neighboring_cell_info AS nci
 ON nci.last_sc_id = sci._id
