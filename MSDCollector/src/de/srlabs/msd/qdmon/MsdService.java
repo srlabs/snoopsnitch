@@ -1087,7 +1087,7 @@ public class MsdService extends Service{
 		try{
 			MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MsdService.this);
 			SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
-			String sql = "DELETE FROM Session_Info where timestamp < datetime('now','-" + MsdServiceConfig.getSessionInfoKeepDurationHours() + " hours');";
+			String sql = "DELETE FROM session_info where timestamp < datetime('now','-" + MsdServiceConfig.getSessionInfoKeepDurationHours() + " hours');";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
 			sql = "DELETE FROM location_info where timestamp < datetime('now','-" + MsdServiceConfig.getLocationLogKeepDurationHours() + " hours');";
@@ -1097,6 +1097,11 @@ public class MsdService extends Service{
 			info("cleanup: " + sql);
 			db.execSQL(sql);
 			sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + MsdServiceConfig.getCellInfoKeepDurationHours() + " hours');";
+			info("cleanup: " + sql);
+			db.execSQL(sql);
+                        // Delete everything for now, as we do not pass the next valid sequence number
+                        // from the app to the parser at the moment
+			sql = "DELETE FROM cell_info;";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
 		} catch(SQLException e){
