@@ -6,7 +6,7 @@ CREATE TABLE session_info (
   domain tinyint NOT NULL,		-- Communication domain (Circuit Switched=0, Packet Switched=1)
   mcc smallint NOT NULL,		-- Mobile country code where the transaction was recorded
   mnc smallint NOT NULL,		-- Mobile network code where the transaction was recorded
-  lac smallint NOT NULL,		-- Location area code where the transaction was recorded
+  lac int NOT NULL,			-- Location area code where the transaction was recorded
   cid int NOT NULL,			-- Cell ID where the transaction was recorded
   arfcn int DEFAULT NULL,		-- ARFCN of current MCC/MNC/LAC/CID
   psc tinyint DEFAULT NULL,		-- Primary scrambling code of current cell 
@@ -51,7 +51,7 @@ CREATE TABLE session_info (
   lu_rej_cause tinyint DEFAULT NULL,	-- Location update was rejected with this cause
   lu_mcc smallint DEFAULT NULL,		-- MCC of previous user location
   lu_mnc smallint DEFAULT NULL,		-- MNC of previous user location
-  lu_lac smallint DEFAULT NULL,		-- LAC of previous user location
+  lu_lac int DEFAULT NULL,		-- LAC of previous user location
   t_raupd tinyint DEFAULT NULL,		-- Transaction contains a routing area update
   t_attach tinyint DEFAULT NULL,	-- Transaction contains a GPRS attach
   att_acc tinyint DEFAULT NULL,		-- GPRS attach was accepted
@@ -204,4 +204,14 @@ CREATE TABLE arfcn_list (
   source char(4) NOT NULL,		-- Source message (SIxx)
   arfcn integer	NOT NULL,		-- Neighboring ARFCN
   PRIMARY KEY(id, source, arfcn)
+);
+
+DROP TABLE IF EXISTS paging_info;
+CREATE TABLE paging_info (
+  timestamp DATETIME PRIMARY KEY,	-- End of measurement timestamp
+  pag1_rate float NOT NULL,		-- Paging1 rate (paging/s)
+  pag2_rate float NOT NULL,		-- Paging2 rate (paging/s)
+  pag3_rate float NOT NULL,		-- Paging3 rate (paging/s)
+  imsi_rate float NOT NULL,		-- IMSI paging rate (IMSI/s)
+  tmsi_rate float NOT NULL		-- TMSI paging rate (TMSI/s)
 );

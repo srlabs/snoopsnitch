@@ -841,7 +841,7 @@ public class MsdService extends Service{
 			throw new IllegalStateException("launchParser() called but parser!=null");
 		String libdir = this.getApplicationInfo().nativeLibraryDir;
 		String parser_binary = libdir + "/libdiag_import.so";
-		String cmd[] = {parser_binary};
+		String cmd[] = {parser_binary, "0", "0"};
 		// Warning: /data/local/tmp is not accessible by default, must be manually changed to 755 (including parent directories)
 		//String cmd[] = {libdir+"/libstrace.so","-f","-v","-s","1000","-o","/data/local/tmp/parser.strace.log",parser_binary};
 		String env[] = {"LD_LIBRARY_PATH=" + libdir};
