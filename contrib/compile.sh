@@ -25,15 +25,28 @@ then
 	(cd .. && git submodule init contrib/metagsm && git submodule update contrib/metagsm)
 fi
 
+# set platform
+MACH=$(uname -m)
+KERN=$(uname -s)
+
+case ${KERN} in
+        Darwin) HOST="darwin-${MACH}";;
+        Linux)  HOST="linux-${MACH}";;
+        *)      echo "Unknown platform ${KERN}-${MACH}!"; exit 1;;
+esac
+
+echo "Building on ${HOST}..."
+
 cd ${BUILD_DIR}
 OUTPUT_DIR=`pwd`
 
 echo "export BASE_DIR=$BASE_DIR" > $OUTPUT_DIR/env.sh
 echo "export OUTPUT_DIR=$OUTPUT_DIR" >> $OUTPUT_DIR/env.sh
+echo "export HOST=$HOST" >> $OUTPUT_DIR/env.sh
 echo "export NDK_DIR=/home/user/android-ndk-r10/" >> $OUTPUT_DIR/env.sh
 echo "export NDK_DIR=$NDK_DIR" >> $OUTPUT_DIR/env.sh
 echo 'export ANDROID_ROOT=$NDK_DIR' >> $OUTPUT_DIR/env.sh
-echo 'export PATH=$PATH:$ANDROID_ROOT/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/bin/' >> $OUTPUT_DIR/env.sh
+echo 'export PATH=$PATH:$ANDROID_ROOT/toolchains/arm-linux-androideabi-4.8/prebuilt/${HOST}/bin/' >> $OUTPUT_DIR/env.sh
 echo "export CROSS_COMPILE=arm-linux-androideabi" >> $OUTPUT_DIR/env.sh
 echo 'export SYSROOT=$ANDROID_ROOT/platforms/android-19/arch-arm' >> $OUTPUT_DIR/env.sh
 echo "export PREFIX=$OUTPUT_DIR/out/" >> $OUTPUT_DIR/env.sh
