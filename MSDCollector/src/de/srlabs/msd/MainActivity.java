@@ -62,7 +62,7 @@ public class MainActivity extends Activity {
 						appendLogMsg(msg.obj.toString());
 						break;
 					case MsdService.MSG_NEW_SESSION:
-						appendLogMsg("Received MSG_NEW_SESSION, would now trigger IMSI catcher analysis");
+						// appendLogMsg("Received MSG_NEW_SESSION, would now trigger IMSI catcher analysis");
 						break;
 					default:
 						appendLogMsg("ReturnHandler: Unknown message " + msg.what);

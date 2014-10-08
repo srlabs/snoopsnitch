@@ -602,7 +602,8 @@ public class MsdService extends Service{
 							}
 						});
 					} else{
-						info("FromParserThread received invalid line: " + line);						
+						// info("FromParserThread received invalid line: " + line);
+					        sendErrorMessage("P: " + line);
 					}
 				}
 			} catch(IOException e){
