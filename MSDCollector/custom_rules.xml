@@ -6,12 +6,12 @@
     <exec executable="${ndk.dir}/ndk-build" failonerror="true"/>
 
     <copy file="${sdk.dir}/extras/android/support/v4/android-support-v4.jar" toDir="${jar.libs.absolute.dir}" /> 
-    <copy file="../contrib/prebuild/libdiag_import.so"   todir="${jar.libs.dir}/armeabi" />
-    <copy file="../contrib/prebuild/libasn1c.so"         todir="${jar.libs.dir}/armeabi" />
-    <copy file="../contrib/prebuild/libcompat.so"        todir="${jar.libs.dir}/armeabi" />
-    <copy file="../contrib/prebuild/libosmo-asn1-rrc.so" todir="${jar.libs.dir}/armeabi" />
-    <copy file="../contrib/prebuild/libosmocore.so"      todir="${jar.libs.dir}/armeabi" />
-    <copy file="../contrib/prebuild/libosmogsm.so"       todir="${jar.libs.dir}/armeabi" />
+    <copy file="../contrib/prebuilt/libdiag_import.so"   todir="${jar.libs.dir}/armeabi" />
+    <copy file="../contrib/prebuilt/libasn1c.so"         todir="${jar.libs.dir}/armeabi" />
+    <copy file="../contrib/prebuilt/libcompat.so"        todir="${jar.libs.dir}/armeabi" />
+    <copy file="../contrib/prebuilt/libosmo-asn1-rrc.so" todir="${jar.libs.dir}/armeabi" />
+    <copy file="../contrib/prebuilt/libosmocore.so"      todir="${jar.libs.dir}/armeabi" />
+    <copy file="../contrib/prebuilt/libosmogsm.so"       todir="${jar.libs.dir}/armeabi" />
 
   </target>
 
