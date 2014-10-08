@@ -18,3 +18,8 @@ src/.deps/
 src/.libs/
 src/Makefile
 src/libosmo-asn1-rrc.la
+config.guess
+depcomp
+install-sh
+missing
+compile
