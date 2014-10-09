@@ -2,6 +2,7 @@
 DROP TABLE IF EXISTS config;
 CREATE TABLE config
 (
+        cro_max    int,
         t3212_min  int,
         delta_tch  int,
         delta_cmcp int
@@ -9,6 +10,7 @@ CREATE TABLE config
 
 INSERT INTO config VALUES
 (
+        40,      -- cro_max (FIXME: dummy value for now)
         10,      -- t3212_min
         1000000, -- delta_tch (FIXME: dummy value for now)
         2000     -- delta_cmcp (FIXME: dummy value for now)
@@ -42,3 +44,5 @@ DROP view IF EXISTS timestamps;
 create view timestamps as
 select distinct strftime('%Y-%m-%d %H:%M', timestamp) as timestamp from session_info
 ORDER by timestamp;
+
+select * from c2;
