@@ -1,6 +1,3 @@
--- FIXME: Select sane value for for delta threshold or
--- even create propability function.
-
 DROP VIEW IF EXISTS c2;
 CREATE VIEW c2 AS
 SELECT
@@ -10,5 +7,5 @@ SELECT
         si.mnc,
         si.lac,
         si.cipher_delta as value,
-        si.cipher_delta > 2000 as score
-FROM session_info AS si;
+        si.cipher_delta > config.delta_cmcp as score
+FROM session_info AS si, config;

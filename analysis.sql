@@ -1,3 +1,19 @@
+--  Configuration
+DROP TABLE IF EXISTS config;
+CREATE TABLE config
+(
+        t3212_min  int,
+        delta_tch  int,
+        delta_cmcp int
+);
+
+INSERT INTO config VALUES
+(
+        10,      -- t3212_min
+        1000000, -- delta_tch (FIXME: dummy value for now)
+        2000     -- delta_cmcp (FIXME: dummy value for now)
+);
+
 --  Attract
 .read sql/a_01.sql
 .read sql/a_02.sql
@@ -10,6 +26,13 @@
 --  Collect
 .read sql/c_01.sql
 .read sql/c_02.sql
+.read sql/c_03.sql
+.read sql/c_04.sql
+
+--  Track
+.read sql/t_01.sql
+.read sql/t_03.sql
+.read sql/t_04.sql
 
 --  Output
 .header on
@@ -19,10 +42,3 @@ DROP view IF EXISTS timestamps;
 create view timestamps as
 select distinct strftime('%Y-%m-%d %H:%M', timestamp) as timestamp from session_info
 ORDER by timestamp;
-
-select
-        strftime('%Y-%m-%d %H:%M', timestamps.timestamp) as timestamp,
-        c1.score as c1
-from timestamps, c1
-on  strftime('%Y-%m-%d %H:%M', timestamps.timestamp) = strftime('%Y-%m-%d %H:%M', c1.timestamp)
-order by timestamp;
