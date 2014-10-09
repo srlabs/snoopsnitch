@@ -537,7 +537,7 @@ public class MsdService extends Service{
 				while(true){
 					DiagMsgWrapper msg = rawFileWriterMsgQueue.take();
 					if(msg.shutdownMarker){
-						info("ToParserThread shutting down due to shutdown marker, OK");
+						info("RawFileWriterThread shutting down due to shutdown marker, OK");
 						if(out != null)
 							out.close();
 						return;
