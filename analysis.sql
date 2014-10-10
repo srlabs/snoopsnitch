@@ -5,7 +5,8 @@ CREATE TABLE config
         cro_max    int,
         t3212_min  int,
         delta_tch  int,
-        delta_cmcp int
+        delta_cmcp int,
+        n_norm     int
 );
 
 INSERT INTO config VALUES
@@ -13,7 +14,8 @@ INSERT INTO config VALUES
         40,      -- cro_max (FIXME: dummy value for now)
         10,      -- t3212_min
         1000000, -- delta_tch (FIXME: dummy value for now)
-        2000     -- delta_cmcp (FIXME: dummy value for now)
+        2000,    -- delta_cmcp (FIXME: dummy value for now)
+        42       -- n_norm (FIXME: dummy value - we need sample data)
 );
 
 --  Attract
@@ -38,6 +40,7 @@ INSERT INTO config VALUES
 
 --  Reject
 .read sql/r_01.sql
+.read sql/r_02.sql
 
 --  Output
 .header on
