@@ -36,6 +36,9 @@ INSERT INTO config VALUES
 .read sql/t_03.sql
 .read sql/t_04.sql
 
+--  Reject
+.read sql/r_01.sql
+
 --  Output
 .header on
 .separator " 	"
@@ -44,5 +47,3 @@ DROP view IF EXISTS timestamps;
 create view timestamps as
 select distinct strftime('%Y-%m-%d %H:%M', timestamp) as timestamp from session_info
 ORDER by timestamp;
-
-select * from c2;
