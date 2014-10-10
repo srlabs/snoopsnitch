@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -13,7 +16,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -603,7 +605,7 @@ public class MsdService extends Service{
 						});
 					} else{
 						// info("FromParserThread received invalid line: " + line);
-					        sendErrorMessage("P: " + line);
+						sendErrorMessage("P: " + line);
 					}
 				}
 			} catch(IOException e){
@@ -835,6 +837,7 @@ public class MsdService extends Service{
 			this.values.put("last_sc_id", last_sc_insert.generatedRowId);
 		}
 	}
+
 	/**
 	 * Sets up the parser
 	 * * Launch parser binary
@@ -1063,8 +1066,67 @@ public class MsdService extends Service{
 			handleFatalError("testRecordingState(): pendingSqlStatements contains too many entries");
 			ok = false;
 		}
+		
+		// Check parser memory usage by evaluating the stack/heap size in /proc/pid/maps
+
+		// The (abstract) java.lang.Process class does not contain a method for
+		// accessing the pid of the process (because java is a cross-platform
+		// language and programmers are not supposed to access platform specific
+		// data like the process id). However, the actual class of the
+		// process does contain a pid field (declared as private), which can be
+		// accessed via reflection.
+		if(parser.getClass().getName().equals("java.lang.ProcessManager$ProcessImpl")) {
+			try {
+				Field f = parser.getClass().getDeclaredField("pid");
+				f.setAccessible(true);
+				int pid = f.getInt(parser);
+				info("Parser PID: " + pid);
+				// Some examples of the maps file entries for stack/heap
+				// 019b4000-019b7000 rw-p 00000000 00:00 0          [heap]
+				// be9d9000-be9fa000 rw-p 00000000 00:00 0          [stack]
+				BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream("/proc/" + pid + "/maps")));
+				long heapSize = 0;
+				long stackSize = 0;
+				for(String line=r.readLine();line != null; line = r.readLine()){
+					// Using BigInteger is required here because java doesn't
+					// support unsigned integer/long types. A signed long would
+					// be enough for a 32 bit address (and therefore current
+					// Android systems) but 64 bit Android systems have already
+					// been announced.
+					int posMinus = line.indexOf("-");
+					int posSpace = line.indexOf(" ");
+					BigInteger startAddr = new BigInteger(line.substring(0,posMinus), 16);
+					BigInteger endAddr = new BigInteger(line.substring(posMinus + 1,posSpace), 16);;
+					long mappingSize = endAddr.subtract(startAddr).longValue();
+					if(line.contains("[heap]")){
+						heapSize += mappingSize;
+					}
+					if(line.contains("[stack]")){
+						stackSize += mappingSize;
+					}
+				}
+				r.close();
+				info("Parser heap size: " + (heapSize/1024) + " KiB, stack size: " + (stackSize/1024) + " KiB");
+				if(heapSize > 128*1024*1024){ // Maximum allowed heap size: 128 MiB, change to 30 KiB for testing the restarting, it will be exceeded during the first call
+					sendErrorMessage("Restarting recording due to excessive parser heap size (" + (heapSize/1024) + " KiB)" );
+					restartRecording();
+				} else if(stackSize > 16*1024*1024){ // Maximum allowed stack size: 16 MiB, this should definitely be enough
+					sendErrorMessage("Restarting recording to excessive parser stack size (" + (stackSize/1024) + " KiB)" );
+					restartRecording();
+				}
+			} catch (Exception e) {
+				handleFatalError("Failed to get parser memory consumption",e);
+			}
+		} else{
+			info("Failed to get parser pid, parser class name is " + parser.getClass().getName() + " instead of java.lang.ProcessManager$ProcessImpl");
+		}
+
 		if(ok)
 			info("testRecordingState(): Everything is OK");
+	}
+	private void restartRecording(){
+		shutdown(false);
+		startRecording();
 	}
 	private void cleanupRawFiles(){
 		for(String filename:fileList()){
@@ -1105,8 +1167,8 @@ public class MsdService extends Service{
 			sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + MsdServiceConfig.getCellInfoKeepDurationHours() + " hours');";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
-                        // Delete everything for now, as we do not pass the next valid sequence number
-                        // from the app to the parser at the moment
+			// Delete everything for now, as we do not pass the next valid sequence number
+			// from the app to the parser at the moment
 			sql = "DELETE FROM cell_info;";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
