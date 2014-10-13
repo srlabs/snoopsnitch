@@ -3,7 +3,7 @@
 --  Join cell info with itself on all entries that have the same
 --  MCC/MNC/LAC/CID, but were observed on different ARFCNs. This
 --  my happen when cells are reconfigured, but this should be rare.
---  FIXME When more test data is available we could decide to make
+--  FIXME: When more test data is available we could decide to make
 --  the score dependent on the timestamp delta between the occurrences
 --  of the conflicting cell infos.
 CREATE VIEW a1 as
