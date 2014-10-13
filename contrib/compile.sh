@@ -1,12 +1,11 @@
 #! /bin/bash -e
 
-BUILD_DIR=$(mktemp -d build-XXXXXXXXXX)
-
 if test -z $NDK_DIR; then
     echo "No NDK_DIR set"
     exit 1;
 fi
 
+BUILD_DIR=$(mktemp -d build-XXXXXXXXXX)
 BASE_DIR="$( cd "$( dirname $0 )" && pwd )"
 
 # update submodules if necessary
@@ -57,7 +56,7 @@ cat $OUTPUT_DIR/env.sh
 
 mkdir $PREFIX
 
-for i in libosmocore libasn1c libosmo-asn1-rrc metagsm;do
+for i in libosmocore libasn1c libosmo-asn1-rrc metagsm; do
     echo -n "Building $i..."
     cd $OUTPUT_DIR
     if $BASE_DIR/scripts/compile_$i.sh > $OUTPUT_DIR/$i.compile_log 2>&1;then
@@ -70,4 +69,5 @@ for i in libosmocore libasn1c libosmo-asn1-rrc metagsm;do
 done
 
 $BASE_DIR/scripts/create_parser_dir.sh
+ln -sf ${BUILD_DIR} ../build-${HOST}-latest
 echo DONE
