@@ -2,15 +2,11 @@
 DROP VIEW IF EXISTS k1;
 CREATE VIEW k1 AS
 SELECT
-        sci._id,
-        sci.mcc,
-        sci.mnc,
-        sci.lac,
-        sci.cid,
-        sci.timestamp AS timestamp,
-        count(*) as value,
-        count(*) = 0 as score
-FROM serving_cell_info AS sci, neighboring_cell_info AS nci
-ON nci.last_sc_id = sci._id
-WHERE nci.lac > 0 AND nci.cid > 0
-GROUP BY sci._id;
+        cell.mcc,
+        cell.mnc,
+        cell.lac,
+        cell.cid,
+        sum(CASE WHEN ifnull(al.arfcn, 0) > 0 THEN 1 ELSE 0 END) = 0 as score
+FROM cell_info AS cell LEFT JOIN arfcn_list AS al
+ON cell.id = al.id
+GROUP BY cell.id;
