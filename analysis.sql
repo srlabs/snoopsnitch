@@ -1,22 +1,4 @@
---  Configuration
-DROP TABLE IF EXISTS config;
-CREATE TABLE config
-(
-        cro_max    int,
-        t3212_min  int,
-        delta_tch  int,
-        delta_cmcp int,
-        n_norm     int
-);
-
-INSERT INTO config VALUES
-(
-        40,      -- cro_max (FIXME: dummy value for now)
-        10,      -- t3212_min
-        1000000, -- delta_tch (FIXME: dummy value for now)
-        2000,    -- delta_cmcp (FIXME: dummy value for now)
-        42       -- n_norm (FIXME: dummy value - we need sample data)
-);
+.read config.sql
 
 --  Attract
 .read sql/a_01.sql
