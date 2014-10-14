@@ -708,8 +708,13 @@ public class MsdService extends Service{
 				generatedRowId = db.insert(table, null, values);
 				info("Generated row " + generatedRowId + " in table " + table);
 			}
-			if(sql != null)
-				db.execSQL(sql);
+			if(sql != null){
+				for(String statement:sql.split(";")){
+					if(statement.trim().length() > 0){
+						db.execSQL(statement);
+					}
+				}
+			}
 		}
 		@Override
 		public String toString() {
