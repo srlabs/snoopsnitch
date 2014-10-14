@@ -2,6 +2,7 @@
 drop view if exists k2;
 create view k2 as
 select
+        id,
         mcc,
         mnc,
         lac,

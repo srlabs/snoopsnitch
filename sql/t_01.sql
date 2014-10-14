@@ -1,6 +1,7 @@
 DROP VIEW IF EXISTS t1;
 CREATE VIEW t1 AS
 SELECT
+        id,
         mcc,
         mnc,
         lac,

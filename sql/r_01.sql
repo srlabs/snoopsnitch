@@ -86,10 +86,11 @@ ORDER BY id;
 DROP VIEW IF EXISTS r1;
 CREATE VIEW r1 AS
 SELECT 
-        cn.cell_mcc,
-        cn.cell_mnc,
-        cn.cell_lac,
-        cn.cell_cid,
+        cn.id,
+        cn.cell_mcc AS mcc,
+        cn.cell_mnc AS mnc,
+        cn.cell_lac AS lac,
+        cn.cell_cid AS cid,
         1 - (crbn.count + 0.0)/cn.count as score
 FROM cells_neig_count as cn, cells_ref_by_neig_count as crbn
 ON cn.id = crbn.id;

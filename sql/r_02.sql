@@ -10,6 +10,7 @@
 DROP VIEW IF EXISTS r2;
 CREATE VIEW r2 AS
 SELECT
+        id,
         mcc,
         mnc,
         cid,
