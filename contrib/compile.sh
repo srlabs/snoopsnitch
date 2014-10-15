@@ -1,39 +1,29 @@
 #! /bin/bash -e
 
-while getopts t: o
+usage()
+{
+	echo >&2 "Usage: $0 -t {android|host} [-f]"
+    echo >&2 "   -t <target>   Target to build for"
+    echo >&2 "   -f            Fast mode - only build parser"
+    exit 1
+}
+
+fast=""
+
+while getopts ft: o
 do
     case "$o" in
         t)      target="${OPTARG}";;
-        [?])    echo >&2 "Usage: $0 -t {android|host}"
-        exit 1;;
+        f)      fast=1;;
+        [?])    usage;;
     esac
 done
 shift $(($OPTIND-1))
 
 case ${target} in
         android|host) ;;
-        *)             echo >&2 "Invalid target. Usage: $0 -t {android|host}"
-                       exit 1;;
+        *)             usage;
 esac;
-
-BUILD_DIR=$(mktemp -d build-XXXXXXXXXX)
-export BASE_DIR="$( cd "$( dirname $0 )" && pwd )"
-
-# update submodules if necessary
-if [ -e libasn1c ];
-then
-	(cd .. && git submodule init contrib/libasn1c && git submodule update contrib/libasn1c)
-fi
-
-if [ -e libosmocore ];
-then
-	(cd .. && git submodule init contrib/libosmocore && git submodule update contrib/libosmocore)
-fi
-
-if [ -e metagsm ];
-then
-	(cd .. && git submodule init contrib/metagsm && git submodule update contrib/metagsm)
-fi
 
 # set platform
 MACH=$(uname -m)
@@ -44,6 +34,39 @@ case ${KERN} in
         Linux)  HOST="linux-${MACH}";;
         *)      echo "Unknown platform ${KERN}-${MACH}!"; exit 1;;
 esac
+
+# Link to latest successful build
+LATEST=../build-${HOST}-${target}-latest
+
+if [ -z "${fast}" ];
+then
+	BUILD_DIR=$(mktemp -d build-XXXXXXXXXX)
+else
+	BUILD_DIR=${LATEST}
+fi
+
+export BASE_DIR="$( cd "$( dirname $0 )" && pwd )"
+
+# update submodules if necessary
+if [ ! "$(ls -A libasn1c)" ];
+then
+	(cd .. && git submodule init contrib/libasn1c)
+fi
+
+if [ ! "$(ls -A libosmocore)" ];
+then
+	(cd .. && git submodule init contrib/libosmocore)
+fi
+
+if [ ! "$(ls -A metagsm)" ];
+then
+	(cd .. && git submodule init contrib/metagsm)
+fi
+
+(cd .. && \
+	git submodule update contrib/libasn1c && \
+	git submodule update contrib/libosmocore && \
+	git submodule update contrib/metagsm)
 
 echo "Building on ${HOST} for ${target}..."
 
@@ -57,8 +80,8 @@ case ${target} in
 		export SYSROOT="${NDK_DIR}/platforms/android-19/arch-arm"
 		export MSD_CONFIGURE_OPTS="--host arm-linux-androideabi --prefix=${MSD_DESTDIR}"
 		export PATH=${PATH}:${NDK_DIR}/toolchains/arm-linux-androideabi-4.8/prebuilt/${HOST}/bin/
-		export CC=arm-linux-androideabi-gcc
-		export AR=arm-linux-androideabi-ar
+		export CROSS_COMPILE=arm-linux-androideabi
+		export RANLIB=arm-linux-androideabi-ranlib
 		export CFLAGS="--sysroot=${SYSROOT} -nostdlib"
 		export CPPFLAGS="-I${NDK_DIR}/platforms/android-19/arch-arm/usr/include/"
 		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/,-L${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/"
@@ -79,7 +102,15 @@ esac
 
 mkdir -p ${MSD_DESTDIR}
 
-for i in libosmocore libasn1c libosmo-asn1-rrc metagsm openssl; do
+# Do not build dependencies in fast mode
+if [ -z "${fast}" ];
+then
+	TARGETS="libosmocore libasn1c libosmo-asn1-rrc openssl"
+fi
+
+TARGETS="${TARGETS} metagsm"
+
+for i in ${TARGETS}; do
     echo -n "Building $i..."
     cd $OUTPUT_DIR
     if ${BASE_DIR}/scripts/compile_$i.sh > $OUTPUT_DIR/$i.compile_log 2>&1;then
@@ -118,5 +149,5 @@ then
 	perl -i -pe 's/libasn1c\.so\.0/libasn1c.so\0\0/gs;s/libosmo-asn1-rrc\.so\.0/libosmo-asn1-rrc.so\0\0/gs;s/libosmocore\.so\.5/libosmocore.so\0\0/gs;s/libosmogsm\.so\.5/libosmogsm.so\0\0/gs' ${PARSER_DIR}/*.so
 fi
 
-ln -sf ${BUILD_DIR} ../build-${HOST}-${target}-latest
+ln -sf ${BUILD_DIR} ${LATEST}
 echo DONE
