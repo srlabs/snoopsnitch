@@ -54,21 +54,22 @@ export MSD_DESTDIR="${OUTPUT_DIR}/out"
 
 case ${target} in
 	android)
+		export SYSROOT="${NDK_DIR}/platforms/android-19/arch-arm"
 		export MSD_CONFIGURE_OPTS="--host arm-linux-androideabi --prefix=${MSD_DESTDIR}"
-		SYSROOT="${NDK_DIR}/platforms/android-19/arch-arm"
 		export PATH=${PATH}:${NDK_DIR}/toolchains/arm-linux-androideabi-4.8/prebuilt/${HOST}/bin/
 		export CC=arm-linux-androideabi-gcc
+		export AR=arm-linux-androideabi-ar
 		export CFLAGS="--sysroot=${SYSROOT} -nostdlib"
 		export CPPFLAGS="-I${NDK_DIR}/platforms/android-19/arch-arm/usr/include/"
 		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/,-L${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/"
 		export LIBS="-lc -lm"
-		export METAGSM_MAKE_ARGS="-f Makefile.Android DESTDIR=${MSD_DESTDIR}/metagsm install"
+		export METAGSM_MAKE_ARGS="-f Makefile.Android PREFIX=${MSD_DESTDIR}   DESTDIR=${MSD_DESTDIR}/metagsm   SYSROOT=${SYSROOT} install"
 		;;
 	host)
 		export MSD_CONFIGURE_OPTS="--prefix=${MSD_DESTDIR}"
 		export EXTRA_CFLAGS="-I${MSD_DESTDIR}/include -I${MSD_DESTDIR}/include/asn1c"
 		export EXTRA_LDFLAGS="-L${MSD_DESTDIR}/lib"
-		export METAGSM_MAKE_ARGS="install"
+		export METAGSM_MAKE_ARGS=""
 		;;
 	*)
 		# Shouldn't happen
