@@ -79,7 +79,7 @@ esac
 
 mkdir -p ${MSD_DESTDIR}
 
-for i in libosmocore libasn1c libosmo-asn1-rrc metagsm; do
+for i in libosmocore libasn1c libosmo-asn1-rrc metagsm openssl; do
     echo -n "Building $i..."
     cd $OUTPUT_DIR
     if ${BASE_DIR}/scripts/compile_$i.sh > $OUTPUT_DIR/$i.compile_log 2>&1;then
@@ -103,6 +103,13 @@ then
 	install -m 755 ${OUTPUT_DIR}/out/metagsm/diag_import       ${PARSER_DIR}/libdiag_import.so
 	install -m 755 ${OUTPUT_DIR}/out/metagsm/libcompat.so      ${PARSER_DIR}/libcompat.so
 	
+	# Put the smime crt into the library directory since it needs to be a physical 
+	# file on the Android system so that it can be accessed from the openssl binary. 
+	# Other parts of the App like assets are not stored as read files on the Android 
+	# system and therefore can only be used from the Android java code but not from 
+	# native binaries.
+	install -m 755 $BASE_DIR/smime.crt                         ${PARSER_DIR}/libsmime_crt.so
+
 	# Really dirty hack: The Android build system and package installer require 
 	# all files in the native library dir to have a filename like libXXX.so. If
 	# the file extension ends with .so.5, it will not be copied to the APK file. 

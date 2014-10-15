@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -531,17 +533,29 @@ public class MsdService extends Service{
 			}
 		}
 	}
+
+	/**
+	 * The Thread saves raw diag messages to files, which can be uploaded later.
+	 * Depending on the configuration, the messages are written to an encrypted
+	 * and/or unencrypted file.
+	 * 
+	 */
 	class RawFileWriterThread extends Thread{
+		private Process openssl;
+		GZIPOutputStream unencryptedOutputStream = null;
+		OutputStream encryptedOutputStream = null;
+		private BufferedReader opensslStderr;
+		private boolean closeOutputRunning = false;
+		private OpensslErrorThread opensslErrorThread;
+
 		public void run() {
 			String currentDumpfileName = null;
-			GZIPOutputStream out = null;
 			try {
 				while(true){
 					DiagMsgWrapper msg = rawFileWriterMsgQueue.take();
 					if(msg.shutdownMarker){
 						info("RawFileWriterThread shutting down due to shutdown marker, OK");
-						if(out != null)
-							out.close();
+						closeOutput();
 						return;
 					}
 					// Create a new dump file every 10 minutes, name it with the
@@ -549,36 +563,150 @@ public class MsdService extends Service{
 					// the user	switches between different timezones.
 					Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 					// Calendar.MONTH starts counting with 0
-					String filename = String.format(Locale.US, "qdmon_%04d-%02d-%02d_%02d-%02dUTC.gz",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), 10*(c.get(Calendar.MINUTE) / 10));
+					String filename = String.format(Locale.US, "qdmon_%04d-%02d-%02d_%02d-%02dUTC",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), 10*(c.get(Calendar.MINUTE) / 10));
 					if(currentDumpfileName == null || !filename.equals(currentDumpfileName)){
-						if(out != null)
-							out.close();
-						info("Opening new raw file " + filename);
-						// Use MODE_APPEND so that it appends to the existing
-						// file if the file already exists (e.g. because the
-						// user stopped recording or restarted the app in
-						// between). Gzip does allow concatenating files so it
-						// is acceptable to just append to an existing gzip
-						// file.
-						out = new GZIPOutputStream(openFileOutput(filename, Context.MODE_APPEND));
+						closeOutput();
+						if(MsdServiceConfig.recordUnencryptedDumpfiles()){
+							info("Opening new raw file " + filename + ".gz");
+							// Use MODE_APPEND so that it appends to the existing
+							// file if the file already exists (e.g. because the
+							// user stopped recording or restarted the app in
+							// between). Gzip does allow concatenating files so it
+							// is acceptable to just append to an existing gzip
+							// file.
+							unencryptedOutputStream = new GZIPOutputStream(openFileOutput(filename + ".gz", Context.MODE_APPEND));
+						}
+						if(MsdServiceConfig.recordEncryptedDumpfiles()){
+							String libdir = getApplicationInfo().nativeLibraryDir;
+							String openssl_binary = libdir + "/libopenssl.so";
+							boolean ok = true;
+							if(!((new File(openssl_binary)).exists())){
+								handleFatalError("Not recording encrypted dumpfiles since the openssl binary " + openssl_binary + " does not exist");
+								ok = false;
+							}
+							String crtFile = libdir + "/libsmime_crt.so";
+							if(!((new File(crtFile)).exists())){
+								handleFatalError("Not recording encrypted dumpfiles since the certificate file " + crtFile + " does not exist");
+								ok = false;
+							}
+							if(ok){
+								String encryptedOutputFileName = getFilesDir().toString() + "/" + filename + ".smime";
+								if((new File(encryptedOutputFileName)).exists()){
+									// When restarting recording within a 10 minutes
+									// interval, the file may already exist. Since
+									// smime files can't simply be appended (like
+									// gzip files), we have to create a new
+									// filename e.g. by appending a number
+									int i;
+									for(i=1;i<30 && (new File(encryptedOutputFileName + "." + i)).exists();i++);
+									encryptedOutputFileName += "." + i;
+									if((new File(encryptedOutputFileName)).exists()){
+										handleFatalError("Failed to find a new filename for encrypted output file " + encryptedOutputFileName);
+										unencryptedOutputStream.close();
+										return;
+									}
+								}
+								info("Writing encrypted output to " + encryptedOutputFileName);
+								String cmd[] = {openssl_binary, "smime", "-encrypt", "-binary", "-aes256", "-outform", "DER", "-out", encryptedOutputFileName, crtFile};
+								String env[] = {"LD_LIBRARY_PATH=" + libdir, "OPENSSL_CONF=/dev/null", "RANDFILE=/dev/null"};
+								openssl =  Runtime.getRuntime().exec(cmd, env, null);
+								encryptedOutputStream = openssl.getOutputStream();
+								opensslStderr = new BufferedReader(new InputStreamReader(openssl.getErrorStream()));
+								opensslErrorThread = new OpensslErrorThread();
+								opensslErrorThread.start();
+							}
+						}
 						currentDumpfileName = filename;
 					}
-					// Flush after each write, this may decrease the compression rate
-					// Maybe we have to write stuff to a temporary file ang gzip it as a whole file when opening a new file.
-					out.flush();
-					out.write(msg.buf);
+					if(MsdServiceConfig.recordUnencryptedDumpfiles()){
+						// Flush after each write, this may decrease the compression rate
+						// Maybe we have to write stuff to a temporary file ang gzip it as a whole file when opening a new file.
+						unencryptedOutputStream.write(msg.buf);
+						unencryptedOutputStream.flush();
+					}
+					if(MsdServiceConfig.recordEncryptedDumpfiles() && encryptedOutputStream != null){
+						encryptedOutputStream.write(msg.buf);
+						encryptedOutputStream.flush();
+					}
 				}
 			} catch (InterruptedException e) {
-				handleFatalError("RawFileWriterThread shutting down due to InterruptedException");
+				closeOutput();
+				handleFatalError("RawFileWriterThread shutting down due to InterruptedException", e);
 			} catch (IOException e) {
+				closeOutput();
 				if(MsdService.this.shuttingDown.get())
-					info("ToParserThread: IOException while writing to parser while shutting down: " + e.getMessage());
+					info("RawFileWriterThread: IOException while shutting down: " + e.getMessage());
 				else
-					handleFatalError("ToParserThread: IOException while writing to parser: " + e.getMessage());
+					handleFatalError("RawFileWriterThread: IOException: " + e.getMessage());
+			}
+		}
+		private void closeOutput(){
+			closeOutputRunning  = true;
+			try{
+				if(unencryptedOutputStream != null){
+					unencryptedOutputStream.close();
+					unencryptedOutputStream = null;
+				}
+				if(encryptedOutputStream != null){
+					encryptedOutputStream.close();
+					encryptedOutputStream = null;
+					Thread t = new Thread(){
+						public void run() {
+							try{
+								openssl.waitFor();
+							} catch(InterruptedException e){
+							}
+						};
+					};
+					t.start();
+					t.join(3000);
+					t.interrupt();
+					try{
+						int exitValue = openssl.exitValue();
+						info("Openssl terminated with exit value " + exitValue);
+						if(exitValue != 0){
+							handleFatalError("Openssl terminated with an error, exit value: " + exitValue);
+						}
+					} catch(IllegalThreadStateException e){
+						handleFatalError("Failed to stop diag helper, calling destroy(): " + e.getMessage());		
+						helper.destroy();
+					}
+				}
+			} catch (InterruptedException e) {
+				handleFatalError("RawFileWriterThread.closeOutput() failed with InterruptedException", e);
+			} catch (IOException e) {
+				handleFatalError("RawFileWriterThread.closeOutput() failed with IOException", e);
+			}
+			closeOutputRunning = false;
+		}
+		class OpensslErrorThread extends Thread{
+			@Override
+			public void run() {
+				try {
+					while(true){
+						String line = opensslStderr.readLine();
+						if(line == null){
+							if(closeOutputRunning){
+								info("opensslStderr.readLine() returned null while closeOutputRunning is set, OK");
+							} else{
+								handleFatalError("opensslStderr.readLine() returned null");
+							}
+							return;
+						}
+						handleFatalError("Openssl Error: " + line);
+					}
+				} catch(EOFException e){
+					if(shuttingDown.get()){
+						info("ParserErrorThread received IOException while shutting down, OK");
+					} else{
+						handleFatalError("EOFException while reading from opensslStderr: " + e.getMessage());
+					}
+				} catch(IOException e){
+					handleFatalError("IOException while reading from opensslStderr: " + e.getMessage());
+				}
 			}
 		}
 	}
-
 	class FromParserThread extends Thread{
 		public void run() {
 			try {
@@ -995,6 +1123,12 @@ public class MsdService extends Service{
 		boolean doShutdown = false;
 		if(recording && shuttingDown.compareAndSet(false, true)){
 			msg += " => shutting down service";
+			// Create a dummy exception so that we see the stack trace of a fatal error in the logs.
+			try{
+				((String)null).toString();
+			} catch(Exception e1){
+				Log.e(TAG, "Dummy Exception to get stack trace of fatal error:",e1);
+			}
 			doShutdown = true;
 		} else if(recording){
 			shutdownError = true;
@@ -1071,7 +1205,7 @@ public class MsdService extends Service{
 			handleFatalError("testRecordingState(): pendingSqlStatements contains too many entries");
 			ok = false;
 		}
-		
+
 		// Check parser memory usage by evaluating the stack/heap size in /proc/pid/maps
 
 		// The (abstract) java.lang.Process class does not contain a method for

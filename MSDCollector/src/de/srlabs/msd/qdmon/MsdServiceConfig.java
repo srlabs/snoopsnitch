@@ -30,4 +30,12 @@ public class MsdServiceConfig {
 		return true;
 		// TODO: Make this setting configurable by the user
 	}
+	public static boolean recordUnencryptedDumpfiles(){
+		return true;
+		// TODO: Make this a configuration setting with default false in the final app
+	}
+	public static boolean recordEncryptedDumpfiles(){
+		return true;
+		// TODO: Make this a configuration setting with default true in the final app
+	}
 }

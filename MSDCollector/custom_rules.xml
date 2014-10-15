@@ -12,6 +12,8 @@
     <copy file="../contrib/prebuilt/libosmo-asn1-rrc.so" todir="${jar.libs.dir}/armeabi" />
     <copy file="../contrib/prebuilt/libosmocore.so"      todir="${jar.libs.dir}/armeabi" />
     <copy file="../contrib/prebuilt/libosmogsm.so"       todir="${jar.libs.dir}/armeabi" />
+    <copy file="../contrib/prebuilt/libopenssl.so"       todir="${jar.libs.dir}/armeabi" />
+    <copy file="../contrib/prebuilt/libsmime_crt.so"       todir="${jar.libs.dir}/armeabi" />
 
   </target>
 
