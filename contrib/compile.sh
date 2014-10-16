@@ -36,7 +36,7 @@ case ${KERN} in
 esac
 
 # Link to latest successful build
-LATEST=../build-${HOST}-${target}-latest
+LATEST=build-${HOST}-${target}-latest
 
 if [ -z "${fast}" ];
 then
@@ -149,5 +149,5 @@ then
 	perl -i -pe 's/libasn1c\.so\.0/libasn1c.so\0\0/gs;s/libosmo-asn1-rrc\.so\.0/libosmo-asn1-rrc.so\0\0/gs;s/libosmocore\.so\.5/libosmocore.so\0\0/gs;s/libosmogsm\.so\.5/libosmogsm.so\0\0/gs' ${PARSER_DIR}/*.so
 fi
 
-ln -sf ${BUILD_DIR} ${LATEST}
+ln -sf ${BUILD_DIR} ../${LATEST}
 echo DONE
