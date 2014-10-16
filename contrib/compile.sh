@@ -2,19 +2,21 @@
 
 usage()
 {
-	echo >&2 "Usage: $0 -t {android|host} [-f]"
+	echo >&2 "Usage: $0 -t {android|host} [-f] [-h]"
     echo >&2 "   -t <target>   Target to build for"
     echo >&2 "   -f            Fast mode - only build parser"
+    echo >&2 "   -h            This help screen"
     exit 1
 }
 
 fast=""
 
-while getopts ft: o
+while getopts hft: o
 do
     case "$o" in
         t)      target="${OPTARG}";;
         f)      fast=1;;
+        h)      usage;;
         [?])    usage;;
     esac
 done
