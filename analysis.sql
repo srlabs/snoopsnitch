@@ -29,7 +29,10 @@ SELECT
         si.t3,
         si.t4,
         ci.r1,
-        ci.r2
+        ci.r2,
+        ci.a1 + ci.a2 + ci.a4 + ci.k1 + ci.k2 +
+        si.c1 + si.c2 + si.c3 + si.c4 + ci.t1 +
+        si.t3 + si.t4 + ci.r1 + ci.r2 as score
 FROM si, ci
 ON
         ci.mcc = si.mcc AND
@@ -38,4 +41,4 @@ ON
         ci.cid = si.cid AND
         strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) >= 0 AND
         strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) < 10
-ORDER BY timestamp;
+ORDER BY score DESC;
