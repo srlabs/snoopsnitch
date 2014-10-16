@@ -28,6 +28,7 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
@@ -46,6 +47,7 @@ import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class MsdService extends Service{
@@ -609,6 +611,7 @@ public class MsdService extends Service{
 								info("Writing encrypted output to " + encryptedOutputFileName);
 								String cmd[] = {openssl_binary, "smime", "-encrypt", "-binary", "-aes256", "-outform", "DER", "-out", encryptedOutputFileName, crtFile};
 								String env[] = {"LD_LIBRARY_PATH=" + libdir, "OPENSSL_CONF=/dev/null", "RANDFILE=/dev/null"};
+								info("Launching openssl: " + TextUtils.join(" ",cmd));
 								openssl =  Runtime.getRuntime().exec(cmd, env, null);
 								encryptedOutputStream = openssl.getOutputStream();
 								opensslStderr = new BufferedReader(new InputStreamReader(openssl.getErrorStream()));
@@ -983,7 +986,10 @@ public class MsdService extends Service{
 			throw new IllegalStateException("launchParser() called but parser!=null");
 		String libdir = this.getApplicationInfo().nativeLibraryDir;
 		String parser_binary = libdir + "/libdiag_import.so";
-		String cmd[] = {parser_binary, "0", "0"};
+		long nextSessionInfoId = getNextRowId("session_info");
+		long nextCellInfoId = getNextRowId("cell_info");
+		String cmd[] = {parser_binary, "" + nextSessionInfoId, "" + nextCellInfoId};
+		info("Launching parser: " + TextUtils.join(" ",cmd));
 		// Warning: /data/local/tmp is not accessible by default, must be manually changed to 755 (including parent directories)
 		//String cmd[] = {libdir+"/libstrace.so","-f","-v","-s","1000","-o","/data/local/tmp/parser.strace.log",parser_binary};
 		String env[] = {"LD_LIBRARY_PATH=" + libdir};
@@ -1028,6 +1034,26 @@ public class MsdService extends Service{
 		this.toParserThread = new ToParserThread();
 		this.toParserThread.start();
 	}
+	/**
+	 * Gets the next row id for a given database table.
+	 * @param tableName
+	 * @return
+	 */
+	private long getNextRowId(String tableName) {
+		try{
+			MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MsdService.this);
+			SQLiteDatabase db = msdSQLiteOpenHelper.getReadableDatabase();
+			Cursor c = db.rawQuery("SELECT MAX(_ROWID_) FROM " + tableName, null);
+			if(!c.moveToFirst()){
+				handleFatalError("getNextRowId(" + tableName + ") failed because c.moveToFirst() returned false, this shouldn't happen");
+				return 0;
+			}
+			return c.getLong(0) + 1;
+		} catch(SQLException e){
+			handleFatalError("SQLException in getNextRowId(" + tableName + "): ",e);
+			return 0;
+		}
+	}
 	private void launchRawFileWriter(){
 		this.rawFileWriterThread = new RawFileWriterThread();
 		this.rawFileWriterThread.start();
@@ -1035,8 +1061,13 @@ public class MsdService extends Service{
 	private void launchHelper() throws IOException {
 		String libdir = this.getApplicationInfo().nativeLibraryDir;
 		String diag_helper = libdir + "/libdiag-helper.so";
+		// TODO: Many phones have a non-working (non-setuid) /system/bin/su but
+		// a working /system/xbin/su. So we need to iterate over all directories
+		// in $PATH and check whether there is a working setuid-root suu binary
+		// there.
 		String cmd[] = { "su", "-c", "exec " + diag_helper + " run"};
 
+		info("Launching helper: " + TextUtils.join(" ",cmd));
 		helper = Runtime.getRuntime().exec(cmd);
 
 		this.diagStdout = new DataInputStream(helper.getInputStream());
