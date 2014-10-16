@@ -107,7 +107,13 @@ mkdir -p ${MSD_DESTDIR}
 # Do not build dependencies in fast mode
 if [ -z "${fast}" ];
 then
-	TARGETS="libosmocore libasn1c libosmo-asn1-rrc openssl"
+	TARGETS="libosmocore libasn1c libosmo-asn1-rrc"
+fi
+
+# Build OpenSSL only for Android
+if [ "x${target}" = "xandroid" ];
+then
+	TARGETS="${TARGETS} openssl"
 fi
 
 TARGETS="${TARGETS} metagsm"
