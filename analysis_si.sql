@@ -32,7 +32,7 @@ CREATE TABLE si
 );
 
 INSERT INTO si
-SELECT DISTINCT
+SELECT
         si.id,
         si.timestamp,
         si.mcc,
@@ -51,12 +51,11 @@ SELECT DISTINCT
          ifnull(c4.score, 0) +
          ifnull(t3.score, 0) +
          ifnull(t4.score, 0)) as score
-FROM session_info as si
-        LEFT JOIN c1 ON si.id = c1.id
-        LEFT JOIN c2 ON si.id = c2.id
-        LEFT JOIN c3 ON si.id = c3.id
-        LEFT JOIN c4 ON si.id = c4.id
-        LEFT JOIN t3 ON si.id = t3.id
-        LEFT JOIN t4 ON si.id = t4.id
-WHERE si.mcc > 0 and si.mnc> 0 and si.lac > 0 and si.cid > 0
-ORDER BY score DESC;
+FROM session_info as si,
+        c1 ON si.id = c1.id,
+        c2 ON si.id = c2.id,
+        c3 ON si.id = c3.id,
+        c4 ON si.id = c4.id,
+        t3 ON si.id = t3.id,
+        t4 ON si.id = t4.id
+WHERE si.mcc > 0 and si.mnc> 0 and si.lac > 0 and si.cid > 0;
