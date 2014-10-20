@@ -12,10 +12,10 @@ CREATE TABLE config
 
 INSERT INTO config VALUES
 (
-        40,      -- cro_max (FIXME: dummy value for now)
-        10,      -- t3212_min
-        1000000, -- delta_tch (FIXME: dummy value for now)
-        2000,    -- delta_cmcp (FIXME: dummy value for now)
-        42,      -- n_norm (FIXME: dummy value - we need sample data)
-        1800     -- delta_arfcn (FIXME: dummy value - we need sample data)
+        40,    -- cro_max (FIXME: dummy value for now)
+        10,    -- t3212_min
+        10000, -- delta_tch (FIXME: dummy value for now)
+        2000,  -- delta_cmcp (FIXME: dummy value for now)
+        42,    -- n_norm (FIXME: dummy value - we need sample data)
+        1800   -- delta_arfcn (FIXME: dummy value - we need sample data)
 );
