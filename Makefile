@@ -48,11 +48,32 @@ IMEISV_SQL = \
 
 DURATION_SQL = \
 		DROP VIEW IF EXISTS dcount; \
-		CREATE VIEW dcount AS SELECT count(*) as d from session_info; \
-		SELECT duration/1000 AS seconds, (count(*)+0.0)/dcount.d AS ratio, sum(CASE WHEN t_locupd THEN 1.0 ELSE 0.0 END)/dcount.d as locupd \
+		CREATE VIEW dcount AS SELECT count(*) as d from session_info WHERE duration > 350; \
+		SELECT duration/500 AS seconds, (count(*)+0.0)/dcount.d AS ratio, sum(CASE WHEN t_locupd THEN 1.0 ELSE 0.0 END)/dcount.d as locupd \
 		FROM session_info, dcount \
-		GROUP BY duration/1000 \
+		WHERE duration > 350 \
+		GROUP BY duration/500 \
 		HAVING ratio > 0.001;
+
+REJECT_SQL = \
+		SELECT ifnull(causes.text || ' \(' || si.lu_rej_cause || '\)', 'Cause value ' || si.lu_rej_cause) as cause, \
+			count(*) AS count, \
+			si.lu_rej_cause \
+		FROM session_info as si LEFT JOIN causes \
+		ON si.lu_rej_cause = causes.cause \
+		WHERE t_locupd AND not lu_acc \
+		GROUP BY lu_rej_cause \
+		ORDER BY count DESC;
+
+LU_TYPE_SQL = \
+		SELECT \
+			lu_type, \
+			sum(CASE WHEN not lu_acc THEN 0 ELSE 1 END) as acc_count, \
+			sum(CASE WHEN not lu_acc THEN 1 ELSE 0 END) as rej_count \
+		FROM session_info \
+		WHERE t_locupd \
+		GROUP BY lu_type \
+		ORDER BY acc_count + rej_count DESC;
 
 all: \
 	cipher_times.pdf \
@@ -77,6 +98,33 @@ duration.pdf:     GNUPLOT = set xlabel "Session duration [s]"; \
 							set key; \
 							plot "$<" using 1:2 with lines title "Total", \
 								 "$<" using 1:3 with lines title "Location updates";
+
+lu_reject.pdf:	  SQL	  = $(REJECT_SQL)
+lu_reject.pdf:    GNUPLOT = set xlabel "Reject causes"; \
+							unset grid; \
+							set logscale y; \
+							set format y "%1.0f"; \
+							set style fill solid border -1; \
+							set xtics rotate by -45; \
+							set style data histograms; \
+							plot "$<" using 2:xtic(1) title col, \
+							     "" using ($$0-1.0):($$2+1.5):2 with labels;
+
+lu_type.pdf:	  SQL	  = $(LU_TYPE_SQL)
+lu_type.pdf:      GNUPLOT = set xlabel "Location update types"; \
+							set key; \
+							set logscale y; \
+							unset grid; \
+							set style data histograms; \
+							set format y "%1.0f"; \
+							set style fill solid border -1; \
+							set xtics rotate by -45; \
+							plot "$<" using 3:xtic(1) title "Rejected", \
+							     "" using 2:xtic(1) title "Accepted"\
+
+#							     "" using ($$0-1.0):($$2+1.5):2 with labels;
+#							set style histogram rowstacked; \
+
 %.dat: Makefile
 	@echo [SQL] $@.
 	@sqlite3 -header ../../Traces/new_parsed_gsmmap.sqlite "$(SQL)" > $@

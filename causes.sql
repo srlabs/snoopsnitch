@@ -1,0 +1,26 @@
+PRAGMA foreign_keys=OFF
+BEGIN TRANSACTION;
+CREATE TABLE causes (cause,text);
+INSERT INTO "causes" VALUES('2','IMSI unknown in HLR');
+INSERT INTO "causes" VALUES('3','Illegal MS');
+INSERT INTO "causes" VALUES('4','IMSI unknown in VLR');
+INSERT INTO "causes" VALUES('5','IMEI not accepted');
+INSERT INTO "causes" VALUES('6','Illegal ME');
+INSERT INTO "causes" VALUES('11','PLMN not allowed');
+INSERT INTO "causes" VALUES('12','Location Area not allowed');
+INSERT INTO "causes" VALUES('13','Roaming not allowed in this location area');
+INSERT INTO "causes" VALUES('17','Network failure');
+INSERT INTO "causes" VALUES('22','Congestion');
+INSERT INTO "causes" VALUES('32','Service option not supported');
+INSERT INTO "causes" VALUES('33','Requested service option not subscribed');
+INSERT INTO "causes" VALUES('34','Service option temporarily out of order');
+INSERT INTO "causes" VALUES('38','Call cannot be identified');
+INSERT INTO "causes" VALUES('95','Semantically incorrect message.');
+INSERT INTO "causes" VALUES('96','Invalid mandatory information.');
+INSERT INTO "causes" VALUES('97','Message type non-existent or not implemented.');
+INSERT INTO "causes" VALUES('98','Message not compatible with protocol state.');
+INSERT INTO "causes" VALUES('99','Information element non-existent or not implemented');
+INSERT INTO "causes" VALUES('100','Conditional IE error.');
+INSERT INTO "causes" VALUES('101','Message not compatible with protocol state');
+INSERT INTO "causes" VALUES('111','Protocol error, unspecified');
+COMMIT;
