@@ -61,7 +61,7 @@ REJECT_SQL = \
 			si.lu_rej_cause \
 		FROM session_info as si LEFT JOIN causes \
 		ON si.lu_rej_cause = causes.cause \
-		WHERE t_locupd AND not lu_acc \
+		WHERE t_locupd AND not lu_acc AND lu_rej_cause > 0 \
 		GROUP BY lu_rej_cause \
 		ORDER BY count DESC;
 
@@ -71,7 +71,7 @@ LU_TYPE_SQL = \
 			sum(CASE WHEN not lu_acc THEN 0 ELSE 1 END) as acc_count, \
 			sum(CASE WHEN not lu_acc THEN 1 ELSE 0 END) as rej_count \
 		FROM session_info \
-		WHERE t_locupd \
+		WHERE t_locupd AND lu_type < 3 \
 		GROUP BY lu_type \
 		ORDER BY acc_count + rej_count DESC;
 
@@ -79,7 +79,9 @@ all: \
 	cipher_times.pdf \
 	auth_times.pdf \
 	imeisv_rate.pdf \
-	duration.pdf
+	duration.pdf \
+	lu_reject.pdf \
+	lu_type.pdf
 
 cipher_times.pdf: SQL     = $(CIPHER_SQL)
 cipher_times.pdf: GNUPLOT = set xlabel "Cipher delay [ms]"; \
@@ -102,18 +104,16 @@ duration.pdf:     GNUPLOT = set xlabel "Session duration [s]"; \
 lu_reject.pdf:	  SQL	  = $(REJECT_SQL)
 lu_reject.pdf:    GNUPLOT = set xlabel "Reject causes"; \
 							unset grid; \
-							set logscale y; \
 							set format y "%1.0f"; \
 							set style fill solid border -1; \
 							set xtics rotate by -45; \
 							set style data histograms; \
 							plot "$<" using 2:xtic(1) title col, \
-							     "" using ($$0-1.0):($$2+1.5):2 with labels;
+							     "" using ($$0-1.0):($$2+2.5):2 with labels;
 
 lu_type.pdf:	  SQL	  = $(LU_TYPE_SQL)
 lu_type.pdf:      GNUPLOT = set xlabel "Location update types"; \
 							set key; \
-							set logscale y; \
 							unset grid; \
 							set style data histograms; \
 							set format y "%1.0f"; \
@@ -121,9 +121,6 @@ lu_type.pdf:      GNUPLOT = set xlabel "Location update types"; \
 							set xtics rotate by -45; \
 							plot "$<" using 3:xtic(1) title "Rejected", \
 							     "" using 2:xtic(1) title "Accepted"\
-
-#							     "" using ($$0-1.0):($$2+1.5):2 with labels;
-#							set style histogram rowstacked; \
 
 %.dat: Makefile
 	@echo [SQL] $@.
