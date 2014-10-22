@@ -111,7 +111,7 @@ then
 fi
 
 # Build OpenSSL only for Android
-if [ "x${target}" = "xandroid" ];
+if [ "x${target}" = "xandroid" -a "x${fast}" = "x" ];
 then
 	TARGETS="${TARGETS} openssl"
 fi
