@@ -140,6 +140,7 @@ public class MsdService extends Service{
 	private MyPhoneStateListener myPhoneStateListener;
 	private TelephonyManager telephonyManager;
 	private PendingSqliteStatement last_sc_insert;
+	private int sqlQueueWatermark = 0;
 
 	class QueueElementWrapper<T>{
 		T obj;
@@ -1190,6 +1191,7 @@ public class MsdService extends Service{
 		if(shuttingDown.get())
 			return;
 		boolean ok = true;
+		int sqlQueueSize;
 		// Check all threads
 		if(!sqliteThread.isAlive()){
 			handleFatalError("testRecordingState(): sqliteThread has died");
@@ -1232,9 +1234,12 @@ public class MsdService extends Service{
 			handleFatalError("testRecordingState(): rawFileWriterMsgQueue contains too many entries");
 			ok = false;
 		}
-		if(pendingSqlStatements.size() > 100){
-			handleFatalError("testRecordingState(): pendingSqlStatements contains too many entries");
-			ok = false;
+
+		// Do not make SQL queue overflow fatal for now
+		sqlQueueSize = pendingSqlStatements.size();
+		if (sqlQueueSize > sqlQueueWatermark){
+			sqlQueueWatermark = sqlQueueSize;
+			warn("DEBUG: SQL queue high mark: " + sqlQueueWatermark);
 		}
 
 		// Check parser memory usage by evaluating the stack/heap size in /proc/pid/maps
