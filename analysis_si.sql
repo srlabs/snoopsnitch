@@ -13,25 +13,8 @@
 .read sql/t_04.sql
 
 --  Result
-DROP TABLE IF EXISTS si;
-CREATE TABLE si
-(
-        id int,
-        timestamp timestamp,
-        mcc int,
-        mnc int,
-        lac int,
-        cid int,
-        c1 int,
-        c2 int,
-        c3 int,
-        c4 int,
-        t3 int,
-        t4 int,
-        score int
-);
-
-INSERT INTO si
+DROP VIEW IF EXISTS si;
+CREATE VIEW si AS
 SELECT
         si.id,
         si.timestamp,
