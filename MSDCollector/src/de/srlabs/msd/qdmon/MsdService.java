@@ -736,8 +736,7 @@ public class MsdService extends Service{
 							}
 						});
 					} else{
-						// info("FromParserThread received invalid line: " + line);
-						sendErrorMessage("P: " + line);
+						info("Parser: " + line);
 					}
 				}
 			} catch(IOException e){
@@ -898,7 +897,7 @@ public class MsdService extends Service{
 				GsmCellLocation gsmLoc = (GsmCellLocation) location;
 				String networkOperator = telephonyManager.getNetworkOperator();
 				if(networkOperator.length() < 5){
-					sendErrorMessage("Invalid networkOperatr: " + networkOperator);
+					info("Invalid networkOperatr: " + networkOperator);
 					return;
 				}
 				String mcc = networkOperator.substring(0,3);
