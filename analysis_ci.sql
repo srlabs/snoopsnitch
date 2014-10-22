@@ -44,13 +44,13 @@ SELECT DISTINCT
          ifnull(t1.score, 0) +
          ifnull(r1.score, 0) +
          ifnull(r2.score, 0)) as score
-FROM cell_info as ci
-        LEFT JOIN a1 ON ci.id = a1.id
-        LEFT JOIN a2 ON ci.id = a2.id
-        LEFT JOIN a4 ON ci.id = a4.id
-        LEFT JOIN k1 ON ci.id = k1.id
-        LEFT JOIN k2 ON ci.id = k2.id
-        LEFT JOIN t1 ON ci.id = t1.id
-        LEFT JOIN r1 ON ci.id = r1.id
-        LEFT JOIN r2 ON ci.id = r2.id
-WHERE ci.mcc > 0 and ci.mnc> 0 and ci.lac > 0 and ci.cid > 0;
+FROM cell_info as ci LEFT JOIN
+ a1 ON ci.id = a1.id LEFT JOIN
+ a2 ON ci.id = a2.id LEFT JOIN
+ a4 ON ci.id = a4.id LEFT JOIN
+ k1 ON ci.id = k1.id LEFT JOIN
+ k2 ON ci.id = k2.id LEFT JOIN
+ t1 ON ci.id = t1.id LEFT JOIN
+ r1 ON ci.id = r1.id LEFT JOIN
+ r2 ON ci.id = r2.id
+WHERE ci.mcc > 0 and ci.mnc > 0 and ci.lac > 0 and ci.cid > 0;
