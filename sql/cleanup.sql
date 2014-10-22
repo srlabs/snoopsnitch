@@ -20,6 +20,7 @@ DROP VIEW IF EXISTS timestamps;
 DROP TABLE IF EXISTS config;
 DROP TABLE IF EXISTS catcher;
 
+DROP VIEW IF EXISTS val;
 DROP VIEW IF EXISTS dup_arfcns;
 DROP VIEW IF EXISTS max_cipher;
 DROP VIEW IF EXISTS cells_with_neig_arfcn;
