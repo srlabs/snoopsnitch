@@ -50,25 +50,28 @@ fi
 export BASE_DIR="$( cd "$( dirname $0 )" && pwd )"
 
 # update submodules if necessary
-if [ ! "$(ls -A libasn1c)" ];
+if [ ! "$(ls -A libasn1c)" -a "x${fast}" = "x" ];
 then
 	(cd .. && git submodule init contrib/libasn1c)
 fi
 
-if [ ! "$(ls -A libosmocore)" ];
+if [ ! "$(ls -A libosmocore)" -a "x${fast}" = "x" ];
 then
 	(cd .. && git submodule init contrib/libosmocore)
 fi
 
-if [ ! "$(ls -A metagsm)" ];
+if [ ! "$(ls -A metagsm)" -a "x${fast}" = "x" ];
 then
 	(cd .. && git submodule init contrib/metagsm)
 fi
 
+if [ "x${fast}" = "x" ];
+then
 (cd .. && \
 	git submodule update contrib/libasn1c && \
 	git submodule update contrib/libosmocore && \
 	git submodule update contrib/metagsm)
+fi
 
 echo "Building on ${HOST} for ${target}..."
 
