@@ -729,14 +729,12 @@ public class MsdService extends Service{
 					if(line.startsWith("SQL:")){
 						String sql = line.substring(4);
 						info("FromParserThread enqueueing SQL Statement: " + sql);
-						warn("DEBUG: BEFORE enqueuing new query");
 						pendingSqlStatements.add(new PendingSqliteStatement(sql){
 							@Override
 							void postRunHook() {
 								broadcastMessage(Message.obtain(null, MSG_NEW_SESSION));
 							}
 						});
-						warn("DEBUG: AFTER enqueuing new query");
 					} else{
 						info("Parser: " + line);
 					}
@@ -801,11 +799,8 @@ public class MsdService extends Service{
 						return;
 					}
 					try{
-						warn("DEBUG: BEFORE running SQL");
 						sql.run(db);
-						warn("DEBUG: BEFORE running hook");
 						sql.postRunHook();
-						warn("DEBUG: AFTER running hook");
 					} catch(SQLException e){
 						handleFatalError("SQLException " + e.getMessage() + " while running: " + sql);
 					}
