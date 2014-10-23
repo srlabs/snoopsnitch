@@ -48,6 +48,7 @@ CREATE TABLE session_info (
   t_locupd tinyint DEFAULT NULL,	-- Transactino contains a location update request
   lu_acc tinyint DEFAULT NULL,		-- Location update was accepted
   lu_type tinyint DEFAULT NULL,		-- Location update type
+  lu_reject tinyint DEFAULT NULL,	-- Location update was rejected
   lu_rej_cause tinyint DEFAULT NULL,	-- Location update was rejected with this cause
   lu_mcc smallint DEFAULT NULL,		-- MCC of previous user location
   lu_mnc smallint DEFAULT NULL,		-- MNC of previous user location
