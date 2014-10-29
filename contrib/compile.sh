@@ -12,7 +12,7 @@ usage()
 
 fast=""
 
-while getopts hft: o
+while getopts hfgt: o
 do
     case "$o" in
         t)      target="${OPTARG}";;
