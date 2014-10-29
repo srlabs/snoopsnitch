@@ -23,6 +23,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.GZIPOutputStream;
 
+import de.srlabs.msd.util.DeviceCompatibilityChecker;
+
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.ContentValues;
@@ -266,10 +268,9 @@ public class MsdService extends Service{
 			this.recording  = true;
 			periodicCheckRecordingStateHandler.removeCallbacks(periodicCheckRecordingStateRunnable);
 			periodicCheckRecordingStateHandler.post(periodicCheckRecordingStateRunnable);
-		} catch (IOException e) { 
-			Log.e(TAG, "IO exception in startRecording()", e);
+		} catch (Exception e) { 
+			sendErrorMessage("Exception in startRecording(): ", e);
 			shutdown(false);
-			broadcastMessage(Message.obtain(null, MSG_RECORDING_STATE, 0, 0));
 		}
 	}
 
@@ -290,108 +291,124 @@ public class MsdService extends Service{
 			shutdownError = false;
 			periodicCheckRecordingStateHandler.removeCallbacks(periodicCheckRecordingStateRunnable);
 			// DIAG Helper
-			try{
-				this.helper.exitValue();
-			} catch(IllegalThreadStateException e){
-				// The helper is still running, so let's send DisableLoggingCmds
-				for(byte[] singleCmd:DisableLoggingCmds.cmds){
-					this.toDiagMsgQueue.add(new QueueElementWrapper<byte[]>(singleCmd));
-				}
-				//this.toDiagMsgQueue.addAll(Arrays.asList(DisableLoggingCmds.cmds));
-			}
-			// this.toDiagMsgQueue;
-			//this.toDiagThread.interrupt();
-			this.toDiagMsgQueue.add(new QueueElementWrapper<byte[]>());
-			this.toDiagThread.join(3000);
-
-			if(toDiagThread.isAlive()){
-				handleFatalError("Failed to stop toDiagThread");
-			}
-			try {
-				this.diagStdin.close();
-			} catch (IOException e) {
-				handleFatalError("IOException while closing diagStdin" , e);
-			}
-			Thread t = new Thread(){
-				public void run() {
-					try{
-						helper.waitFor();
-					} catch(InterruptedException e){
+			if(helper != null){
+				try{
+					this.helper.exitValue();
+				} catch(IllegalThreadStateException e){
+					// The helper is still running, so let's send DisableLoggingCmds
+					if(toDiagThread != null){
+						for(byte[] singleCmd:DisableLoggingCmds.cmds){
+							this.toDiagMsgQueue.add(new QueueElementWrapper<byte[]>(singleCmd));
+						}
 					}
-				};
-			};
-			t.start();
-			t.join(3000);
-			t.interrupt();
-			try{
-				int exitValue = helper.exitValue();
-				info("Helper terminated with exit value " + exitValue);
-			} catch(IllegalThreadStateException e){
-				handleFatalError("Failed to stop diag helper, calling destroy(): " + e.getMessage());		
-				helper.destroy();	
+				}
 			}
-			helper = null;
-			this.fromDiagThread.join();
+			if(toDiagThread != null){
+				this.toDiagMsgQueue.add(new QueueElementWrapper<byte[]>()); // Send shutdown marker to message queue
+				this.toDiagThread.join(3000);
+
+				if(toDiagThread.isAlive()){
+					handleFatalError("Failed to stop toDiagThread");
+				}
+			}
+			if(diagStdin != null){
+				try {
+					this.diagStdin.close();
+				} catch (IOException e) {
+					handleFatalError("IOException while closing diagStdin" , e);
+				}
+			}
+			if(helper != null){
+				Thread t = new Thread(){
+					public void run() {
+						try{
+							helper.waitFor();
+						} catch(InterruptedException e){
+						}
+					};
+				};
+				t.start();
+				t.join(3000);
+				t.interrupt();
+				try{
+					int exitValue = helper.exitValue();
+					info("Helper terminated with exit value " + exitValue);
+				} catch(IllegalThreadStateException e){
+					handleFatalError("Failed to stop diag helper, calling destroy(): " + e.getMessage());		
+					helper.destroy();	
+				}
+				helper = null;
+			}
+			if(fromDiagThread != null)
+				this.fromDiagThread.join();
 			diagStdin = null;
 			diagStdout = null;
 			diagStderr = null;
 			// Terminate raw file write
-			rawFileWriterMsgQueue.add(new DiagMsgWrapper()); // Send shutdown marker to message queue
-			rawFileWriterThread.join(3000);
-			if(rawFileWriterThread.isAlive()){
-				handleFatalError("Failed to stop rawFileWriter");
+			if(rawFileWriterThread != null){
+				rawFileWriterMsgQueue.add(new DiagMsgWrapper()); // Send shutdown marker to message queue
+				rawFileWriterThread.join(3000);
+				if(rawFileWriterThread.isAlive()){
+					handleFatalError("Failed to stop rawFileWriter");
+				}
+				rawFileWriterThread = null;
 			}
 			// Termiante parser
-			toParserMsgQueue.add(new DiagMsgWrapper()); // Send shutdown marker to message queue
-			this.toParserThread.join(3000);
-			if(toParserThread.isAlive()){
-				handleFatalError("Failed to stop toParserThread");
-			}
-			try{
-				this.parserStdin.close();
-			} catch (IOException e) {
-				handleFatalError("IOException while closing parserStdin" , e);
-			}
-			info("Waiting for parser to terminate after closing parserStdin");
-			t = new Thread(){
-				public void run() {
-					try{
-						parser.waitFor();
-					} catch(InterruptedException e){
-					}
+			if(parser != null){
+				toParserMsgQueue.add(new DiagMsgWrapper()); // Send shutdown marker to message queue
+				this.toParserThread.join(3000);
+				if(toParserThread.isAlive()){
+					handleFatalError("Failed to stop toParserThread");
+				}
+				try{
+					this.parserStdin.close();
+				} catch (IOException e) {
+					handleFatalError("IOException while closing parserStdin" , e);
+				}
+				info("Waiting for parser to terminate after closing parserStdin");
+				Thread t = new Thread(){
+					public void run() {
+						try{
+							parser.waitFor();
+						} catch(InterruptedException e){
+						}
+					};
 				};
-			};
-			t.start();
-			t.join(3000);
-			t.interrupt();
-			try{
-				int exitValue = parser.exitValue();
-				info("Parser terminated with exit value " + exitValue);
-			} catch(IllegalThreadStateException e){
-				handleFatalError("Failed to stop parser, calling destroy(): " + e.getMessage());
-				parser.destroy();
+				t.start();
+				t.join(3000);
+				t.interrupt();
+				try{
+					int exitValue = parser.exitValue();
+					info("Parser terminated with exit value " + exitValue);
+				} catch(IllegalThreadStateException e){
+					handleFatalError("Failed to stop parser, calling destroy(): " + e.getMessage());
+					parser.destroy();
+				}
+				this.fromParserThread.interrupt();
+				this.fromParserThread.join(3000);
+				if(this.fromParserThread.isAlive()){
+					handleFatalError("Failed to stop fromParserThread");
+				}
+				this.parserErrorThread.join(3000);
+				if(this.parserErrorThread.isAlive()){
+					handleFatalError("Failed to stop parserErrorThread");
+				}
+				parser = null;
+				parserStdin = null;
+				parserStdout = null;
+				parserStderr = null;
 			}
-			this.fromParserThread.interrupt();
-			this.fromParserThread.join(3000);
-			if(this.fromParserThread.isAlive()){
-				handleFatalError("Failed to stop fromParserThread");
-			}
-			this.parserErrorThread.join(3000);
-			if(this.parserErrorThread.isAlive()){
-				handleFatalError("Failed to stop parserErrorThread");
-			}
-			parser = null;
-			parserStdin = null;
-			parserStdout = null;
-			parserStderr = null;
 			stopLocationRecording();
 			stopPhoneStateRecording();
-			sqliteThread.shuttingDown = true;
-			// Add finish marker at end of pendingSqlStatements so that sqliteThread shuts down
-			pendingSqlStatements.add(new PendingSqliteStatement(null));
-			sqliteThread.join(3000);
-			if(sqliteThread.isAlive()){
-				handleFatalError("Failed to stop sqliteThread");
+			if(sqliteThread != null){
+				sqliteThread.shuttingDown = true;
+				// Add finish marker at end of pendingSqlStatements so that sqliteThread shuts down
+				pendingSqlStatements.add(new PendingSqliteStatement(null));
+				sqliteThread.join(3000);
+				if(sqliteThread.isAlive()){
+					handleFatalError("Failed to stop sqliteThread");
+				}
+				sqliteThread = null;
 			}
 			if(!toDiagMsgQueue.isEmpty()){
 				handleFatalError("shutdown(): toDiagMsgQueue is not empty");			
@@ -1061,11 +1078,11 @@ public class MsdService extends Service{
 	private void launchHelper() throws IOException {
 		String libdir = this.getApplicationInfo().nativeLibraryDir;
 		String diag_helper = libdir + "/libdiag-helper.so";
-		// TODO: Many phones have a non-working (non-setuid) /system/bin/su but
-		// a working /system/xbin/su. So we need to iterate over all directories
-		// in $PATH and check whether there is a working setuid-root suu binary
-		// there.
-		String cmd[] = { "su", "-c", "exec " + diag_helper + " run"};
+		String suBinary = DeviceCompatibilityChecker.getSuBinary();
+		if(suBinary == null){
+			throw new IllegalStateException("No working su binary found, can't start recording");
+		}
+		String cmd[] = { suBinary, "-c", "exec " + diag_helper + " run"};
 
 		info("Launching helper: " + TextUtils.join(" ",cmd));
 		helper = Runtime.getRuntime().exec(cmd);
