@@ -1,8 +1,10 @@
 package de.srlabs.msd;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import de.srlabs.msd.qdmon.MsdService;
+import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msdcollector.R;
 
 public class MainActivity extends Activity {
@@ -74,16 +77,16 @@ public class MainActivity extends Activity {
 	private void appendLogMsg(String newMsg){
 		newMsg = newMsg.trim();
 		textView1.append(newMsg + "\n");
-	    // find the amount we need to scroll.  This works by
-	    // asking the TextView's internal layout for the position
-	    // of the final line and then subtracting the TextView's height
+		// find the amount we need to scroll.  This works by
+		// asking the TextView's internal layout for the position
+		// of the final line and then subtracting the TextView's height
 		// http://stackoverflow.com/questions/3506696/auto-scrolling-textview-in-android-to-bring-text-into-view
-	    final int scrollAmount = textView1.getLayout().getLineTop(textView1.getLineCount()) - textView1.getHeight();
-	    // if there is no need to scroll, scrollAmount will be <=0
-	    if (scrollAmount > 0)
-	    	textView1.scrollTo(0, scrollAmount);
-	    else
-	    	textView1.scrollTo(0, 0);
+		final int scrollAmount = textView1.getLayout().getLineTop(textView1.getLineCount()) - textView1.getHeight();
+		// if there is no need to scroll, scrollAmount will be <=0
+		if (scrollAmount > 0)
+			textView1.scrollTo(0, scrollAmount);
+		else
+			textView1.scrollTo(0, 0);
 	}
 
 	@Override
@@ -99,6 +102,23 @@ public class MainActivity extends Activity {
 		this.btnStart.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				String comptatibility = DeviceCompatibilityChecker.checkDeviceCompatibility();
+				if(comptatibility != null){
+					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+					builder
+					.setTitle("Your phone is not compatible")
+					.setMessage(comptatibility)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setPositiveButton("Ok", new DialogInterface.OnClickListener() 
+					{
+						public void onClick(DialogInterface dialog, int which) 
+						{       
+							dialog.dismiss();
+						}
+					});
+					AlertDialog alert = builder.create();
+					alert.show();
+				}
 				Message msg = Message.obtain(null, MsdService.MSG_START_RECORDING);
 				msg.replyTo = returnMessenger;
 				try {
