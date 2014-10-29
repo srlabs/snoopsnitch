@@ -5,6 +5,7 @@ usage()
 	echo >&2 "Usage: $0 -t {android|host} [-f] [-h]"
     echo >&2 "   -t <target>   Target to build for"
     echo >&2 "   -f            Fast mode - only build parser"
+    echo >&2 "   -g            init git submodules"
     echo >&2 "   -h            This help screen"
     exit 1
 }
@@ -17,6 +18,7 @@ do
         t)      target="${OPTARG}";;
         f)      fast=1;;
         h)      usage;;
+	g)      do_git=1;;
         [?])    usage;;
     esac
 done
@@ -48,29 +50,32 @@ else
 fi
 
 export BASE_DIR="$( cd "$( dirname $0 )" && pwd )"
-
+if [ -n "${do_git}" ];then
 # update submodules if necessary
-if [ ! "$(ls -A libasn1c)" -a "x${fast}" = "x" ];
-then
-	(cd .. && git submodule init contrib/libasn1c)
-fi
+    if [ ! "$(ls -A libasn1c)" -a "x${fast}" = "x" ];
+    then
+  	(cd .. && git submodule init contrib/libasn1c)
+    fi
 
-if [ ! "$(ls -A libosmocore)" -a "x${fast}" = "x" ];
-then
+    if [ ! "$(ls -A libosmocore)" -a "x${fast}" = "x" ];
+    then
 	(cd .. && git submodule init contrib/libosmocore)
-fi
+    fi
 
-if [ ! "$(ls -A metagsm)" -a "x${fast}" = "x" ];
-then
+    if [ ! "$(ls -A metagsm)" -a "x${fast}" = "x" ];
+    then
 	(cd .. && git submodule init contrib/metagsm)
+    fi
 fi
 
-if [ "x${fast}" = "x" ];
-then
-(cd .. && \
-	git submodule update contrib/libasn1c && \
-	git submodule update contrib/libosmocore && \
-	git submodule update contrib/metagsm)
+if [ -n "${do_git}" ];then
+    if [ "x${fast}" = "x" ];
+    then
+	(cd .. && \
+	    git submodule update contrib/libasn1c && \
+	    git submodule update contrib/libosmocore && \
+	    git submodule update contrib/metagsm)
+    fi
 fi
 
 echo "Building on ${HOST} for ${target}..."
