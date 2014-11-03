@@ -143,6 +143,8 @@ public class MsdService extends Service{
 	private TelephonyManager telephonyManager;
 	private PendingSqliteStatement last_sc_insert;
 	private int sqlQueueWatermark = 0;
+	private long oldHeapSize = 0;
+	private long oldStackSize = 0;
 
 	class QueueElementWrapper<T>{
 		T obj;
@@ -1274,7 +1276,6 @@ public class MsdService extends Service{
 				Field f = parser.getClass().getDeclaredField("pid");
 				f.setAccessible(true);
 				int pid = f.getInt(parser);
-				info("Parser PID: " + pid);
 				// Some examples of the maps file entries for stack/heap
 				// 019b4000-019b7000 rw-p 00000000 00:00 0          [heap]
 				// be9d9000-be9fa000 rw-p 00000000 00:00 0          [stack]
@@ -1300,7 +1301,21 @@ public class MsdService extends Service{
 					}
 				}
 				r.close();
-				info("Parser heap size: " + (heapSize/1024) + " KiB, stack size: " + (stackSize/1024) + " KiB");
+
+				// Log heap size only if something changed
+				if (heapSize != oldHeapSize)
+				{
+					info("Parser heap size: " + (heapSize/1024) + " KiB");
+					oldHeapSize = heapSize;
+				}
+
+				// Log stack size only if something changed
+				if (stackSize != oldStackSize)
+				{
+					info("Parser stack size: " + (stackSize/1024) + " KiB");
+					oldStackSize = stackSize;
+				}
+
 				if(heapSize > 128*1024*1024){ // Maximum allowed heap size: 128 MiB, change to 30 KiB for testing the restarting, it will be exceeded during the first call
 					sendErrorMessage("Restarting recording due to excessive parser heap size (" + (heapSize/1024) + " KiB)" );
 					restartRecording();
@@ -1314,9 +1329,6 @@ public class MsdService extends Service{
 		} else{
 			info("Failed to get parser pid, parser class name is " + parser.getClass().getName() + " instead of java.lang.ProcessManager$ProcessImpl");
 		}
-
-		if(ok)
-			info("testRecordingState(): Everything is OK");
 	}
 	private void restartRecording(){
 		shutdown(false);
