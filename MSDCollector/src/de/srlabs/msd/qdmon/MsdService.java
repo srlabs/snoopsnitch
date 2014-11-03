@@ -857,7 +857,6 @@ public class MsdService extends Service{
 			preRunHook();
 			if(table != null){
 				generatedRowId = db.insert(table, null, values);
-				info("Generated row " + generatedRowId + " in table " + table);
 			}
 			if(sql != null){
 				for(String statement:sql.split(";")){
