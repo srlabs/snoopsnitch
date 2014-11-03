@@ -236,3 +236,9 @@ CREATE TABLE sms_meta (
   data BINARY(255) NOT NULL,		-- User data in binary form
   PRIMARY KEY(id, sequence)
 );
+DROP TABLE IF EXISTS pending_uploads;
+CREATE TABLE pending_uploads(
+  _id integer PRIMARY KEY,					-- Upload ID, incremental and unique in the db
+  filename CHAR(64) NOT NULL UNIQUE, 		-- The filename of the file to upload, file must be located in context.getFilesDir()
+  delete_after_uploading INTEGER NOT NULL 	-- 0/1, Indicates whether the file should be deleted directly after uploading
+);

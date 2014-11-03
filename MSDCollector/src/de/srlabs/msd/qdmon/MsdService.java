@@ -1323,6 +1323,7 @@ public class MsdService extends Service{
 		startRecording();
 	}
 	private void cleanupRawFiles(){
+		// TODO: Do encrypted files as well
 		for(String filename:fileList()){
 			if(!filename.startsWith("qdmon_"))
 				continue;
@@ -1340,6 +1341,7 @@ public class MsdService extends Service{
 			long diff = System.currentTimeMillis() - fileTimeMillis;
 			info("FILENAME: " + filename + " DIFF: " + diff/1000 + " seconds");
 			if(diff > MsdServiceConfig.getBasebandLogKeepDurationHours() * 60 * 60 * 1000){
+				// TODO: Check whether file is in pending_uploads, if it is, only set delete_after_uploading to 1
 				info("Deleting file: " + filename);
 				deleteFile(filename);
 			}
