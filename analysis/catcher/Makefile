@@ -75,13 +75,19 @@ LU_TYPE_SQL = \
 		GROUP BY lu_type \
 		ORDER BY acc_count + rej_count DESC;
 
-all: \
+all: catcher_analysis.sql
+
+validate: \
 	cipher_times.pdf \
 	auth_times.pdf \
 	imeisv_rate.pdf \
 	duration.pdf \
 	lu_reject.pdf \
 	lu_type.pdf
+
+catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scripts/resolve_read.pl
+	./scripts/resolve_read.pl $< > $@.tmp
+	mv $@.tmp $@
 
 cipher_times.pdf: SQL     = $(CIPHER_SQL)
 cipher_times.pdf: GNUPLOT = set xlabel "Cipher delay [ms]"; \
@@ -131,6 +137,6 @@ lu_type.pdf:      GNUPLOT = set xlabel "Location update types"; \
 	@gnuplot -e '$(COMMON_GP)$(GNUPLOT)'
 
 clean:
-	rm -f *.pdf *.tmp *.dat
+	rm -f *.pdf *.tmp *.dat catcher_analysis.sql
 
 .PHONY: clean

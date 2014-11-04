@@ -1,5 +1,4 @@
 --  All cell_info-based criteria
-.read config.sql
 
 --  Attract
 .read sql/a_01.sql

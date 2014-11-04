@@ -1,7 +1,5 @@
 --  All session_info-based criteria
 
-.read config.sql
-
 --  Collect
 .read sql/c_01.sql
 .read sql/c_02.sql
