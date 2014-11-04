@@ -17,11 +17,11 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		this.context = context;
 	}
-	@Override
-	public void onCreate(SQLiteDatabase db) {
+
+	public void readSQLAsset(SQLiteDatabase db, String file) {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
 		try {
-			InputStream sqlInputStream = context.getAssets().open("si.sql");
+			InputStream sqlInputStream = context.getAssets().open(file);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			int i;
 			try {
@@ -36,10 +36,10 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 				e.printStackTrace();
 			}
 			String sql = byteArrayOutputStream.toString();
-			Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate(): " + sql);
+			Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): " + sql);
 			for(String statement:sql.split(";")){
-				if(statement.trim().length() > 0){
-					Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate(): statement=" + statement);
+				if(statement.trim().length() > 0 && !statement.startsWith("/*!")){
+					Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement=" + statement);
 					db.execSQL(statement);
 				}
 			}
@@ -47,6 +47,15 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
+		readSQLAsset(db, "si.sql");
+		readSQLAsset(db, "cell_info.sql");
+		readSQLAsset(db, "sms.sql");
+		readSQLAsset(db, "pending_uploads.sqlx");
 	}
 
 	@Override
