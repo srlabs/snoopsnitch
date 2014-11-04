@@ -1,0 +1,26 @@
+.read config.sql
+.read analysis.sql
+
+DROP VIEW IF EXISTS val;
+CREATE VIEW val AS
+SELECT
+	SUM(CASE WHEN a1 > 0 THEN 1 ELSE 0 END) as a1,
+	SUM(CASE WHEN a2 > 0 THEN 1 ELSE 0 END) as a2,
+	SUM(CASE WHEN a4 > 0 THEN 1 ELSE 0 END) as a4,
+	SUM(CASE WHEN k1 > 0 THEN 1 ELSE 0 END) as k1,
+	SUM(CASE WHEN k2 > 0 THEN 1 ELSE 0 END) as k2,
+	SUM(CASE WHEN c1 > 0 THEN 1 ELSE 0 END) as c1,
+	SUM(CASE WHEN c2 > 0 THEN 1 ELSE 0 END) as c2,
+	SUM(CASE WHEN c3 > 0 THEN 1 ELSE 0 END) as c3,
+	SUM(CASE WHEN c4 > 0 THEN 1 ELSE 0 END) as c4,
+	SUM(CASE WHEN t1 > 0 THEN 1 ELSE 0 END) as t1,
+	SUM(CASE WHEN t3 > 0 THEN 1 ELSE 0 END) as t3,
+	SUM(CASE WHEN t4 > 0 THEN 1 ELSE 0 END) as t4,
+	SUM(CASE WHEN r1 > 0 THEN 1 ELSE 0 END) as r1,
+	SUM(CASE WHEN r2 > 0 THEN 1 ELSE 0 END) as r2
+FROM
+	catcher;
+
+.headers on
+.separator "	"
+SELECT * from val;

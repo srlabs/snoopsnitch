@@ -1,3 +1,5 @@
+DB ?= ~/MSD/Traces/new_parsed_gsmmap.sqlite
+
 COMMON_GP = \
 		unset key; \
         set datafile separator "|"; \
@@ -83,10 +85,15 @@ validate: \
 	imeisv_rate.pdf \
 	duration.pdf \
 	lu_reject.pdf \
-	lu_type.pdf
+	lu_type.pdf \
+	catcher.txt
 
 catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scripts/resolve_read.pl
 	./scripts/resolve_read.pl $< > $@.tmp
+	mv $@.tmp $@
+
+catcher.txt: validate.sql
+	sqlite3 $(DB) $< > $@.tmp
 	mv $@.tmp $@
 
 cipher_times.pdf: SQL     = $(CIPHER_SQL)
@@ -130,7 +137,7 @@ lu_type.pdf:      GNUPLOT = set xlabel "Location update types"; \
 
 %.dat: Makefile
 	@echo [SQL] $@.
-	@sqlite3 -header ../../Traces/new_parsed_gsmmap.sqlite "$(SQL)" > $@
+	@sqlite3 -header $(DB) "$(SQL)" > $@
 
 %.pdf: %.dat Makefile
 	@echo [GPL] $@.
