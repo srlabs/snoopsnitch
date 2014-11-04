@@ -1,4 +1,4 @@
-package de.srlabs.msd;
+package de.srlabs.msd.util;
 
 import android.text.format.DateUtils;
 

@@ -19,8 +19,8 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
-import de.srlabs.msd.Constants;
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
+import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.MsdConfig;
 import de.srlabs.msd.util.Utils;
 
