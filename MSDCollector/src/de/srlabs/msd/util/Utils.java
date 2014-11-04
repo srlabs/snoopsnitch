@@ -1,4 +1,4 @@
-package de.srlabs.msd;
+package de.srlabs.msd.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,8 +35,9 @@ public class Utils {
         ((HttpsURLConnection) connection).setSSLSocketFactory(sslContext.getSocketFactory());
 		return connection;
 	}
-	public static String getAppId(){
-		// TODO: Create a random ID, allow users to regenerate ID
-		return "TODO_APP_ID_HERE";
+	public static String generateAppId(){
+		// TODO
+		return "";
 	}
+
 }

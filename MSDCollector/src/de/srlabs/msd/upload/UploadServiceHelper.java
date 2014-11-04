@@ -1,4 +1,4 @@
-package de.srlabs.msd;
+package de.srlabs.msd.upload;
 
 import java.io.File;
 import java.io.FileNotFoundException;

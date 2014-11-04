@@ -20,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import de.srlabs.msd.qdmon.MsdService;
+import de.srlabs.msd.upload.UploadServiceHelper;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msdcollector.R;
 
@@ -143,16 +144,31 @@ public class MainActivity extends Activity {
 			}
 		});
 		this.btnCleanup.setOnClickListener(new OnClickListener() {
+			private UploadServiceHelper uploadServiceHelper;
+
 			@Override
 			public void onClick(View v) {
-				Message msg = Message.obtain(null, MsdService.MSG_TRIGGER_CLEANUP);
-				msg.replyTo = returnMessenger;
-				try {
-					msgMsdService.send(msg);
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+								Message msg = Message.obtain(null, MsdService.MSG_TRIGGER_CLEANUP);
+								msg.replyTo = returnMessenger;
+								try {
+									msgMsdService.send(msg);
+								} catch (RemoteException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+//				if(uploadServiceHelper == null){
+//					UploadServiceHelper.createDummyUploadFiles(MainActivity.this, 3);
+//					uploadServiceHelper = new UploadServiceHelper();
+//					uploadServiceHelper.startUploading(MainActivity.this, new UploadStateCallback() {
+//						@Override
+//						public void uploadStateChanged(UploadState state) {
+//							textView1.setText(state.toString());
+//						}
+//					});
+//				} else{
+//					uploadServiceHelper.stopUploading();
+//					uploadServiceHelper = null;
+//				}
 			}
 		});
 	}

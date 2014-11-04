@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.GZIPOutputStream;
 
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
+import de.srlabs.msd.util.MsdConfig;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
@@ -232,9 +233,9 @@ public class MsdService extends Service{
 	private void startLocationRecording(){
 		myLocationListener = new MyLocationListener();
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		if(MsdServiceConfig.gpsRecordingEnabled())
+		if(MsdConfig.gpsRecordingEnabled(MsdService.this))
 			locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 10000, 0, myLocationListener);
-		if(MsdServiceConfig.networkLocationRecordingEnabled())
+		if(MsdConfig.networkLocationRecordingEnabled(MsdService.this))
 			locationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 10000, 0, myLocationListener);
 	}
 	private void stopLocationRecording(){
@@ -588,7 +589,7 @@ public class MsdService extends Service{
 					String filename = String.format(Locale.US, "qdmon_%04d-%02d-%02d_%02d-%02dUTC",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), 10*(c.get(Calendar.MINUTE) / 10));
 					if(currentDumpfileName == null || !filename.equals(currentDumpfileName)){
 						closeOutput();
-						if(MsdServiceConfig.recordUnencryptedDumpfiles()){
+						if(MsdConfig.recordUnencryptedDumpfiles(MsdService.this)){
 							info("Opening new raw file " + filename + ".gz");
 							// Use MODE_APPEND so that it appends to the existing
 							// file if the file already exists (e.g. because the
@@ -598,7 +599,7 @@ public class MsdService extends Service{
 							// file.
 							unencryptedOutputStream = new GZIPOutputStream(openFileOutput(filename + ".gz", Context.MODE_APPEND));
 						}
-						if(MsdServiceConfig.recordEncryptedDumpfiles()){
+						if(MsdConfig.recordEncryptedDumpfiles(MsdService.this)){
 							String libdir = getApplicationInfo().nativeLibraryDir;
 							String openssl_binary = libdir + "/libopenssl.so";
 							boolean ok = true;
@@ -641,13 +642,13 @@ public class MsdService extends Service{
 						}
 						currentDumpfileName = filename;
 					}
-					if(MsdServiceConfig.recordUnencryptedDumpfiles()){
+					if(MsdConfig.recordUnencryptedDumpfiles(MsdService.this)){
 						// Flush after each write, this may decrease the compression rate
 						// Maybe we have to write stuff to a temporary file ang gzip it as a whole file when opening a new file.
 						unencryptedOutputStream.write(msg.buf);
 						unencryptedOutputStream.flush();
 					}
-					if(MsdServiceConfig.recordEncryptedDumpfiles() && encryptedOutputStream != null){
+					if(MsdConfig.recordEncryptedDumpfiles(MsdService.this) && encryptedOutputStream != null){
 						encryptedOutputStream.write(msg.buf);
 						encryptedOutputStream.flush();
 					}
@@ -1352,7 +1353,7 @@ public class MsdService extends Service{
 			long fileTimeMillis = c.getTimeInMillis();
 			long diff = System.currentTimeMillis() - fileTimeMillis;
 			info("FILENAME: " + filename + " DIFF: " + diff/1000 + " seconds");
-			if(diff > MsdServiceConfig.getBasebandLogKeepDurationHours() * 60 * 60 * 1000){
+			if(diff > MsdConfig.getBasebandLogKeepDurationHours(MsdService.this) * 60 * 60 * 1000){
 				// TODO: Check whether file is in pending_uploads, if it is, only set delete_after_uploading to 1
 				info("Deleting file: " + filename);
 				deleteFile(filename);
@@ -1363,16 +1364,16 @@ public class MsdService extends Service{
 		try{
 			MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MsdService.this);
 			SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
-			String sql = "DELETE FROM session_info where timestamp < datetime('now','-" + MsdServiceConfig.getSessionInfoKeepDurationHours() + " hours');";
+			String sql = "DELETE FROM session_info where timestamp < datetime('now','-" + MsdConfig.getSessionInfoKeepDurationHours(MsdService.this) + " hours');";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
-			sql = "DELETE FROM location_info where timestamp < datetime('now','-" + MsdServiceConfig.getLocationLogKeepDurationHours() + " hours');";
+			sql = "DELETE FROM location_info where timestamp < datetime('now','-" + MsdConfig.getLocationLogKeepDurationHours(MsdService.this) + " hours');";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
-			sql = "DELETE FROM serving_cell_info where timestamp < datetime('now','-" + MsdServiceConfig.getCellInfoKeepDurationHours() + " hours');";
+			sql = "DELETE FROM serving_cell_info where timestamp < datetime('now','-" + MsdConfig.getCellInfoKeepDurationHours(MsdService.this) + " hours');";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
-			sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + MsdServiceConfig.getCellInfoKeepDurationHours() + " hours');";
+			sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + MsdConfig.getCellInfoKeepDurationHours(MsdService.this) + " hours');";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
 			// Delete everything for now, as we do not pass the next valid sequence number

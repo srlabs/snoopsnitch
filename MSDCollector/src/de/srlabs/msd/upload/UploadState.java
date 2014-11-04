@@ -1,4 +1,4 @@
-package de.srlabs.msd;
+package de.srlabs.msd.upload;
 
 import java.io.Serializable;
 import java.util.Vector;

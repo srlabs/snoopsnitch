@@ -1,4 +1,4 @@
-package de.srlabs.msd;
+package de.srlabs.msd.upload;
 
 import java.io.FileInputStream;
 import java.io.OutputStream;
@@ -19,7 +19,10 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import de.srlabs.msd.Constants;
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
+import de.srlabs.msd.util.MsdConfig;
+import de.srlabs.msd.util.Utils;
 
 /**
  * This Service does the actual file uploading. It is controlled via the
@@ -147,7 +150,7 @@ public class UploadService extends Service{
 			out.write("1" + Constants.CRLF);
 
 			out.write("--" + Constants.MULTIPART_BOUNDARY + Constants.CRLF);
-			out.write("Content-Disposition: form-data; name=\"bursts\"; filename=\"" + Utils.getAppId() + "_" + filename
+			out.write("Content-Disposition: form-data; name=\"bursts\"; filename=\"" + MsdConfig.getAppId(this) + "_" + filename
 					+ "\""
 					+ Constants.CRLF);
 			out.write(Constants.CRLF);

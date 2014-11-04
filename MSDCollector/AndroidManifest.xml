@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
          <service android:name="de.srlabs.msd.qdmon.MsdService" android:exported="false" android:process=".msd_service" />
-         <service android:name="de.srlabs.msd.UploadService" android:exported="false" />
+         <service android:name="de.srlabs.msd.upload.UploadService" android:exported="false" />
     </application>
 
 </manifest>
