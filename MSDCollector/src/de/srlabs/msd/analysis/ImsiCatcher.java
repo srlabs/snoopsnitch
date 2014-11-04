@@ -1,8 +1,5 @@
 package de.srlabs.msd.analysis;
 
-import java.util.Vector;
-
-import android.content.Context;
 
 public class ImsiCatcher {
 	private long startTime;
@@ -14,19 +11,20 @@ public class ImsiCatcher {
 	private int cid;
 	private double confidence;
 
-	public static Vector<ImsiCatcher> getImsiCatchers(Context context, long startMillis, long endMillis){
-		Vector<ImsiCatcher> result = new Vector<ImsiCatcher>();
-		// TODO: Read database
-		return result;
+	public ImsiCatcher() {
 	}
-	/**
-	 * Get an IMSI Catcher based on an ID
-	 * @param id
-	 * @return
-	 */
-	public static ImsiCatcher get(long id){
-		// TODO: Read database
-		return null;
+	
+	public ImsiCatcher(long startTime, long id, int mcc, int mnc,
+			int lac, int cid, double confidence) {
+		super();
+		this.startTime = startTime;
+		this.endTime = startTime + 3000;
+		this.id = id;
+		this.mcc = mcc;
+		this.mnc = mnc;
+		this.lac = lac;
+		this.cid = cid;
+		this.confidence = confidence;
 	}
 	/**
 	 * Start time when the IMSI Catcher was detected
@@ -78,7 +76,7 @@ public class ImsiCatcher {
 	}
 	@Override
 	public String toString() {
-		StringBuffer result = new StringBuffer("SilentSms: ID=" + id);
+		StringBuffer result = new StringBuffer("ImsiCatcher: ID=" + id);
 		// TODO: Add more fields
 		return result.toString();
 	}

@@ -1,8 +1,5 @@
 package de.srlabs.msd.analysis;
 
-import java.util.Vector;
-
-import android.content.Context;
 
 public class SMS {
 	private long timestamp;
@@ -18,20 +15,21 @@ public class SMS {
 		// TODO: Define the required types here
 	}
 	private Type type;
-	public static Vector<SMS> getSMS(Context context, long startMillis, long endMillis){
-		Vector<SMS> result = new Vector<SMS>();
-		// TODO: Read database
-		return result;
+	public SMS() {
 	}
-	/**
-	 * Get a silent SMS based on an ID
-	 * @param id
-	 * @return
-	 */
-	public static SMS get(long id){
-		// TODO: Read database
-		return null;
+	public SMS(long timestamp, long id, int mcc, int mnc, int lac, int cid,
+			String sender, Type type) {
+		super();
+		this.timestamp = timestamp;
+		this.id = id;
+		this.mcc = mcc;
+		this.mnc = mnc;
+		this.lac = lac;
+		this.cid = cid;
+		this.sender = sender;
+		this.type = type;
 	}
+
 	/**
 	 * Timestamp when the silent SMS was received, in millis since 1970
 	 * @return
