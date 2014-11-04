@@ -149,6 +149,10 @@ then
 	install -m 755 ${OUTPUT_DIR}/out/lib/libosmogsm.so.5       ${PARSER_DIR}/libosmogsm.so
 	install -m 755 ${OUTPUT_DIR}/out/metagsm/diag_import       ${PARSER_DIR}/libdiag_import.so
 	install -m 755 ${OUTPUT_DIR}/out/metagsm/libcompat.so      ${PARSER_DIR}/libcompat.so
+
+	install -m 644 ${BASE_DIR}/metagsm/cell_info.sql ${PARSER_DIR}/cell_info.sql
+	install -m 644 ${BASE_DIR}/metagsm/si.sql        ${PARSER_DIR}/si.sql
+	install -m 644 ${BASE_DIR}/metagsm/sms.sql       ${PARSER_DIR}/sms.sql
 	
 	# Put the smime crt into the library directory since it needs to be a physical 
 	# file on the Android system so that it can be accessed from the openssl binary. 
