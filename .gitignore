@@ -7,3 +7,4 @@
 *.bbl
 *.blg
 *.bib
+.DS_Store
