@@ -950,7 +950,7 @@ public class MsdService extends Service{
 			// phones only call this method with null as a parameter. So let's
 			// send a message so that we find out when it is called.
 			String msg = "onCellInfoChanged(" + ((cellInfo == null) ? "null" : cellInfo.size()) + ")"; 
-			sendErrorMessage(msg);
+			info(msg);
 		}
 		void doCellinfoList(List<CellInfo> cellInfo){
 			if(cellInfo != null){
