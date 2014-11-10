@@ -80,9 +80,9 @@ public class MainActivity extends Activity {
 							long start = c.getTimeInMillis();
 							MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MainActivity.this);
 							SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
-							msdSQLiteOpenHelper.readSQLAsset(db, "catcher_analysis.sql");
-							msdSQLiteOpenHelper.readSQLAsset(db, "sm_2g.sql");
-							msdSQLiteOpenHelper.readSQLAsset(db, "sm_3g.sql");
+							msdSQLiteOpenHelper.readSQLAsset(db, "catcher_analysis.sql", true);
+							msdSQLiteOpenHelper.readSQLAsset(db, "sm_2g.sql", true);
+							msdSQLiteOpenHelper.readSQLAsset(db, "sm_3g.sql", true);
 							db.close();
 							last = c.getTimeInMillis();
 
