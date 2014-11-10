@@ -40,9 +40,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 				Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): " + sql);
 			}
 			for(String statement:sql.split(";")){
-				if(statement.trim().length() > 0 &&
-                   !statement.trim().startsWith("/*!") &&
-                   !statement.trim().startsWith("--")) {
+				if(statement.trim().length() > 0 && !statement.trim().startsWith("/*!")) {
 					if (verbose){
 						Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement=" + statement);
 					}
