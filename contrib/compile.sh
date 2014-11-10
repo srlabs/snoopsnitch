@@ -150,6 +150,9 @@ then
 	install -m 755 ${OUTPUT_DIR}/out/metagsm/diag_import       ${PARSER_DIR}/libdiag_import.so
 	install -m 755 ${OUTPUT_DIR}/out/metagsm/libcompat.so      ${PARSER_DIR}/libcompat.so
 
+	install -m 644 ${OUTPUT_DIR}/out/metagsm/sm_2g.sql ${PARSER_DIR}/sm_2g.sql
+	install -m 644 ${OUTPUT_DIR}/out/metagsm/sm_3g.sql ${PARSER_DIR}/sm_3g.sql
+
 	install -m 644 ${BASE_DIR}/metagsm/cell_info.sql ${PARSER_DIR}/cell_info.sql
 	install -m 644 ${BASE_DIR}/metagsm/si.sql        ${PARSER_DIR}/si.sql
 	install -m 644 ${BASE_DIR}/metagsm/sms.sql       ${PARSER_DIR}/sms.sql

@@ -55,6 +55,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		readSQLAsset(db, "si.sql");
 		readSQLAsset(db, "cell_info.sql");
 		readSQLAsset(db, "sms.sql");
+		readSQLAsset(db, "config.sql");
 		readSQLAsset(db, "local.sqlx");
 	}
 

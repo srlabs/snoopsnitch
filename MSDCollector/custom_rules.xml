@@ -18,7 +18,10 @@
     <copy file="../contrib/prebuilt/si.sql"                todir="assets" />
     <copy file="../contrib/prebuilt/cell_info.sql"         todir="assets" />
     <copy file="../contrib/prebuilt/sms.sql"               todir="assets" />
+    <copy file="../contrib/prebuilt/sm_2g.sql"             todir="assets" />
+    <copy file="../contrib/prebuilt/sm_3g.sql"             todir="assets" />
     <copy file="../analysis/prebuilt/catcher_analysis.sql" todir="assets" />
+    <copy file="../analysis/prebuilt/config.sql"           todir="assets" />
 
   </target>
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -20,9 +21,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import de.srlabs.msd.qdmon.MsdService;
+import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.upload.UploadServiceHelper;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msdcollector.R;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.Locale;
 
 public class MainActivity extends Activity {
 	private ServiceConnection serviceConnection = new MyServiceConnection();
@@ -54,6 +59,7 @@ public class MainActivity extends Activity {
 		}
 	};
 	class ReturnHandler extends Handler {
+		private long last = 0;
 		@Override
 		public void handleMessage(final Message msg) {
 			MainActivity.this.runOnUiThread(new Runnable() {
@@ -66,7 +72,26 @@ public class MainActivity extends Activity {
 						appendLogMsg(msg.obj.toString());
 						break;
 					case MsdService.MSG_NEW_SESSION:
-						appendLogMsg("MSG_NEW_SESSION");
+						Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+						long delta = c.getTimeInMillis() - last;
+						// Run analysis every 10 seconds
+						if (delta > 10000)
+						{
+							long start = c.getTimeInMillis();
+							MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MainActivity.this);
+							SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+							msdSQLiteOpenHelper.readSQLAsset(db, "catcher_analysis.sql");
+							msdSQLiteOpenHelper.readSQLAsset(db, "sm_2g.sql");
+							msdSQLiteOpenHelper.readSQLAsset(db, "sm_3g.sql");
+							db.close();
+							last = c.getTimeInMillis();
+
+							String time = String.format(Locale.US, "%02d:%02d:%02d",
+								c.get(Calendar.HOUR_OF_DAY),
+								c.get(Calendar.MINUTE),
+								c.get(Calendar.SECOND));
+							appendLogMsg(time + ": MSG_NEW_SESSION (took " + (last - start) + "ms)");
+						}
 						break;
 					default:
 						appendLogMsg("ReturnHandler: Unknown message " + msg.what);
