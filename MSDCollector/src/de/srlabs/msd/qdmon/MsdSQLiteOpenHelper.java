@@ -18,8 +18,8 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		this.context = context;
 	}
 
-	public void readSQLAsset(SQLiteDatabase db, String file) {
-		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
+	public void readSQLAsset(SQLiteDatabase db, String file, Boolean verbose) {
+		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") called");
 		try {
 			InputStream sqlInputStream = context.getAssets().open(file);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -36,27 +36,36 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 				e.printStackTrace();
 			}
 			String sql = byteArrayOutputStream.toString();
-			Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): " + sql);
+			if (verbose){
+				Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): " + sql);
+			}
 			for(String statement:sql.split(";")){
-				if(statement.trim().length() > 0 && !statement.startsWith("/*!")){
-					Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement=" + statement);
+				if(statement.trim().length() > 0 &&
+                   !statement.trim().startsWith("/*!") &&
+                   !statement.trim().startsWith("--")) {
+					if (verbose){
+						Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement=" + statement);
+					}
 					db.execSQL(statement);
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") done");
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
-		readSQLAsset(db, "si.sql");
-		readSQLAsset(db, "cell_info.sql");
-		readSQLAsset(db, "sms.sql");
-		readSQLAsset(db, "config.sql");
-		readSQLAsset(db, "local.sqlx");
+		readSQLAsset(db, "si.sql", true);
+		readSQLAsset(db, "cell_info.sql", true);
+		readSQLAsset(db, "sms.sql", true);
+		readSQLAsset(db, "config.sql", true);
+		readSQLAsset(db, "mcc.sql", true);
+		readSQLAsset(db, "mnc.sql", true);
+		readSQLAsset(db, "hlr_info.sql", true);
+		readSQLAsset(db, "local.sqlx", true);
 	}
 
 	@Override

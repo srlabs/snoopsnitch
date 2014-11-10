@@ -20,6 +20,9 @@
     <copy file="../contrib/prebuilt/sms.sql"               todir="assets" />
     <copy file="../contrib/prebuilt/sm_2g.sql"             todir="assets" />
     <copy file="../contrib/prebuilt/sm_3g.sql"             todir="assets" />
+    <copy file="../contrib/prebuilt/mcc.sql"               todir="assets" />
+    <copy file="../contrib/prebuilt/mnc.sql"               todir="assets" />
+    <copy file="../contrib/prebuilt/hlr_info.sql"          todir="assets" />
     <copy file="../analysis/prebuilt/catcher_analysis.sql" todir="assets" />
     <copy file="../analysis/prebuilt/config.sql"           todir="assets" />
 
