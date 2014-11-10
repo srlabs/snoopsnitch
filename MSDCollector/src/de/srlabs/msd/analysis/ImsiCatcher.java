@@ -41,21 +41,21 @@ public class ImsiCatcher {
 		return endTime;
 	}
 	/**
-	 * id column of the silent sms in table session_info, can be used to retrieve the SMS again using get(long id)
+	 * id column of the silent sms in table session_info, can be used to retrieve the IMSI Catcher again using get(long id)
 	 * @return
 	 */
 	public long getId() {
 		return id;
 	}
 	/**
-	 * MCC when the SMS was received
+	 * MCC when the IMSI Catcher was received
 	 * @return
 	 */
 	public int getMcc() {
 		return mcc;
 	}
 	/**
-	 * MNC when the SMS was received
+	 * MNC when the IMSI Catcher was received
 	 * @return
 	 */
 	public int getMnc() {
