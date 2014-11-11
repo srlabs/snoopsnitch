@@ -9,31 +9,7 @@
 --  Track
 .read sql/t_07.sql
 
-DROP TABLE IF EXISTS catcher;
-CREATE TABLE catcher
-(
-	mcc integer,
-	mnc integer,
-	lac integer,
-	cid integer,
-	timestamp datetime,
-	a1 integer,
-	a2 integer,
-	a4 integer,
-	k1 integer,
-	k2 integer,
-	c1 integer,
-	c2 integer,
-	c3 integer,
-	c4 integer,
-	t1 integer,
-	t3 integer,
-	t4 integer,
-	r1 integer,
-	r2 integer,
-	score integer
-);
-	
+DELETE FROM catcher;
 INSERT INTO catcher
 SELECT
         ci.mcc,

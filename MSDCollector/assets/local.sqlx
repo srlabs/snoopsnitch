@@ -39,3 +39,28 @@ CREATE TABLE pending_uploads(
   filename CHAR(64) NOT NULL UNIQUE, 		-- The filename of the file to upload, file must be located in context.getFilesDir()
   delete_after_uploading INTEGER NOT NULL 	-- 0/1, Indicates whether the file should be deleted directly after uploading
 );
+
+DROP TABLE IF EXISTS catcher;
+CREATE TABLE catcher
+(
+	mcc integer,
+	mnc integer,
+	lac integer,
+	cid integer,
+	timestamp datetime,
+	a1 DOUBLE,
+	a2 DOUBLE,
+	a4 DOUBLE,
+	k1 DOUBLE,
+	k2 DOUBLE,
+	c1 DOUBLE,
+	c2 DOUBLE,
+	c3 DOUBLE,
+	c4 DOUBLE,
+	t1 DOUBLE,
+	t3 DOUBLE,
+	t4 DOUBLE,
+	r1 DOUBLE,
+	r2 DOUBLE,
+	score DOUBLE
+);
