@@ -6,19 +6,21 @@ usage()
     echo >&2 "   -t <target>   Target to build for"
     echo >&2 "   -f            Fast mode - only build parser"
     echo >&2 "   -g            init git submodules"
+    echo >&2 "   -u            update ./prebuilt directory"
     echo >&2 "   -h            This help screen"
     exit 1
 }
 
 fast=""
 
-while getopts hfgt: o
+while getopts hfgut: o
 do
     case "$o" in
         t)      target="${OPTARG}";;
         f)      fast=1;;
+        u)      update=1;;
         h)      usage;;
-	g)      do_git=1;;
+        g)      do_git=1;;
         [?])    usage;;
     esac
 done
@@ -174,7 +176,15 @@ then
 	# So the following line of perl patches all references so that the libraries
 	# are found with a .so extension instead of .so.[digit]
 	perl -i -pe 's/libasn1c\.so\.0/libasn1c.so\0\0/gs;s/libosmo-asn1-rrc\.so\.0/libosmo-asn1-rrc.so\0\0/gs;s/libosmocore\.so\.5/libosmocore.so\0\0/gs;s/libosmogsm\.so\.5/libosmogsm.so\0\0/gs' ${PARSER_DIR}/*.so
+
 fi
 
 ln -sf ${BUILD_DIR} ../${LATEST}
+
+# Update prebuilt dir
+if [ "x${update}" = "x1" ];
+then
+	cp ${PARSER_DIR}/* ${BASE_DIR}/prebuilt/
+fi
+
 echo DONE
