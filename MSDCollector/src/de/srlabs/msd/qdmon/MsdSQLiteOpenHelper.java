@@ -20,6 +20,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 
 	public void readSQLAsset(SQLiteDatabase db, String file, Boolean verbose) {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") called");
+		db.execSQL("BEGIN TRANSACTION;");
 		try {
 			InputStream sqlInputStream = context.getAssets().open(file);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -50,6 +51,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		db.execSQL("COMMIT;");
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") done");
 	}
 
