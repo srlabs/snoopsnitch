@@ -155,6 +155,7 @@ then
 	install -m 644 ${OUTPUT_DIR}/out/metagsm/mcc.sql      ${PARSER_DIR}/mcc.sql
 	install -m 644 ${OUTPUT_DIR}/out/metagsm/mnc.sql      ${PARSER_DIR}/mnc.sql
 	install -m 644 ${OUTPUT_DIR}/out/metagsm/hlr_info.sql ${PARSER_DIR}/hlr_info.sql
+	install -m 644 ${OUTPUT_DIR}/out/metagsm/sm.sql       ${PARSER_DIR}/sm.sql
 
 	install -m 644 ${BASE_DIR}/metagsm/cell_info.sql ${PARSER_DIR}/cell_info.sql
 	install -m 644 ${BASE_DIR}/metagsm/si.sql        ${PARSER_DIR}/si.sql

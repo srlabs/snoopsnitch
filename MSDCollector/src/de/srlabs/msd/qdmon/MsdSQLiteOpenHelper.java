@@ -57,6 +57,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
 		readSQLAsset(db, "si.sql", true);
+		readSQLAsset(db, "sm.sql", true);
 		readSQLAsset(db, "cell_info.sql", true);
 		readSQLAsset(db, "sms.sql", true);
 		readSQLAsset(db, "config.sql", true);
@@ -64,6 +65,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		readSQLAsset(db, "mnc.sql", true);
 		readSQLAsset(db, "hlr_info.sql", true);
 		readSQLAsset(db, "local.sqlx", true);
+		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() done");
 	}
 
 	@Override
