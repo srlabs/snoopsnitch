@@ -1156,18 +1156,10 @@ public class MsdService extends Service{
 		return result.array();
 	}
 	private void sendErrorMessage(String msg){
-		sendErrorMessage(msg, null);
+		Log.e(TAG,msg);
 	}
 	private void sendErrorMessage(String msg, Exception e){
-		if(e == null){
-			Log.e(TAG,msg);
-		} else{
-			Log.e(TAG,msg,e);
-			msg += e.getMessage();
-		}
-		Message sendMsg = Message.obtain(null, MSG_ERROR_STR);
-		sendMsg.obj = msg;
-		broadcastMessage(sendMsg);
+		Log.e(TAG,msg,e);
 	}
 	private void handleFatalError(String msg, Exception e){
 		boolean doShutdown = false;

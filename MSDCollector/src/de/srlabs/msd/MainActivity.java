@@ -72,25 +72,29 @@ public class MainActivity extends Activity {
 						appendLogMsg(msg.obj.toString());
 						break;
 					case MsdService.MSG_NEW_SESSION:
-						Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-						long delta = c.getTimeInMillis() - last;
+
+						Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
 						// Run analysis every 10 seconds
-						if (delta > 10000)
+						if (start.getTimeInMillis() - last > 10000)
 						{
-							long start = c.getTimeInMillis();
+							String time = String.format(Locale.US, "%02d:%02d:%02d",
+								start.get(Calendar.HOUR_OF_DAY),
+								start.get(Calendar.MINUTE),
+								start.get(Calendar.SECOND));
+
 							MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MainActivity.this);
 							SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
-							msdSQLiteOpenHelper.readSQLAsset(db, "catcher_analysis.sql", true);
-							msdSQLiteOpenHelper.readSQLAsset(db, "sm_2g.sql", true);
-							msdSQLiteOpenHelper.readSQLAsset(db, "sm_3g.sql", true);
+							msdSQLiteOpenHelper.readSQLAsset(db, "catcher_analysis.sql", false);
+							msdSQLiteOpenHelper.readSQLAsset(db, "sm_2g.sql", false);
+							msdSQLiteOpenHelper.readSQLAsset(db, "sm_3g.sql", false);
 							db.close();
-							last = c.getTimeInMillis();
 
-							String time = String.format(Locale.US, "%02d:%02d:%02d",
-								c.get(Calendar.HOUR_OF_DAY),
-								c.get(Calendar.MINUTE),
-								c.get(Calendar.SECOND));
-							appendLogMsg(time + ": MSG_NEW_SESSION (took " + (last - start) + "ms)");
+							Calendar done = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+							last = done.getTimeInMillis();
+
+							appendLogMsg(time + ": Analysis took " +
+								(last - start.getTimeInMillis()) + "ms");
 						}
 						break;
 					default:
