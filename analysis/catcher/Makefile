@@ -93,7 +93,7 @@ catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scr
 	mv $@.tmp $@
 
 catcher.txt: validate.sql
-	sqlite3 $(DB) $< > $@.tmp
+	sqlite3 $(DB) < $< > $@.tmp
 	mv $@.tmp $@
 
 cipher_times.pdf: SQL     = $(CIPHER_SQL)

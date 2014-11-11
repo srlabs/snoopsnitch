@@ -1,4 +1,4 @@
-.read config.sql
+.read ../prebuilt/config.sql
 .read analysis.sql
 
 DROP VIEW IF EXISTS val;
