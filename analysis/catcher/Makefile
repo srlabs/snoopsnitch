@@ -91,6 +91,18 @@ PGROUPS_SQL = \
 		ORDER BY \
 			groups;
 
+PAGING_RATE_SQL = \
+		DROP VIEW IF EXISTS pcount; \
+		CREATE VIEW pcount AS SELECT count(*) as p FROM paging_info; \
+		SELECT \
+			(count(*)+0.0)/pcount.p AS perc, \
+			round(pag1_rate*10)/10 as p1 \
+		FROM paging_info, pcount \
+		GROUP BY \
+			p1 \
+		ORDER BY \
+			p1;
+
 all: catcher_analysis.sql
 
 validate: \
@@ -156,6 +168,9 @@ pgroups.pdf:      GNUPLOT = set xlabel "Number of paging groups"; \
 							set boxwidth 0.5; \
 							plot "$<" using 2:1 with boxes;
 
+paging_rate.pdf:  SQL     = $(PAGING_RATE_SQL)
+paging_rate.pdf:  GNUPLOT = set xlabel "Number of type-1 paging requests per minute"; \
+							plot "$<" using 2:1 with lines;
 %.dat: Makefile
 	@echo [SQL] $@.
 	@sqlite3 -header $(DB) "$(SQL)" > $@
