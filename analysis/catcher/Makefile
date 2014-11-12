@@ -173,7 +173,7 @@ paging_rate.pdf:  GNUPLOT = set xlabel "Number of type-1 paging requests per min
 							plot "$<" using 2:1 with lines;
 %.dat: Makefile
 	@echo [SQL] $@.
-	@sqlite3 -header $(DB) "$(SQL)" > $@
+	@sqlite3 -header $(DB) -separator '	' "$(SQL)" > $@
 
 %.pdf: %.dat Makefile
 	@echo [GPL] $@.
