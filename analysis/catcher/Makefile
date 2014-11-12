@@ -144,6 +144,6 @@ lu_type.pdf:      GNUPLOT = set xlabel "Location update types"; \
 	@gnuplot -e '$(COMMON_GP)$(GNUPLOT)'
 
 clean:
-	rm -f *.pdf *.tmp *.dat catcher_analysis.sql
+	rm -f *.pdf *.tmp *.dat catcher_analysis.sql catcher.txt
 
-.PHONY: clean
+.PHONY: clean catcher.txt
