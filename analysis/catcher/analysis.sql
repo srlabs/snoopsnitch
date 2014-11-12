@@ -40,5 +40,5 @@ ON
         ci.mnc = si.mnc AND
         ci.lac = si.lac AND
         ci.cid = si.cid AND
-        strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) >= 0 AND
-        strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) < 10;
+        strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) > -30 AND
+        strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) < 1200;
