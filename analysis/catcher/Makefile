@@ -77,6 +77,20 @@ LU_TYPE_SQL = \
 		GROUP BY lu_type \
 		ORDER BY acc_count + rej_count DESC;
 
+PGROUPS_SQL = \
+		DROP VIEW IF EXISTS gcount; \
+		CREATE VIEW gcount AS SELECT count(*) as g FROM cell_info WHERE cid > 0; \
+		SELECT \
+			(count(*)+0.0)/gcount.g AS perc, \
+			((9.0 - cell_info.agch_blocks - 6 * cell_info.combined) * cell_info.pag_mframes) AS groups \
+		FROM cell_info, gcount \
+			WHERE \
+			cid >0 \
+		GROUP BY \
+			groups \
+		ORDER BY \
+			groups;
+
 all: catcher_analysis.sql
 
 validate: \
@@ -86,6 +100,7 @@ validate: \
 	duration.pdf \
 	lu_reject.pdf \
 	lu_type.pdf \
+	pgroups.pdf \
 	catcher.txt
 
 catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scripts/resolve_read.pl
@@ -134,6 +149,12 @@ lu_type.pdf:      GNUPLOT = set xlabel "Location update types"; \
 							set xtics rotate by -45; \
 							plot "$<" using 3:xtic(1) title "Rejected", \
 							     "" using 2:xtic(1) title "Accepted"\
+
+pgroups.pdf:      SQL     = $(PGROUPS_SQL)
+pgroups.pdf:      GNUPLOT = set xlabel "Number of paging groups"; \
+							set style fill solid; \
+							set boxwidth 0.5; \
+							plot "$<" using 2:1 with boxes;
 
 %.dat: Makefile
 	@echo [SQL] $@.
