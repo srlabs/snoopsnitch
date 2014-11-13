@@ -2,7 +2,6 @@ DB ?= ~/MSD/Traces/new_parsed_gsmmap.sqlite
 
 COMMON_GP = \
 		unset key; \
-        set datafile separator "|"; \
         set terminal pdf; \
         set output "$@"; \
 		set grid ytics lc rgb "grey" lw 1 lt 0; \
@@ -96,7 +95,7 @@ PAGING_RATE_SQL = \
 		CREATE VIEW pcount AS SELECT count(*) as p FROM paging_info; \
 		SELECT \
 			(count(*)+0.0)/pcount.p AS perc, \
-			round(pag1_rate*10)/10 as p1 \
+			round(pag1_rate, 1) as p1 \
 		FROM paging_info, pcount \
 		GROUP BY \
 			p1 \
@@ -169,11 +168,15 @@ pgroups.pdf:      GNUPLOT = set xlabel "Number of paging groups"; \
 							plot "$<" using 2:1 with boxes;
 
 paging_rate.pdf:  SQL     = $(PAGING_RATE_SQL)
-paging_rate.pdf:  GNUPLOT = set xlabel "Number of type-1 paging requests per minute"; \
+paging_rate.pdf:  GNUPLOT = set xlabel "Number of type-1 paging requests per second"; \
 							plot "$<" using 2:1 with lines;
+
+
 %.dat: Makefile
 	@echo [SQL] $@.
-	@sqlite3 -header $(DB) -separator '	' "$(SQL)" > $@
+	@test "x$(SQL)" != "x"
+	@sqlite3 -header $(DB) -separator '	' "$(SQL)" > $@.tmp
+	mv $@.tmp $@
 
 %.pdf: %.dat Makefile
 	@echo [GPL] $@.
