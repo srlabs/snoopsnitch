@@ -1,5 +1,6 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
+DROP TABLE IF EXISTS mnc;
 CREATE TABLE "mnc" (
   "mcc" smallint(5)  DEFAULT NULL,
   "mnc" smallint(5)  DEFAULT NULL,
