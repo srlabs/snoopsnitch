@@ -24,6 +24,7 @@
     <copy file="../contrib/prebuilt/mnc.sql"               todir="assets" />
     <copy file="../contrib/prebuilt/hlr_info.sql"          todir="assets" />
     <copy file="../contrib/prebuilt/sm.sql"                todir="assets" />
+    <copy file="../contrib/prebuilt/files.sql"             todir="assets" />
     <copy file="../analysis/prebuilt/catcher_analysis.sql" todir="assets" />
     <copy file="../analysis/prebuilt/config.sql"           todir="assets" />
 
