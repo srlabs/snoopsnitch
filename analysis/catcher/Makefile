@@ -2,7 +2,6 @@ DB ?= ~/MSD/Traces/new_parsed_gsmmap.sqlite
 
 COMMON_GP = \
 		unset key; \
-        set datafile separator "|"; \
         set terminal pdf; \
         set output "$@"; \
 		set grid ytics lc rgb "grey" lw 1 lt 0; \
@@ -77,6 +76,32 @@ LU_TYPE_SQL = \
 		GROUP BY lu_type \
 		ORDER BY acc_count + rej_count DESC;
 
+PGROUPS_SQL = \
+		DROP VIEW IF EXISTS gcount; \
+		CREATE VIEW gcount AS SELECT count(*) as g FROM cell_info WHERE cid > 0; \
+		SELECT \
+			(count(*)+0.0)/gcount.g AS perc, \
+			((9.0 - cell_info.agch_blocks - 6 * cell_info.combined) * cell_info.pag_mframes) AS groups \
+		FROM cell_info, gcount \
+			WHERE \
+			cid >0 \
+		GROUP BY \
+			groups \
+		ORDER BY \
+			groups;
+
+PAGING_RATE_SQL = \
+		DROP VIEW IF EXISTS pcount; \
+		CREATE VIEW pcount AS SELECT count(*) as p FROM paging_info; \
+		SELECT \
+			(count(*)+0.0)/pcount.p AS perc, \
+			round(pag1_rate, 1) as p1 \
+		FROM paging_info, pcount \
+		GROUP BY \
+			p1 \
+		ORDER BY \
+			p1;
+
 all: catcher_analysis.sql
 
 validate: \
@@ -86,6 +111,7 @@ validate: \
 	duration.pdf \
 	lu_reject.pdf \
 	lu_type.pdf \
+	pgroups.pdf \
 	catcher.txt
 
 catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scripts/resolve_read.pl
@@ -93,7 +119,7 @@ catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scr
 	mv $@.tmp $@
 
 catcher.txt: validate.sql
-	sqlite3 $(DB) $< > $@.tmp
+	sqlite3 $(DB) < $< > $@.tmp
 	mv $@.tmp $@
 
 cipher_times.pdf: SQL     = $(CIPHER_SQL)
@@ -135,15 +161,28 @@ lu_type.pdf:      GNUPLOT = set xlabel "Location update types"; \
 							plot "$<" using 3:xtic(1) title "Rejected", \
 							     "" using 2:xtic(1) title "Accepted"\
 
+pgroups.pdf:      SQL     = $(PGROUPS_SQL)
+pgroups.pdf:      GNUPLOT = set xlabel "Number of paging groups"; \
+							set style fill solid; \
+							set boxwidth 0.5; \
+							plot "$<" using 2:1 with boxes;
+
+paging_rate.pdf:  SQL     = $(PAGING_RATE_SQL)
+paging_rate.pdf:  GNUPLOT = set xlabel "Number of type-1 paging requests per second"; \
+							plot "$<" using 2:1 with lines;
+
+
 %.dat: Makefile
 	@echo [SQL] $@.
-	@sqlite3 -header $(DB) "$(SQL)" > $@
+	@test "x$(SQL)" != "x"
+	@sqlite3 -header $(DB) -separator '	' "$(SQL)" > $@.tmp
+	mv $@.tmp $@
 
 %.pdf: %.dat Makefile
 	@echo [GPL] $@.
 	@gnuplot -e '$(COMMON_GP)$(GNUPLOT)'
 
 clean:
-	rm -f *.pdf *.tmp *.dat catcher_analysis.sql
+	rm -f *.pdf *.tmp *.dat catcher_analysis.sql catcher.txt
 
-.PHONY: clean
+.PHONY: clean catcher.txt

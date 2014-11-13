@@ -7,7 +7,8 @@ CREATE TABLE config
         delta_tch   int,
         delta_cmcp  int,
         n_norm      int,
-        delta_arfcn int
+        delta_arfcn int,
+        min_pag1_rate float
 );
 
 INSERT INTO config VALUES
@@ -17,5 +18,6 @@ INSERT INTO config VALUES
         10000, -- delta_tch (FIXME: dummy value for now)
         2000,  -- delta_cmcp (FIXME: dummy value for now)
         42,    -- n_norm (FIXME: dummy value - we need sample data)
-        1800   -- delta_arfcn (FIXME: dummy value - we need sample data)
+        1800,  -- delta_arfcn (FIXME: dummy value - we need sample data)
+        0.4    -- min_pag1_rate (FIXME: Need better sampes)
 );

@@ -12,33 +12,47 @@
 DELETE FROM catcher;
 INSERT INTO catcher
 SELECT
-        ci.mcc,
-        ci.mnc,
-        ci.lac,
-        ci.cid,
-        si.timestamp  AS timestamp,
-        ci.a1,
-        ci.a2,
-        ci.a4,
-        ci.k1,
-        ci.k2,
-        si.c1,
-        si.c2,
-        si.c3,
-        si.c4,
-        ci.t1,
-        si.t3,
-        si.t4,
-        ci.r1,
-        ci.r2,
-        ci.a1 + ci.a2 + ci.a4 + ci.k1 + ci.k2 +
-        si.c1 + si.c2 + si.c3 + si.c4 + ci.t1 +
-        si.t3 + si.t4 + ci.r1 + ci.r2 as score
+	ci.mcc,
+	ci.mnc,
+	ci.lac,
+	ci.cid,
+	si.timestamp,
+	max(ci.a1),
+	max(ci.a2),
+	max(ci.a4),
+	max(ci.k1),
+	max(ci.k2),
+	max(si.c1),
+	max(si.c2),
+	max(si.c3),
+	max(si.c4),
+	max(ci.t1),
+	max(si.t3),
+	max(si.t4),
+	max(ci.r1),
+	max(ci.r2),
+	max(si.f1),
+	max(ci.a1) +
+	max(ci.a2) +
+	max(ci.a4) +
+	max(ci.k1) +
+	max(ci.k2) +
+	max(si.c1) +
+	max(si.c2) +
+	max(si.c3) +
+	max(si.c4) +
+	max(ci.t1) +
+	max(si.t3) +
+	max(si.t4) +
+	max(ci.r1) +
+	max(ci.r2) as score
 FROM si, ci
 ON
-        ci.mcc = si.mcc AND
-        ci.mnc = si.mnc AND
-        ci.lac = si.lac AND
-        ci.cid = si.cid AND
-        strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) >= 0 AND
-        strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) < 10;
+	ci.mcc = si.mcc AND
+	ci.mnc = si.mnc AND
+	ci.lac = si.lac AND
+	ci.cid = si.cid AND
+	strftime('%s', ci.last_seen) - strftime('%s', si.timestamp) < 3600 AND
+	strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) < 3600
+GROUP BY
+	ci.mcc, ci.mnc, ci.lac, ci.cid;
