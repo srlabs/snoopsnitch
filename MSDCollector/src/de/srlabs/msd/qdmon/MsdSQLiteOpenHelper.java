@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "msd.db";
-	private static final int DATABASE_VERSION = 7;
+	private static final int DATABASE_VERSION = 8;
 	private Context context;
 	public MsdSQLiteOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -67,6 +67,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		readSQLAsset(db, "mnc.sql", true);
 		readSQLAsset(db, "hlr_info.sql", true);
 		readSQLAsset(db, "local.sqlx", true);
+		readSQLAsset(db, "files.sql", true);
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() done");
 	}
 
