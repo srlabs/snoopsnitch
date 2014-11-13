@@ -31,6 +31,7 @@ SELECT
         si.t4,
         ci.r1,
         ci.r2,
+        si.f1,
         ci.a1 + ci.a2 + ci.a4 + ci.k1 + ci.k2 +
         si.c1 + si.c2 + si.c3 + si.c4 + ci.t1 +
         si.t3 + si.t4 + ci.r1 + ci.r2 as score

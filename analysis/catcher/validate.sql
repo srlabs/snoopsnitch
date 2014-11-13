@@ -20,6 +20,7 @@ CREATE TABLE catcher
 	t4 FLOAT,
 	r1 FLOAT,
 	r2 FLOAT,
+	f1 FLOAT,
 	score FLOAT
 );
 
