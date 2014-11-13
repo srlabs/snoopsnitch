@@ -69,7 +69,9 @@ public class MainActivity extends Activity {
 						appendLogMsg("RECORDING_STATE: " + msg.arg1);
 						break;
 					case MsdService.MSG_ERROR_STR:
-						appendLogMsg(msg.obj.toString());
+						Bundle b = (Bundle) msg.obj;
+						String errorMsg = b.getString("ERROR_MSG");
+						appendLogMsg(errorMsg);
 						break;
 					case MsdService.MSG_NEW_SESSION:
 

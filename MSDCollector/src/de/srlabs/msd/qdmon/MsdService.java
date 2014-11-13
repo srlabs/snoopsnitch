@@ -23,9 +23,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.GZIPOutputStream;
 
-import de.srlabs.msd.util.DeviceCompatibilityChecker;
-import de.srlabs.msd.util.MsdConfig;
-
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.ContentValues;
@@ -42,6 +39,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
@@ -52,6 +51,8 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
+import de.srlabs.msd.util.DeviceCompatibilityChecker;
+import de.srlabs.msd.util.MsdConfig;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";
@@ -88,7 +89,8 @@ public class MsdService extends Service{
 	public static final int MSG_RECORDING_STATE = 6;
 	/**
 	 * The service sends this message to all registered clients when an error
-	 * occurs. The textual error message (msg.obj.toString()) should be
+	 * occurs. msg.obj is a Bundle and ((Bundle)msg.obj).getString("ERROR_MSG") 
+	 * can be used to retrieve a textual error message, which can then be 
 	 * displayed to the user.
 	 */
 	public static final int MSG_ERROR_STR = 7;
@@ -106,8 +108,9 @@ public class MsdService extends Service{
 	 */
 	public static final int MSG_NEW_SESSION = 9;
 
-	List<Messenger>               clients               = new ArrayList<Messenger>();
-	final Messenger               serviceMessenger      = new Messenger(new IncomingHandler());
+	List<Messenger> clients = new ArrayList<Messenger>();
+	IncomingHandler incomingHandler = new IncomingHandler();
+	final Messenger serviceMessenger = new Messenger(incomingHandler);
 
 	AtomicBoolean shuttingDown          = new AtomicBoolean(false);
 
@@ -221,6 +224,13 @@ public class MsdService extends Service{
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		Thread.setDefaultUncaughtExceptionHandler(
+				new Thread.UncaughtExceptionHandler() {
+					@Override
+					public void uncaughtException(Thread t, Throwable e) {
+						handleFatalError("Uncought Exception in MsdService Thread " + t.getClass(), e);
+					}
+				});
 		telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		info("MsdService.onCreate() called");
 	}
@@ -259,6 +269,7 @@ public class MsdService extends Service{
 			return;
 		}
 		try {
+			cleanupIncompleteOldFiles();
 			this.shuttingDown.set(false);
 			this.sqliteThread = new SqliteThread();
 			sqliteThread.start();
@@ -1118,12 +1129,14 @@ public class MsdService extends Service{
 	}
 
 	private void broadcastMessage(Message msg) {
+//		Log.e(TAG,"broadcastMsg(" + msg.what + ") sending to " + this.clients.size() + " clients");
+//		Log.e(TAG,"msg.obj.class: " + (msg.obj == null ? "null" : msg.obj.getClass()));
 		for (Messenger r : this.clients) {
 			try {
 				Message sendMsg = Message.obtain(msg);
 				r.send(sendMsg);
 			} catch (RemoteException e) {
-				// XXX handle disappearing client
+				Log.e(TAG,"broadcastMsg(" + msg.what + ") failed with RemoteException");
 			}
 		}
 		msg.recycle();
@@ -1156,12 +1169,23 @@ public class MsdService extends Service{
 		return result.array();
 	}
 	private void sendErrorMessage(String msg){
-		Log.e(TAG,msg);
+		sendErrorMessage(msg,null);
 	}
-	private void sendErrorMessage(String msg, Exception e){
-		Log.e(TAG,msg,e);
+	private void sendErrorMessage(String msg, Throwable e){
+		if(e == null){
+			Log.e(TAG,msg);
+		} else{
+			Log.e(TAG,msg,e);
+			msg += " " + e.getClass().getSimpleName() + ": " + e.getMessage();
+		}
+		final String finalMsg = msg;
+		Message sendMsg = Message.obtain(null, MSG_ERROR_STR);
+		Bundle b = new Bundle();
+		b.putString("ERROR_MSG", finalMsg);
+		sendMsg.obj = b;
+		broadcastMessage(sendMsg);
 	}
-	private void handleFatalError(String msg, Exception e){
+	private void handleFatalError(String msg, Throwable e){
 		boolean doShutdown = false;
 		if(recording && shuttingDown.compareAndSet(false, true)){
 			msg += " => shutting down service";
@@ -1178,12 +1202,12 @@ public class MsdService extends Service{
 		} else{
 			msg = "Error while not recording: " + msg;
 		}
-		sendErrorMessage(msg, e);
 		if(doShutdown){
+			sendErrorMessage(msg, e);
 			// Call shutdown in the main thread so that the thread causing the Error can terminate
 			periodicCheckRecordingStateHandler.post(new Runnable(){
 				public void run() {
-					shutdown(true);					
+					shutdown(true);
 				};				
 			});
 		}
@@ -1326,8 +1350,20 @@ public class MsdService extends Service{
 		shutdown(false);
 		startRecording();
 	}
+
+	/**
+	 * Deletes all files with STATE_RECORDINIG in the database, should be called
+	 * before startRecording(). This will delete incomplete old files which are
+	 * created when MsdService crashes.
+	 */
+	private void cleanupIncompleteOldFiles(){
+		// TODO: Implement
+	}
 	private void cleanupRawFiles(){
-		// TODO: Do encrypted files as well
+		// TODO: Cleanup encrypted files after some time, excluding pending files
+		// TODO: Cleanup debug logs
+		// TODO: Cleanup old files still marked as STATE_RECORDING (this happens if MsdService crashes)
+		// Cleanup unencrypted dumpfiles after MsdConfig.getBasebandLogKeepDurationHours()
 		for(String filename:fileList()){
 			if(!filename.startsWith("qdmon_"))
 				continue;
@@ -1345,7 +1381,6 @@ public class MsdService extends Service{
 			long diff = System.currentTimeMillis() - fileTimeMillis;
 			info("FILENAME: " + filename + " DIFF: " + diff/1000 + " seconds");
 			if(diff > MsdConfig.getBasebandLogKeepDurationHours(MsdService.this) * 60 * 60 * 1000){
-				// TODO: Check whether file is in pending_uploads, if it is, only set delete_after_uploading to 1
 				info("Deleting file: " + filename);
 				deleteFile(filename);
 			}
