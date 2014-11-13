@@ -6,11 +6,9 @@ import java.io.PrintStream;
 import java.util.Vector;
 
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.IBinder;
@@ -25,11 +23,15 @@ public class UploadServiceHelper {
 	private static String TAG = "msd-upload-service-helper";
 	private Context context;
 	private UploadStateCallback callback;
+	private boolean uploadRunnung = false;
 	private ServiceConnection serviceConnection = new MyServiceConnection();
 	private Messenger msgMsdService;
 	private Messenger     returnMessenger     = new Messenger(new ReturnHandler());
 	
 	public void startUploading(Context context, UploadStateCallback callback){
+		if(uploadRunnung)
+			throw new IllegalStateException("UploadServiceHelper.startUploading() called while already uploading");
+		uploadRunnung = true;
 		this.context = context;
 		this.callback = callback;
 		context.startService(new Intent(context, UploadService.class));
@@ -70,6 +72,7 @@ public class UploadServiceHelper {
 			switch (msg.what) {
 			case UploadService.MSG_UPLOAD_STATE:
 				UploadState state = (UploadState)msg.getData().getSerializable("UPLOAD_STATE");
+				uploadRunnung = state.getState() == UploadState.State.RUNNING;
 				callback.uploadStateChanged(state);
 			default:
 				Log.e(TAG,"ReturnHandler: Unknown message " + msg.what);
@@ -89,49 +92,18 @@ public class UploadServiceHelper {
 	public static UploadState createUploadState(Context context){
 		MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(context);
 		SQLiteDatabase db = msdSQLiteOpenHelper.getReadableDatabase();
-		Cursor c = db.query("pending_uploads", null, null, null, null, null, "_id");
-		Vector<String> files = new Vector<String>();
+		Vector<DumpFile> files = DumpFile.getFiles(db, "state = " + DumpFile.STATE_PENDING);
 		long totalSize = 0;
-		while(c.moveToNext()){
-			String filename = c.getString(c.getColumnIndexOrThrow("filename"));
-			files.add(filename);
-			File f = new File(context.getFilesDir() + "/" + filename);
+		// TODO: Maybe we need to add STATE_RECORDING_PENDING and add a mechanism to automatically restart recording
+		for(DumpFile file: files){
+			File f = new File(context.getFilesDir() + "/" + file.getFilename());
 			totalSize += f.length();
 		}
-		c.close();
 		db.close();
-		UploadState result = new UploadState(UploadState.State.IDLE, files.toArray(new String[0]), totalSize, 0, null);
+		UploadState result = new UploadState(UploadState.State.IDLE, files.toArray(new DumpFile[0]), totalSize, 0, null);
 		return result;
 	}
-	/**
-	 * Create some dummy files for testing the upload functionality
-	 * @param context
-	 * @param nFiles
-	 */
-	public static void createDummyUploadFiles(Context context, int nFiles){
-		String prefix = "DUMMY_" + System.currentTimeMillis() + "_";
-		for(int i=0;i<nFiles;i++){
-			try {
-				String filename = prefix + i;
-				PrintStream ps = new PrintStream(context.openFileOutput(filename,0));
-				ps.println("Dummy upload file");
-				for(int j=0;j<1000;j++){
-					ps.println("Dummy line " + j);
-				}
-				ps.close();
-				addPendingUpload(context, filename, true);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	public static void addPendingUpload(Context context, String filename, boolean deleteAfterUploading){
-		MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(context);
-		SQLiteDatabase db = msdSQLiteOpenHelper.getReadableDatabase();
-		ContentValues cv = new ContentValues();
-		cv.put("filename", filename);
-		cv.put("delete_after_uploading",deleteAfterUploading ? 1:0);
-		db.insert("pending_uploads", null, cv);
-		db.close();
+	public boolean isUploadRunnung() {
+		return uploadRunnung;
 	}
 }

@@ -13,8 +13,8 @@ public class UploadState implements Serializable{
 		STOPPED // Uploading was stopped with MSG_UPLOAD_STOP
 	}
 	private State state;
-	private String allFiles[];
-	private Vector<String> completedFiles;
+	private DumpFile allFiles[];
+	private Vector<DumpFile> completedFiles;
 	private long totalSize;
 	private long uploadedSize;
 	private String errorStr;
@@ -26,16 +26,16 @@ public class UploadState implements Serializable{
 		this.state = State.FAILED;
 		this.errorStr = errorStr;
 	}
-	public UploadState(State state, String[] allFiles,
+	public UploadState(State state, DumpFile[] allFiles,
 			long totalSize, long uploadedSize, String errorStr) {
 		this.state = state;
 		this.allFiles = allFiles;
-		this.completedFiles = new Vector<String>();
+		this.completedFiles = new Vector<DumpFile>();
 		this.totalSize = totalSize;
 		this.uploadedSize = uploadedSize;
 		this.errorStr = errorStr;
 	}
-	public String[] getAllFiles() {
+	public DumpFile[] getAllFiles() {
 		return allFiles;
 	}
 	public String[] getCompletedFiles() {
@@ -53,8 +53,8 @@ public class UploadState implements Serializable{
 	public String getErrorStr() {
 		return errorStr;
 	}
-	public void addCompletedFile(String filename, long size){
-		completedFiles.add(filename);
+	public void addCompletedFile(DumpFile file, long size){
+		completedFiles.add(file);
 		uploadedSize += size;
 	}
 	@Override
@@ -67,14 +67,18 @@ public class UploadState implements Serializable{
 		if(completedFiles.isEmpty())
 			result.append("None\n");
 		else{
-			for(String filename: completedFiles)
-				result.append(filename + "\n");
+			for(DumpFile file: completedFiles)
+				result.append(file.getFilename() + "\n");
 		}
 		result.append("\nPending files:\n");
 		boolean pendingFilesExist = false;
-		for(String filename:allFiles){
-			if(!completedFiles.contains(filename)){
-				result.append(filename + "\n");
+		for(DumpFile file:allFiles){
+			boolean fileIsCompleted = false;
+			for(DumpFile tmp:completedFiles)
+				if(tmp.getId() == file.getId())
+					fileIsCompleted = true;
+			if(!fileIsCompleted){
+				result.append(file.getFilename() + "\n");
 				pendingFilesExist = true;
 			}
 		}

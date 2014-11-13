@@ -10,7 +10,6 @@ import javax.net.ssl.HttpsURLConnection;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -95,8 +94,8 @@ public class UploadService extends Service{
 	public void do_uploads() {
 		uploadState = UploadServiceHelper.createUploadState(this);
 		uploadState.setState(UploadState.State.RUNNING);
-		for(String filename: uploadState.getAllFiles()){
-			uploadFile(filename);
+		for(DumpFile file: uploadState.getAllFiles()){
+			uploadFile(file);
 			if(stopUploading && uploadState.getState() != UploadState.State.FAILED){
 				uploadState.setState(UploadState.State.STOPPED);
 				sendState();
@@ -125,7 +124,7 @@ public class UploadService extends Service{
 			Log.e(TAG,"RemoteException in UploadService.sendState()",e);
 		}
 	}
-	private void uploadFile(String filename) {
+	private void uploadFile(DumpFile file) {
 		try {
 			if(stopUploading)
 				return;
@@ -139,7 +138,7 @@ public class UploadService extends Service{
 			connection.setDoOutput(true);
 			connection.connect();
 
-			FileInputStream is = openFileInput(filename);
+			FileInputStream is = openFileInput(file.getFilename());
 
 			final OutputStream os = connection.getOutputStream();
 			OutputStreamWriter out = new OutputStreamWriter(os);
@@ -150,7 +149,7 @@ public class UploadService extends Service{
 			out.write("1" + Constants.CRLF);
 
 			out.write("--" + Constants.MULTIPART_BOUNDARY + Constants.CRLF);
-			out.write("Content-Disposition: form-data; name=\"bursts\"; filename=\"" + MsdConfig.getAppId(this) + "_" + filename
+			out.write("Content-Disposition: form-data; name=\"bursts\"; filename=\"" + MsdConfig.getAppId(this) + "_" + file.getFilename()
 					+ "\""
 					+ Constants.CRLF);
 			out.write(Constants.CRLF);
@@ -179,28 +178,20 @@ public class UploadService extends Service{
 			if (responseCode == HttpURLConnection.HTTP_OK) {
 				MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(this);
 				SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
-				Cursor c = db.query("pending_uploads",null,"filename=?", new String[]{filename},null,null,null);
-				if(! c.moveToFirst()){
-					uploadState.error("Failed to find pending_upload for file " + filename + " in database");
+				if(!file.updateState(db, DumpFile.STATE_PENDING,  DumpFile.STATE_UPLOADED, null)){
+					uploadState.error("Failed to change state for file " + file.getFilename() + " from STATE_PENDING to STATE_UPLOADED");
 					return;
 				}
-				boolean delete = c.getInt(c.getColumnIndex("delete_after_uploading")) == 0 ? false : true;
-				if(delete)
-					deleteFile(filename);
-				int numDeleted = db.delete("pending_uploads","filename=?", new String[]{filename});
-				if(numDeleted != 1){
-					uploadState.error("Failed to delete file " + filename + " in pending_upload");
-					return;
-				}
-				uploadState.addCompletedFile(filename, counter);
-				Log.i(TAG, "uploading file " + filename + " succeeded");
+				deleteFile(file.getFilename());
+				uploadState.addCompletedFile(file, counter);
+				Log.i(TAG, "uploading file " + file.getFilename() + " succeeded");
 			} else{
-				String errorStr = "Invalid response code: " + responseCode + " while uplaoding " + filename;
+				String errorStr = "Invalid response code: " + responseCode + " while uplaoding " + file.getFilename();
 				uploadState.error(errorStr);
 				Log.e(TAG,errorStr);
 			}
 		} catch (Exception e) {
-			String errorStr = "Exception while uploading " + filename + ": " + e.getMessage();
+			String errorStr = "Exception while uploading " + file.getFilename() + ": " + e.getMessage();
 			uploadState.error(errorStr);
 			Log.e(TAG,errorStr,e);
 		}
