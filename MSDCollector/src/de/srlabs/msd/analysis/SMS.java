@@ -1,7 +1,13 @@
 package de.srlabs.msd.analysis;
 
+import java.util.Vector;
 
-public class SMS {
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import de.srlabs.msd.upload.DumpFile;
+
+
+public class SMS implements AnalysisEvent{
 	private long timestamp;
 	private long id;
 	private int mcc;
@@ -80,5 +86,27 @@ public class SMS {
 		// TODO: Add more fields
 		return result.toString();
 	}
-	
+	public int getUploadState(SQLiteDatabase db){
+		boolean uploaded = false;
+		for(DumpFile file:getFiles(db)){
+			if(file.getState() == DumpFile.STATE_AVAILABLE)
+				return STATE_AVAILABLE;
+			if(file.getState() == DumpFile.STATE_PENDING || file.getState() == DumpFile.STATE_RECORDING_PENDING || file.getState() == DumpFile.STATE_UPLOADED)
+				uploaded = true;
+		}
+		if(uploaded)
+			return STATE_UPLOADED;
+		else
+			return STATE_DELETED;
+	}
+	public Vector<DumpFile> getFiles(SQLiteDatabase db){
+		return DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, timestamp, null, 0);
+	}
+	public void markForUpload(SQLiteDatabase db){
+		Log.e("msd","markForUpload()");
+		for(DumpFile file:getFiles(db)){
+			Log.e("msd","markForUpload(): Doing file " + file);
+			file.markForUpload(db);
+		}
+	}
 }

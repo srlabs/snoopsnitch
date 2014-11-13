@@ -1,7 +1,12 @@
 package de.srlabs.msd.analysis;
 
+import java.util.Vector;
 
-public class ImsiCatcher {
+import android.database.sqlite.SQLiteDatabase;
+import de.srlabs.msd.upload.DumpFile;
+
+
+public class ImsiCatcher implements AnalysisEvent{
 	private long startTime;
 	private long endTime;
 	private long id;
@@ -79,5 +84,26 @@ public class ImsiCatcher {
 		StringBuffer result = new StringBuffer("ImsiCatcher: ID=" + id);
 		// TODO: Add more fields
 		return result.toString();
+	}
+	public int getUploadState(SQLiteDatabase db){
+		boolean uploaded = false;
+		for(DumpFile file:getFiles(db)){
+			if(file.getState() == DumpFile.STATE_AVAILABLE)
+				return STATE_AVAILABLE;
+			if(file.getState() == DumpFile.STATE_PENDING || file.getState() == DumpFile.STATE_RECORDING_PENDING || file.getState() == DumpFile.STATE_UPLOADED)
+				uploaded = true;
+		}
+		if(uploaded)
+			return STATE_UPLOADED;
+		else
+			return STATE_DELETED;
+	}
+	public Vector<DumpFile> getFiles(SQLiteDatabase db){
+		return DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);
+	}
+	public void markForUpload(SQLiteDatabase db){
+		for(DumpFile file:getFiles(db)){
+			file.markForUpload(db);
+		}
 	}
 }

@@ -1,12 +1,20 @@
 package de.srlabs.msd.qdmon;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
+import android.util.Log;
 import de.srlabs.msd.analysis.AnalysisCallback;
 import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.upload.DumpFile;
 
 public class DummyMsdServiceHelper implements MsdServiceHelperInterface {
 	Vector<SMS> allSms = new Vector<SMS>();
@@ -18,6 +26,8 @@ public class DummyMsdServiceHelper implements MsdServiceHelperInterface {
 	private MsdServiceCallback callback = null;
 	private Handler handler = null;
 	private DummyDataRunnable dummyDataRunnable = new DummyDataRunnable();
+	private DumpFile df;
+	PrintStream dummyLogPrintStream = null;
 	public DummyMsdServiceHelper(Context context, MsdServiceCallback callback){
 		this.context = context;
 		this.callback = callback;
@@ -34,10 +44,33 @@ public class DummyMsdServiceHelper implements MsdServiceHelperInterface {
 		allImsiCatchers.add(new ImsiCatcher(1414597721L*1000L, allImsiCatchers.lastElement().getId() + 1, 262, 1, 2, 3, 0.2));
 	}
 	private class DummyDataRunnable implements Runnable{
+		private boolean recordingStopped = false;
 		@Override
 		public void run() {
-			if(!recording)
+			if(recordingStopped)
 				return;
+			long currentTime = System.currentTimeMillis();
+			if(df == null || currentTime - df.getStart_time() > 10000){
+				MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(context);
+				SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+				if(df != null){
+					dummyLogPrintStream.close();
+					df.endRecording(db);
+				}
+				Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+				c.setTimeInMillis(currentTime);
+				// Calendar.MONTH starts counting with 0
+				String filename = String.format(Locale.US, "DUMMY_qdmon_%04d-%02d-%02d_%02d-%02d-%02dUTC.smime",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
+				df = new DumpFile(filename, DumpFile.TYPE_ENCRYPTED_QDMON);
+				df.setEnd_time(currentTime + 10000);
+				df.insert(db);
+				try {
+					dummyLogPrintStream = new PrintStream(context.openFileOutput(filename, 0));
+				} catch (FileNotFoundException e) {
+					Log.e("DummyMsdServiceHelper","Failed to open dummy output " + filename,e);
+				}
+			}
+			dummyLogPrintStream.println("DummyDataRunnable running at " + currentTime);
 			doPendingCallbacks();
 			handler.postDelayed(dummyDataRunnable, 1000);
 		}
@@ -45,16 +78,19 @@ public class DummyMsdServiceHelper implements MsdServiceHelperInterface {
 
 	@Override
 	public boolean startRecording(){
+		if(recording)
+			return false;
 		long currentTime = System.currentTimeMillis();
 		timeCallbacksDone = currentTime;
 		// One binary SMS 5 seconds after starting to record
 		allSms.add(new SMS(currentTime + 5000, allSms.lastElement().getId()+1, 262, 1, 2, 3, "012345678", SMS.Type.BINARY_SMS));
 		
-		// One IMSI Catcher 10 seconds after starting to record
-		allImsiCatchers.add(new ImsiCatcher(currentTime + 10000, allImsiCatchers.lastElement().getId() + 1, 262, 1, 2, 3, 0.2));
+		// One IMSI Catcher 15 seconds after starting to record
+		allImsiCatchers.add(new ImsiCatcher(currentTime + 15000, allImsiCatchers.lastElement().getId() + 1, 262, 1, 2, 3, 0.2));
 		
 		recording = true;
 		callback.recordingStarted();
+		dummyDataRunnable = new DummyDataRunnable();
 		handler.postDelayed(dummyDataRunnable, 1000);
 		return true;
 	}
@@ -75,6 +111,7 @@ public class DummyMsdServiceHelper implements MsdServiceHelperInterface {
 	@Override
 	public boolean stopRecording(){
 		recording = false;
+		dummyDataRunnable.recordingStopped = true;
 		callback.recordingStopped();
 		return true;
 	}
@@ -97,6 +134,11 @@ public class DummyMsdServiceHelper implements MsdServiceHelperInterface {
 		long currentTime = System.currentTimeMillis();
 		for(SMS sms:allSms){
 			if(sms.getTimestamp() > timeCallbacksDone && sms.getTimestamp() <= currentTime){
+				dummyLogPrintStream.println("doPendingCallbacks(): Simulating sms at " + currentTime);
+				MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(context);
+				SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+				df.updateSms(db,true);
+				db.close();
 				for(AnalysisCallback callback:analysisCallbacks){
 					callback.smsDetected(sms);
 				}
@@ -104,6 +146,11 @@ public class DummyMsdServiceHelper implements MsdServiceHelperInterface {
 		}
 		for(ImsiCatcher imsi:allImsiCatchers){
 			if(imsi.getEndTime() > timeCallbacksDone && imsi.getEndTime() <= currentTime){
+				dummyLogPrintStream.println("doPendingCallbacks(): Simulating IMSI Catcher at " + currentTime);
+				MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(context);
+				SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+				df.updateImsi(db,true);
+				db.close();
 				for(AnalysisCallback callback:analysisCallbacks){
 					callback.imsiCatcherDetected(imsi);
 				}
