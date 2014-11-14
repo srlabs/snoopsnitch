@@ -56,7 +56,9 @@ SELECT
         lac,
         cid,
         (CASE WHEN iden_imsi_bc AND iden_imei_bc THEN 1 WHEN iden_imsi_bc OR iden_imei_bc THEN 0.7 ELSE 0 END) as score
-FROM session_info;
+FROM session_info
+WHERE
+	domain = 0;
 
 --  Track
 DROP VIEW IF EXISTS t3;
@@ -104,12 +106,39 @@ SELECT
 FROM session_info, config
 WHERE duration > 0;
 
+--  Fingerprint
+DROP VIEW IF EXISTS f1;
+CREATE VIEW f1 AS
+SELECT
+	si.id,
+	min(si2.id),
+	si.mcc,
+	si.mnc,
+	si.lac,
+	si.cid,
+	count(pag1_rate) as count,
+	avg(pag1_rate) < config.min_pag1_rate as score
+FROM
+	session_info AS si, session_info as si2, paging_info AS pi, config
+ON
+	--  Join on the next location update…
+	si2.id > si.id AND
+	--  …all paging messages since the current location update started…
+	strftime('%s', pi.timestamp) - strftime('%s', si.timestamp - si.duration/1000) > 0 AND
+	--  …until the succeeding location update starts…
+	strftime('%s', si2.timestamp) - si2.duration/1000 - strftime('%s', pi.timestamp) > 0
+WHERE
+	si.lu_acc AND si2.lu_acc
+GROUP BY
+	si.id;
+
 --  Result
 DROP VIEW IF EXISTS si;
 CREATE VIEW si AS
 SELECT
         si.id,
         si.timestamp,
+        si.duration/1000 as duration,
         si.mcc,
         si.mnc,
         si.lac,
@@ -120,19 +149,15 @@ SELECT
         ifnull(c4.score, 0) as c4,
         ifnull(t3.score, 0) as t3,
         ifnull(t4.score, 0) as t4,
-        (ifnull(c1.score, 0) +
-         ifnull(c2.score, 0) +
-         ifnull(c3.score, 0) +
-         ifnull(c4.score, 0) +
-         ifnull(t3.score, 0) +
-         ifnull(t4.score, 0)) as score
+        ifnull(f1.score, 0) as f1
 FROM session_info as si LEFT JOIN
     c1 ON si.id = c1.id LEFT JOIN
     c2 ON si.id = c2.id LEFT JOIN
     c3 ON si.id = c3.id LEFT JOIN
     c4 ON si.id = c4.id LEFT JOIN
     t3 ON si.id = t3.id LEFT JOIN
-    t4 ON si.id = t4.id
+    t4 ON si.id = t4.id LEFT JOIN
+	f1 ON si.id = f1.id
 WHERE si.mcc > 0 and si.mnc > 0 and si.lac > 0 and si.cid > 0;
 --  All cell_info-based criteria
 
@@ -394,9 +419,8 @@ FROM cell_info, config;
 DROP VIEW IF EXISTS ci;
 CREATE VIEW ci AS
 SELECT DISTINCT
-        ci.id,
-        ci.first_seen,
-        ci.last_seen,
+        ci.first_seen as first_seen,
+        ci.last_seen as last_seen,
         ci.mcc,
         ci.mnc,
         ci.lac,
@@ -408,15 +432,7 @@ SELECT DISTINCT
         ifnull(k2.score, 0) as k2,
         ifnull(t1.score, 0) as t1,
         ifnull(r1.score, 0) as r1,
-        ifnull(r2.score, 0) as r2,
-        (ifnull(a1.score, 0) +
-         ifnull(a2.score, 0) +
-         ifnull(a4.score, 0) +
-         ifnull(k1.score, 0) +
-         ifnull(k2.score, 0) +
-         ifnull(t1.score, 0) +
-         ifnull(r1.score, 0) +
-         ifnull(r2.score, 0)) as score
+        ifnull(r2.score, 0) as r2
 FROM cell_info as ci LEFT JOIN
  a1 ON ci.id = a1.id LEFT JOIN
  a2 ON ci.id = a2.id LEFT JOIN
@@ -426,7 +442,8 @@ FROM cell_info as ci LEFT JOIN
  t1 ON ci.id = t1.id LEFT JOIN
  r1 ON ci.id = r1.id LEFT JOIN
  r2 ON ci.id = r2.id
-WHERE ci.mcc > 0 and ci.mnc > 0 and ci.lac > 0 and ci.cid > 0;
+WHERE
+	ci.mcc > 0 AND ci.mnc > 0 AND ci.lac > 0 AND ci.cid > 0;
 
 --  All unavailable criteria
 
@@ -440,33 +457,47 @@ WHERE ci.mcc > 0 and ci.mnc > 0 and ci.lac > 0 and ci.cid > 0;
 DELETE FROM catcher;
 INSERT INTO catcher
 SELECT
-        ci.mcc,
-        ci.mnc,
-        ci.lac,
-        ci.cid,
-        si.timestamp  AS timestamp,
-        ci.a1,
-        ci.a2,
-        ci.a4,
-        ci.k1,
-        ci.k2,
-        si.c1,
-        si.c2,
-        si.c3,
-        si.c4,
-        ci.t1,
-        si.t3,
-        si.t4,
-        ci.r1,
-        ci.r2,
-        ci.a1 + ci.a2 + ci.a4 + ci.k1 + ci.k2 +
-        si.c1 + si.c2 + si.c3 + si.c4 + ci.t1 +
-        si.t3 + si.t4 + ci.r1 + ci.r2 as score
+	ci.mcc,
+	ci.mnc,
+	ci.lac,
+	ci.cid,
+	si.timestamp,
+	max(ci.a1),
+	max(ci.a2),
+	max(ci.a4),
+	max(ci.k1),
+	max(ci.k2),
+	max(si.c1),
+	max(si.c2),
+	max(si.c3),
+	max(si.c4),
+	max(ci.t1),
+	max(si.t3),
+	max(si.t4),
+	max(ci.r1),
+	max(ci.r2),
+	max(si.f1),
+	max(ci.a1) +
+	max(ci.a2) +
+	max(ci.a4) +
+	max(ci.k1) +
+	max(ci.k2) +
+	max(si.c1) +
+	max(si.c2) +
+	max(si.c3) +
+	max(si.c4) +
+	max(ci.t1) +
+	max(si.t3) +
+	max(si.t4) +
+	max(ci.r1) +
+	max(ci.r2) as score
 FROM si, ci
 ON
-        ci.mcc = si.mcc AND
-        ci.mnc = si.mnc AND
-        ci.lac = si.lac AND
-        ci.cid = si.cid AND
-        strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) >= 0 AND
-        strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) < 10;
+	ci.mcc = si.mcc AND
+	ci.mnc = si.mnc AND
+	ci.lac = si.lac AND
+	ci.cid = si.cid AND
+	strftime('%s', ci.last_seen) - strftime('%s', si.timestamp) < 3600 AND
+	strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) < 3600
+GROUP BY
+	ci.mcc, ci.mnc, ci.lac, ci.cid;
