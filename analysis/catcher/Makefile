@@ -102,6 +102,14 @@ PAGING_RATE_SQL = \
 		ORDER BY \
 			p1;
 
+PAGING_TIMELINE_SQL = \
+		SELECT \
+			strftime('%Y-%m-%d,%H:%M:%S', timestamp), pag1_rate \
+		FROM paging_info \
+		WHERE timestamp != (SELECT MAX(timestamp) FROM paging_info) \
+		ORDER BY \
+			strftime('%s',timestamp);
+
 all: catcher_analysis.sql
 
 validate: \
@@ -171,6 +179,11 @@ paging_rate.pdf:  SQL     = $(PAGING_RATE_SQL)
 paging_rate.pdf:  GNUPLOT = set xlabel "Number of type-1 paging requests per second"; \
 							plot "$<" using 2:1 with lines;
 
+paging_timeline.pdf:  SQL     = $(PAGING_TIMELINE_SQL)
+paging_timeline.pdf:  GNUPLOT = set xlabel "Paging request frequency over time"; \
+							    set xdata time; \
+							    set timefmt "%Y-%m-%d,%H:%M:%S"; \
+							    plot "$<" using 1:2 index 0 with points ps 1 pt 5;
 
 %.dat: Makefile
 	@echo [SQL] $@.
