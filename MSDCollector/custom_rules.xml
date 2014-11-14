@@ -28,6 +28,7 @@
     <copy file="../analysis/prebuilt/catcher_analysis.sql" todir="assets" />
     <copy file="../analysis/prebuilt/config.sql"           todir="assets" />
     <copy file="../analysis/prebuilt/analysis_tables.sql"  todir="assets" />
+    <copy file="../analysis/prebuilt/sms_analysis.sql"     todir="assets" />
 
   </target>
 

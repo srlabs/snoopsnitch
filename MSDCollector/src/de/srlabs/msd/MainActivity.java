@@ -88,6 +88,7 @@ public class MainActivity extends Activity {
 							MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MainActivity.this);
 							SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
 							msdSQLiteOpenHelper.readSQLAsset(db, "catcher_analysis.sql", false);
+							msdSQLiteOpenHelper.readSQLAsset(db, "sms_analysis.sql", false);
 							msdSQLiteOpenHelper.readSQLAsset(db, "sm_2g.sql", false);
 							msdSQLiteOpenHelper.readSQLAsset(db, "sm_3g.sql", false);
 							db.close();
