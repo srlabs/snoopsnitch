@@ -1,5 +1,4 @@
 --  A4
---  Fixme: Document
 
 --  Join cell info with itself on all entries that have the same
 --  MCC/MNC/LAC/CID, but were observed on different ARFCNs. This

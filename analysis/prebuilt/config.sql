@@ -7,7 +7,9 @@ CREATE TABLE config
         delta_tch   int,
         delta_cmcp  int,
         n_norm      int,
-        delta_arfcn int,
+        delta_arfcn int, --  Time in seconds we assume is needed to move from one place
+                         --  an ARFCN is used by a cell to another place where the same
+                         --  ARFCN is used for a *different* cell.
         min_pag1_rate float
 );
 
