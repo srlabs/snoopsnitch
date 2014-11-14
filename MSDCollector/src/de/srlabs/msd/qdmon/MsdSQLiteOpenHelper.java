@@ -66,6 +66,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		readSQLAsset(db, "mcc.sql", true);
 		readSQLAsset(db, "mnc.sql", true);
 		readSQLAsset(db, "hlr_info.sql", true);
+		readSQLAsset(db, "analysis_tables.sql", true);
 		readSQLAsset(db, "local.sqlx", true);
 		readSQLAsset(db, "files.sql", true);
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() done");
