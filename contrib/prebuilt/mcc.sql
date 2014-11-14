@@ -1,6 +1,5 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
-DROP TABLE IF EXISTS mcc;
 CREATE TABLE "mcc" (
   "mcc" smallint(5)  NOT NULL,
   "call_code" smallint(5)  NOT NULL,

@@ -1,6 +1,5 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
-DROP TABLE IF EXISTS hlr_info;
 CREATE TABLE "hlr_info" (
   "mcc" smallint(4)  NOT NULL,
   "mnc" smallint(4)  NOT NULL,

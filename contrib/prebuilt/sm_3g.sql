@@ -41,7 +41,7 @@ SELECT
 FROM
 	session_info
 WHERE
-	rat = 1;
+	rat = 1 and domain = 0;
 
 --  Scores per operator
 DROP VIEW IF EXISTS risk_3g;
