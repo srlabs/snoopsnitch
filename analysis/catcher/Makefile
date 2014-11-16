@@ -183,7 +183,7 @@ paging_timeline.pdf:  SQL     = $(PAGING_TIMELINE_SQL)
 paging_timeline.pdf:  GNUPLOT = set xlabel "Paging request frequency over time"; \
 							    set xdata time; \
 							    set timefmt "%Y-%m-%d,%H:%M:%S"; \
-							    plot "$<" using 1:2 index 0 with points ps 1 pt 5;
+							    plot "$<" using 1:2 index 0 with lines;
 
 %.dat: Makefile
 	@echo [SQL] $@.
