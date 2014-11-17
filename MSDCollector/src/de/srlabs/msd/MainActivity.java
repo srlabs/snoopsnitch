@@ -85,13 +85,13 @@ public class MainActivity extends Activity {
 								start.get(Calendar.MINUTE),
 								start.get(Calendar.SECOND));
 
-							MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MainActivity.this);
-							SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
-							msdSQLiteOpenHelper.readSQLAsset(db, "catcher_analysis.sql", false);
-							msdSQLiteOpenHelper.readSQLAsset(db, "sms_analysis.sql", false);
-							msdSQLiteOpenHelper.readSQLAsset(db, "sm_2g.sql", false);
-							msdSQLiteOpenHelper.readSQLAsset(db, "sm_3g.sql", false);
-							db.close();
+							// MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MainActivity.this);
+							// SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+							// msdSQLiteOpenHelper.readSQLAsset(db, "catcher_analysis.sql", false);
+							// msdSQLiteOpenHelper.readSQLAsset(db, "sms_analysis.sql", false);
+							// msdSQLiteOpenHelper.readSQLAsset(db, "sm_2g.sql", false);
+							// msdSQLiteOpenHelper.readSQLAsset(db, "sm_3g.sql", false);
+							// db.close();
 
 							Calendar done = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 							last = done.getTimeInMillis();
