@@ -110,13 +110,40 @@ PAGING_TIMELINE_SQL = \
 		ORDER BY \
 			strftime('%s',timestamp);
 
+# FIXME: This does not account for the case where SI5ter is present.
+NEIGHBORS_SQL = \
+	SELECT count(*), ncount \
+	FROM \
+		(SELECT count(*) AS ncount FROM arfcn_list WHERE source = 'SI5' GROUP BY id) \
+	GROUP BY \
+		ncount;
+
+T3212_SQL = \
+	SELECT count(*), t3212 \
+	FROM cell_info \
+	WHERE count_si3 \
+	GROUP BY t3212;
+
 all: ../prebuilt/catcher_analysis.sql
 
 OPERATOR_DOCS := \
 	$(PREFIX)_paging_timeline.pdf \
 	$(PREFIX)_paging_rate.pdf \
 
-validate: validate_eplus validate_o2 test_3_3_1 test_3_11
+validate: \
+	validate_eplus \
+	validate_o2 \
+	validate_telekom \
+	test_3_3_1 \
+	test_3_11 \
+	neighbors \
+	t3212
+
+t3212:
+	$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=xgold xgold_t3212.pdf
+
+neighbors:
+	$(MAKE) PREFIX=gsmmap gsmmap_neighbors.pdf
 
 test_3_11:
 	$(MAKE) PREFIX=test_3_11 DB=$(PWD)/../doc/test-III-3_11/db.sqlite do_validate
@@ -129,6 +156,9 @@ validate_eplus:
 
 validate_o2:
 	$(MAKE) PREFIX=o2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite do_validate
+
+validate_telekom:
+	$(MAKE) PREFIX=telekom DB=$(PWD)/../doc/validate-Telekom-DD_B-20141118/db.sqlite do_validate
 
 do_validate: $(OPERATOR_DOCS)
 
@@ -194,6 +224,16 @@ $(PREFIX)_paging_timeline.pdf: GNUPLOT = set xlabel "Paging request frequency ov
 	set xdata time; \
 	set timefmt "%Y-%m-%d,%H:%M:%S"; \
 	plot "$<" using 1:2 index 0 with lines;
+
+$(PREFIX)_neighbors.dat: SQL     = $(NEIGHBORS_SQL)
+$(PREFIX)_neighbors.pdf: GNUPLOT = set xlabel "Number of neighbor cells announced in SI5"; \
+	set key; \
+	plot "$<" using 2:1 with lines title "No. of Neighbors"
+
+$(PREFIX)_t3212.dat: SQL     = $(T3212_SQL)
+$(PREFIX)_t3212.pdf: GNUPLOT = set xlabel "Cell reselect timeout"; \
+	set key; \
+	plot "$<" using 2:1 with lines title "Timeout in deci-hours"
 
 %.dat: Makefile
 	@echo [SQL] $@.
