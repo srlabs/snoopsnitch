@@ -120,8 +120,10 @@ NEIGHBORS_SQL = \
 		ncount;
 
 T3212_SQL = \
-	SELECT count(*), t3212 \
-	FROM cell_info \
+	DROP VIEW IF EXISTS c; \
+	CREATE VIEW c AS SELECT count(*) as count FROM cell_info WHERE si3; \
+	SELECT (count(*)+0.0)/c.count, t3212 \
+	FROM cell_info, c \
 	WHERE si3 \
 	GROUP BY t3212;
 
@@ -298,8 +300,11 @@ $(PREFIX)_neighbors.pdf: GNUPLOT = set xlabel "Number of neighbor cells announce
 
 $(PREFIX)_t3212.dat: SQL     = $(T3212_SQL)
 $(PREFIX)_t3212.pdf: GNUPLOT = set xlabel "Cell reselect timeout"; \
-	set key; \
-	plot "$<" using 2:1 with lines title "Timeout in deci-hours"
+	unset grid; \
+	set boxwidth 3; \
+	set style fill solid border -1; \
+	set format x "%1.0f"; \
+	plot "$<" using 2:1 with boxes
 
 $(PREFIX)_cro.dat: SQL     = $(CRO_SQL)
 $(PREFIX)_cro.pdf: GNUPLOT = set xlabel "Cell reselect offset"; \
