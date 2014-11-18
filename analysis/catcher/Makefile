@@ -133,6 +133,14 @@ CRO_SQL = \
 	GROUP BY cro \
 	ORDER BY cro;
 
+PAGING_GROUPS_SQL = \
+	DROP VIEW IF EXISTS c; \
+	CREATE VIEW c AS SELECT count(*) as count from cell_info WHERE si3; \
+	SELECT (count(*)+0.0)/c.count as perc, (9 - agch_blocks - 6 * combined) * (pag_mframes + 2) AS pgroups \
+	FROM cell_info, c \
+	WHERE si3 \
+	GROUP BY pgroups;
+
 all: ../prebuilt/catcher_analysis.sql
 
 OPERATOR_DOCS := \
@@ -150,7 +158,11 @@ validate: \
 	cro \
 	cipher_delay \
 	auth_delay \
-	imeisv_rate
+	imeisv_rate \
+	paging_groups
+
+paging_groups:
+	$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=xgold xgold_paging_groups.pdf
 
 imeisv_rate:
 	$(MAKE) PREFIX=gsmmap gsmmap_imeisv_rate.pdf
@@ -262,12 +274,21 @@ $(PREFIX)_t3212.pdf: GNUPLOT = set xlabel "Cell reselect timeout"; \
 
 $(PREFIX)_cro.dat: SQL     = $(CRO_SQL)
 $(PREFIX)_cro.pdf: GNUPLOT = set xlabel "Cell reselect offset"; \
-	set key; \
+	unset key; \
 	unset grid; \
 	set format x "%1.0f"; \
 	set style data histograms; \
 	set style fill solid border -1; \
 	plot "$<" using 1:xtic(2) title "CRO"
+
+$(PREFIX)_paging_groups.dat: SQL     = $(PAGING_GROUPS_SQL)
+$(PREFIX)_paging_groups.pdf: GNUPLOT = set xlabel "No. of paging groups"; \
+	unset key; \
+	unset grid; \
+	set format x "%1.0f"; \
+	set style data histograms; \
+	set style fill solid border -1; \
+	plot "$<" using 1:xtic(2) title "paging groups"
 
 %.dat: Makefile
 	@echo [SQL] $@.
