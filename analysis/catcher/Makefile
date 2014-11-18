@@ -104,25 +104,35 @@ PAGING_RATE_SQL = \
 
 PAGING_TIMELINE_SQL = \
 		SELECT \
-			strftime('%Y-%m-%d,%H:%M:%S', timestamp), pag1_rate \
+			strftime('%Y-%m-%d,%H:%M:%S', timestamp) as time, pag1_rate \
 		FROM paging_info \
 		WHERE timestamp != (SELECT MAX(timestamp) FROM paging_info) \
 		ORDER BY \
 			strftime('%s',timestamp);
 
-all: catcher_analysis.sql
+all: ../prebuilt/catcher_analysis.sql
 
-validate: \
-	cipher_times.pdf \
-	auth_times.pdf \
-	imeisv_rate.pdf \
-	duration.pdf \
-	lu_reject.pdf \
-	lu_type.pdf \
-	pgroups.pdf \
-	catcher.txt
+OPERATOR_DOCS := \
+	$(PREFIX)_paging_timeline.pdf \
+	$(PREFIX)_paging_rate.pdf \
 
-catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scripts/resolve_read.pl
+validate: validate_eplus validate_o2 test_3_3_1 test_3_11
+
+test_3_11:
+	$(MAKE) PREFIX=test_3_11 DB=$(PWD)/../doc/test-III-3_11/db.sqlite do_validate
+
+test_3_3_1:
+	$(MAKE) PREFIX=test_3_3_1 DB=$(PWD)/../doc/test-III-3_3_1/db.sqlite do_validate
+
+validate_eplus:
+	$(MAKE) PREFIX=eplus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite do_validate
+
+validate_o2:
+	$(MAKE) PREFIX=o2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite do_validate
+
+do_validate: $(OPERATOR_DOCS)
+
+../prebuilt/catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scripts/resolve_read.pl
 	./scripts/resolve_read.pl $< > $@.tmp
 	mv $@.tmp $@
 
@@ -130,72 +140,73 @@ catcher.txt: validate.sql
 	sqlite3 $(DB) < $< > $@.tmp
 	mv $@.tmp $@
 
-cipher_times.pdf: SQL     = $(CIPHER_SQL)
-cipher_times.pdf: GNUPLOT = set xlabel "Cipher delay [ms]"; \
-							plot "$<" using 1:2 with lines;
+$(PREFIX)_cipher_times.dat: SQL     = $(CIPHER_SQL)
+$(PREFIX)_cipher_times.pdf: GNUPLOT = set xlabel "Cipher delay [ms]"; \
+	plot "$<" using 1:2 with lines;
 
-auth_times.pdf:   SQL     = $(AUTH_SQL)
-auth_times.pdf:   GNUPLOT =  set xlabel "Authentication delay [ms]"; \
-							plot "$<" using 1:2 with lines;
+$(PREFIX)_auth_times.dat:   SQL     = $(AUTH_SQL)
+$(PREFIX)_auth_times.pdf:   GNUPLOT = set xlabel "Authentication delay [ms]"; \
+	plot "$<" using 1:2 with lines;
 
-imeisv_rate.pdf:  SQL     = $(IMEISV_SQL)
-imeisv_rate.pdf:  GNUPLOT = set xlabel "Fraction of IMEISV requests in CIPHER MODE COMMAND"; \
-							plot "$<" using 1:2 with lines;
+$(PREFIX)_imeisv_rate.dat:  SQL     = $(IMEISV_SQL)
+$(PREFIX)_imeisv_rate.pdf:  GNUPLOT = set xlabel "Fraction of IMEISV requests in CIPHER MODE COMMAND"; \
+	plot "$<" using 1:2 with lines;
 
-duration.pdf:     SQL     = $(DURATION_SQL)
-duration.pdf:     GNUPLOT = set xlabel "Session duration [s]"; \
-							set key; \
-							plot "$<" using 1:2 with lines title "Total", \
-								 "$<" using 1:3 with lines title "Location updates";
+$(PREFIX)_duration.dat: SQL     = $(DURATION_SQL)
+$(PREFIX)_duration.pdf: GNUPLOT = set xlabel "Session duration [s]"; \
+	set key; \
+	plot "$<" using 1:2 with lines title "Total", \
+	"$<" using 1:3 with lines title "Location updates";
 
-lu_reject.pdf:	  SQL	  = $(REJECT_SQL)
-lu_reject.pdf:    GNUPLOT = set xlabel "Reject causes"; \
-							unset grid; \
-							set format y "%1.0f"; \
-							set style fill solid border -1; \
-							set xtics rotate by -45; \
-							set style data histograms; \
-							plot "$<" using 2:xtic(1) title col, \
-							     "" using ($$0-1.0):($$2+2.5):2 with labels;
+$(PREFIX)_lu_reject.dat: SQL	  = $(REJECT_SQL)
+$(PREFIX)_lu_reject.pdf: GNUPLOT = set xlabel "Reject causes"; \
+	unset grid; \
+	set format y "%1.0f"; \
+	set style fill solid border -1; \
+	set xtics rotate by -45; \
+	set style data histograms; \
+	plot "$<" using 2:xtic(1) title col, \
+	"" using ($$0-1.0):($$2+2.5):2 with labels;
 
-lu_type.pdf:	  SQL	  = $(LU_TYPE_SQL)
-lu_type.pdf:      GNUPLOT = set xlabel "Location update types"; \
-							set key; \
-							unset grid; \
-							set style data histograms; \
-							set format y "%1.0f"; \
-							set style fill solid border -1; \
-							set xtics rotate by -45; \
-							plot "$<" using 3:xtic(1) title "Rejected", \
-							     "" using 2:xtic(1) title "Accepted"\
+$(PREFIX)_lu_type.dat: SQL	  = $(LU_TYPE_SQL)
+$(PREFIX)_lu_type.pdf: GNUPLOT = set xlabel "Location update types"; \
+	set key; \
+	unset grid; \
+	set style data histograms; \
+	set format y "%1.0f"; \
+	set style fill solid border -1; \
+	set xtics rotate by -45; \
+	plot "$<" using 3:xtic(1) title "Rejected", \
+	"" using 2:xtic(1) title "Accepted"\
 
-pgroups.pdf:      SQL     = $(PGROUPS_SQL)
-pgroups.pdf:      GNUPLOT = set xlabel "Number of paging groups"; \
-							set style fill solid; \
-							set boxwidth 0.5; \
-							plot "$<" using 2:1 with boxes;
+$(PREFIX)_pgroups.dat: SQL     = $(PGROUPS_SQL)
+$(PREFIX)_pgroups.pdf: GNUPLOT = set xlabel "Number of paging groups"; \
+	set style fill solid; \
+	set boxwidth 0.5; \
+	plot "$<" using 2:1 with boxes;
 
-paging_rate.pdf:  SQL     = $(PAGING_RATE_SQL)
-paging_rate.pdf:  GNUPLOT = set xlabel "Number of type-1 paging requests per second"; \
-							plot "$<" using 2:1 with lines;
+$(PREFIX)_paging_rate.dat: SQL     = $(PAGING_RATE_SQL)
+$(PREFIX)_paging_rate.pdf: GNUPLOT = set xlabel "Number of type-1 paging requests per second"; \
+	plot "$<" using 2:1 with lines;
 
-paging_timeline.pdf:  SQL     = $(PAGING_TIMELINE_SQL)
-paging_timeline.pdf:  GNUPLOT = set xlabel "Paging request frequency over time"; \
-							    set xdata time; \
-							    set timefmt "%Y-%m-%d,%H:%M:%S"; \
-							    plot "$<" using 1:2 index 0 with lines;
+$(PREFIX)_paging_timeline.dat: SQL     = $(PAGING_TIMELINE_SQL)
+$(PREFIX)_paging_timeline.pdf: GNUPLOT = set xlabel "Paging request frequency over time"; \
+	set xdata time; \
+	set timefmt "%Y-%m-%d,%H:%M:%S"; \
+	plot "$<" using 1:2 index 0 with lines;
 
 %.dat: Makefile
 	@echo [SQL] $@.
 	@test "x$(SQL)" != "x"
 	@sqlite3 -header $(DB) -separator '	' "$(SQL)" > $@.tmp
-	mv $@.tmp $@
+	@mv $@.tmp $@
 
 %.pdf: %.dat Makefile
 	@echo [GPL] $@.
 	@gnuplot -e '$(COMMON_GP)$(GNUPLOT)'
+	@rm -f $<
 
 clean:
-	rm -f *.pdf *.tmp *.dat catcher_analysis.sql catcher.txt
+	rm -f *.pdf *.tmp *.dat catcher.txt
 
 .PHONY: clean catcher.txt

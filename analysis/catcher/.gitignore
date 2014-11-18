@@ -1,11 +1,1 @@
-catcher_analysis.sql
-auth_times.pdf
-cipher_times.pdf
-duration.pdf
-imeisv_rate.pdf
-lu_reject.pdf
-lu_type.pdf
-catcher.txt
-pgroups.pdf
-paging_rate.pdf
-paging_timeline.pdf
+*.pdf
