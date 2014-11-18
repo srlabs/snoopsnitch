@@ -147,7 +147,19 @@ validate: \
 	test_3_11 \
 	neighbors \
 	t3212 \
-	cro
+	cro \
+	cipher_delay \
+	auth_delay \
+	imeisv_rate
+
+imeisv_rate:
+	$(MAKE) PREFIX=gsmmap gsmmap_imeisv_rate.pdf
+
+cipher_delay:
+	$(MAKE) PREFIX=gsmmap gsmmap_cipher_times.pdf
+
+auth_delay:
+	$(MAKE) PREFIX=gsmmap gsmmap_auth_times.pdf
 
 cro:
 	$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=xgold xgold_cro.pdf
