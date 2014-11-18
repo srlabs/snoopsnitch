@@ -2,6 +2,7 @@ DB ?= ~/MSD/Traces/new_parsed_gsmmap.sqlite
 
 COMMON_GP = \
 		unset key; \
+		set datafile separator "|"; \
         set terminal pdf; \
         set output "$@"; \
 		set grid ytics lc rgb "grey" lw 1 lt 0; \
@@ -159,7 +160,15 @@ validate: \
 	cipher_delay \
 	auth_delay \
 	imeisv_rate \
-	paging_groups
+	paging_groups \
+	duration \
+	reject_causes
+
+reject_causes:
+	$(MAKE) PREFIX=gsmmap gsmmap_lu_reject.pdf
+
+duration:
+	$(MAKE) PREFIX=gsmmap gsmmap_duration.pdf
 
 paging_groups:
 	$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=xgold xgold_paging_groups.pdf
@@ -293,7 +302,7 @@ $(PREFIX)_paging_groups.pdf: GNUPLOT = set xlabel "No. of paging groups"; \
 %.dat: Makefile
 	@echo [SQL] $@.
 	@test "x$(SQL)" != "x"
-	@sqlite3 -header $(DB) -separator '	' "$(SQL)" > $@.tmp
+	@sqlite3 -header $(DB) -separator '|' "$(SQL)" > $@.tmp
 	@mv $@.tmp $@
 
 %.pdf: %.dat Makefile
