@@ -142,6 +142,18 @@ PAGING_GROUPS_SQL = \
 	WHERE si3 \
 	GROUP BY pgroups;
 
+ORPHANED_TIME_SQL = \
+	SELECT count(*), round(duration/100)/10 \
+	FROM session_info \
+	WHERE \
+		(assign_cmpl OR mobile_term) AND \
+		NOT auth AND \
+		NOT cipher > 0 AND \
+		NOT sms_presence AND \
+		NOT call_presence AND \
+		t_release \
+	GROUP BY round(duration/100);
+
 all: ../prebuilt/catcher_analysis.sql
 
 OPERATOR_DOCS := \
@@ -149,6 +161,7 @@ OPERATOR_DOCS := \
 	$(PREFIX)_paging_rate.pdf \
 
 validate: \
+	orphaned_time \
 	validate_eplus \
 	validate_o2 \
 	validate_telekom \
@@ -163,6 +176,9 @@ validate: \
 	paging_groups \
 	duration \
 	reject_causes
+
+orphaned_time:
+	$(MAKE) PREFIX=gsmmap gsmmap_orphaned_time.pdf
 
 reject_causes:
 	$(MAKE) PREFIX=gsmmap gsmmap_lu_reject.pdf
@@ -298,6 +314,12 @@ $(PREFIX)_paging_groups.pdf: GNUPLOT = set xlabel "No. of paging groups"; \
 	set style data histograms; \
 	set style fill solid border -1; \
 	plot "$<" using 1:xtic(2) title "paging groups"
+
+$(PREFIX)_orphaned_time.dat: SQL     = $(ORPHANED_TIME_SQL)
+$(PREFIX)_orphaned_time.pdf: GNUPLOT = set xlabel "Time traffic channel remained unused [s]"; \
+	set boxwidth 0.1; \
+	set style fill solid; \
+	plot "$<" using 2:1 with boxes
 
 %.dat: Makefile
 	@echo [SQL] $@.
