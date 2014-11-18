@@ -162,6 +162,7 @@ OPERATOR_DOCS := \
 
 validate: \
 	orphaned_time \
+	validate_vodafone \
 	validate_eplus \
 	validate_o2 \
 	validate_telekom \
@@ -212,6 +213,9 @@ test_3_11:
 
 test_3_3_1:
 	$(MAKE) PREFIX=test_3_3_1 DB=$(PWD)/../doc/test-III-3_3_1/db.sqlite do_validate
+
+validate_vodafone:
+	@$(MAKE) PREFIX=vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite do_validate
 
 validate_eplus:
 	$(MAKE) PREFIX=eplus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite do_validate
