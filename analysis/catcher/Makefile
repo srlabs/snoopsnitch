@@ -121,8 +121,17 @@ NEIGHBORS_SQL = \
 T3212_SQL = \
 	SELECT count(*), t3212 \
 	FROM cell_info \
-	WHERE count_si3 \
+	WHERE si3 \
 	GROUP BY t3212;
+
+CRO_SQL = \
+	DROP VIEW IF EXISTS c; \
+	CREATE VIEW c AS SELECT count(*) as count from cell_info WHERE si4 and cro > 0; \
+	SELECT ((count(*)+0.0)/c.count) as perc, cro \
+	FROM cell_info, c \
+	WHERE si4 and cro > 0 \
+	GROUP BY cro \
+	ORDER BY cro;
 
 all: ../prebuilt/catcher_analysis.sql
 
@@ -137,7 +146,11 @@ validate: \
 	test_3_3_1 \
 	test_3_11 \
 	neighbors \
-	t3212
+	t3212 \
+	cro
+
+cro:
+	$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=xgold xgold_cro.pdf
 
 t3212:
 	$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=xgold xgold_t3212.pdf
@@ -234,6 +247,15 @@ $(PREFIX)_t3212.dat: SQL     = $(T3212_SQL)
 $(PREFIX)_t3212.pdf: GNUPLOT = set xlabel "Cell reselect timeout"; \
 	set key; \
 	plot "$<" using 2:1 with lines title "Timeout in deci-hours"
+
+$(PREFIX)_cro.dat: SQL     = $(CRO_SQL)
+$(PREFIX)_cro.pdf: GNUPLOT = set xlabel "Cell reselect offset"; \
+	set key; \
+	unset grid; \
+	set format x "%1.0f"; \
+	set style data histograms; \
+	set style fill solid border -1; \
+	plot "$<" using 1:xtic(2) title "CRO"
 
 %.dat: Makefile
 	@echo [SQL] $@.
