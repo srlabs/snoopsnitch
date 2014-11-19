@@ -181,52 +181,52 @@ validate: \
 	reject_causes
 
 orphaned_time:
-	@$(MAKE) PREFIX=gsmmap gsmmap_orphaned_time.pdf
+	@$(MAKE) PREFIX=GSMMap GSMMap_orphaned_time.pdf
 
 reject_causes:
-	@$(MAKE) PREFIX=gsmmap gsmmap_lu_reject.pdf
+	@$(MAKE) PREFIX=GSMMap GSMMap_lu_reject.pdf
 
 duration:
-	@$(MAKE) PREFIX=gsmmap gsmmap_duration.pdf
+	@$(MAKE) PREFIX=GSMMap GSMMap_duration.pdf
 
 paging_groups:
-	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=xgold xgold_paging_groups.pdf
+	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD X-GOLD_paging_groups.pdf
 
 imeisv_rate:
-	@$(MAKE) PREFIX=gsmmap gsmmap_imeisv_rate.pdf
+	@$(MAKE) PREFIX=GSMMap GSMMap_imeisv_rate.pdf
 
 cipher_delay:
-	@$(MAKE) PREFIX=gsmmap gsmmap_cipher_times.pdf
+	@$(MAKE) PREFIX=GSMMap GSMMap_cipher_times.pdf
 
 auth_delay:
-	@$(MAKE) PREFIX=gsmmap gsmmap_auth_times.pdf
+	@$(MAKE) PREFIX=GSMMap GSMMap_auth_times.pdf
 
 cro:
-	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=xgold xgold_cro.pdf
+	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD X-GOLD_cro.pdf
 
 t3212:
-	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=xgold xgold_t3212.pdf
+	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD X-GOLD_t3212.pdf
 
 neighbors:
 	@$(MAKE) PREFIX=gsmmap gsmmap_neighbors.pdf
 
 test_3_11:
-	@$(MAKE) PREFIX=test_3_11 DB=$(PWD)/../doc/test-III-3_11/db.sqlite do_validate
+	@$(MAKE) PREFIX=Test-3.11 DB=$(PWD)/../doc/test-III-3_11/db.sqlite do_validate
 
 test_3_3_1:
-	@$(MAKE) PREFIX=test_3_3_1 DB=$(PWD)/../doc/test-III-3_3_1/db.sqlite do_validate
+	@$(MAKE) PREFIX=Test-3.3.1 DB=$(PWD)/../doc/test-III-3_3_1/db.sqlite do_validate
 
 validate_vodafone:
-	@$(MAKE) PREFIX=vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite do_validate
+	@$(MAKE) PREFIX=Vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite do_validate
 
 validate_eplus:
-	@$(MAKE) PREFIX=eplus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite do_validate
+	@$(MAKE) PREFIX=E-Plus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite do_validate
 
 validate_o2:
-	@$(MAKE) PREFIX=o2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite do_validate
+	@$(MAKE) PREFIX=O2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite do_validate
 
 validate_telekom:
-	@$(MAKE) PREFIX=telekom DB=$(PWD)/../doc/validate-Telekom-DD_B-20141118/db.sqlite do_validate
+	@$(MAKE) PREFIX=Telekom DB=$(PWD)/../doc/validate-Telekom-DD_B-20141118/db.sqlite do_validate
 
 do_validate: $(OPERATOR_DOCS)
 
@@ -284,11 +284,11 @@ $(PREFIX)_pgroups.pdf: GNUPLOT = set xlabel "Number of paging groups"; \
 	plot "$<" using 2:1 with boxes;
 
 $(PREFIX)_paging_rate.dat: SQL     = $(PAGING_RATE_SQL)
-$(PREFIX)_paging_rate.pdf: GNUPLOT = set xlabel "Number of type-1 paging requests per second"; \
+$(PREFIX)_paging_rate.pdf: GNUPLOT = set xlabel "Number of type-1 paging requests per second ($(PREFIX))"; \
 	plot "$<" using 2:1 with lines;
 
 $(PREFIX)_paging_timeline.dat: SQL     = $(PAGING_TIMELINE_SQL)
-$(PREFIX)_paging_timeline.pdf: GNUPLOT = set xlabel "Paging request frequency over time"; \
+$(PREFIX)_paging_timeline.pdf: GNUPLOT = set xlabel "Paging request frequency over time ($(PREFIX))"; \
 	set xdata time; \
 	set timefmt "%Y-%m-%d,%H:%M:%S"; \
 	plot "$<" using 1:2 index 0 with lines;
