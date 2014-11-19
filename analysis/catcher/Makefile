@@ -6,7 +6,8 @@ COMMON_GP = \
         set terminal pdf; \
         set output "$@"; \
 		set grid ytics lc rgb "grey" lw 1 lt 0; \
-		set grid xtics lc rgb "grey" lw 1 lt 0;
+		set grid xtics lc rgb "grey" lw 1 lt 0; \
+		set title "$(PREFIX)";
 
 CIPHER_SQL = \
         DROP view IF EXISTS cs; \
@@ -156,87 +157,86 @@ ORPHANED_TIME_SQL = \
 		t_release \
 	GROUP BY round(duration/100);
 
+TESTS = \
+	test-II-3_3_2 \
+	test-II-3_7_1 \
+	test-II-3_7_2 \
+	test-III-3_1 \
+	test-III-3_10 \
+	test-III-3_11 \
+	test-III-3_2 \
+	test-III-3_3_1
+
 all: ../prebuilt/catcher_analysis.sql
 
-OPERATOR_DOCS := \
+base_charts: \
+	$(PREFIX)_duration.pdf \
+	$(PREFIX)_neighbors.pdf \
+	$(PREFIX)_orphaned_time.pdf \
+	$(PREFIX)_lu_reject.pdf
+
+catcher: \
+	$(PREFIX)_catcher.log
+
+cell_charts: \
+	$(PREFIX)_cro.pdf \
+	$(PREFIX)_t3212.pdf \
+
+# Charts for paging statistics
+paging_charts: \
+	$(PREFIX)_paging_groups.pdf \
 	$(PREFIX)_paging_timeline.pdf \
-	$(PREFIX)_paging_rate.pdf \
+	$(PREFIX)_paging_rate.pdf
+
+# Only valid when ciphering was used
+cipher_charts: \
+	$(PREFIX)_auth_times.pdf \
+	$(PREFIX)_cipher_times.pdf \
+	$(PREFIX)_imeisv_rate.pdf
 
 validate: \
-	orphaned_time \
+	$(TESTS) \
 	validate_vodafone \
 	validate_eplus \
 	validate_o2 \
 	validate_telekom \
-	test_3_3_1 \
-	test_3_11 \
-	neighbors \
-	t3212 \
-	cro \
-	cipher_delay \
-	auth_delay \
-	imeisv_rate \
-	paging_groups \
-	duration \
-	reject_causes
+	validate_gsmmap
 
-orphaned_time:
-	@$(MAKE) PREFIX=GSMMap GSMMap_orphaned_time.pdf
+validate_gsmmap:
+	@$(MAKE) PREFIX=GSMMap base_charts cipher_charts
 
-reject_causes:
-	@$(MAKE) PREFIX=GSMMap GSMMap_lu_reject.pdf
-
-duration:
-	@$(MAKE) PREFIX=GSMMap GSMMap_duration.pdf
-
-paging_groups:
-	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD X-GOLD_paging_groups.pdf
-
-imeisv_rate:
-	@$(MAKE) PREFIX=GSMMap GSMMap_imeisv_rate.pdf
-
-cipher_delay:
-	@$(MAKE) PREFIX=GSMMap GSMMap_cipher_times.pdf
-
-auth_delay:
-	@$(MAKE) PREFIX=GSMMap GSMMap_auth_times.pdf
-
-cro:
-	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD X-GOLD_cro.pdf
-
-t3212:
-	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD X-GOLD_t3212.pdf
-
-neighbors:
-	@$(MAKE) PREFIX=gsmmap gsmmap_neighbors.pdf
-
-test_3_11:
-	@$(MAKE) PREFIX=Test-3.11 DB=$(PWD)/../doc/test-III-3_11/db.sqlite do_validate
-
-test_3_3_1:
-	@$(MAKE) PREFIX=Test-3.3.1 DB=$(PWD)/../doc/test-III-3_3_1/db.sqlite do_validate
+validate_xgold:
+	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD paging_charts cell_charts catcher
 
 validate_vodafone:
-	@$(MAKE) PREFIX=Vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite do_validate
+	@$(MAKE) PREFIX=Vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite paging_charts catcher
 
 validate_eplus:
-	@$(MAKE) PREFIX=E-Plus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite do_validate
+	@$(MAKE) PREFIX=E-Plus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite paging_charts catcher
 
 validate_o2:
-	@$(MAKE) PREFIX=O2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite do_validate
+	@$(MAKE) PREFIX=O2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite paging_charts catcher
 
 validate_telekom:
-	@$(MAKE) PREFIX=Telekom DB=$(PWD)/../doc/validate-Telekom-DD_B-20141118/db.sqlite do_validate
+	@$(MAKE) PREFIX=Telekom DB=$(PWD)/../doc/validate-Telekom-DD_B-20141118/db.sqlite paging_charts catcher
 
-do_validate: $(OPERATOR_DOCS)
+# Full validation (all graphs, catcher metrics log)
+# Todo: security metrics
+$(TESTS):
+	@$(MAKE) PREFIX=$@ DB=$(PWD)/../doc/$@/db.sqlite catcher cell_charts paging_charts
 
 ../prebuilt/catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scripts/resolve_read.pl
 	./scripts/resolve_read.pl $< > $@.tmp
 	mv $@.tmp $@
 
-catcher.txt: validate.sql
-	sqlite3 $(DB) < $< > $@.tmp
-	mv $@.tmp $@
+$(PREFIX)_catcher.log: validate.sql
+	@echo [CATCHER] $@.
+	@test -f $(DB)
+	@cp $(DB) tmp.sqlite
+	@echo "$(PREFIX)" > $@.tmp
+	@sqlite3 tmp.sqlite < $< > $@.tmp
+	@rm -f tmp.sqlite
+	@mv $@.tmp $@
 
 $(PREFIX)_cipher_times.dat: SQL     = $(CIPHER_SQL)
 $(PREFIX)_cipher_times.pdf: GNUPLOT = set xlabel "Cipher delay [ms]"; \
@@ -284,19 +284,20 @@ $(PREFIX)_pgroups.pdf: GNUPLOT = set xlabel "Number of paging groups"; \
 	plot "$<" using 2:1 with boxes;
 
 $(PREFIX)_paging_rate.dat: SQL     = $(PAGING_RATE_SQL)
-$(PREFIX)_paging_rate.pdf: GNUPLOT = set xlabel "Number of type-1 paging requests per second ($(PREFIX))"; \
+$(PREFIX)_paging_rate.pdf: GNUPLOT = set xlabel "Number of type-1 paging requests per second"; \
 	plot "$<" using 2:1 with lines;
 
 $(PREFIX)_paging_timeline.dat: SQL     = $(PAGING_TIMELINE_SQL)
-$(PREFIX)_paging_timeline.pdf: GNUPLOT = set xlabel "Paging request frequency over time ($(PREFIX))"; \
+$(PREFIX)_paging_timeline.pdf: GNUPLOT = set xlabel "Paging request frequency over time"; \
 	set xdata time; \
 	set timefmt "%Y-%m-%d,%H:%M:%S"; \
 	plot "$<" using 1:2 index 0 with lines;
 
 $(PREFIX)_neighbors.dat: SQL     = $(NEIGHBORS_SQL)
 $(PREFIX)_neighbors.pdf: GNUPLOT = set xlabel "Number of neighbor cells announced in SI5"; \
-	set key; \
-	plot "$<" using 2:1 with lines title "No. of Neighbors"
+	set boxwidth 1; \
+	set style fill solid border -1; \
+	plot "$<" using 2:1 with boxes;
 
 $(PREFIX)_t3212.dat: SQL     = $(T3212_SQL)
 $(PREFIX)_t3212.pdf: GNUPLOT = set xlabel "Cell reselect timeout"; \
@@ -304,7 +305,7 @@ $(PREFIX)_t3212.pdf: GNUPLOT = set xlabel "Cell reselect timeout"; \
 	set boxwidth 3; \
 	set style fill solid border -1; \
 	set format x "%1.0f"; \
-	plot "$<" using 2:1 with boxes
+	plot "$<" using 2:1 with boxes;
 
 $(PREFIX)_cro.dat: SQL     = $(CRO_SQL)
 $(PREFIX)_cro.pdf: GNUPLOT = set xlabel "Cell reselect offset"; \
@@ -328,12 +329,15 @@ $(PREFIX)_orphaned_time.dat: SQL     = $(ORPHANED_TIME_SQL)
 $(PREFIX)_orphaned_time.pdf: GNUPLOT = set xlabel "Time traffic channel remained unused [s]"; \
 	set boxwidth 0.1; \
 	set style fill solid; \
-	plot "$<" using 2:1 with boxes
+	plot "$<" using 2:1 with boxes;
 
 %.dat: Makefile
 	@echo [SQL] $@.
 	@test "x$(SQL)" != "x"
-	@sqlite3 -header $(DB) -separator '|' "$(SQL)" > $@.tmp
+	@test -f $(DB)
+	@cp $(DB) tmp.sqlite
+	@sqlite3 -header tmp.sqlite -separator '|' "$(SQL)" > $@.tmp
+	@rm -f tmp.sqlite
 	@mv $@.tmp $@
 
 %.pdf: %.dat Makefile
@@ -342,6 +346,6 @@ $(PREFIX)_orphaned_time.pdf: GNUPLOT = set xlabel "Time traffic channel remained
 	@rm -f $<
 
 clean:
-	rm -f *.pdf *.tmp *.dat catcher.txt
+	rm -f *.pdf *.tmp *.dat *catcher.log
 
-.PHONY: clean catcher.txt
+.PHONY: clean $(TESTS)
