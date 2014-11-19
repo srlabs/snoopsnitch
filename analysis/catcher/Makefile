@@ -209,7 +209,7 @@ validate_gsmmap:
 	@$(MAKE) PREFIX=GSMMap base_charts cipher_charts
 
 validate_xgold:
-	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD paging_groups cell_charts catcher
+	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD paging_groups cell_charts
 
 validate_vodafone:
 	@$(MAKE) PREFIX=Vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite paging_charts catcher cell_charts
