@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS catcher;
 CREATE TABLE catcher
 (
+	id integer PRIMARY KEY,
 	mcc integer,
 	mnc integer,
 	lac integer,

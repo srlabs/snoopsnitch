@@ -470,6 +470,7 @@ WHERE
 DELETE FROM catcher;
 INSERT INTO catcher
 SELECT
+	si.id,
 	ci.mcc,
 	ci.mnc,
 	ci.lac,
