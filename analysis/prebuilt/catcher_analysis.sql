@@ -23,7 +23,8 @@ SELECT
         mc.max as threshold,
         cipher < mc.max AS score
 FROM session_info AS si, max_cipher as mc
-ON si.mcc = mc.mcc AND si.mnc = mc.mnc AND si.lac = mc.lac AND si.cid = mc.cid;
+ON si.mcc = mc.mcc AND si.mnc = mc.mnc AND si.lac = mc.lac AND si.cid = mc.cid
+WHERE domain = 0;
 DROP VIEW IF EXISTS c2;
 CREATE VIEW c2 AS
 SELECT
@@ -34,7 +35,8 @@ SELECT
         si.lac,
         si.cipher_delta as value,
         si.cipher_delta > config.delta_cmcp as score
-FROM session_info AS si, config;
+FROM session_info AS si, config
+WHERE domain = 0 AND cipher = 1;
 DROP VIEW IF EXISTS c3;
 CREATE VIEW c3 AS
 SELECT
@@ -45,7 +47,7 @@ SELECT
         lac,
         (CASE WHEN cmc_imeisv > 0 THEN 0 ELSE 0.57 END) as score
 FROM session_info
-WHERE cipher > 0;
+WHERE domain = 0 AND cipher > 0;
 DROP VIEW IF EXISTS c4;
 CREATE VIEW c4 AS
 SELECT
@@ -57,8 +59,7 @@ SELECT
         cid,
         (CASE WHEN iden_imsi_bc AND iden_imei_bc THEN 1 WHEN iden_imsi_bc OR iden_imei_bc THEN 0.7 ELSE 0 END) as score
 FROM session_info
-WHERE
-	domain = 0;
+WHERE domain = 0;
 
 --  Track
 DROP VIEW IF EXISTS t3;
@@ -81,7 +82,8 @@ SELECT
          NOT cipher > 0   AND
          NOT sms_presence AND
          NOT call_presence) THEN 1 ELSE 0 END as score
-FROM session_info;
+FROM session_info
+WHERE domain = 0;
 DROP VIEW IF EXISTS t4;
 CREATE VIEW t4 AS
 SELECT
@@ -104,7 +106,7 @@ SELECT
           NOT call_presence            AND
           duration > config.delta_tch) THEN 1 ELSE 0 END as score
 FROM session_info, config
-WHERE duration > 0;
+WHERE domain = 0 AND duration > 0;
 
 --  Fingerprint
 DROP VIEW IF EXISTS f1;
@@ -128,7 +130,7 @@ ON
 	--  …until the succeeding location update starts…
 	strftime('%s', si2.timestamp) - si2.duration/1000 - strftime('%s', pi.timestamp) > 0
 WHERE
-	si.lu_acc AND si2.lu_acc
+	si.domain = 0 AND si2.domain = 0 AND si.lu_acc AND si2.lu_acc
 GROUP BY
 	si.id;
 

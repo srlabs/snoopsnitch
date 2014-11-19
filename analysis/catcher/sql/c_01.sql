@@ -18,4 +18,5 @@ SELECT
         mc.max as threshold,
         cipher < mc.max AS score
 FROM session_info AS si, max_cipher as mc
-ON si.mcc = mc.mcc AND si.mnc = mc.mnc AND si.lac = mc.lac AND si.cid = mc.cid;
+ON si.mcc = mc.mcc AND si.mnc = mc.mnc AND si.lac = mc.lac AND si.cid = mc.cid
+WHERE domain = 0;

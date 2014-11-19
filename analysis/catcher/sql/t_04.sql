@@ -20,4 +20,4 @@ SELECT
           NOT call_presence            AND
           duration > config.delta_tch) THEN 1 ELSE 0 END as score
 FROM session_info, config
-WHERE duration > 0;
+WHERE domain = 0 AND duration > 0;

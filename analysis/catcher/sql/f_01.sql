@@ -19,6 +19,6 @@ ON
 	--  …until the succeeding location update starts…
 	strftime('%s', si2.timestamp) - si2.duration/1000 - strftime('%s', pi.timestamp) > 0
 WHERE
-	si.lu_acc AND si2.lu_acc
+	si.domain = 0 AND si2.domain = 0 AND si.lu_acc AND si2.lu_acc
 GROUP BY
 	si.id;

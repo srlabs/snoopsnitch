@@ -18,4 +18,5 @@ SELECT
          NOT cipher > 0   AND
          NOT sms_presence AND
          NOT call_presence) THEN 1 ELSE 0 END as score
-FROM session_info;
+FROM session_info
+WHERE domain = 0;
