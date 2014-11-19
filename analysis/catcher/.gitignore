@@ -1,3 +1,5 @@
 *.pdf
 *.tmp
 *.dat
+*catcher.log
+tmp.sqlite
