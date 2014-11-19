@@ -1,104 +1,139 @@
 package de.srlabs.msd.qdmon;
 
-import java.util.Vector;
-
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
+import android.os.Looper;
+import android.os.RemoteException;
 import android.util.Log;
-import de.srlabs.msd.analysis.AnalysisCallback;
-import de.srlabs.msd.analysis.ImsiCatcher;
-import de.srlabs.msd.analysis.SMS;
 
-public class MsdServiceHelper implements MsdServiceHelperInterface{
-	private static String TAG = "msd-upload-service-helper";
+public class MsdServiceHelper{
+	private static String TAG = "msd-service-helper";
 	private Context context;
-	private ServiceConnection serviceConnection = new MyServiceConnection();
-	private Messenger msgMsdService;
-	private Messenger     returnMessenger     = new Messenger(new ReturnHandler());
+	private MyServiceConnection serviceConnection = new MyServiceConnection();
 	private MsdServiceCallback callback;
-	Vector<AnalysisCallback> analysisCallbacks = new Vector<AnalysisCallback>();
-	
-	public MsdServiceHelper(Context context, MsdServiceCallback callback){
+	public IMsdService mIMsdService;
+	class  MyMsdServiceCallbackStub extends IMsdServiceCallback.Stub{
+		@Override
+		public void recordingStateChanged() throws RemoteException {
+			(new Handler(Looper.getMainLooper())).post(new Runnable(){
+				public void run() {
+					callback.recordingStateChanged();
+				};
+			});
+		}
+
+	}
+	MyMsdServiceCallbackStub msdCallback = new MyMsdServiceCallbackStub();
+	private boolean connected = false;
+	private boolean dummy;
+	private AnalysisEventDataInterface data = null;
+
+	public MsdServiceHelper(Context context, MsdServiceCallback callback, boolean dummy){
 		this.context = context;
 		this.callback = callback;
+		this.dummy = dummy;
+		startService();
 	}
-	@Override
+	private void startService(){
+		if(dummy){
+			context.startService(new Intent(context, DummyMsdService.class));
+			context.bindService(new Intent(context, DummyMsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
+			data = new DummyAnalysisEventData();
+		} else{
+			context.startService(new Intent(context, MsdService.class));
+			context.bindService(new Intent(context, MsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
+			data = new AnalysisEventData(context);
+		}
+	}
+	public boolean isConnected(){
+		return connected ;
+	}
 	public boolean startRecording(){
-		// TODO
-		return false;
+		Log.i(TAG,"MsdServiceHelper.startRecording() called");
+		boolean result = false;
+		try {
+			if (data instanceof DummyAnalysisEventData) {
+				DummyAnalysisEventData dummyData = (DummyAnalysisEventData) data;
+				long currentTime = System.currentTimeMillis();
+				dummyData.addDynamicDummyEvents(currentTime);
+				mIMsdService.addDynamicDummyEvents(currentTime);
+			}
+			result = mIMsdService.startRecording();
+		} catch (Exception e) {
+			handleFatalError("Exception in MsdServiceHelper.startRecording()", e);
+		}
+		Log.i(TAG,"MsdServiceHelper.startRecording() returns " + result);
+		return result;
 	}
-	@Override
 	public boolean stopRecording(){
-		// TODO
-		return false;
+		Log.i(TAG,"MsdServiceHelper.stopRecording() called");
+		boolean result = false;
+		try {
+			result = mIMsdService.stopRecording();
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException while calling mIMsdService.isRecording() in MsdServiceHelper.startRecording()", e);
+		}
+		if (data instanceof DummyAnalysisEventData) {
+			DummyAnalysisEventData dummyData = (DummyAnalysisEventData) data;
+			dummyData.clearPendingEvents();
+		}
+		Log.i(TAG,"MsdServiceHelper.stopRecording() returns " + result);
+		return result;
 	}
-	@Override
 	public boolean isRecording(){
-		// TODO;
-		return false;
-	}
-	@Override
-	public boolean restartRecording(){
-		if(!isRecording())
+		Log.i(TAG,"MsdServiceHelper.isRecording() called");
+		if(!connected)
 			return false;
-		if(!stopRecording())
-			return false;
-		return startRecording();
-	}
-	@Override
-	public void registerAnalysisCallback(AnalysisCallback aCallback){
-		if(analysisCallbacks.contains(aCallback))
-			return;
-		analysisCallbacks.add(aCallback);
-	}
-
-	@Override
-	public void unregisterAnalysisCallback(AnalysisCallback aCallback){
-		analysisCallbacks.remove(aCallback);
+		boolean result = false;
+		try {
+			result = mIMsdService.isRecording();
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException while calling mIMsdService.isRecording() in MsdServiceHelper.startRecording()", e);
+		}
+		Log.i(TAG,"MsdServiceHelper.isRecording() returns " + result);
+		return result;
 	}
 	class MyServiceConnection implements ServiceConnection {
+
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			// TODO
+			Log.i(MsdService.TAG,"MsdServiceHelper.MyServiceConnection.onServiceConnected()");
+			mIMsdService = IMsdService.Stub.asInterface(service);
+			try {
+				mIMsdService.registerCallback(msdCallback);
+				boolean recording = mIMsdService.isRecording();
+				Log.i(TAG,"Initial recording = " + recording);
+			} catch (RemoteException e) {
+				handleFatalError("RemoteException while calling mIMsdService.registerCallback(msdCallback) or mIMsdService.isRecording() in MsdServiceHelper.MyServiceConnection.onServiceConnected()", e);
+			}
+			connected = true;
+			callback.recordingStateChanged();
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
+			Log.i(TAG,"MsdServiceHelper.MyServiceConnection.onServiceDisconnected() called");
 			context.unbindService(this);
+			mIMsdService = null;
+			connected = false;
+			startService();
+			// Service connection was lost, so let's call recordingStopped
+			callback.recordingStateChanged();
 		}
 	};
-	class ReturnHandler extends Handler {
-		@Override
-		public void handleMessage(final Message msg) {
-			switch (msg.what) {
-			default:
-				Log.e(TAG,"ReturnHandler: Unknown message " + msg.what);
-			}
-		}
+
+	private void handleFatalError(String errorMsg, Exception e){
+		String msg = errorMsg;
+		if(e != null)
+			msg += e.getClass().getCanonicalName() + ": " + e.getMessage();
+		Log.e(TAG, msg, e);
+		callback.internalError(msg);
 	}
-	@Override
-	public SMS getSMS(long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public Vector<SMS> getSMS(long startTime, long endTime) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public ImsiCatcher getImsiCatcher(long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public Vector<ImsiCatcher> getImsiCatchers(long startTime, long endTime) {
-		// TODO Auto-generated method stub
-		return null;
+	public AnalysisEventDataInterface getData(){
+		return data;
 	}
 }

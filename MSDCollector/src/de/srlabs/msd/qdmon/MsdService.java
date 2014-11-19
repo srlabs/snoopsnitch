@@ -18,12 +18,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.GZIPOutputStream;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -35,12 +37,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Looper;
 import android.os.RemoteException;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
@@ -51,68 +51,51 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
+import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdConfig;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";
-	/**
-	 * Registers a client Messenger (given via the msg.replyTo) for all
-	 * notifications from this service.
-	 */
-	public static final int MSG_REGISTER_CLIENT = 1;
-	/**
-	 * Unregisters a client messenger, reverses the effect of
-	 * MSG_REGISTER_CLIENT
-	 */
-	public static final int MSG_UNREGISTER_CLIENT = 2;
-	/**
-	 * Start the recording of baseband messages, phone info and GPS locations
-	 */
-	public static final int MSG_START_RECORDING = 3;
-	/**
-	 * Stops recording again
-	 */
-	public static final int MSG_STOP_RECORDING = 4;
-	/**
-	 * Restarts recording, used e.g. after changing any settings related to what
-	 * data is recorded so that the configuration changes are actually applied
-	 */
-	public static final int MSG_RESTART_RECORDING = 5;
-	/**
-	 * The service sends this message to all registered clients when the
-	 * recording state changes either due to a
-	 * MSG_START_RECORDING/MSG_STOP_RECORDING or due to an internal error of
-	 * this service. msg.arg1 indicates whether recording is running (msg.arg1
-	 * == 1) or not (msg.arg1 == 0).
-	 */
-	public static final int MSG_RECORDING_STATE = 6;
-	/**
-	 * The service sends this message to all registered clients when an error
-	 * occurs. msg.obj is a Bundle and ((Bundle)msg.obj).getString("ERROR_MSG") 
-	 * can be used to retrieve a textual error message, which can then be 
-	 * displayed to the user.
-	 */
-	public static final int MSG_ERROR_STR = 7;
-	/**
-	 * Sent from the user interface to the service to trigger a cleanup
-	 * operation. The app should send this message after changing the privacy
-	 * settings so that old data is actually purged. During the normal operation
-	 * of the service, the cleanup will be done automatically.
-	 */
-	public static final int MSG_TRIGGER_CLEANUP = 8;
-	/**
-	 * This message is sent by MsdService to indicate that a new session has
-	 * been added to the database. It should be used to trigger the IMSI Catcher
-	 * detection.
-	 */
-	public static final int MSG_NEW_SESSION = 9;
 
-	List<Messenger> clients = new ArrayList<Messenger>();
-	IncomingHandler incomingHandler = new IncomingHandler();
-	final Messenger serviceMessenger = new Messenger(incomingHandler);
+	// TODO: Watch storage utilisation and stop recording if limits are exceeded
+	// TODO: Watch battery level and stop recording if battery level goes below configured limit
 
-	AtomicBoolean shuttingDown          = new AtomicBoolean(false);
+	private final MyMsdServiceStub mBinder = new MyMsdServiceStub();
+	class MyMsdServiceStub extends IMsdService.Stub {
+
+		private Vector<IMsdServiceCallback> callbacks = new Vector<IMsdServiceCallback>();
+
+		@Override
+		public boolean isRecording() throws RemoteException {
+			return recording;
+		}
+
+		@Override
+		public boolean startRecording() throws RemoteException {
+			return MsdService.this.startRecording();
+		}
+
+		@Override
+		public boolean stopRecording() throws RemoteException {
+			return MsdService.this.shutdown(false);
+		}
+
+		@Override
+		public void registerCallback(IMsdServiceCallback callback) throws RemoteException {
+			info("registerCallback() called");
+			if(!callbacks.contains(callback))
+				callbacks.add(callback);
+			info("registerCallback() returns");
+		}
+
+		@Override
+		public void addDynamicDummyEvents(long startRecordingTime)
+				throws RemoteException {
+			// Do nothing here, the real Service doesn't deliver dummy events
+		}
+	};
+	AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
 	Process helper;
 	DataInputStream diagStdout;
@@ -138,7 +121,7 @@ public class MsdService extends Service{
 	private DiagErrorThread diagErrorThread;
 	private volatile boolean shutdownError = false;
 	private AtomicBoolean readyForStartRecording = new AtomicBoolean(true);
-	private Handler periodicCheckRecordingStateHandler = new Handler();
+	private Handler msdServiceMainThreadHandler = new Handler();
 	private PeriodicCheckRecordingStateRunnable periodicCheckRecordingStateRunnable = new PeriodicCheckRecordingStateRunnable();
 	private boolean recording = false;
 	private LocationManager locationManager;
@@ -149,6 +132,10 @@ public class MsdService extends Service{
 	private int sqlQueueWatermark = 0;
 	private long oldHeapSize = 0;
 	private long oldStackSize = 0;
+	private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+	private boolean fatalErrorOccured = false;
+
+	private MsdServiceNotifications msdServiceNotifications = new MsdServiceNotifications(this);
 
 	class QueueElementWrapper<T>{
 		T obj;
@@ -166,58 +153,14 @@ public class MsdService extends Service{
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.i(TAG,"MsdService.onBind() called");
-		return this.serviceMessenger.getBinder();
+		return mBinder;
 	}
 
-	@SuppressLint("HandlerLeak")
-	class IncomingHandler extends Handler {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case MSG_REGISTER_CLIENT:
-				clients.add(msg.replyTo);
-				break;
-			case MSG_UNREGISTER_CLIENT:
-				clients.remove(msg.replyTo);
-				break;
-			case MSG_START_RECORDING:
-				Log.i(TAG, "MsdService.IncomingHandler.handleMessage(MSG_START_RECORDING)");
-				if(recording)
-					sendErrorMessage("MsdService.IncomingHandler.handleMessage(MSG_START_RECORDING) received while already recording");
-				else
-					MsdService.this.startRecording();
-				break;
-			case MSG_STOP_RECORDING:
-				Log.i(TAG, "MsdService.IncomingHandler.handleMessage(MSG_STOP_RECORDING)");
-				if(recording)
-					MsdService.this.shutdown(false);
-				else
-					sendErrorMessage("MsdService.IncomingHandler.handleMessage(MSG_STOP_RECORDING) received while not recording");
-				break;
-			case MSG_RESTART_RECORDING:
-				Log.i(TAG, "MsdService.IncomingHandler.handleMessage(MSG_RESTART_RECORDING)");
-				if(recording)
-					MsdService.this.shutdown(false);
-				else
-					sendErrorMessage("MsdService.IncomingHandler.handleMessage(MSG_STOP_RECORDING) received while not recording");
-				MsdService.this.startRecording();
-				break;
-			case MSG_TRIGGER_CLEANUP:
-				Log.i(TAG, "MsdService.IncomingHandler.handleMessage(MSG_TRIGGER_CLEANUP)");
-				cleanupDatabase();
-				cleanupRawFiles();
-				break;
-			default:
-				sendErrorMessage("MsdService.IncomingHandler.handleMessage(unknown message: " + msg.what + ")");
-				super.handleMessage(msg);
-			}
-		}
-	}
 	class PeriodicCheckRecordingStateRunnable implements Runnable{
 		@Override
 		public void run() {
 			checkRecordingState();
-			periodicCheckRecordingStateHandler.postDelayed(this, 1000);
+			msdServiceMainThreadHandler.postDelayed(this, 1000);
 		}
 	}
 
@@ -233,6 +176,13 @@ public class MsdService extends Service{
 				});
 		telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		info("MsdService.onCreate() called");
+	}
+	private void doStartForeground() {
+		Notification notification = msdServiceNotifications.getForegroundNotification();
+		startForeground(Constants.NOTIFICATION_ID_FOREGROUND_SERVICE, notification);
+	}
+	private void doStopForeground(){
+		stopForeground(true);
 	}
 	@Override
 	public void onDestroy() {
@@ -263,10 +213,10 @@ public class MsdService extends Service{
 		telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
 		myPhoneStateListener = null;
 	}
-	private synchronized void startRecording() {
+	private synchronized boolean startRecording() {
 		if(!readyForStartRecording.compareAndSet(true, false)){
 			handleFatalError("MsdService.startRecording called but readyForStartRecording is not true. Probably there was an error during the last shutdown");
-			return;
+			return false;
 		}
 		try {
 			cleanupIncompleteOldFiles();
@@ -276,34 +226,41 @@ public class MsdService extends Service{
 			launchParser();
 			launchRawFileWriter();
 			launchHelper();
-			startLocationRecording();
+			mainThreadHandler.post(new Runnable(){
+				@Override
+				public void run() {
+					startLocationRecording();					
+				}
+			});
 			startPhoneStateRecording();
-			broadcastMessage(Message.obtain(null, MSG_RECORDING_STATE, 1, 0));
 			this.recording  = true;
-			periodicCheckRecordingStateHandler.removeCallbacks(periodicCheckRecordingStateRunnable);
-			periodicCheckRecordingStateHandler.post(periodicCheckRecordingStateRunnable);
+			msdServiceMainThreadHandler.removeCallbacks(periodicCheckRecordingStateRunnable);
+			msdServiceMainThreadHandler.post(periodicCheckRecordingStateRunnable);
+			doStartForeground();
+			sendRecordingStateChanged();
+			return true;
 		} catch (Exception e) { 
-			sendErrorMessage("Exception in startRecording(): ", e);
-			shutdown(false);
+			handleFatalError("Exception in startRecording(): ", e);
+			return false;
 		}
 	}
 
-	private synchronized void shutdown(boolean shuttingDownAlreadySet){
+	private synchronized boolean shutdown(boolean shuttingDownAlreadySet){
 		try{
 			info("MsdService.shutdown(" + shuttingDownAlreadySet + ") called");
 			if(shuttingDownAlreadySet){
 				if(!this.shuttingDown.get()){
 					handleFatalError("MsdService.shutdown(true) called but shuttingDown is not set");
-					return;
+					return false;
 				}
 			} else{
 				if (!this.shuttingDown.compareAndSet(false, true)){
 					handleFatalError("MsdService.shutdown(false) called while shuttingDown is already set");
-					return;
+					return false;
 				}
 			}
 			shutdownError = false;
-			periodicCheckRecordingStateHandler.removeCallbacks(periodicCheckRecordingStateRunnable);
+			msdServiceMainThreadHandler.removeCallbacks(periodicCheckRecordingStateRunnable);
 			// DIAG Helper
 			if(helper != null){
 				try{
@@ -435,13 +392,15 @@ public class MsdService extends Service{
 			}
 			if(!shutdownError)
 				info("MsdService.shutdown completed successfully");
-			Message msg = Message.obtain(null, MSG_RECORDING_STATE, 0, 0);
-			broadcastMessage(msg);
 			this.recording = false;
-			this.readyForStartRecording.set(!shutdownError);
 			this.shuttingDown.set(false);
-		} catch (InterruptedException e1) {
-			handleFatalError("Received InterruptedException during shutdown");
+			sendRecordingStateChanged();
+			this.readyForStartRecording.set(!shutdownError);
+			doStopForeground();
+			return !shutdownError;
+		} catch (Exception e) {
+			handleFatalError("Received Exception during shutdown", e);
+			return false;
 		}
 	}
 
@@ -760,12 +719,7 @@ public class MsdService extends Service{
 					if(line.startsWith("SQL:")){
 						String sql = line.substring(4);
 						info("FromParserThread enqueueing SQL Statement: " + sql);
-						pendingSqlStatements.add(new PendingSqliteStatement(sql){
-							@Override
-							void postRunHook() {
-								broadcastMessage(Message.obtain(null, MSG_NEW_SESSION));
-							}
-						});
+						pendingSqlStatements.add(new PendingSqliteStatement(sql));
 					} else{
 						info("Parser: " + line);
 					}
@@ -812,7 +766,9 @@ public class MsdService extends Service{
 	 */
 	class SqliteThread extends Thread{
 		boolean shuttingDown = false;
+		private long lastAnalysisTime;
 		public void run() {
+			lastAnalysisTime = System.currentTimeMillis();
 			MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MsdService.this);
 			SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
 			while(true){
@@ -834,6 +790,16 @@ public class MsdService extends Service{
 						sql.postRunHook();
 					} catch(SQLException e){
 						handleFatalError("SQLException " + e.getMessage() + " while running: " + sql);
+						return;
+					}
+					if(System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS){
+						try{
+							MsdServiceAnalysis.runAnalysis(MsdService.this, db, msdServiceNotifications);
+							lastAnalysisTime = System.currentTimeMillis();
+						} catch(Exception e){
+							// Terminate the service with a fatal error if there is a any uncaught Exception in the Analysis
+							handleFatalError("Exception during analysis",e);
+						}
 					}
 				} catch (InterruptedException e) {
 					if(!pendingSqlStatements.isEmpty()){
@@ -927,7 +893,7 @@ public class MsdService extends Service{
 				GsmCellLocation gsmLoc = (GsmCellLocation) location;
 				String networkOperator = telephonyManager.getNetworkOperator();
 				if(networkOperator.length() < 5){
-					info("Invalid networkOperatr: " + networkOperator);
+					warn("Invalid networkOperatr: " + networkOperator);
 					return;
 				}
 				String mcc = networkOperator.substring(0,3);
@@ -950,7 +916,7 @@ public class MsdService extends Service{
 				// changes.
 				doCellinfoList(telephonyManager.getAllCellInfo());
 			} else
-				sendErrorMessage("onCellLocationChanged() called with invalid location class: " + location.getClass());
+				warn("onCellLocationChanged() called with invalid location class: " + location.getClass());
 		}
 
 		@Override
@@ -1128,19 +1094,6 @@ public class MsdService extends Service{
 		}
 	}
 
-	private void broadcastMessage(Message msg) {
-//		Log.e(TAG,"broadcastMsg(" + msg.what + ") sending to " + this.clients.size() + " clients");
-//		Log.e(TAG,"msg.obj.class: " + (msg.obj == null ? "null" : msg.obj.getClass()));
-		for (Messenger r : this.clients) {
-			try {
-				Message sendMsg = Message.obtain(msg);
-				r.send(sendMsg);
-			} catch (RemoteException e) {
-				Log.e(TAG,"broadcastMsg(" + msg.what + ") failed with RemoteException");
-			}
-		}
-		msg.recycle();
-	}
 	private static final int USER_SPACE_LOG_TYPE = 32;
 
 	private static List<byte[]> fromDev(byte[] data, int offset, int length) throws IllegalStateException {
@@ -1168,32 +1121,41 @@ public class MsdService extends Service{
 		result.put(bytes);
 		return result.array();
 	}
-	private void sendErrorMessage(String msg){
-		sendErrorMessage(msg,null);
-	}
 	private void sendErrorMessage(String msg, Throwable e){
 		if(e == null){
-			Log.e(TAG,msg);
+			Log.e(TAG,"sendErrorMessage: " + msg);
 		} else{
-			Log.e(TAG,msg,e);
+			Log.e(TAG,"sendErrorMessage: " + msg,e);
 			msg += " " + e.getClass().getSimpleName() + ": " + e.getMessage();
 		}
-		final String finalMsg = msg;
-		Message sendMsg = Message.obtain(null, MSG_ERROR_STR);
-		Bundle b = new Bundle();
-		b.putString("ERROR_MSG", finalMsg);
-		sendMsg.obj = b;
-		broadcastMessage(sendMsg);
+		// TODO: Reopen the debug log so that the user can upload an error log
+		msdServiceNotifications.showInternalErrorNotification(msg, null);
 	}
-	private void handleFatalError(String msg, Throwable e){
+	private void sendRecordingStateChanged(){
+		Vector<IMsdServiceCallback> callbacksToRemove = new Vector<IMsdServiceCallback>();
+		for(IMsdServiceCallback callback:mBinder.callbacks){
+			try {
+				callback.recordingStateChanged();
+			} catch (DeadObjectException e) {
+				info("DeadObjectException in MsdService.sendRecordingStateChanged() => unregistering callback");
+				callbacksToRemove.add(callback);
+			} catch (RemoteException e) {
+				warn("Exception in MsdService.sendRecordingStateChanged() => callback.recordingStateChanged();");
+			}
+		}
+		mBinder.callbacks.removeAll(callbacksToRemove);
+	}
+	private void handleFatalError(String msg, final Throwable e){
 		boolean doShutdown = false;
 		if(recording && shuttingDown.compareAndSet(false, true)){
 			msg += " => shutting down service";
-			// Create a dummy exception so that we see the stack trace of a fatal error in the logs.
-			try{
-				((String)null).toString();
-			} catch(Exception e1){
-				Log.e(TAG, "Dummy Exception to get stack trace of fatal error:",e1);
+			if(e == null){
+				// Create a dummy exception so that we see the stack trace of a fatal error in the logs.
+				try{
+					((String)null).toString();
+				} catch(Exception e1){
+					Log.e(TAG, "Dummy Exception to get stack trace of fatal error:",e1);
+				}
 			}
 			doShutdown = true;
 		} else if(recording){
@@ -1202,14 +1164,21 @@ public class MsdService extends Service{
 		} else{
 			msg = "Error while not recording: " + msg;
 		}
+		Log.e(TAG,"handleFatalError: " + msg,e);
+		final String finalMsg = msg;
 		if(doShutdown){
-			sendErrorMessage(msg, e);
 			// Call shutdown in the main thread so that the thread causing the Error can terminate
-			periodicCheckRecordingStateHandler.post(new Runnable(){
+			fatalErrorOccured = true;
+			msdServiceMainThreadHandler.post(new Runnable(){
 				public void run() {
-					shutdown(true);
-				};				
+					shutdownDueToError(finalMsg,e);
+				};
 			});
+		} else{
+			// Only send the first fatal error to the UI
+			if(!fatalErrorOccured)
+				sendErrorMessage(msg, e);
+			fatalErrorOccured = true;
 		}
 	}
 	private void handleFatalError(String msg){
@@ -1220,6 +1189,12 @@ public class MsdService extends Service{
 	}
 	private static void warn(String msg){
 		Log.w(TAG,msg);
+	}
+	private void shutdownDueToError(String msg, Throwable e){
+		shutdown(true);
+		sendErrorMessage(msg, e);
+		Log.e(TAG, "Terminating MsdService after shutting down due to an unexpected error");
+		System.exit(1);
 	}
 	/**
 	 * Checks whether all threads are still running and no message queue contains a huge number of messages
@@ -1333,21 +1308,24 @@ public class MsdService extends Service{
 				}
 
 				if(heapSize > 128*1024*1024){ // Maximum allowed heap size: 128 MiB, change to 30 KiB for testing the restarting, it will be exceeded during the first call
-					sendErrorMessage("Restarting recording due to excessive parser heap size (" + (heapSize/1024) + " KiB)" );
+					warn("Restarting recording due to excessive parser heap size (" + (heapSize/1024) + " KiB)" );
 					restartRecording();
 				} else if(stackSize > 16*1024*1024){ // Maximum allowed stack size: 16 MiB, this should definitely be enough
-					sendErrorMessage("Restarting recording to excessive parser stack size (" + (stackSize/1024) + " KiB)" );
+					warn("Restarting recording to excessive parser stack size (" + (stackSize/1024) + " KiB)" );
 					restartRecording();
 				}
 			} catch (Exception e) {
 				handleFatalError("Failed to get parser memory consumption",e);
 			}
 		} else{
-			info("Failed to get parser pid, parser class name is " + parser.getClass().getName() + " instead of java.lang.ProcessManager$ProcessImpl");
+			handleFatalError("Failed to get parser pid, parser class name is " + parser.getClass().getName() + " instead of java.lang.ProcessManager$ProcessImpl");
 		}
+		// TODO: Maybe check memory usage of this Service process as well.
 	}
 	private void restartRecording(){
-		shutdown(false);
+		if(!shutdown(false)){
+			return;
+		}
 		startRecording();
 	}
 
