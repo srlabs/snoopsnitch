@@ -504,7 +504,8 @@ SELECT
 	max(si.t3) +
 	max(si.t4) +
 	max(ci.r1) +
-	max(ci.r2) as score
+	max(ci.r2) +
+	max(si.f1) as score
 FROM si, ci
 ON
 	ci.mcc = si.mcc AND
