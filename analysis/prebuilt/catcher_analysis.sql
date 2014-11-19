@@ -60,6 +60,20 @@ SELECT
         (CASE WHEN iden_imsi_bc AND iden_imei_bc THEN 1 WHEN iden_imsi_bc OR iden_imei_bc THEN 0.7 ELSE 0 END) as score
 FROM session_info
 WHERE domain = 0;
+DROP VIEW IF EXISTS c5;
+CREATE VIEW c5 AS
+SELECT
+        si.id,
+        si.timestamp,
+        si.mcc,
+        si.mnc,
+        si.lac,
+        si.cid,
+        CASE WHEN cipher = 0 THEN 1 ELSE 0 END score
+FROM session_info AS si
+WHERE
+	domain = 0 AND
+	((t_locupd AND lu_acc) OR t_call OR t_sms);
 
 --  Track
 DROP VIEW IF EXISTS t3;
@@ -149,6 +163,7 @@ SELECT
         ifnull(c2.score, 0) as c2,
         ifnull(c3.score, 0) as c3,
         ifnull(c4.score, 0) as c4,
+        ifnull(c5.score, 0) as c5,
         ifnull(t3.score, 0) as t3,
         ifnull(t4.score, 0) as t4,
         ifnull(f1.score, 0) as f1
@@ -157,6 +172,7 @@ FROM session_info as si LEFT JOIN
     c2 ON si.id = c2.id LEFT JOIN
     c3 ON si.id = c3.id LEFT JOIN
     c4 ON si.id = c4.id LEFT JOIN
+    c5 ON si.id = c5.id LEFT JOIN
     t3 ON si.id = t3.id LEFT JOIN
     t4 ON si.id = t4.id LEFT JOIN
 	f1 ON si.id = f1.id
@@ -485,6 +501,7 @@ SELECT
 	max(si.c2),
 	max(si.c3),
 	max(si.c4),
+	max(si.c5),
 	max(ci.t1),
 	max(si.t3),
 	max(si.t4),
@@ -500,6 +517,7 @@ SELECT
 	max(si.c2) +
 	max(si.c3) +
 	max(si.c4) +
+	max(si.c5) +
 	max(ci.t1) +
 	max(si.t3) +
 	max(si.t4) +

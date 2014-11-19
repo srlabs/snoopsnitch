@@ -27,6 +27,7 @@ SELECT
 	max(si.c2),
 	max(si.c3),
 	max(si.c4),
+	max(si.c5),
 	max(ci.t1),
 	max(si.t3),
 	max(si.t4),
@@ -42,6 +43,7 @@ SELECT
 	max(si.c2) +
 	max(si.c3) +
 	max(si.c4) +
+	max(si.c5) +
 	max(ci.t1) +
 	max(si.t3) +
 	max(si.t4) +

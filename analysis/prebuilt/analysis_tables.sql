@@ -16,6 +16,7 @@ CREATE TABLE catcher
 	c2 FLOAT,
 	c3 FLOAT,
 	c4 FLOAT,
+	c5 FLOAT,
 	t1 FLOAT,
 	t3 FLOAT,
 	t4 FLOAT,
