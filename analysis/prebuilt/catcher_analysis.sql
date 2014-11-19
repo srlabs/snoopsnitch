@@ -260,7 +260,16 @@ GROUP BY l.mcc, l.mnc, l.lac, l.cid;
 --  sorted out, as it leads to false positives.
 
 --  K1
---  DROP VIEW IF EXISTS k1;
+DROP VIEW IF EXISTS k1;
+CREATE VIEW k1 AS
+SELECT
+	0 as id,
+	0 as mcc,
+	0 as mnc,
+	0 as lac,
+	0 as cid,
+	0.0 as score;
+
 --  CREATE VIEW k1 AS
 --  SELECT
 --          cell.id,
