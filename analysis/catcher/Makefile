@@ -183,10 +183,12 @@ cell_charts: \
 	$(PREFIX)_t3212.pdf \
 
 # Charts for paging statistics
-paging_charts: \
-	$(PREFIX)_paging_groups.pdf \
+paging_charts: paging_groups \
 	$(PREFIX)_paging_timeline.pdf \
 	$(PREFIX)_paging_rate.pdf
+
+paging_groups: \
+	$(PREFIX)_paging_groups.pdf \
 
 # Only valid when ciphering was used
 cipher_charts: \
@@ -200,25 +202,26 @@ validate: \
 	validate_eplus \
 	validate_o2 \
 	validate_telekom \
-	validate_gsmmap
+	validate_gsmmap \
+	validate_xgold
 
 validate_gsmmap:
 	@$(MAKE) PREFIX=GSMMap base_charts cipher_charts
 
 validate_xgold:
-	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD paging_charts cell_charts catcher
+	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD paging_groups cell_charts catcher
 
 validate_vodafone:
-	@$(MAKE) PREFIX=Vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite paging_charts catcher
+	@$(MAKE) PREFIX=Vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite paging_charts catcher cell_charts
 
 validate_eplus:
-	@$(MAKE) PREFIX=E-Plus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite paging_charts catcher
+	@$(MAKE) PREFIX=E-Plus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite paging_charts catcher cell_charts
 
 validate_o2:
-	@$(MAKE) PREFIX=O2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite paging_charts catcher
+	@$(MAKE) PREFIX=O2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite paging_charts catcher cell_charts
 
 validate_telekom:
-	@$(MAKE) PREFIX=Telekom DB=$(PWD)/../doc/validate-Telekom-DD_B-20141118/db.sqlite paging_charts catcher
+	@$(MAKE) PREFIX=Telekom DB=$(PWD)/../doc/validate-Telekom-DD_B-20141118/db.sqlite paging_charts catcher cell_charts
 
 # Full validation (all graphs, catcher metrics log)
 # Todo: security metrics
