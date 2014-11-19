@@ -78,5 +78,5 @@ INSERT INTO config VALUES
 		-- placed there are no pagings and if the call starts somewhere in
 		-- the middle of our sampling interval, the value can be low (but
 		-- above 0).
-		1000.0
+		0.0
 );
