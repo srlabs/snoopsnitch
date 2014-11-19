@@ -23,7 +23,6 @@ public class MsdServiceAnalysis {
 		readSQLAsset(context, db, "sms_analysis.sql", false);
 		readSQLAsset(context, db, "sm_2g.sql", false);
 		readSQLAsset(context, db, "sm_3g.sql", false);
-		db.close();
 
 		Calendar done = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		long endTime = done.getTimeInMillis();
