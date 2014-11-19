@@ -6,10 +6,15 @@ CREATE TABLE config
         t3212_min   int,
         delta_tch   int,
         delta_cmcp  int,
+
+        --  The number of paging groups we consider unsuspicious.
         n_norm      int,
-        delta_arfcn int, --  Time in seconds we assume is needed to move from one place
-                         --  an ARFCN is used by a cell to another place where the same
-                         --  ARFCN is used for a *different* cell.
+
+        --  Time in seconds we assume is needed to move from one place
+        --  an ARFCN is used by a cell to another place where the same
+        --  ARFCN is used for a *different* cell.
+        delta_arfcn int,
+
         min_pag1_rate float
 );
 
