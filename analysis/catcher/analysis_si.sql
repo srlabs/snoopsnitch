@@ -39,4 +39,4 @@ FROM session_info as si LEFT JOIN
     t3 ON si.id = t3.id LEFT JOIN
     t4 ON si.id = t4.id LEFT JOIN
 	f1 ON si.id = f1.id
-WHERE si.mcc > 0 and si.mnc > 0 and si.lac > 0 and si.cid > 0;
+WHERE si.domain = 0 AND si.mcc > 0 AND si.mnc > 0 AND si.lac > 0 AND si.cid > 0;

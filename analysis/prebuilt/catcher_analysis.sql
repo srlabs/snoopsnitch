@@ -7,7 +7,7 @@ DROP VIEW IF EXISTS max_cipher;
 CREATE VIEW max_cipher AS
 SELECT mcc, mnc, lac, cid, max(cipher) as max
 FROM session_info
-WHERE mcc > 0 and mnc > 0 and lac > 0 and cid > 0
+WHERE domain = 0 AND mcc > 0 AND mnc > 0 AND lac > 0 AND cid > 0
 GROUP BY mcc, mnc, lac, cid;
 
 DROP VIEW IF EXISTS c1;
@@ -160,7 +160,7 @@ FROM session_info as si LEFT JOIN
     t3 ON si.id = t3.id LEFT JOIN
     t4 ON si.id = t4.id LEFT JOIN
 	f1 ON si.id = f1.id
-WHERE si.mcc > 0 and si.mnc > 0 and si.lac > 0 and si.cid > 0;
+WHERE si.domain = 0 AND si.mcc > 0 AND si.mnc > 0 AND si.lac > 0 AND si.cid > 0;
 --  All cell_info-based criteria
 
 --  Attract
