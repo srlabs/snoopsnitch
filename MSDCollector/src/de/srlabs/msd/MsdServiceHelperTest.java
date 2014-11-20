@@ -108,11 +108,11 @@ public class MsdServiceHelperTest extends Activity implements MsdServiceCallback
 	}
 
 
-	@Override
-	protected void onPause() {
-		// Terminate the UI if the Activity goes to the background so that we can test reconnecting to an (already recording) Service
-		System.exit(1);
-	}
+	// @Override
+	// protected void onPause() {
+	// 	// Terminate the UI if the Activity goes to the background so that we can test reconnecting to an (already recording) Service
+	// 	System.exit(1);
+	// }
 
 	@Override
 	public void recordingStateChanged() {
