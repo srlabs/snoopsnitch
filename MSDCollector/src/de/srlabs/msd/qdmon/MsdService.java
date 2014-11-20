@@ -54,6 +54,7 @@ import android.util.Log;
 import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdConfig;
+import de.srlabs.msd.util.MsdDatabaseManager;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";
@@ -769,8 +770,8 @@ public class MsdService extends Service{
 		private long lastAnalysisTime;
 		public void run() {
 			lastAnalysisTime = System.currentTimeMillis();
-			MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MsdService.this);
-			SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+			MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
+			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 			while(true){
 				try {
 					if(shuttingDown && pendingSqlStatements.isEmpty()){
@@ -1037,8 +1038,8 @@ public class MsdService extends Service{
 	 */
 	private long getNextRowId(String tableName) {
 		try{
-			MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MsdService.this);
-			SQLiteDatabase db = msdSQLiteOpenHelper.getReadableDatabase();
+			MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
+			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 			Cursor c = db.rawQuery("SELECT MAX(_ROWID_) FROM " + tableName, null);
 			if(!c.moveToFirst()){
 				handleFatalError("getNextRowId(" + tableName + ") failed because c.moveToFirst() returned false, this shouldn't happen");
@@ -1366,8 +1367,8 @@ public class MsdService extends Service{
 	}
 	private void cleanupDatabase(){
 		try{
-			MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(MsdService.this);
-			SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+			MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
+			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 			String sql = "DELETE FROM session_info where timestamp < datetime('now','-" + MsdConfig.getSessionInfoKeepDurationHours(MsdService.this) + " hours');";
 			info("cleanup: " + sql);
 			db.execSQL(sql);

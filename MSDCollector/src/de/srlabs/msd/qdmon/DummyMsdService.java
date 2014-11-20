@@ -20,6 +20,7 @@ import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.Constants;
+import de.srlabs.msd.util.MsdDatabaseManager;
 
 public class DummyMsdService extends Service{
 	public static final String    TAG                   = "dummy-msd-service";
@@ -78,8 +79,8 @@ public class DummyMsdService extends Service{
 				return;
 			long currentTime = System.currentTimeMillis();
 			if(df == null || currentTime - df.getStart_time() > 10000){
-				MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(DummyMsdService.this);
-				SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+				MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(DummyMsdService.this));
+				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 				if(df != null){
 					dummyLogPrintStream.close();
 					df.endRecording(db);
@@ -112,13 +113,14 @@ public class DummyMsdService extends Service{
 		long currentTime = System.currentTimeMillis();
 		int numSilentSms = 0, numBinarySms = 0;
 		long lastSmsId = 0;
+
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 		for(SMS sms:dummyData.getPendingSms()){
 			if(sms.getTimestamp() > timeCallbacksDone && sms.getTimestamp() <= currentTime){
 				dummyLogPrintStream.println("doPendingCallbacks(): Simulating sms at " + currentTime);
-				MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(this);
-				SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 				df.updateSms(db,true);
-				db.close();
+				MsdDatabaseManager.getInstance().closeDatabase();
 				if(sms.getType() == SMS.Type.BINARY_SMS)
 					numBinarySms++;
 				else
@@ -132,10 +134,9 @@ public class DummyMsdService extends Service{
 		for(ImsiCatcher imsi:dummyData.getPendingImsiCatchers()){
 			if(imsi.getEndTime() > timeCallbacksDone && imsi.getEndTime() <= currentTime){
 				dummyLogPrintStream.println("doPendingCallbacks(): Simulating IMSI Catcher at " + currentTime);
-				MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(DummyMsdService.this);
-				SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 				df.updateImsi(db,true);
-				db.close();
+				MsdDatabaseManager.getInstance().closeDatabase();
 				notificationCachers.add(imsi);
 			}
 		}
