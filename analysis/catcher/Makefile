@@ -229,8 +229,13 @@ $(TESTS):
 	@$(MAKE) PREFIX=$@ DB=$(PWD)/../doc/$@/db.sqlite catcher cell_charts paging_charts
 
 ../prebuilt/catcher_analysis.sql: analysis.sql analysis_ci.sql analysis_si.sql sql/*.sql scripts/resolve_read.pl
-	./scripts/resolve_read.pl $< > $@.tmp
-	mv $@.tmp $@
+	@./scripts/resolve_read.pl $< > $@.tmp
+# The current function for reading SQL files in the app misbehaves
+# when comments contain a semicolon. This results in a statement
+# containing only comments being passed to SQLite which causes an
+# exception
+	@grep -e '--.*;' $@.tmp; test $$? -eq 1
+	@mv $@.tmp $@
 
 $(PREFIX)_catcher.log: validate.sql
 	@echo [CATCHER] $@.

@@ -22,4 +22,4 @@ SELECT
 --          sum(CASE WHEN ifnull(al.arfcn, 0) > 0 THEN 0 ELSE 1 END) = 0 as score
 --  FROM cell_info AS cell LEFT JOIN arfcn_list AS al
 --  ON cell.id = al.id
---  GROUP BY cell.id;
+--  GROUP BY cell.id
