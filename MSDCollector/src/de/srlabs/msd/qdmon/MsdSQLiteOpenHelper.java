@@ -18,7 +18,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		this.context = context;
 	}
 
-	public void readSQLAsset(SQLiteDatabase db, String file, Boolean verbose) {
+	public static void readSQLAsset(Context context, SQLiteDatabase db, String file, Boolean verbose) {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") called");
 		db.execSQL("BEGIN TRANSACTION;");
 		try {
@@ -58,17 +58,17 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
-		readSQLAsset(db, "si.sql", true);
-		readSQLAsset(db, "sm.sql", true);
-		readSQLAsset(db, "cell_info.sql", true);
-		readSQLAsset(db, "sms.sql", true);
-		readSQLAsset(db, "config.sql", true);
-		readSQLAsset(db, "mcc.sql", true);
-		readSQLAsset(db, "mnc.sql", true);
-		readSQLAsset(db, "hlr_info.sql", true);
-		readSQLAsset(db, "analysis_tables.sql", true);
-		readSQLAsset(db, "local.sqlx", true);
-		readSQLAsset(db, "files.sql", true);
+		readSQLAsset(context, db, "si.sql", true);
+		readSQLAsset(context, db, "sm.sql", true);
+		readSQLAsset(context, db, "cell_info.sql", true);
+		readSQLAsset(context, db, "sms.sql", true);
+		readSQLAsset(context, db, "config.sql", true);
+		readSQLAsset(context, db, "mcc.sql", true);
+		readSQLAsset(context, db, "mnc.sql", true);
+		readSQLAsset(context, db, "hlr_info.sql", true);
+		readSQLAsset(context, db, "analysis_tables.sql", true);
+		readSQLAsset(context, db, "local.sqlx", true);
+		readSQLAsset(context, db, "files.sql", true);
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() done");
 	}
 
