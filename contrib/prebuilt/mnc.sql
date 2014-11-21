@@ -1,9 +1,10 @@
+/*!40101 SET storage_engine=MyISAM */;
 DROP TABLE IF EXISTS mnc;
 CREATE TABLE mnc (
   mcc smallint(5)  DEFAULT NULL,
   mnc smallint(5)  DEFAULT NULL,
   name char(64) DEFAULT NULL
-) ENGINE=MyISAM;
+);
 INSERT INTO mnc VALUES(1,1,'TEST');
 INSERT INTO mnc VALUES(202,1,'Cosmote');
 INSERT INTO mnc VALUES(202,5,'Vodafone');

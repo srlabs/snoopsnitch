@@ -1,3 +1,4 @@
+/*!40101 SET storage_engine=MyISAM */;
 DROP TABLE IF EXISTS mcc;
 CREATE TABLE mcc (
   mcc smallint(5)  NOT NULL,
@@ -6,7 +7,7 @@ CREATE TABLE mcc (
   name char(64) NOT NULL,
   latitude float DEFAULT NULL,
   longitude float DEFAULT NULL
-) ENGINE=MyISAM;
+);
 INSERT INTO mcc VALUES(412,93,'AF','Afghanistan',33.0,65.0);
 INSERT INTO mcc VALUES(276,355,'AL','Albania',41.0,20.0);
 INSERT INTO mcc VALUES(603,213,'DZ','Algeria',28.0,3.0);
