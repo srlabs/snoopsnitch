@@ -73,8 +73,8 @@ create view call_avg as
 	 avg(enc_null - enc_null_rand) as nulls,
 	 avg(predict) as pred,
 	 avg(cmc_imeisv) as imeisv,
-	 avg(CASE WHEN mobile_term THEN auth ELSE NULL END) as auth_mt,
-	 avg(CASE WHEN mobile_orig THEN auth ELSE NULL END) as auth_mo,
+	 avg(CASE WHEN mobile_term THEN CASE WHEN auth > 0 THEN 1 ELSE 0 END ELSE NULL END) as auth_mt,
+	 avg(CASE WHEN mobile_orig THEN CASE WHEN auth > 0 THEN 1 ELSE 0 END ELSE NULL END) as auth_mo,
 	 avg(t_tmsi_realloc) as tmsi,
 	 avg(iden_imsi_bc) as imsi
   from session_info
@@ -95,8 +95,8 @@ create view sms_avg as
 	 avg(enc_null - enc_null_rand) as nulls,
 	 avg(predict) as pred,
 	 avg(cmc_imeisv) as imeisv,
-	 avg(CASE WHEN mobile_term THEN auth ELSE NULL END) as auth_mt,
-	 avg(CASE WHEN mobile_orig THEN auth ELSE NULL END) as auth_mo,
+	 avg(CASE WHEN mobile_term THEN CASE WHEN auth > 0 THEN 1 ELSE 0 END ELSE NULL END) as auth_mt,
+	 avg(CASE WHEN mobile_orig THEN CASE WHEN auth > 0 THEN 1 ELSE 0 END ELSE NULL END) as auth_mo,
 	 avg(t_tmsi_realloc) as tmsi,
 	 avg(iden_imsi_bc) as imsi
   from session_info
@@ -115,8 +115,8 @@ create view loc_avg as
 	 avg(enc_null - enc_null_rand) as nulls,
 	 avg(predict) as pred,
 	 avg(cmc_imeisv) as imeisv,
-	 avg(CASE WHEN mobile_term THEN auth ELSE NULL END) as auth_mt,
-	 avg(CASE WHEN mobile_orig THEN auth ELSE NULL END) as auth_mo,
+	 avg(CASE WHEN mobile_term THEN CASE WHEN auth > 0 THEN 1 ELSE 0 END ELSE NULL END) as auth_mt,
+	 avg(CASE WHEN mobile_orig THEN CASE WHEN auth > 0 THEN 1 ELSE 0 END ELSE NULL END) as auth_mo,
 	 avg(t_tmsi_realloc) as tmsi,
 	 avg(iden_imsi_bc) as imsi
   from session_info
@@ -259,7 +259,7 @@ insert into attack_component_x4
 
  pag_auth_mt as key_reuse_mt,
 
-	((IFNULL(call_auth_mo,0) + IFNULL(sms_auth_mo,0)) / 2) as key_reuse_mo,
+	((IFNULL(call_auth_mo,0) + IFNULL( sms_auth_mo,0)) / 2) as key_reuse_mo,
 
 	0.4 * ((IFNULL(call_tmsi,0) + IFNULL( sms_tmsi,0) + IFNULL( loc_tmsi,0)) / 3) +
         0.2 * CASE WHEN loc_imsi < 0.05 THEN 1 - loc_imsi * 20 ELSE 0 END
@@ -286,49 +286,65 @@ insert into attack_component
 
         sum(CASE
                WHEN cipher=3 THEN
-                  1.0 / 2 * ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2) +
+                  1.0 / 2 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2) +
                   CASE
-                     WHEN ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2) = 1.0 THEN
+                     WHEN ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2) = 1.0 THEN
                         realtime_crack / 2
                      ELSE
-                        realtime_crack / 4 * ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2)
+                        realtime_crack / 4 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2)
                   END
                WHEN cipher=2 THEN
                   0.2 / 2
                WHEN cipher=1 THEN
-                  0.5 / 2 * ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2) +
+                  0.5 / 2 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2) +
                   CASE
-                     WHEN ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2) = 1.0 THEN
+                     WHEN ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2) = 1.0 THEN
                         realtime_crack / 2
                      ELSE
-                        realtime_crack / 4 * ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2)
+                        realtime_crack / 4 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2)
                   END
                ELSE
                   0
-            END * ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2)) as realtime_crack,
+            END) as realtime_crack,
 
         sum(CASE
                WHEN cipher=3 THEN
-                  (1.0 / 2 + offline_crack / 2)
+                  1.0 / 2 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2) +
+                  CASE
+                     WHEN ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2) = 1.0 THEN
+                        offline_crack / 2
+                     ELSE
+                        offline_crack / 4 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2)
+                  END
                WHEN cipher=2 THEN
-                   0.2 / 2
+                  0.2 / 2
                WHEN cipher=1 THEN
-                  (0.5 / 2 + offline_crack / 2)
+                  0.5 / 2 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2) +
+                  CASE
+                     WHEN ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2) = 1.0 THEN
+                        offline_crack / 2
+                     ELSE
+                        offline_crack / 4 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2)
+                  END
                ELSE
                   0
-            END * ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2)) as offline_crack,
+            END) as offline_crack,
 
-        sum(((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2)*key_reuse_mt) as key_reuse_mt,
+        sum(((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2)*key_reuse_mt) /
+			sum(((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2))
+			as key_reuse_mt,
 
-        sum(((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2)*key_reuse_mo) as key_reuse_mo,
+        sum(((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2)*key_reuse_mo) /
+			sum(((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2))
+			as key_reuse_mo,
 
         sum(CASE
                WHEN cipher=3 THEN
-                    1 * 0.4 * ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2)
+                    1 * 0.4 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2)
                WHEN cipher=2 THEN
-                  0.2 * 0.4 * ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2)
+                  0.2 * 0.4 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2)
                WHEN cipher=1 THEN
-                  0.5 * 0.4 * ((IFNULL(call_perc,0) + IFNULL(sms_perc,0)) / 2) + track_tmsi
+                  0.5 * 0.4 * ((IFNULL(call_perc,0) + IFNULL( sms_perc,0)) / 2) + track_tmsi
                ELSE
                   0
             END) as track_tmsi,

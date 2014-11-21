@@ -1,3 +1,5 @@
+/*!40101 SET storage_engine=MyISAM */;
+
 -- operators to be listed ("valid")
 drop table if exists va;
 create table va(

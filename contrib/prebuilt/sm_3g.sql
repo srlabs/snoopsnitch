@@ -10,18 +10,17 @@ FROM
 	session_info as si,
 	mnc as n,
 	mcc as c
-ON
-	si.mcc = n.mcc  AND
-    si.mnc = n.mnc  AND
-    c.mcc = n.mcc
 WHERE
+	si.mcc = n.mcc AND
+	si.mnc = n.mnc AND
+	c.mcc = n.mcc  AND
  	NOT (si.mcc >= 1000 or si.mnc >= 1000) AND
  	NOT (si.mcc = 0 or si.mnc = 0)         AND
  	NOT (si.mcc = 262 and si.mnc = 10)     AND
-	NOT (si.mcc = 204 and si.mnc = 21) 	   AND
+	NOT (si.mcc = 204 and si.mnc = 21)     AND
 	NOT (si.mcc = 228 and si.mnc = 6)      AND
 	NOT (si.mcc = 244 and si.mnc = 17)     AND
-	NOT (si.mcc = 208 and si.mnc = 14) 	   AND
+	NOT (si.mcc = 208 and si.mnc = 14)     AND
 	NOT (si.mcc = 901)
 GROUP BY
 	si.mcc,
@@ -67,11 +66,10 @@ SELECT
 		END)/count(*) as impersonation
 FROM
 	valid_op, valid_si
-ON
-	valid_op.mcc = valid_si.mcc AND
-	valid_op.mnc = valid_si.mnc
 WHERE
-	is_call OR is_sms OR is_lu
+	valid_op.mcc = valid_si.mcc AND
+	valid_op.mnc = valid_si.mnc AND
+	(is_call OR is_sms OR is_lu)
 GROUP BY
 	valid_si.mcc,
 	valid_si.mnc;
