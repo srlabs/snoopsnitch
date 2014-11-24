@@ -1,7 +1,13 @@
 INSERT INTO sms
 SELECT
-	sm.id,
+	si.id,
 	si.timestamp,
+	si.mcc,
+	si.mnc,
+	si.lac,
+	si.cid,
+	0.0 as longitude,	-- TODO: Get longitude from GPS table
+	0.0 as latitude,	-- TODO: Get latitude from GPS table
 	sm.smsc,
 	sm.msisdn,
 	CASE

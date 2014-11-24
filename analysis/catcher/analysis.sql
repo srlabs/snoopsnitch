@@ -34,6 +34,8 @@ SELECT
 	max(ci.r1),
 	max(ci.r2),
 	max(si.f1),
+	0.0,		-- TODO: Add latitude
+	0.0,		-- TODO: Add longitude
 	max(ci.a1) +
 	max(ci.a2) +
 	max(ci.a4) +

@@ -23,6 +23,8 @@ CREATE TABLE catcher
 	r1 FLOAT,
 	r2 FLOAT,
 	f1 FLOAT,
+	longitude DOUBLE NOT NULL,
+	latitude DOUBLE NOT NULL,
 	score FLOAT
 );
 
@@ -31,6 +33,12 @@ CREATE TABLE sms
 (
 	id integer PRIMARY KEY,
 	timestamp datetime NOT NULL,
+	mcc smallint NOT NULL,
+	mnc smallint NOT NULL,
+	lac int NOT NULL,
+	cid int NOT NULL,
+	longitude DOUBLE NOT NULL,
+	latitude DOUBLE NOT NULL,
 	smsc CHAR(32) NOT NULL,
 	msisdn CHAR(32) NOT NULL,
 	sms_type integer 			-- type of SMS (0 - OTA, 1 - silent)
