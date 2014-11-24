@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:picker="http://schemas.android.com/apk/res/com.michaelnovakjr.sample.numberpicker"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" > 
+    
+   	<ListPreference
+        android:key="pref_syncConnectionType"
+        android:title="Test"
+        android:summary="%s hours..."
+        android:dialogTitle="Test"
+        android:entries="@array/settings_durations_entries"
+        android:entryValues="@array/settings_durations_values" />
+    
+	<CheckBoxPreference 
+	    android:key="settings_gpsRecording"
+        android:title="GPS Recording"
+        android:summary="This is a description..."
+        android:defaultValue="false"
+ 	/>
+	
+	<CheckBoxPreference 
+	    android:key="settings_networkLocationRecording"
+        android:title="Network location recording"
+        android:summary="This is a description..."
+        android:defaultValue="true"
+ 	/>
+	
+	<CheckBoxPreference 
+	    android:key="settings_recordUnencryptedDumpfiles"
+        android:title="Record unencrypted dumpfiles"
+        android:summary="This is a description..."
+        android:defaultValue="false"
+ 	/>
+	
+	<CheckBoxPreference 
+	    android:key="settings_recordEncryptedDumpfiles"
+        android:title="record encrypted dumpfiles"
+        android:summary="This is a description..."
+        android:defaultValue="true"
+ 	/>
+	
+	<Preference 
+	    android:key="settings_appId"
+	    android:title="Application ID"
+	    android:summary="The application ID is %s"/>
+    
+</PreferenceScreen>

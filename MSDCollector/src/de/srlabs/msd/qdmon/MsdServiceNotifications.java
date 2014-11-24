@@ -9,7 +9,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.Toast;
 import de.srlabs.msd.util.Constants;
-import de.srlabs.msdcollector.R;
+import de.srlabs.msd.R;
 
 public class MsdServiceNotifications {
 	Service service;

@@ -1,33 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.srlabs.msdcollector"
+    package="de.srlabs.msd"
     android:versionCode="1"
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="16"
+        android:maxSdkVersion="19"
         android:targetSdkVersion="19" />
+   
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_content_imsi_event"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="de.srlabs.msd.MsdServiceHelperTest"
-            android:label="@string/app_name" >
+            android:name="de.srlabs.msd.DashboardActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-         <service android:name="de.srlabs.msd.qdmon.MsdService" android:exported="false" android:process=".msd_service" />
-         <service android:name="de.srlabs.msd.qdmon.DummyMsdService" android:exported="false" android:process=".dummy_msd_service" />
-         <service android:name="de.srlabs.msd.upload.UploadService" android:exported="false" />
+        
+        <!-- Detail Chart Activity -->
+        <activity
+             android:name="de.srlabs.msd.DetailChartActivity"
+             android:screenOrientation="portrait"
+             android:parentActivityName="de.srlabs.msd.DashboardActivity">     
+        </activity>
+        <!-- Map Activity -->
+        <activity
+             android:name="de.srlabs.msd.MapActivity"
+             android:screenOrientation="portrait"
+             android:parentActivityName="de.srlabs.msd.DashboardActivity">     
+        </activity>
+        
+        <!-- Test Activity -->
+        <activity
+            android:name="de.srlabs.msd.MsdServiceHelperTest"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" 
+            android:parentActivityName="de.srlabs.msd.DashboardActivity">
+        </activity>
+        
+        <!-- Settings Activity -->
+        <activity
+            android:name="de.srlabs.msd.SettingsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        
+        <!-- About Activity -->
+        <activity
+            android:name="de.srlabs.msd.AboutActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+         
+         
+        <service android:name="de.srlabs.msd.qdmon.MsdService" android:exported="false" android:process=".msd_service" />
+        <service android:name="de.srlabs.msd.qdmon.DummyMsdService" android:exported="false" android:process=".dummy_msd_service" />
+        <service android:name="de.srlabs.msd.upload.UploadService" android:exported="false" />
+    
     </application>
 
 </manifest>

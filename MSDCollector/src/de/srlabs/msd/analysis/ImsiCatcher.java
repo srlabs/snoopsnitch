@@ -98,6 +98,7 @@ public class ImsiCatcher implements AnalysisEvent{
 		// TODO: Add more fields
 		return result.toString();
 	}
+	@Override
 	public int getUploadState(SQLiteDatabase db){
 		boolean uploaded = false;
 		for(DumpFile file:getFiles(db)){
@@ -111,9 +112,11 @@ public class ImsiCatcher implements AnalysisEvent{
 		else
 			return STATE_DELETED;
 	}
+	@Override
 	public Vector<DumpFile> getFiles(SQLiteDatabase db){
 		return DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);
 	}
+	@Override
 	public void markForUpload(SQLiteDatabase db){
 		for(DumpFile file:getFiles(db)){
 			file.markForUpload(db);

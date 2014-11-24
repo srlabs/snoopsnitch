@@ -14,7 +14,7 @@ import de.srlabs.msd.upload.UploadServiceHelper;
 import de.srlabs.msd.upload.UploadState;
 import de.srlabs.msd.upload.UploadStateCallback;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
-import de.srlabs.msdcollector.R;
+import de.srlabs.msd.R;
 
 public class MsdServiceHelperTest extends Activity implements MsdServiceCallback{
 	private Button btnStart;
@@ -65,6 +65,7 @@ public class MsdServiceHelperTest extends Activity implements MsdServiceCallback
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setPositiveButton("Ok", new DialogInterface.OnClickListener() 
 					{
+						@Override
 						public void onClick(DialogInterface dialog, int which) 
 						{       
 							dialog.dismiss();

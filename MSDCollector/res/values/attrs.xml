@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Custom view of Dashboard -->
+	<declare-styleable name="DashboardThreatChart">
+    	<attr name="timePeriodDashboard" format="enum">
+    		<enum name="hour" value="0"/>
+    		<enum name="day" value="1"/>
+    		<enum name="week" value="2"/>
+    		<enum name="month" value="3"/>
+    	</attr>
+       	<attr name="typeOfThreatDashboard" format="enum">
+        	<enum name="silentSMS" value="0"/>
+           	<enum name="imsiCatcher" value="1"/>
+       	</attr>
+	</declare-styleable>
+	
+	<!-- Custom view of detail screen -->
+	<declare-styleable name="DetailThreatChart">
+    	<attr name="timePeriodDetail" format="enum">
+    		<enum name="hour" value="0"/>
+    		<enum name="day" value="1"/>
+    		<enum name="week" value="2"/>
+    		<enum name="month" value="3"/>
+    	</attr>
+       	<attr name="typeOfThreatDetail" format="enum">
+        	<enum name="silentSMS" value="0"/>
+           	<enum name="imsiCatcher" value="1"/>
+       	</attr>
+	</declare-styleable>
+	
+</resources>
