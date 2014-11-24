@@ -30,7 +30,10 @@ CREATE TABLE config
 
 		--  The minimum type 1 paging rate we consider unsuspicious when
 		--  no call is placed.
-		min_pag1_rate float
+		min_pag1_rate float,
+
+		--  Minimum score we treat an analysis result as a catcher
+		catcher_min_score float
 );
 
 INSERT INTO config VALUES
@@ -78,5 +81,9 @@ INSERT INTO config VALUES
 		-- placed there are no pagings and if the call starts somewhere in
 		-- the middle of our sampling interval, the value can be low (but
 		-- above 0).
+		0.0,
+
+		-- catcher_min_score
+		-- TODO: Evaluate minimal score, show everything for now
 		0.0
 );
