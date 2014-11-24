@@ -14,17 +14,21 @@ public class SMS implements AnalysisEvent{
 	private int mnc;
 	private int lac;
 	private int cid;
+	private double longitude;
+	private double latitude;
 	private String sender;
+	private String smsc;
 	public enum Type {
 		SILENT_SMS,
-		BINARY_SMS
+		BINARY_SMS,
+		INVALID_SMS
 		// TODO: Define the required types here
 	}
 	private Type type;
 	public SMS() {
 	}
 	public SMS(long timestamp, long id, int mcc, int mnc, int lac, int cid,
-			String sender, Type type) {
+			double latitude, double longitude, String sender, String smsc, Type type) {
 		super();
 		this.timestamp = timestamp;
 		this.id = id;
@@ -32,7 +36,10 @@ public class SMS implements AnalysisEvent{
 		this.mnc = mnc;
 		this.lac = lac;
 		this.cid = cid;
+		this.longitude = longitude;
+		this.latitude = latitude;
 		this.sender = sender;
+		this.smsc = smsc;
 		this.type = type;
 	}
 
@@ -108,5 +115,16 @@ public class SMS implements AnalysisEvent{
 			Log.e("msd","markForUpload(): Doing file " + file);
 			file.markForUpload(db);
 		}
+	}
+
+	// The SMSC the SMS was sent from
+	public String getSmsc() {
+		return smsc;
+	}
+	public double getLongitude() {
+		return longitude;
+	}
+	public double getLatitude() {
+		return latitude;
 	}
 }

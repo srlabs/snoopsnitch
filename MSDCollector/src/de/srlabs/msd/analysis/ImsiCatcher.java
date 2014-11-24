@@ -14,22 +14,26 @@ public class ImsiCatcher implements AnalysisEvent{
 	private int mnc;
 	private int lac;
 	private int cid;
-	private double confidence;
+	private double latitude;
+	private double longitude;
+	private double score;
 
 	public ImsiCatcher() {
 	}
 	
-	public ImsiCatcher(long startTime, long id, int mcc, int mnc,
-			int lac, int cid, double confidence) {
+	public ImsiCatcher(long startTime, long endTime, long id, int mcc,
+			int mnc, int lac, int cid, double latitude, double longitude, double score) {
 		super();
 		this.startTime = startTime;
-		this.endTime = startTime + 3000;
+		this.endTime = endTime;
 		this.id = id;
 		this.mcc = mcc;
 		this.mnc = mnc;
 		this.lac = lac;
 		this.cid = cid;
-		this.confidence = confidence;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.score = score;
 	}
 	/**
 	 * Start time when the IMSI Catcher was detected
@@ -72,13 +76,22 @@ public class ImsiCatcher implements AnalysisEvent{
 	public int getCid() {
 		return cid;
 	}
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
 	/**
-	 * Confidence level of this detected IMSI catcher, from 0 to 1
+	 * Score for the IMSI catcher
 	 * @return
 	 */
-	public double getConfidence() {
-		return confidence;
+	public double getScore() {
+		return score;
 	}
+
 	@Override
 	public String toString() {
 		StringBuffer result = new StringBuffer("ImsiCatcher: ID=" + id);

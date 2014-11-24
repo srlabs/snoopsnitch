@@ -15,22 +15,22 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 
 	public DummyAnalysisEventData(){
 		// A few dummy binary/silent SMS in the past
-		existingSms.add(new SMS(1413387583L*1000L, nextSmsId++, 262, 1, 2, 3, "012345678", SMS.Type.BINARY_SMS));
-		existingSms.add(new SMS(1413819629L*1000L, nextSmsId++, 262, 1, 2, 3, "012345678", SMS.Type.SILENT_SMS));
-		existingSms.add(new SMS(1414251645L*1000L, nextSmsId++, 262, 1, 2, 3, "012345678", SMS.Type.BINARY_SMS));
-		existingSms.add(new SMS(1414683660L*1000L, nextSmsId++, 262, 1, 2, 3, "012345678", SMS.Type.SILENT_SMS));
+		existingSms.add(new SMS(1413387583L*1000L, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.BINARY_SMS));
+		existingSms.add(new SMS(1413819629L*1000L, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+		existingSms.add(new SMS(1414251645L*1000L, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.BINARY_SMS));
+		existingSms.add(new SMS(1414683660L*1000L, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
 		// A few dummy IMSI Catchers in the past
-		existingImsiCatchers.add(new ImsiCatcher(1413301619L*1000L, nextImsiId++, 262, 1, 2, 3, 0.2));
-		existingImsiCatchers.add(new ImsiCatcher(1413733700L*1000L, nextImsiId++, 262, 1, 2, 3, 0.6));
-		existingImsiCatchers.add(new ImsiCatcher(1414165711L*1000L, nextImsiId++, 262, 1, 2, 3, 0.9));
-		existingImsiCatchers.add(new ImsiCatcher(1414597721L*1000L, nextImsiId++, 262, 1, 2, 3, 0.2));
+		existingImsiCatchers.add(new ImsiCatcher(1413301619L*1000L, 1413301619L*1000L + 120, nextImsiId++, 262, 1, 2, 3, 52.52437, 13.41053, 3.2));
+		existingImsiCatchers.add(new ImsiCatcher(1413733700L*1000L, 1413733700L*1000L + 240, nextImsiId++, 262, 1, 2, 3, 52.52437, 13.41053, 4.6));
+		existingImsiCatchers.add(new ImsiCatcher(1414165711L*1000L, 1414165711L*1000L + 60,  nextImsiId++, 262, 1, 2, 3, 52.52437, 13.41053, 3.9));
+		existingImsiCatchers.add(new ImsiCatcher(1414597721L*1000L, 1414597721L*1000L + 400, nextImsiId++, 262, 1, 2, 3, 52.52437, 13.41053, 2.2));
 	}
 	public void addDynamicDummyEvents(long startRecordingTime){
 		// One binary SMS 5 seconds after starting to record
-		pendingSms.add(new SMS(startRecordingTime + 5000, nextSmsId++, 262, 1, 2, 3, "012345678", SMS.Type.BINARY_SMS));
+		pendingSms.add(new SMS(startRecordingTime + 5000, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.BINARY_SMS));
 		
 		// One IMSI Catcher 15 seconds after starting to record
-		pendingImsiCatchers.add(new ImsiCatcher(startRecordingTime + 15000, nextImsiId++, 262, 1, 2, 3, 0.2));
+		pendingImsiCatchers.add(new ImsiCatcher(startRecordingTime + 15000, startRecordingTime + 16000, nextImsiId++, 262, 1, 2, 3, 52.52437, 13.41053, 4.2));
 	}
 
 
