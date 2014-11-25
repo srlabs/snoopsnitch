@@ -5,6 +5,7 @@ import java.util.Vector;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.SMS;
@@ -25,6 +26,18 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 
 	private static String[] sms_cols =
 			new String[] {"strftime('%s',timestamp)", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "smsc", "msisdn", "sms_type"};
+
+	static private void logCatcher(ImsiCatcher c) {
+
+			Log.i("CATCHER","Catcher: " + c.getStartTime() +
+					", ID="  + c.getId() +
+					", MCC=" + c.getMcc() +
+					", MNC=" + c.getMnc() +
+					", LAC=" + c.getLac() +
+					", CID=" + c.getCid() +
+					", Score=" + c.getScore()
+					);
+	}
 
 	static private SMS smsFromCursor(Cursor c) {
 		Type sms_type;
@@ -114,6 +127,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	@Override
 	public Vector<ImsiCatcher> getImsiCatchers(long startTime, long endTime) {
 
+		ImsiCatcher catcher;
 		Vector<ImsiCatcher> result = new Vector<ImsiCatcher>();
 
 		Cursor c = db.query("catcher", catcher_cols, "strftime('%s',timestamp) >= ? AND strftime('%s',timestamp) <= ?",
@@ -121,7 +135,9 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 
 		if(c.moveToFirst()) {
 			do {
-				result.add(catcherFromCursor(c));
+				catcher = catcherFromCursor(c);
+				logCatcher(catcher);
+				result.add(catcher);
 			} while (c.moveToNext());
 		}
 		return result;
