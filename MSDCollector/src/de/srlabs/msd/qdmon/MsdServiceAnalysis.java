@@ -12,6 +12,7 @@ import android.util.Log;
 
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.qdmon.MsdServiceNotifications;
+import de.srlabs.msd.qdmon.StateChangedReason;
 
 public class MsdServiceAnalysis {
 
@@ -29,7 +30,7 @@ public class MsdServiceAnalysis {
 		}
 	}
 
-	public static void runCatcherAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
+	public static boolean runCatcherAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
 		int before, after;
 
 		before = getLast(db, "catcher", "id");
@@ -49,12 +50,12 @@ public class MsdServiceAnalysis {
 			// New analysis results
 			Log.i(TAG,"CatcherAnalysis: " + numResults + " new catcher results");
 
-			// TODO: Notify UI
-			//notifications.showImsiCatcherNotification(numResults, after);
+			return true;
 		}
+		return false;
 	}
 
-	public static void runSMSAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
+	public static boolean runSMSAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
 		int before, after;
 
 		String[] sms_cols = new String[]
@@ -85,35 +86,29 @@ public class MsdServiceAnalysis {
 
 			Log.i(TAG,"SMSAnalysis: " + numResults + " new results, " + silent + "silent and " + binary + "binary");
 
-			// TODO: Signal to UI
-			//notifications.showSmsNotification(silent, binary, after);
+			if (silent > 0 || binary > 0)
+			{
+				return true;
+			}
 		}
+		return false;
 	}
 
-	public static void run2GAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
+	public static boolean run2GAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
 		MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_2g.sql", false);
-		// TODO: Signal result to UI
+		return false;
 	}
 
-	public static void run3GAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
+	public static boolean run3GAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
 		MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_3g.sql", false);
-		// TODO: Signal result to UI
+		return false;
 	}
 
 	public static void runAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
 
-		Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		String time = String.format(Locale.US, "%02d:%02d:%02d",
-				start.get(Calendar.HOUR_OF_DAY),
-				start.get(Calendar.MINUTE),
-				start.get(Calendar.SECOND));
 		runCatcherAnalysis(context,db,notifications);
 		runSMSAnalysis(context,db,notifications);
 		run3GAnalysis(context,db,notifications);
 		run2GAnalysis(context,db,notifications);
-		Calendar done = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		long endTime = done.getTimeInMillis();
-
-		Log.i(TAG,time + ": Analysis took " + (endTime - start.getTimeInMillis()) + "ms");
 	}
 }

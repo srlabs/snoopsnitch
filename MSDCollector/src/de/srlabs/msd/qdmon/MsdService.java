@@ -238,7 +238,7 @@ public class MsdService extends Service{
 			msdServiceMainThreadHandler.removeCallbacks(periodicCheckRecordingStateRunnable);
 			msdServiceMainThreadHandler.post(periodicCheckRecordingStateRunnable);
 			doStartForeground();
-			sendRecordingStateChanged();
+			sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 			return true;
 		} catch (Exception e) { 
 			handleFatalError("Exception in startRecording(): ", e);
@@ -395,7 +395,7 @@ public class MsdService extends Service{
 				info("MsdService.shutdown completed successfully");
 			this.recording = false;
 			this.shuttingDown.set(false);
-			sendRecordingStateChanged();
+			sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 			this.readyForStartRecording.set(!shutdownError);
 			doStopForeground();
 			return !shutdownError;
@@ -795,8 +795,29 @@ public class MsdService extends Service{
 					}
 					if(System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS){
 						try{
-							MsdServiceAnalysis.runAnalysis(MsdService.this, db, msdServiceNotifications);
+
+							Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+							String time = String.format(Locale.US, "%02d:%02d:%02d",
+									start.get(Calendar.HOUR_OF_DAY),
+									start.get(Calendar.MINUTE),
+									start.get(Calendar.SECOND));
+
+							if (MsdServiceAnalysis.runCatcherAnalysis(MsdService.this, db, msdServiceNotifications)) {
+								sendStateChanged(StateChangedReason.IMSI_DETECTED);
+							};
+							if (MsdServiceAnalysis.runSMSAnalysis(MsdService.this, db, msdServiceNotifications)) {
+								sendStateChanged(StateChangedReason.SMS_DETECTED);
+							};
+							if (MsdServiceAnalysis.run2GAnalysis(MsdService.this, db, msdServiceNotifications)) {
+								sendStateChanged(StateChangedReason.SEC_2G_CHANGED);
+							};
+							if (MsdServiceAnalysis.run3GAnalysis(MsdService.this, db, msdServiceNotifications)) {
+								sendStateChanged(StateChangedReason.SEC_3G_CHANGED);
+							};
 							lastAnalysisTime = System.currentTimeMillis();
+
+							Log.i(TAG,time + ": Analysis took " + (lastAnalysisTime - start.getTimeInMillis()) + "ms");
+
 						} catch(Exception e){
 							// Terminate the service with a fatal error if there is a any uncaught Exception in the Analysis
 							handleFatalError("Exception during analysis",e);
@@ -1132,16 +1153,16 @@ public class MsdService extends Service{
 		// TODO: Reopen the debug log so that the user can upload an error log
 		msdServiceNotifications.showInternalErrorNotification(msg, null);
 	}
-	private void sendRecordingStateChanged(){
+	private void sendStateChanged(StateChangedReason reason){
 		Vector<IMsdServiceCallback> callbacksToRemove = new Vector<IMsdServiceCallback>();
 		for(IMsdServiceCallback callback:mBinder.callbacks){
 			try {
-				callback.stateChanged(StateChangedReason.RECORDING_STATE_CHANGED.name());
+				callback.stateChanged(reason.name());
 			} catch (DeadObjectException e) {
-				info("DeadObjectException in MsdService.sendRecordingStateChanged() => unregistering callback");
+				Log.i(TAG,"DeadObjectException in MsdService.sendStateChanged() => unregistering callback");
 				callbacksToRemove.add(callback);
 			} catch (RemoteException e) {
-				warn("Exception in MsdService.sendRecordingStateChanged() => callback.recordingStateChanged();");
+				Log.e(TAG,"Exception in MsdService.sendStateChanged() => callback.recordingStateChanged();");
 			}
 		}
 		mBinder.callbacks.removeAll(callbacksToRemove);
