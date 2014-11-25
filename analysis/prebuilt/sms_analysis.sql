@@ -1,3 +1,4 @@
+DELETE FROM sms;
 INSERT INTO sms
 SELECT
 	si.id,
