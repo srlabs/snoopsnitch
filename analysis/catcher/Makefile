@@ -162,10 +162,11 @@ TESTS = \
 	test-II-3_7_1 \
 	test-II-3_7_2 \
 	test-III-3_1 \
-	test-III-3_10 \
+	test-IV-3_10_1 \
+	test-IV-3_10_2 \
 	test-III-3_11 \
 	test-III-3_2 \
-	test-III-3_3_1
+	test-III-3_3_1 \
 
 all: ../prebuilt/catcher_analysis.sql
 
