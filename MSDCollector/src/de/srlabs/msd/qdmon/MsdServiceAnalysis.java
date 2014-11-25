@@ -59,8 +59,8 @@ public class MsdServiceAnalysis {
 		int before, after;
 
 		String[] sms_cols = new String[]
-				{"count(CASE WHEN sms_type = 0 THEN 1 ELSE 0 END)",
-				 "count(CASE WHEN sms_type = 1 THEN 1 ELSE 0 END)"};
+				{"sum(CASE WHEN sms_type = 0 THEN 1 ELSE 0 END)",
+				 "sum(CASE WHEN sms_type = 1 THEN 1 ELSE 0 END)"};
 
 		before = getLast(db, "sms", "id");
 		MsdSQLiteOpenHelper.readSQLAsset(context, db, "sms_analysis.sql", false);
@@ -84,7 +84,7 @@ public class MsdServiceAnalysis {
 			silent = c.getInt(1);
 			binary = c.getInt(0);
 
-			Log.i(TAG,"SMSAnalysis: " + numResults + " new results, " + silent + "silent and " + binary + "binary");
+			Log.i(TAG,"SMSAnalysis: " + numResults + " new result(s), " + silent + " silent and " + binary + " binary");
 
 			if (silent > 0 || binary > 0)
 			{
