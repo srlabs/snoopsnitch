@@ -5,7 +5,7 @@ public interface MsdServiceCallback {
 	 * Called when the recording state has changed for any reason. The UI can
 	 * then use isRecording to check whether the Service is actually recording.
 	 */
-	public void recordingStateChanged();
+	public void stateChanged(StateChangedReason reason);
 
 	/**
 	 * Called when an internal error within MsdServiceHelper occurs. The UI

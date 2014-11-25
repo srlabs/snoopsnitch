@@ -18,10 +18,10 @@ public class MsdServiceHelper{
 	public IMsdService mIMsdService;
 	class  MyMsdServiceCallbackStub extends IMsdServiceCallback.Stub{
 		@Override
-		public void recordingStateChanged() throws RemoteException {
+		public void stateChanged(final String reason) throws RemoteException {
 			(new Handler(Looper.getMainLooper())).post(new Runnable(){
 				public void run() {
-					callback.recordingStateChanged();
+					callback.stateChanged(StateChangedReason.valueOf(reason));
 				};
 			});
 		}
@@ -56,12 +56,6 @@ public class MsdServiceHelper{
 		Log.i(TAG,"MsdServiceHelper.startRecording() called");
 		boolean result = false;
 		try {
-			if (data instanceof DummyAnalysisEventData) {
-				DummyAnalysisEventData dummyData = (DummyAnalysisEventData) data;
-				long currentTime = System.currentTimeMillis();
-				dummyData.addDynamicDummyEvents(currentTime);
-				mIMsdService.addDynamicDummyEvents(currentTime);
-			}
 			result = mIMsdService.startRecording();
 		} catch (Exception e) {
 			handleFatalError("Exception in MsdServiceHelper.startRecording()", e);
@@ -79,7 +73,7 @@ public class MsdServiceHelper{
 		}
 		if (data instanceof DummyAnalysisEventData) {
 			DummyAnalysisEventData dummyData = (DummyAnalysisEventData) data;
-			dummyData.clearPendingEvents();
+			dummyData.clearDynamicEvents();
 		}
 		Log.i(TAG,"MsdServiceHelper.stopRecording() returns " + result);
 		return result;
@@ -107,11 +101,16 @@ public class MsdServiceHelper{
 				mIMsdService.registerCallback(msdCallback);
 				boolean recording = mIMsdService.isRecording();
 				Log.i(TAG,"Initial recording = " + recording);
+				if (data instanceof DummyAnalysisEventData) {
+					DummyAnalysisEventData dummyData = (DummyAnalysisEventData) data;
+					dummyData.clearDynamicEvents();
+					dummyData.addDynamicDummyEvents(mIMsdService.getServiceStartTime());
+				}
 			} catch (RemoteException e) {
 				handleFatalError("RemoteException while calling mIMsdService.registerCallback(msdCallback) or mIMsdService.isRecording() in MsdServiceHelper.MyServiceConnection.onServiceConnected()", e);
 			}
 			connected = true;
-			callback.recordingStateChanged();
+			callback.stateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 		}
 
 		@Override
@@ -122,7 +121,7 @@ public class MsdServiceHelper{
 			connected = false;
 			startService();
 			// Service connection was lost, so let's call recordingStopped
-			callback.recordingStateChanged();
+			callback.stateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 		}
 	};
 

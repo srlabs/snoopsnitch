@@ -38,7 +38,7 @@ public class DummyMsdService extends Service{
 
 	private long timeCallbacksDone = 0;
 
-	private long startRecordingTime;
+	private long serviceStartTime;
 	
 	class MyMsdServiceStub extends IMsdService.Stub {
 		private Vector<IMsdServiceCallback> callbacks = new Vector<IMsdServiceCallback>();
@@ -63,12 +63,9 @@ public class DummyMsdService extends Service{
 			if(!callbacks.contains(callback))
 				callbacks.add(callback);
 		}
-
 		@Override
-		public void addDynamicDummyEvents(long startRecordingTime)
-				throws RemoteException {
-			dummyData.addDynamicDummyEvents(startRecordingTime);
-			timeCallbacksDone = startRecordingTime;
+		public long getServiceStartTime() throws RemoteException {
+			return serviceStartTime;
 		}
 	};
 	private class DummyDataRunnable implements Runnable{
@@ -99,7 +96,7 @@ public class DummyMsdService extends Service{
 				}
 			}
 			dummyLogPrintStream.println("DummyDataRunnable running at " + currentTime);
-			doPendingCallbacks();
+			getDynamicSms();
 			// Enable this code to simulate an internal service error
 //			if(System.currentTimeMillis() > startRecordingTime + 10000){
 //				msdServiceNotifications.showInternalErrorNotification("Dummy internal error 10 seconds after starting to record", null);
@@ -109,13 +106,13 @@ public class DummyMsdService extends Service{
 			msdServiceMainThreadHandler.postDelayed(dummyDataRunnable, 1000);
 		}
 	}
-	public void doPendingCallbacks(){
+	public void getDynamicSms(){
 		long currentTime = System.currentTimeMillis();
 		int numSilentSms = 0, numBinarySms = 0;
 		long lastSmsId = 0;
 
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
-		for(SMS sms:dummyData.getPendingSms()){
+		for(SMS sms:dummyData.getDynamicSms()){
 			if(sms.getTimestamp() > timeCallbacksDone && sms.getTimestamp() <= currentTime){
 				dummyLogPrintStream.println("doPendingCallbacks(): Simulating sms at " + currentTime);
 				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
@@ -128,8 +125,10 @@ public class DummyMsdService extends Service{
 				lastSmsId = sms.getId();
 			}
 		}
-		if(numSilentSms > 0 || numBinarySms > 0)
+		if(numSilentSms > 0 || numBinarySms > 0){
 			msdServiceNotifications.showSmsNotification(numSilentSms, numBinarySms, lastSmsId);
+			sendStateChanged(StateChangedReason.SMS_DETECTED);
+		}
 		Vector<ImsiCatcher> notificationCachers = new Vector<ImsiCatcher>();
 		for(ImsiCatcher imsi:dummyData.getPendingImsiCatchers()){
 			if(imsi.getEndTime() > timeCallbacksDone && imsi.getEndTime() <= currentTime){
@@ -142,32 +141,32 @@ public class DummyMsdService extends Service{
 		}
 		if(notificationCachers.size() > 0){
 			msdServiceNotifications.showImsiCatcherNotification(notificationCachers.size(), notificationCachers.lastElement().getId());
+			sendStateChanged(StateChangedReason.IMSI_DETECTED);
 		}
 		timeCallbacksDone = currentTime;
 	}
 	private boolean startRecording() {
 		recording = true;
+		timeCallbacksDone = serviceStartTime;
 		dummyDataRunnable = new DummyDataRunnable();
 		msdServiceMainThreadHandler.post(dummyDataRunnable);
 		doStartForeground();
-		sendRecordingStateChanged();
-		startRecordingTime = System.currentTimeMillis();
+		sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 		return true;
 	}
 	
 	private boolean shutdown() {
 		dummyDataRunnable.recordingStopped = true;
 		dummyDataRunnable = null;
-		dummyData.clearPendingEvents();
 		doStopForeground();
-		sendRecordingStateChanged();
+		sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 		return true;
 	}
-	private void sendRecordingStateChanged(){
+	private void sendStateChanged(StateChangedReason reason){
 		Vector<IMsdServiceCallback> callbacksToRemove = new Vector<IMsdServiceCallback>();
 		for(IMsdServiceCallback callback:mBinder.callbacks){
 			try {
-				callback.recordingStateChanged();
+				callback.stateChanged(reason.name());
 			} catch (DeadObjectException e) {
 				Log.i(TAG,"DeadObjectException in MsdService.sendRecordingStateChanged() => unregistering callback");
 				callbacksToRemove.add(callback);
@@ -188,5 +187,12 @@ public class DummyMsdService extends Service{
 	public IBinder onBind(Intent intent) {
 		Log.i(TAG,"MsdService.onBind() called");
 		return mBinder;
+	}
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		dummyData = new DummyAnalysisEventData();
+		serviceStartTime = System.currentTimeMillis();
+		dummyData.addDynamicDummyEvents(serviceStartTime);
 	}
 }

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.MsdServiceHelper;
+import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.upload.UploadServiceHelper;
 import de.srlabs.msd.upload.UploadState;
 import de.srlabs.msd.upload.UploadStateCallback;
@@ -116,7 +117,7 @@ public class MsdServiceHelperTest extends Activity implements MsdServiceCallback
 	// }
 
 	@Override
-	public void recordingStateChanged() {
+	public void stateChanged(StateChangedReason reason) {
 		final String msg = "recordingStateChanged connected=" + msdServiceHelper.isConnected() + "  recording=" + msdServiceHelper.isRecording();
 		appendLogMsg(msg);
 	}

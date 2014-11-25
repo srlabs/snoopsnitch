@@ -7,5 +7,5 @@ interface IMsdService {
 	void registerCallback(IMsdServiceCallback callback);
 	boolean startRecording();
 	boolean stopRecording();
-	void addDynamicDummyEvents(long startRecordingTime);
+	long getServiceStartTime();
 }

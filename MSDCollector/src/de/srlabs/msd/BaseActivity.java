@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
+import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.MSDServiceHelperCreator;
 
 public class BaseActivity extends FragmentActivity implements MsdServiceCallback
@@ -180,8 +182,11 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	}
 
 	@Override
-	public void recordingStateChanged() 
+	public void stateChanged(StateChangedReason reason) 
 	{
+		Log.e("msd","REASON: " + reason.name());
+		Log.e("msd","SMS5: " + msdServiceHelperCreator.getMsdServiceHelper().getData().getSMS(5));
+		Log.e("msd","IMSI5: " + msdServiceHelperCreator.getMsdServiceHelper().getData().getImsiCatcher(5));
 		if (menu != null)
 		{
 			if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())

@@ -1,5 +1,5 @@
 package de.srlabs.msd.qdmon;
 
 interface IMsdServiceCallback {
-	void recordingStateChanged();
+	void stateChanged(String reason);
 }

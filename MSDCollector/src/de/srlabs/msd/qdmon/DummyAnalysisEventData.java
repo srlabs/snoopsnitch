@@ -7,11 +7,11 @@ import de.srlabs.msd.analysis.SMS;
 
 public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	private Vector<SMS> existingSms = new Vector<SMS>();
-	private Vector<SMS> pendingSms = new Vector<SMS>();
+	private Vector<SMS> dynamicSms = new Vector<SMS>();
 	private long nextSmsId = 1;
 	private long nextImsiId = 1;
 	private Vector<ImsiCatcher> existingImsiCatchers = new Vector<ImsiCatcher>();
-	private Vector<ImsiCatcher> pendingImsiCatchers = new Vector<ImsiCatcher>();
+	private Vector<ImsiCatcher> dynamicImsiCatchers = new Vector<ImsiCatcher>();
 
 	public DummyAnalysisEventData(){
 		// A few dummy binary/silent SMS in the past
@@ -27,10 +27,10 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	}
 	public void addDynamicDummyEvents(long startRecordingTime){
 		// One binary SMS 5 seconds after starting to record
-		pendingSms.add(new SMS(startRecordingTime + 5000, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.BINARY_SMS));
+		dynamicSms.add(new SMS(startRecordingTime + 5000, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.BINARY_SMS));
 		
 		// One IMSI Catcher 15 seconds after starting to record
-		pendingImsiCatchers.add(new ImsiCatcher(startRecordingTime + 15000, startRecordingTime + 16000, nextImsiId++, 262, 1, 2, 3, 52.52437, 13.41053, 4.2));
+		dynamicImsiCatchers.add(new ImsiCatcher(startRecordingTime + 15000, startRecordingTime + 16000, nextImsiId++, 262, 1, 2, 3, 52.52437, 13.41053, 4.2));
 	}
 
 
@@ -40,8 +40,8 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 			if(sms.getId() == id)
 				return sms;
 		}
-		for(SMS sms:pendingSms){
-			if(sms.getTimestamp() < System.currentTimeMillis())
+		for(SMS sms:dynamicSms){
+			if(sms.getTimestamp() > System.currentTimeMillis())
 				continue; // Ignore dummy events which have not yet been recorded
 			if(sms.getId() == id)
 				return sms;
@@ -56,8 +56,8 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 			if(sms.getTimestamp() >= startTime && sms.getTimestamp() <= endTime)
 				result.add(sms);
 		}
-		for(SMS sms:pendingSms){
-			if(sms.getTimestamp() < System.currentTimeMillis())
+		for(SMS sms:dynamicSms){
+			if(sms.getTimestamp() > System.currentTimeMillis())
 				continue; // Ignore dummy events which have not yet been recorded
 			if(sms.getTimestamp() >= startTime && sms.getTimestamp() <= endTime)
 				result.add(sms);
@@ -71,8 +71,8 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 			if(imsi.getId() == id)
 				return imsi;
 		}
-		for(ImsiCatcher imsi:pendingImsiCatchers){
-			if(imsi.getEndTime() < System.currentTimeMillis())
+		for(ImsiCatcher imsi:dynamicImsiCatchers){
+			if(imsi.getEndTime() > System.currentTimeMillis())
 				continue; // Ignore dummy events which have not yet been recorded
 			if(imsi.getId() == id)
 				return imsi;
@@ -87,22 +87,22 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 			if(imsi.getEndTime() >= startTime && imsi.getStartTime() <= endTime)
 				result.add(imsi);
 		}
-		for(ImsiCatcher imsi:pendingImsiCatchers){
-			if(imsi.getEndTime() < System.currentTimeMillis())
+		for(ImsiCatcher imsi:dynamicImsiCatchers){
+			if(imsi.getEndTime() > System.currentTimeMillis())
 				continue; // Ignore dummy events which have not yet been recorded
 			if(imsi.getEndTime() >= startTime && imsi.getStartTime() <= endTime)
 				result.add(imsi);
 		}
 		return result;
 	}
-	public Vector<SMS> getPendingSms() {
-		return pendingSms;
+	public Vector<SMS> getDynamicSms() {
+		return dynamicSms;
 	}
 	public Vector<ImsiCatcher> getPendingImsiCatchers() {
-		return pendingImsiCatchers;
+		return dynamicImsiCatchers;
 	}
-	public void clearPendingEvents() {
-		pendingSms = new Vector<SMS>();
-		pendingImsiCatchers = new Vector<ImsiCatcher>();
+	public void clearDynamicEvents() {
+		dynamicSms = new Vector<SMS>();
+		dynamicImsiCatchers = new Vector<ImsiCatcher>();
 	}
 }

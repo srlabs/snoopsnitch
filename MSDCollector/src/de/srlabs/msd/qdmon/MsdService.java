@@ -91,9 +91,9 @@ public class MsdService extends Service{
 		}
 
 		@Override
-		public void addDynamicDummyEvents(long startRecordingTime)
-				throws RemoteException {
+		public long getServiceStartTime() throws RemoteException {
 			// Do nothing here, the real Service doesn't deliver dummy events
+			return 0;
 		}
 	};
 	AtomicBoolean shuttingDown = new AtomicBoolean(false);
@@ -1136,7 +1136,7 @@ public class MsdService extends Service{
 		Vector<IMsdServiceCallback> callbacksToRemove = new Vector<IMsdServiceCallback>();
 		for(IMsdServiceCallback callback:mBinder.callbacks){
 			try {
-				callback.recordingStateChanged();
+				callback.stateChanged(StateChangedReason.RECORDING_STATE_CHANGED.name());
 			} catch (DeadObjectException e) {
 				info("DeadObjectException in MsdService.sendRecordingStateChanged() => unregistering callback");
 				callbacksToRemove.add(callback);
