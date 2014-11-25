@@ -7,6 +7,7 @@ CREATE TABLE catcher
 	lac integer,
 	cid integer,
 	timestamp datetime,
+	duration int,
 	a1 FLOAT,
 	a2 FLOAT,
 	a4 FLOAT,

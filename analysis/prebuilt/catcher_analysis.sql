@@ -492,6 +492,7 @@ SELECT
 	ci.lac,
 	ci.cid,
 	si.timestamp,
+	si.duration,
 	max(ci.a1),
 	max(ci.a2),
 	max(ci.a4),
