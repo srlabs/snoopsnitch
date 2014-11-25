@@ -75,7 +75,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	public SMS getSMS(long id) {
 		Cursor c = db.query("sms", sms_cols, "id = ?", new String[] {Long.toString(id)}, null, null, null);
 		if(!c.moveToFirst()) {
-			throw new IllegalStateException("Requesting non-existing SMS");
+			throw new IllegalStateException("Requesting non-existing SMS " + Long.toString(id));
 		}
 		return smsFromCursor (c);
 	}

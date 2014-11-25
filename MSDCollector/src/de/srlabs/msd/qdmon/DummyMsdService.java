@@ -168,10 +168,10 @@ public class DummyMsdService extends Service{
 			try {
 				callback.stateChanged(reason.name());
 			} catch (DeadObjectException e) {
-				Log.i(TAG,"DeadObjectException in MsdService.sendRecordingStateChanged() => unregistering callback");
+				Log.i(TAG,"DeadObjectException in MsdService.sendStateChanged() => unregistering callback");
 				callbacksToRemove.add(callback);
 			} catch (RemoteException e) {
-				Log.e(TAG,"Exception in MsdService.sendRecordingStateChanged() => callback.recordingStateChanged();");
+				Log.e(TAG,"Exception in MsdService.sendStateChanged() => callback.recordingStateChanged();");
 			}
 		}
 		mBinder.callbacks.removeAll(callbacksToRemove);

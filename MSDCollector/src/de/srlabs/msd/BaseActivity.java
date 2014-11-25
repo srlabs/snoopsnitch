@@ -185,8 +185,6 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	public void stateChanged(StateChangedReason reason) 
 	{
 		Log.e("msd","REASON: " + reason.name());
-		Log.e("msd","SMS5: " + msdServiceHelperCreator.getMsdServiceHelper().getData().getSMS(5));
-		Log.e("msd","IMSI5: " + msdServiceHelperCreator.getMsdServiceHelper().getData().getImsiCatcher(5));
 		if (menu != null)
 		{
 			if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
