@@ -802,16 +802,16 @@ public class MsdService extends Service{
 									start.get(Calendar.MINUTE),
 									start.get(Calendar.SECOND));
 
-							if (MsdServiceAnalysis.runCatcherAnalysis(MsdService.this, db, msdServiceNotifications)) {
+							if (MsdServiceAnalysis.runCatcherAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.IMSI_DETECTED);
 							};
-							if (MsdServiceAnalysis.runSMSAnalysis(MsdService.this, db, msdServiceNotifications)) {
+							if (MsdServiceAnalysis.runSMSAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.SMS_DETECTED);
 							};
-							if (MsdServiceAnalysis.run2GAnalysis(MsdService.this, db, msdServiceNotifications)) {
+							if (MsdServiceAnalysis.run2GAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.SEC_2G_CHANGED);
 							};
-							if (MsdServiceAnalysis.run3GAnalysis(MsdService.this, db, msdServiceNotifications)) {
+							if (MsdServiceAnalysis.run3GAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.SEC_3G_CHANGED);
 							};
 							lastAnalysisTime = System.currentTimeMillis();

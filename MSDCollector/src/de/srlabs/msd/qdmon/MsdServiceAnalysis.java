@@ -1,9 +1,5 @@
 package de.srlabs.msd.qdmon;
 
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
@@ -11,8 +7,7 @@ import android.database.SQLException;
 import android.util.Log;
 
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
-import de.srlabs.msd.qdmon.MsdServiceNotifications;
-import de.srlabs.msd.qdmon.StateChangedReason;
+import de.srlabs.msd.analysis.Risk;
 
 public class MsdServiceAnalysis {
 
@@ -30,7 +25,7 @@ public class MsdServiceAnalysis {
 		}
 	}
 
-	public static boolean runCatcherAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
+	public static boolean runCatcherAnalysis(Context context, SQLiteDatabase db){
 		int before, after;
 
 		before = getLast(db, "catcher", "id");
@@ -55,7 +50,7 @@ public class MsdServiceAnalysis {
 		return false;
 	}
 
-	public static boolean runSMSAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
+	public static boolean runSMSAnalysis(Context context, SQLiteDatabase db){
 		int before, after;
 
 		String[] sms_cols = new String[]
@@ -94,21 +89,46 @@ public class MsdServiceAnalysis {
 		return false;
 	}
 
-	public static boolean run2GAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
-		MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_2g.sql", false);
-		return false;
+	public static void log(Risk before, Risk after){
+		if (after.isValid()) {
+			if (after.equals(before)) {
+				Log.i(TAG,"2GAnalysis: new values for " + after.getMonth() +
+						": inter " + Double.toString(after.getInter()) +
+						", imper " + Double.toString(after.getImper()) +
+						", track " + Double.toString(after.getTrack()));
+			} else {
+				Log.i(TAG,"2GAnalysis: values unchanged");
+			}
+		} else
+		{
+			Log.i(TAG,"2GAnalysis: no valid result");
+		}
 	}
 
-	public static boolean run3GAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
+	public static boolean run2GAnalysis(Context context, SQLiteDatabase db){
+
+		boolean result = false;
+		Cursor c = db.query("serving_cell_info", new String[] {"max(_id)", "mcc", "mnc"}, null, null, null, null, null);
+
+		if (c.moveToFirst()){
+			int currentMCC = c.getInt(1);
+			int currentMNC = c.getInt(2);
+
+			Log.i(TAG,"2GAnalysis for mcc=" + currentMCC + ", mnc=" + currentMNC);
+			Risk before = new Risk(db, currentMCC, currentMNC);
+			MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_2g.sql", false);
+			Risk after = new Risk(db, currentMCC, currentMNC);
+			log(before, after);
+
+			result = after.isValid() && !after.equals(before);
+		}
+
+		return result;
+	}
+
+	public static boolean run3GAnalysis(Context context, SQLiteDatabase db){
 		MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_3g.sql", false);
 		return false;
 	}
 
-	public static void runAnalysis(Context context, SQLiteDatabase db, MsdServiceNotifications notifications){
-
-		runCatcherAnalysis(context,db,notifications);
-		runSMSAnalysis(context,db,notifications);
-		run3GAnalysis(context,db,notifications);
-		run2GAnalysis(context,db,notifications);
-	}
 }
