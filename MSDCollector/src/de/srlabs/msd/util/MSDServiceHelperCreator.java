@@ -22,7 +22,7 @@ public class MSDServiceHelperCreator
 	public MSDServiceHelperCreator (Context context, MsdServiceCallback callback) 
 	{
 
-		msdServiceHelper = new MsdServiceHelper(context, callback, true);
+		msdServiceHelper = new MsdServiceHelper(context, callback, false);
 	}
 	
 	public static MSDServiceHelperCreator getInstance (Context context, MsdServiceCallback callback)
