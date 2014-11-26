@@ -122,4 +122,11 @@ public class ImsiCatcher implements AnalysisEvent{
 			file.markForUpload(db);
 		}
 	}
+
+	public String getFullCellID() {
+		return Integer.toString(mcc) +
+				"/" + Integer.toString(mnc) +
+				"/" + Integer.toString(lac) +
+				"/" + Integer.toString(cid);
+	}
 }

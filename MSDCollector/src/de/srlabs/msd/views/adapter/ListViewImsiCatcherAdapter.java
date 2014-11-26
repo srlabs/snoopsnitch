@@ -62,7 +62,7 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 				String.valueOf(values.get(position).getLatitude()));
 		
 		// Set cell id
-		((TextView) rowView.findViewById(R.id.txtListViewImsiCellId)).setText(String.valueOf(values.get(position).getCid()));
+		((TextView) rowView.findViewById(R.id.txtListViewImsiCellId)).setText(String.valueOf(values.get(position).getFullCellID()));
 	
 		return rowView;
 	 }
