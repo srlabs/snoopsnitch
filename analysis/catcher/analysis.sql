@@ -59,8 +59,7 @@ ON
 	ci.mnc = si.mnc AND
 	ci.lac = si.lac AND
 	ci.cid = si.cid AND
-	strftime('%s', ci.last_seen) - strftime('%s', si.timestamp) < 3600 AND
-	strftime('%s', si.timestamp) - strftime('%s', ci.last_seen) < 3600
+	abs(strftime('%s', ci.last_seen) - strftime('%s', si.timestamp)) < 3600
 GROUP BY
 	ci.mcc, ci.mnc, ci.lac, ci.cid
 HAVING
