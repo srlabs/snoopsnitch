@@ -513,7 +513,7 @@ public class MsdService extends Service{
 						info("ToParserThread shutting down due to shutdown marker, OK");
 						return;
 					}
-					info("Writing message to parser, length=" + msg.buf.length);
+					//info("Writing message to parser, length=" + msg.buf.length);
 					parserStdin.write(msg.buf);
 					parserStdin.flush();
 				}
