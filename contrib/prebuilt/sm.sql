@@ -146,3 +146,20 @@ create table sec_params(
 	home_routing REAL,
 	PRIMARY KEY (mcc,mnc,lac,month,cipher)
 );
+
+--  3G risk table
+DROP TABLE IF EXISTS risk_3g;
+CREATE TABLE risk_3g(
+	mcc SMALLINT UNSIGNED NOT NULL,
+	mnc SMALLINT UNSIGNED NOT NULL,
+	country CHAR(32) NOT NULL,
+	network CHAR(32) NOT NULL,
+	samples INTEGER UNSIGNED,
+	call_perc FLOAT(1),
+	sms_perc FLOAT(1),
+	lu_perc FLOAT(1),
+	enc_perc FLOAT(1),
+	auth_perc FLOAT(1),
+	intercept FLOAT(1),
+	impersonation FLOAT(1)
+);

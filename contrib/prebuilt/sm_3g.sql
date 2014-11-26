@@ -43,8 +43,8 @@ WHERE
 	rat = 1 and domain = 0;
 
 --  Scores per operator
-DROP VIEW IF EXISTS risk_3g;
-CREATE VIEW risk_3g AS
+DELETE FROM risk_3g;
+INSERT INTO risk_3g
 SELECT
 	valid_si.mcc,
 	valid_si.mnc,
