@@ -122,32 +122,6 @@ SELECT
 FROM session_info, config
 WHERE domain = 0 AND duration > 0;
 
---  Fingerprint
-DROP VIEW IF EXISTS f1;
-CREATE VIEW f1 AS
-SELECT
-	si.id,
-	min(si2.id),
-	si.mcc,
-	si.mnc,
-	si.lac,
-	si.cid,
-	count(pag1_rate) as count,
-	avg(pag1_rate) < config.min_pag1_rate as score
-FROM
-	session_info AS si, session_info as si2, paging_info AS pi, config
-ON
-	--  Join on the next location update…
-	si2.id > si.id AND
-	--  …all paging messages since the current location update started…
-	strftime('%s', pi.timestamp) - strftime('%s', si.timestamp - si.duration/1000) > 0 AND
-	--  …until the succeeding location update starts…
-	strftime('%s', si2.timestamp) - si2.duration/1000 - strftime('%s', pi.timestamp) > 0
-WHERE
-	si.domain = 0 AND si2.domain = 0 AND si.lu_acc AND si2.lu_acc
-GROUP BY
-	si.id;
-
 --  Result
 DROP VIEW IF EXISTS si;
 CREATE VIEW si AS
@@ -165,8 +139,7 @@ SELECT
         ifnull(c4.score, 0) as c4,
         ifnull(c5.score, 0) as c5,
         ifnull(t3.score, 0) as t3,
-        ifnull(t4.score, 0) as t4,
-        ifnull(f1.score, 0) as f1
+        ifnull(t4.score, 0) as t4
 FROM session_info as si LEFT JOIN
     c1 ON si.id = c1.id LEFT JOIN
     c2 ON si.id = c2.id LEFT JOIN
@@ -174,8 +147,7 @@ FROM session_info as si LEFT JOIN
     c4 ON si.id = c4.id LEFT JOIN
     c5 ON si.id = c5.id LEFT JOIN
     t3 ON si.id = t3.id LEFT JOIN
-    t4 ON si.id = t4.id LEFT JOIN
-	f1 ON si.id = f1.id
+    t4 ON si.id = t4.id
 WHERE si.domain = 0 AND si.mcc > 0 AND si.mnc > 0 AND si.lac > 0 AND si.cid > 0;
 --  All cell_info-based criteria
 
@@ -444,6 +416,32 @@ SELECT
         ((9 - cell_info.agch_blocks - 6 * cell_info.combined) * cell_info.pag_mframes) > config.n_norm as score
 FROM cell_info, config;
 
+--  Fingerprint
+DROP VIEW IF EXISTS f1;
+CREATE VIEW f1 AS
+SELECT
+	si.id,
+	min(si2.id),
+	si.mcc,
+	si.mnc,
+	si.lac,
+	si.cid,
+	count(pag1_rate) as count,
+	avg(pag1_rate) < config.min_pag1_rate as score
+FROM
+	session_info AS si, session_info as si2, paging_info AS pi, config
+ON
+	--  Join on the next location update…
+	si2.id > si.id AND
+	--  …all paging messages since the current location update started…
+	strftime('%s', pi.timestamp) - strftime('%s', si.timestamp - si.duration/1000) > 0 AND
+	--  …until the succeeding location update starts…
+	strftime('%s', si2.timestamp) - si2.duration/1000 - strftime('%s', pi.timestamp) > 0
+WHERE
+	si.domain = 0 AND si2.domain = 0 AND si.lu_acc AND si2.lu_acc
+GROUP BY
+	si.id;
+
 --  Result
 DROP VIEW IF EXISTS ci;
 CREATE VIEW ci AS
@@ -461,7 +459,8 @@ SELECT DISTINCT
         ifnull(k2.score, 0) as k2,
         ifnull(t1.score, 0) as t1,
         ifnull(r1.score, 0) as r1,
-        ifnull(r2.score, 0) as r2
+        ifnull(r2.score, 0) as r2,
+        ifnull(f1.score, 0) as f1
 FROM cell_info as ci LEFT JOIN
  a1 ON ci.id = a1.id LEFT JOIN
  a2 ON ci.id = a2.id LEFT JOIN
@@ -470,7 +469,8 @@ FROM cell_info as ci LEFT JOIN
  k2 ON ci.id = k2.id LEFT JOIN
  t1 ON ci.id = t1.id LEFT JOIN
  r1 ON ci.id = r1.id LEFT JOIN
- r2 ON ci.id = r2.id
+ r2 ON ci.id = r2.id LEFT JOIN
+ f1 ON ci.id = f1.id
 WHERE
 	ci.mcc > 0 AND ci.mnc > 0 AND ci.lac > 0 AND ci.cid > 0;
 
@@ -508,7 +508,7 @@ SELECT
 	max(si.t4),
 	max(ci.r1),
 	max(ci.r2),
-	max(si.f1),
+	max(ci.f1),
 	0.0,		-- TODO: Add latitude
 	0.0,		-- TODO: Add longitude
 	max(ci.a1) +
@@ -526,7 +526,7 @@ SELECT
 	max(si.t4) +
 	max(ci.r1) +
 	max(ci.r2) +
-	max(si.f1) as score
+	max(ci.f1) as score
 FROM si, ci, config
 ON
 	ci.mcc = si.mcc AND

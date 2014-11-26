@@ -34,7 +34,7 @@ SELECT
 	max(si.t4),
 	max(ci.r1),
 	max(ci.r2),
-	max(si.f1),
+	max(ci.f1),
 	0.0,		-- TODO: Add latitude
 	0.0,		-- TODO: Add longitude
 	max(ci.a1) +
@@ -52,7 +52,7 @@ SELECT
 	max(si.t4) +
 	max(ci.r1) +
 	max(ci.r2) +
-	max(si.f1) as score
+	max(ci.f1) as score
 FROM si, ci, config
 ON
 	ci.mcc = si.mcc AND
