@@ -10,4 +10,6 @@ public interface AnalysisEventDataInterface {
 	public Vector<SMS> getSMS(long startTime, long endTime);
 	public ImsiCatcher getImsiCatcher(long id);
 	public Vector<ImsiCatcher> getImsiCatchers(long startTime,	long endTime);
+	public double get2GScore();
+	public double get3GScore();
 }

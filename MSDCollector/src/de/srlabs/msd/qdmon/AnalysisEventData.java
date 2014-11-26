@@ -142,4 +142,16 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		}
 		return result;
 	}
+
+	@Override
+	public double get2GScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double get3GScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

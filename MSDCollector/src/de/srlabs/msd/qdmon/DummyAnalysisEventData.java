@@ -105,4 +105,14 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 		dynamicSms = new Vector<SMS>();
 		dynamicImsiCatchers = new Vector<ImsiCatcher>();
 	}
+	@Override
+	public double get2GScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public double get3GScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
