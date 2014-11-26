@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "msd.db";
-	private static final int DATABASE_VERSION = 9;
+	private static final int DATABASE_VERSION = 10;
 	private Context context;
 	public MsdSQLiteOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
