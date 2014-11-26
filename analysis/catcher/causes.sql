@@ -1,5 +1,4 @@
-PRAGMA foreign_keys=OFF
-BEGIN TRANSACTION;
+DROP TABLE IF EXISTS causes;
 CREATE TABLE causes (cause,text);
 INSERT INTO "causes" VALUES('2','IMSI unknown in HLR');
 INSERT INTO "causes" VALUES('3','Illegal MS');
@@ -23,4 +22,3 @@ INSERT INTO "causes" VALUES('99','Information element non-existent or not implem
 INSERT INTO "causes" VALUES('100','Conditional IE error.');
 INSERT INTO "causes" VALUES('101','Message not compatible with protocol state');
 INSERT INTO "causes" VALUES('111','Protocol error, unspecified');
-COMMIT;

@@ -1,4 +1,4 @@
-DB ?= ~/MSD/Traces/new_parsed_gsmmap.sqlite
+DB ?= ~/MSD/Traces/gsmmap_19112014.sqlite
 
 COMMON_GP = \
 		unset key; \
@@ -172,7 +172,6 @@ all: ../prebuilt/catcher_analysis.sql
 
 base_charts: \
 	$(PREFIX)_duration.pdf \
-	$(PREFIX)_neighbors.pdf \
 	$(PREFIX)_orphaned_time.pdf \
 	$(PREFIX)_lu_reject.pdf
 
@@ -182,6 +181,9 @@ catcher: \
 cell_charts: \
 	$(PREFIX)_cro.pdf \
 	$(PREFIX)_t3212.pdf \
+
+neighbors: \
+	$(PREFIX)_neighbors.pdf \
 
 # Charts for paging statistics
 paging_charts: paging_groups \
@@ -213,13 +215,13 @@ validate_xgold:
 	@$(MAKE) DB=~/MSD/Traces/reparsed_xgold.sqlite PREFIX=X-GOLD paging_groups cell_charts
 
 validate_vodafone:
-	@$(MAKE) PREFIX=Vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite paging_charts catcher cell_charts
+	@$(MAKE) PREFIX=Vodafone DB=$(PWD)/../doc/validate-Vodafone-B_DD-20141118/db.sqlite paging_charts catcher cell_charts neighbors
 
 validate_eplus:
-	@$(MAKE) PREFIX=E-Plus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite paging_charts catcher cell_charts
+	@$(MAKE) PREFIX=E-Plus DB=$(PWD)/../doc/validate-EPlus-DD_B-20141117/db.sqlite paging_charts catcher cell_charts neighbors
 
 validate_o2:
-	@$(MAKE) PREFIX=O2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite paging_charts catcher cell_charts
+	@$(MAKE) PREFIX=O2 DB=$(PWD)/../doc/validate-O2-B_DD-20141117/db.sqlite paging_charts catcher cell_charts neighbors
 
 validate_telekom:
 	@$(MAKE) PREFIX=Telekom DB=$(PWD)/../doc/validate-Telekom-DD_B-20141118/db.sqlite paging_charts catcher cell_charts
