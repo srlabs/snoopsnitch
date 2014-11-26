@@ -53,7 +53,7 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 		
 		// Set date/time
 		TextView txtDateTime = (TextView) rowView.findViewById(R.id.txtDetailListDateTime);
-		Timestamp stamp = new Timestamp(values.get(position).getTimestamp());
+		Timestamp stamp = new Timestamp(values.get(position).getTimestamp() + 1000L);
 		txtDateTime.setText(DateFormat.getDateTimeInstance().format(stamp.getTime()));
 	
 		// Set position

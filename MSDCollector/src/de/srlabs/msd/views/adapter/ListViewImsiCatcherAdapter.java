@@ -38,8 +38,7 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 		
 		// Set date/time
 		TextView txtDateTime = (TextView) rowView.findViewById(R.id.txtDetailListDateTime);
-		Timestamp stamp = new Timestamp(values.get(position).getStartTime());
-		;
+		Timestamp stamp = new Timestamp(values.get(position).getStartTime() * 1000L);
 		new SimpleDateFormat();
 		txtDateTime.setText(DateFormat.getDateTimeInstance().format(stamp.getTime()));
 		
