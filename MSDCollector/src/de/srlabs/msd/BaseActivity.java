@@ -53,13 +53,14 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	@Override
 	protected void onResume() 
 	{	
+		super.onResume();
+		
 		isInForeground = true;
 		// Set title/subtitle of the action bar...
 		ActionBar ab = getActionBar();
 		
 		ab.setTitle(R.string.actionBar_title);
 		ab.setSubtitle(setAppId ());
-		super.onResume();
 	}
 	
 	@Override
@@ -189,7 +190,12 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 
 	@Override
 	public void stateChanged(StateChangedReason reason) 
-	{
+	{	
+		if (reason.equals(StateChangedReason.IMSI_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
+		{
+			recreate();
+		}
+		
 		Log.e("msd","REASON: " + reason.name());
 		if (menu != null)
 		{

@@ -87,6 +87,8 @@
      <string name="listview_sms_item_cellid">Cell-ID:</string>
      <string name="listview_sms_item_phonenumber">SMS-C:</string>
      <string name="listview_sms_item_source">Source:</string>
+     <string name="listview_imsi_item_position">Position:</string>
+     <string name="listview_imsi_item_cellid">Cell-ID:</string>
      
      <!-- Alert Dialog (to Refresh App ID) -->
      <string name="alert_dialog_refreshappid_button_refresh">Refresh</string>

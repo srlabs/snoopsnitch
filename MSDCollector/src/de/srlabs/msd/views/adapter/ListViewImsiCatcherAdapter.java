@@ -44,15 +44,25 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 		txtDateTime.setText(DateFormat.getDateTimeInstance().format(stamp.getTime()));
 		
 		// Set button
-		Button btnContribute = (Button) rowView.findViewById(R.id.btnDetailListContribute);
-		btnContribute.setOnClickListener(new View.OnClickListener() 
-		{		
-			@Override
-			public void onClick(View v) 
-			{
-				System.out.println(values.get(pos).toString());
-			}
-		});
+//		Button btnContribute = (Button) rowView.findViewById(R.id.btnDetailListContribute);
+//		btnContribute.setOnClickListener(new View.OnClickListener() 
+//		{		
+//			@Override
+//			public void onClick(View v) 
+//			{
+//				System.out.println(values.get(pos).toString());
+//			}
+//		});
+		
+		// Set score
+		((TextView) rowView.findViewById(R.id.txtListViewImsiScore)).setText("(" + String.valueOf(values.get(position).getScore()) + ")");
+		
+		// Set position
+		((TextView) rowView.findViewById(R.id.txtListViewImsiPosition)).setText(String.valueOf(values.get(position).getLatitude()) + " | " + 
+				String.valueOf(values.get(position).getLatitude()));
+		
+		// Set cell id
+		((TextView) rowView.findViewById(R.id.txtListViewImsiCellId)).setText(String.valueOf(values.get(position).getCid()));
 	
 		return rowView;
 	 }

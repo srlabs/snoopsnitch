@@ -7,12 +7,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.Utils;
 import de.srlabs.msd.views.DashboardThreatChart;
@@ -32,7 +34,6 @@ public class DashboardActivity extends BaseActivity
 	private TextView txtImsiDayCount;
 	private TextView txtImsiHourCount;
 	private TextView txtLastScan;
-	private TextView txtScanToUpload;
 	private ImageView imgSilentSms;
 	private ImageView imgImsiCatcher;
 
@@ -54,7 +55,7 @@ public class DashboardActivity extends BaseActivity
 		        @Override
 				public void onClick(DialogInterface dialog, int which) 
 		        {   	
-		        	//android.os.Process.killProcess(android.os.Process.myPid());
+		        	android.os.Process.killProcess(android.os.Process.myPid());
 		        }
 		     })
 		    .setIcon(android.R.drawable.ic_dialog_alert)
@@ -71,9 +72,14 @@ public class DashboardActivity extends BaseActivity
 		txtImsiDayCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherDayCount);
 		txtImsiHourCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherHourCount);
 		txtLastScan = (TextView) findViewById(R.id.txtDashboardLastScan);
-		txtScanToUpload = (TextView) findViewById(R.id.txtDashboardScansToUpload);
 		imgSilentSms = (ImageView) findViewById(R.id.imgDashboardSilentSms);
 		imgImsiCatcher = (ImageView) findViewById(R.id.imgDashboardImsiCatcher);
+	}
+	
+	@Override
+	protected void onResume() 
+	{
+		super.onResume();
 		
 		// Set text
 		txtSmsMonthCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsMonthSum()));
