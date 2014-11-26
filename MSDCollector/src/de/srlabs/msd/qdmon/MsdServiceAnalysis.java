@@ -7,7 +7,8 @@ import android.database.SQLException;
 import android.util.Log;
 
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
-import de.srlabs.msd.analysis.Risk;
+import de.srlabs.msd.analysis.Risk2G;
+import de.srlabs.msd.analysis.Risk3G;
 
 public class MsdServiceAnalysis {
 
@@ -89,9 +90,37 @@ public class MsdServiceAnalysis {
 		return false;
 	}
 
-	public static void log(Risk before, Risk after){
+	private static class Operator {
+		int mcc;
+		int mnc;
+		boolean valid = false;
+
+		public int getMcc() {
+			return mcc;
+		}
+
+		public int getMnc() {
+			return mnc;
+		}
+
+		public boolean isValid() {
+			return valid;
+		}
+
+		public Operator(SQLiteDatabase db) {
+			Cursor c = db.query("serving_cell_info", new String[] {"max(_id)", "mcc", "mnc"}, null, null, null, null, null);
+			if (c.moveToFirst()){
+				mcc = c.getInt(1);
+				mnc = c.getInt(2);
+				valid = true;
+			};
+		}
+	}
+
+
+	public static void log(Risk2G before, Risk2G after){
 		if (after.isValid()) {
-			if (after.equals(before)) {
+			if (!after.equals(before)) {
 				Log.i(TAG,"2GAnalysis: new values for " + after.getMonth() +
 						": inter " + Double.toString(after.getInter()) +
 						", imper " + Double.toString(after.getImper()) +
@@ -108,16 +137,13 @@ public class MsdServiceAnalysis {
 	public static boolean run2GAnalysis(Context context, SQLiteDatabase db){
 
 		boolean result = false;
-		Cursor c = db.query("serving_cell_info", new String[] {"max(_id)", "mcc", "mnc"}, null, null, null, null, null);
+		Operator op = new Operator(db);
 
-		if (c.moveToFirst()){
-			int currentMCC = c.getInt(1);
-			int currentMNC = c.getInt(2);
-
-			Log.i(TAG,"2GAnalysis for mcc=" + currentMCC + ", mnc=" + currentMNC);
-			Risk before = new Risk(db, currentMCC, currentMNC);
+		if (op.isValid()){
+			Log.i(TAG,"2GAnalysis for mcc=" + op.getMcc() + ", mnc=" + op.getMnc());
+			Risk2G before = new Risk2G(db, op.getMcc(), op.getMnc());
 			MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_2g.sql", false);
-			Risk after = new Risk(db, currentMCC, currentMNC);
+			Risk2G after = new Risk2G(db, op.getMcc(), op.getMnc());
 			log(before, after);
 
 			result = after.isValid() && !after.equals(before);
@@ -126,9 +152,37 @@ public class MsdServiceAnalysis {
 		return result;
 	}
 
+	public static void log(Risk3G before, Risk3G after){
+		if (after.isValid()) {
+			if (!after.equals(before)) {
+				Log.i(TAG,"3GAnalysis: new values for " + after.getMonth() +
+						": inter " + Double.toString(after.getInter()) +
+						", imper " + Double.toString(after.getImper()));
+			} else {
+				Log.i(TAG,"3GAnalysis: values unchanged");
+			}
+		} else
+		{
+			Log.i(TAG,"3GAnalysis: no valid result");
+		}
+	}
+
 	public static boolean run3GAnalysis(Context context, SQLiteDatabase db){
-		MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_3g.sql", false);
-		return false;
+
+		boolean result = false;
+		Operator op = new Operator(db);
+
+		if (op.isValid()){
+			Log.i(TAG,"3GAnalysis for mcc=" + op.getMcc() + ", mnc=" + op.getMnc());
+			Risk3G before = new Risk3G(db, op.getMcc(), op.getMnc());
+			MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_3g.sql", false);
+			Risk3G after = new Risk3G(db, op.getMcc(), op.getMnc());
+			log(before, after);
+
+			result = after.isValid() && !after.equals(before);
+		}
+
+		return result;
 	}
 
 }
