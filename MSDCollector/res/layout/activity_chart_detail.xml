@@ -13,25 +13,80 @@
         android:background="@color/common_sectionBackground" >
 
         <LinearLayout
+            android:id="@+id/llthreatTypes"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="30dp"
             android:weightSum="1" >
 
             <ImageView
                 android:id="@+id/imgDetailChartThreatType"
-                android:contentDescription=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:contentDescription="" />
+
+            <LinearLayout
+                android:id="@+id/llThreatTypeSms"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/txtDetailChartThreatTypeSilentSmsCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text=""
+                    android:textColor="@color/common_chartYellow"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtDetailChartThreatTypeSilentSms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text="@string/common_silent_sms"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtDetailChartThreatTypeSeparator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text="|"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtDetailChartThreatTypeBinarySmsCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text=""
+                    android:textColor="@color/common_chartYellow"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtDetailChartThreatTypeBinarySms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text="@string/common_binary_sms"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/txtDetailChartThreatType"
+                android:id="@+id/txtDetailChartThreatTypeImsiCatcher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
                 android:paddingLeft="5dp"
-                android:text="@string/common_silent_sms"
+                android:text="@string/common_imsi_catcher"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -46,7 +101,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
-                android:background="@color/common_applicationBackground" >
+                android:background="@color/common_applicationBackground"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp" >
 
             </android.support.v4.view.PagerTitleStrip>
         </android.support.v4.view.ViewPager>

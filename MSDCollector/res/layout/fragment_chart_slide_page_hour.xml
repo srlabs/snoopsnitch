@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:id="@+id/fragemntChartHour" >
 
     <de.srlabs.msd.views.DetailThreatChartHour
         android:id="@+id/detailThreatChartHour"
@@ -17,6 +18,7 @@
         android:background="@color/common_sectionSeparator" />
 
     <LinearLayout
+        android:id="@+id/llTimeLineChartHour"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:orientation="horizontal"
@@ -55,12 +57,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView13"
+                android:id="@+id/txtFragmentChartHour1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -96,12 +100,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView15"
+                android:id="@+id/txtFragmentChartHour2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -137,12 +143,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView14"
+                android:id="@+id/txtFragmentChartHour3"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -178,12 +186,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView12"
+                android:id="@+id/txtFragmentChartHour4"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -219,12 +229,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView09"
+                android:id="@+id/txtFragmentChartHour5"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -260,12 +272,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView11"
+                android:id="@+id/txtFragmentChartHour6"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -301,12 +315,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView10"
+                android:id="@+id/txtFragmentChartHour7"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -342,12 +358,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView08"
+                android:id="@+id/txtFragmentChartHour8"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -383,12 +401,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView05"
+                android:id="@+id/txtFragmentChartHour9"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -424,12 +444,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView07"
+                android:id="@+id/txtFragmentChartHour10"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -465,12 +487,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView06"
+                android:id="@+id/txtFragmentChartHour11"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -506,176 +530,14 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/TextView04"
+                android:id="@+id/txtFragmentChartHour12"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
                 android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
-        </LinearLayout>
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_small" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:weightSum="5" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:weightSum="4" >
-
-                <View
-                    android:id="@+id/View01"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" />
-
-                <View
-                    android:id="@+id/View02"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
-
-                <View
-                    android:id="@+id/View05"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/TextView01"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="4"
-                android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:weightSum="5" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:weightSum="4" >
-
-                <View
-                    android:id="@+id/View12"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" />
-
-                <View
-                    android:id="@+id/View21"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
-
-                <View
-                    android:id="@+id/View22"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/TextView03"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="4"
-                android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:weightSum="5" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:weightSum="4" >
-
-                <View
-                    android:id="@+id/View14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" />
-
-                <View
-                    android:id="@+id/View15"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
-
-                <View
-                    android:id="@+id/View17"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="4"
-                android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:weightSum="5" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:weightSum="4" >
-
-                <View
-                    android:id="@+id/View03"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" />
-
-                <View
-                    android:id="@+id/View04"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
-
-                <View
-                    android:id="@+id/View13"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/TextView02"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="4"
-                android:gravity="top|center_horizontal"
-                android:textColor="@color/common_text" />
         </LinearLayout>
     </LinearLayout>
 

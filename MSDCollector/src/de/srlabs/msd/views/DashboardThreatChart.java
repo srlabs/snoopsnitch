@@ -54,42 +54,42 @@ public class DashboardThreatChart extends View
 			if (_timePeriod == 0)
 			{
 				int offsetX = (this.getMeasuredWidth() - (12 * _rectWidth) - (11 * _rectSpace)) / 2;
-//				int _smsHour[] = _activity.getMsdServiceHelperCreator().getThreatsSmsHour();
-//				
-//				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _smsHour[11], canvas);
-//				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _smsHour[10], canvas);
-//				drawChartColumn(offsetX + (2 * _rectWidth) + (2 * _rectSpace), offsetX + (3 * _rectWidth) + (2 * _rectSpace), _rectWidth, _smsHour[9], canvas);
-//				drawChartColumn(offsetX + (3 * _rectWidth) + (3 * _rectSpace), offsetX + (4 * _rectWidth) + (3 * _rectSpace), _rectWidth, _smsHour[8], canvas);
-//				drawChartColumn(offsetX + (4 * _rectWidth) + (4 * _rectSpace), offsetX + (5 * _rectWidth) + (4 * _rectSpace), _rectWidth, _smsHour[7], canvas);
-//				drawChartColumn(offsetX + (5 * _rectWidth) + (5 * _rectSpace), offsetX + (6 * _rectWidth) + (5 * _rectSpace), _rectWidth, _smsHour[6], canvas);
-//				drawChartColumn(offsetX + (6 * _rectWidth) + (6 * _rectSpace), offsetX + (7 * _rectWidth) + (6 * _rectSpace), _rectWidth, _smsHour[5], canvas);
-//				drawChartColumn(offsetX + (7 * _rectWidth) + (7 * _rectSpace), offsetX + (8 * _rectWidth) + (7 * _rectSpace), _rectWidth, _smsHour[4], canvas);
-//				drawChartColumn(offsetX + (8 * _rectWidth) + (8 * _rectSpace), offsetX + (9 * _rectWidth) + (8 * _rectSpace), _rectWidth, _smsHour[3], canvas);
-//				drawChartColumn(offsetX + (9 * _rectWidth) + (9 * _rectSpace), offsetX + (10 * _rectWidth) + (9 * _rectSpace), _rectWidth, _smsHour[2], canvas);
-//				drawChartColumn(offsetX + (10 * _rectWidth) + (10 * _rectSpace), offsetX + (11 * _rectWidth) + (10 * _rectSpace), _rectWidth, _smsHour[1], canvas);
-//				drawChartColumn(offsetX + (11 * _rectWidth) + (11 * _rectSpace), offsetX + (12 * _rectWidth) + (11 * _rectSpace), _rectWidth, _smsHour[0], canvas);
+				int _smsHour[] = _activity.getMsdServiceHelperCreator().getThreatsSmsHour();
+				
+				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _smsHour[11], canvas);
+				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _smsHour[10], canvas);
+				drawChartColumn(offsetX + (2 * _rectWidth) + (2 * _rectSpace), offsetX + (3 * _rectWidth) + (2 * _rectSpace), _rectWidth, _smsHour[9], canvas);
+				drawChartColumn(offsetX + (3 * _rectWidth) + (3 * _rectSpace), offsetX + (4 * _rectWidth) + (3 * _rectSpace), _rectWidth, _smsHour[8], canvas);
+				drawChartColumn(offsetX + (4 * _rectWidth) + (4 * _rectSpace), offsetX + (5 * _rectWidth) + (4 * _rectSpace), _rectWidth, _smsHour[7], canvas);
+				drawChartColumn(offsetX + (5 * _rectWidth) + (5 * _rectSpace), offsetX + (6 * _rectWidth) + (5 * _rectSpace), _rectWidth, _smsHour[6], canvas);
+				drawChartColumn(offsetX + (6 * _rectWidth) + (6 * _rectSpace), offsetX + (7 * _rectWidth) + (6 * _rectSpace), _rectWidth, _smsHour[5], canvas);
+				drawChartColumn(offsetX + (7 * _rectWidth) + (7 * _rectSpace), offsetX + (8 * _rectWidth) + (7 * _rectSpace), _rectWidth, _smsHour[4], canvas);
+				drawChartColumn(offsetX + (8 * _rectWidth) + (8 * _rectSpace), offsetX + (9 * _rectWidth) + (8 * _rectSpace), _rectWidth, _smsHour[3], canvas);
+				drawChartColumn(offsetX + (9 * _rectWidth) + (9 * _rectSpace), offsetX + (10 * _rectWidth) + (9 * _rectSpace), _rectWidth, _smsHour[2], canvas);
+				drawChartColumn(offsetX + (10 * _rectWidth) + (10 * _rectSpace), offsetX + (11 * _rectWidth) + (10 * _rectSpace), _rectWidth, _smsHour[1], canvas);
+				drawChartColumn(offsetX + (11 * _rectWidth) + (11 * _rectSpace), offsetX + (12 * _rectWidth) + (11 * _rectSpace), _rectWidth, _smsHour[0], canvas);
 			}
 			else if (_timePeriod == 1)
 			{
-//				int offsetX = (this.getMeasuredWidth() - (6 * _rectWidth) - (5 * _rectSpace)) / 2;
-//				int _smsDay[] = _activity.getMsdServiceHelperCreator().getThreatsSmsDay();
-//				
-//				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _smsDay[5], canvas);
-//				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _smsDay[4], canvas);
-//				drawChartColumn(offsetX + (2 * _rectWidth) + (2 * _rectSpace), offsetX + (3 * _rectWidth) + (2 * _rectSpace), _rectWidth, _smsDay[3], canvas);
-//				drawChartColumn(offsetX + (3 * _rectWidth) + (3 * _rectSpace), offsetX + (4 * _rectWidth) + (3 * _rectSpace), _rectWidth, _smsDay[2], canvas);
-//				drawChartColumn(offsetX + (4 * _rectWidth) + (4 * _rectSpace), offsetX + (5 * _rectWidth) + (4 * _rectSpace), _rectWidth, _smsDay[1], canvas);
-//				drawChartColumn(offsetX + (5 * _rectWidth) + (5 * _rectSpace), offsetX + (6 * _rectWidth) + (5 * _rectSpace), _rectWidth, _smsDay[0], canvas);
+				int offsetX = (this.getMeasuredWidth() - (6 * _rectWidth) - (5 * _rectSpace)) / 2;
+				int _smsDay[] = _activity.getMsdServiceHelperCreator().getThreatsSmsDay();
+				
+				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _smsDay[5], canvas);
+				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _smsDay[4], canvas);
+				drawChartColumn(offsetX + (2 * _rectWidth) + (2 * _rectSpace), offsetX + (3 * _rectWidth) + (2 * _rectSpace), _rectWidth, _smsDay[3], canvas);
+				drawChartColumn(offsetX + (3 * _rectWidth) + (3 * _rectSpace), offsetX + (4 * _rectWidth) + (3 * _rectSpace), _rectWidth, _smsDay[2], canvas);
+				drawChartColumn(offsetX + (4 * _rectWidth) + (4 * _rectSpace), offsetX + (5 * _rectWidth) + (4 * _rectSpace), _rectWidth, _smsDay[1], canvas);
+				drawChartColumn(offsetX + (5 * _rectWidth) + (5 * _rectSpace), offsetX + (6 * _rectWidth) + (5 * _rectSpace), _rectWidth, _smsDay[0], canvas);
 			}
 			else if (_timePeriod == 2)
 			{
-//				drawChartColumn(this.getMeasuredWidth() / 4, this.getMeasuredWidth()-(getMeasuredWidth() / 4), 
-//						_rectWidth, _activity.getMsdServiceHelperCreator().getThreatsSmsWeekSum(), canvas);				
+				drawChartColumn(this.getMeasuredWidth() / 4, this.getMeasuredWidth()-(getMeasuredWidth() / 4), 
+						_rectWidth, _activity.getMsdServiceHelperCreator().getThreatsSmsWeekSum(), canvas);				
 			}
 			else if (_timePeriod == 3)
 			{
-//				drawChartColumn(this.getMeasuredWidth() / 4, this.getMeasuredWidth()-(getMeasuredWidth() / 4), 
-//						_rectWidth, _activity.getMsdServiceHelperCreator().getThreatsSmsMonthSum(), canvas);	
+				drawChartColumn(this.getMeasuredWidth() / 4, this.getMeasuredWidth()-(getMeasuredWidth() / 4), 
+						_rectWidth, _activity.getMsdServiceHelperCreator().getThreatsSmsMonthSum(), canvas);	
 			}	
 		}
 		else if (_threatType == 1)
@@ -97,42 +97,42 @@ public class DashboardThreatChart extends View
 			if (_timePeriod == 0)
 			{
 				int offsetX = (this.getMeasuredWidth() - (12 * _rectWidth) - (11 * _rectSpace)) / 2;
-//				int _imsiHour[] = _activity.getMsdServiceHelperCreator().getThreatsImsiHour();
-//				
-//				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _imsiHour[11], canvas);
-//				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _imsiHour[10], canvas);
-//				drawChartColumn(offsetX + (2 * _rectWidth) + (2 * _rectSpace), offsetX + (3 * _rectWidth) + (2 * _rectSpace), _rectWidth, _imsiHour[9], canvas);
-//				drawChartColumn(offsetX + (3 * _rectWidth) + (3 * _rectSpace), offsetX + (4 * _rectWidth) + (3 * _rectSpace), _rectWidth, _imsiHour[8], canvas);
-//				drawChartColumn(offsetX + (4 * _rectWidth) + (4 * _rectSpace), offsetX + (5 * _rectWidth) + (4 * _rectSpace), _rectWidth, _imsiHour[7], canvas);
-//				drawChartColumn(offsetX + (5 * _rectWidth) + (5 * _rectSpace), offsetX + (6 * _rectWidth) + (5 * _rectSpace), _rectWidth, _imsiHour[6], canvas);
-//				drawChartColumn(offsetX + (6 * _rectWidth) + (6 * _rectSpace), offsetX + (7 * _rectWidth) + (6 * _rectSpace), _rectWidth, _imsiHour[5], canvas);
-//				drawChartColumn(offsetX + (7 * _rectWidth) + (7 * _rectSpace), offsetX + (8 * _rectWidth) + (7 * _rectSpace), _rectWidth, _imsiHour[4], canvas);
-//				drawChartColumn(offsetX + (8 * _rectWidth) + (8 * _rectSpace), offsetX + (9 * _rectWidth) + (8 * _rectSpace), _rectWidth, _imsiHour[3], canvas);
-//				drawChartColumn(offsetX + (9 * _rectWidth) + (9 * _rectSpace), offsetX + (10 * _rectWidth) + (9 * _rectSpace), _rectWidth, _imsiHour[2], canvas);
-//				drawChartColumn(offsetX + (10 * _rectWidth) + (10 * _rectSpace), offsetX + (11 * _rectWidth) + (10 * _rectSpace), _rectWidth, _imsiHour[1], canvas);
-//				drawChartColumn(offsetX + (11 * _rectWidth) + (11 * _rectSpace), offsetX + (12 * _rectWidth) + (11 * _rectSpace), _rectWidth, _imsiHour[0], canvas);
+				int _imsiHour[] = _activity.getMsdServiceHelperCreator().getThreatsImsiHour();
+				
+				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _imsiHour[11], canvas);
+				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _imsiHour[10], canvas);
+				drawChartColumn(offsetX + (2 * _rectWidth) + (2 * _rectSpace), offsetX + (3 * _rectWidth) + (2 * _rectSpace), _rectWidth, _imsiHour[9], canvas);
+				drawChartColumn(offsetX + (3 * _rectWidth) + (3 * _rectSpace), offsetX + (4 * _rectWidth) + (3 * _rectSpace), _rectWidth, _imsiHour[8], canvas);
+				drawChartColumn(offsetX + (4 * _rectWidth) + (4 * _rectSpace), offsetX + (5 * _rectWidth) + (4 * _rectSpace), _rectWidth, _imsiHour[7], canvas);
+				drawChartColumn(offsetX + (5 * _rectWidth) + (5 * _rectSpace), offsetX + (6 * _rectWidth) + (5 * _rectSpace), _rectWidth, _imsiHour[6], canvas);
+				drawChartColumn(offsetX + (6 * _rectWidth) + (6 * _rectSpace), offsetX + (7 * _rectWidth) + (6 * _rectSpace), _rectWidth, _imsiHour[5], canvas);
+				drawChartColumn(offsetX + (7 * _rectWidth) + (7 * _rectSpace), offsetX + (8 * _rectWidth) + (7 * _rectSpace), _rectWidth, _imsiHour[4], canvas);
+				drawChartColumn(offsetX + (8 * _rectWidth) + (8 * _rectSpace), offsetX + (9 * _rectWidth) + (8 * _rectSpace), _rectWidth, _imsiHour[3], canvas);
+				drawChartColumn(offsetX + (9 * _rectWidth) + (9 * _rectSpace), offsetX + (10 * _rectWidth) + (9 * _rectSpace), _rectWidth, _imsiHour[2], canvas);
+				drawChartColumn(offsetX + (10 * _rectWidth) + (10 * _rectSpace), offsetX + (11 * _rectWidth) + (10 * _rectSpace), _rectWidth, _imsiHour[1], canvas);
+				drawChartColumn(offsetX + (11 * _rectWidth) + (11 * _rectSpace), offsetX + (12 * _rectWidth) + (11 * _rectSpace), _rectWidth, _imsiHour[0], canvas);
 			}
 			else if (_timePeriod == 1)
 			{
-//				int offsetX = (this.getMeasuredWidth() - (6 * _rectWidth) - (5 * _rectSpace)) / 2;
-//				int _imsiDay[] = _activity.getMsdServiceHelperCreator().getThreatsImsiDay();
-//				
-//				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _imsiDay[5], canvas);
-//				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _imsiDay[4], canvas);
-//				drawChartColumn(offsetX + (2 * _rectWidth) + (2 * _rectSpace), offsetX + (3 * _rectWidth) + (2 * _rectSpace), _rectWidth, _imsiDay[3], canvas);
-//				drawChartColumn(offsetX + (3 * _rectWidth) + (3 * _rectSpace), offsetX + (4 * _rectWidth) + (3 * _rectSpace), _rectWidth, _imsiDay[2], canvas);
-//				drawChartColumn(offsetX + (4 * _rectWidth) + (4 * _rectSpace), offsetX + (5 * _rectWidth) + (4 * _rectSpace), _rectWidth, _imsiDay[1], canvas);
-//				drawChartColumn(offsetX + (5 * _rectWidth) + (5 * _rectSpace), offsetX + (6 * _rectWidth) + (5 * _rectSpace), _rectWidth, _imsiDay[0], canvas);
+				int offsetX = (this.getMeasuredWidth() - (6 * _rectWidth) - (5 * _rectSpace)) / 2;
+				int _imsiDay[] = _activity.getMsdServiceHelperCreator().getThreatsImsiDay();
+				
+				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _imsiDay[5], canvas);
+				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _imsiDay[4], canvas);
+				drawChartColumn(offsetX + (2 * _rectWidth) + (2 * _rectSpace), offsetX + (3 * _rectWidth) + (2 * _rectSpace), _rectWidth, _imsiDay[3], canvas);
+				drawChartColumn(offsetX + (3 * _rectWidth) + (3 * _rectSpace), offsetX + (4 * _rectWidth) + (3 * _rectSpace), _rectWidth, _imsiDay[2], canvas);
+				drawChartColumn(offsetX + (4 * _rectWidth) + (4 * _rectSpace), offsetX + (5 * _rectWidth) + (4 * _rectSpace), _rectWidth, _imsiDay[1], canvas);
+				drawChartColumn(offsetX + (5 * _rectWidth) + (5 * _rectSpace), offsetX + (6 * _rectWidth) + (5 * _rectSpace), _rectWidth, _imsiDay[0], canvas);
 			}
 			else if (_timePeriod == 2)
 			{
-//				drawChartColumn(this.getMeasuredWidth() / 4, this.getMeasuredWidth()-(getMeasuredWidth() / 4), _rectWidth, 
-//						_activity.getMsdServiceHelperCreator().getThreatsImsiWeekSum(), canvas);				
+				drawChartColumn(this.getMeasuredWidth() / 4, this.getMeasuredWidth()-(getMeasuredWidth() / 4), _rectWidth, 
+						_activity.getMsdServiceHelperCreator().getThreatsImsiWeekSum(), canvas);				
 			}
 			else if (_timePeriod == 3)
 			{
-//				drawChartColumn(this.getMeasuredWidth() / 4, this.getMeasuredWidth()-(getMeasuredWidth() / 4), _rectWidth, 
-//						_activity.getMsdServiceHelperCreator().getThreatsImsiMonthSum(), canvas);	
+				drawChartColumn(this.getMeasuredWidth() / 4, this.getMeasuredWidth()-(getMeasuredWidth() / 4), _rectWidth, 
+						_activity.getMsdServiceHelperCreator().getThreatsImsiMonthSum(), canvas);	
 			}
 		}
 	}

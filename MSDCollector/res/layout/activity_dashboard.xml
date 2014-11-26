@@ -12,8 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/common_applicationBackground"
+        android:paddingBottom="5dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin" >
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="5dp" >
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -27,17 +29,18 @@
                 android:layout_height="wrap_content" >
 
                 <TextView
-                    android:id="@+id/TextView13"
+                    android:id="@+id/txtDashboardLastScan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/common_text"
-                    android:text="@string/dashboard_lastupdate_description" />
+                    android:layout_marginRight="2dp"
+                    android:text="@string/dashboard_lastscan"
+                    android:textColor="@color/common_text" />
 
                 <TextView
-                    android:id="@+id/txtDashboardLastUpdate"
+                    android:id="@+id/txtDashboardLastScanTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2014-10-19, 08.07pm"
+                    android:text="@string/dashboard_lastscan_time"
                     android:textColor="@color/common_text"
                     android:textStyle="bold" />
 
@@ -59,22 +62,13 @@
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/common_text"
-                    android:text="@string/dashboard_upload_description" />
+                    android:layout_marginLeft="2dp"
+                    android:text="@string/dashboard_upload_description"
+                    android:textColor="@color/common_text" />
 
             </LinearLayout>
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btnStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/bt_content_contributedata_disable"
-            android:text="@string/common_button_upload"
-            android:textSize="@dimen/text_medium" />
 
     </RelativeLayout>
 
@@ -98,6 +92,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_weight="3"
                 android:orientation="horizontal"
                 android:weightSum="6" >
@@ -266,6 +261,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_weight="3"
                 android:orientation="horizontal"
                 android:weightSum="6" >

@@ -3,8 +3,10 @@ package de.srlabs.msd.util;
 import java.util.Calendar;
 import java.util.Vector;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.qdmon.MsdServiceHelper;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
@@ -20,7 +22,7 @@ public class MSDServiceHelperCreator
 	public MSDServiceHelperCreator (Context context, MsdServiceCallback callback) 
 	{
 
-		msdServiceHelper = new MsdServiceHelper(context, callback, false);
+		msdServiceHelper = new MsdServiceHelper(context, callback, true);
 	}
 	
 	public static MSDServiceHelperCreator getInstance (Context context, MsdServiceCallback callback)
@@ -72,11 +74,13 @@ public class MSDServiceHelperCreator
 		Calendar calStart = Calendar.getInstance();
 		Calendar calEnd = Calendar.getInstance();
 		
+		long timeSpan = (TimeSpace.getTimeSpaceMonth().getEndTime() - TimeSpace.getTimeSpaceMonth().getStartTime()) / 4;
+		
 		for (int i=0; i<smsMonth.length; i++)
 		{
-			smsMonth[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - 604800000, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - 604800000);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - 604800000);
+			smsMonth[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
+			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
+			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
 		}
 		
 		return smsMonth;
@@ -100,12 +104,13 @@ public class MSDServiceHelperCreator
 		int[] smsWeek = new int[7];
 		Calendar calStart = Calendar.getInstance();
 		Calendar calEnd = Calendar.getInstance();
+		long timeSpan = (TimeSpace.getTimeSpaceWeek().getEndTime() - TimeSpace.getTimeSpaceWeek().getStartTime()) / 7;
 		
 		for (int i=0; i<smsWeek.length; i++)
 		{
-			smsWeek[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - 86400000, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - 86400000);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - 86400000);
+			smsWeek[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
+			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
+			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
 		}
 		
 		return smsWeek;
@@ -116,12 +121,13 @@ public class MSDServiceHelperCreator
 		int[] smsDay = new int[6];
 		Calendar calStart = Calendar.getInstance();
 		Calendar calEnd = Calendar.getInstance();
+		long timeSpan = (TimeSpace.getTimeSpaceDay().getEndTime() - TimeSpace.getTimeSpaceDay().getStartTime()) / 6;
 		
 		for (int i=0; i<smsDay.length; i++)
 		{
-			smsDay[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - 14400000, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - 14400000);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - 14400000);
+			smsDay[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
+			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
+			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
 		}
 		
 		return smsDay;
@@ -145,12 +151,13 @@ public class MSDServiceHelperCreator
 		int[] smsHour = new int[12];
 		Calendar calStart = Calendar.getInstance();
 		Calendar calEnd = Calendar.getInstance();
+		long timeSpan = (TimeSpace.getTimeSpaceHour().getEndTime() - TimeSpace.getTimeSpaceHour().getStartTime()) / 12;
 		
 		for (int i=0; i<smsHour.length; i++)
 		{
-			smsHour[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - 300000, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - 300000);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - 300000);
+			smsHour[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
+			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
+			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
 		}
 		
 		return smsHour;
@@ -182,12 +189,13 @@ public class MSDServiceHelperCreator
 		int[] imsiMonth = new int[4];
 		Calendar calStart = Calendar.getInstance();
 		Calendar calEnd = Calendar.getInstance();
+		long timeSpan = (TimeSpace.getTimeSpaceMonth().getEndTime() - TimeSpace.getTimeSpaceMonth().getStartTime()) / 4;
 		
 		for (int i=0; i<imsiMonth.length; i++)
 		{
-			imsiMonth[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - 604800000, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - 604800000);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - 604800000);
+			imsiMonth[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
+			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
+			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
 		}
 		
 		return imsiMonth;
@@ -206,12 +214,13 @@ public class MSDServiceHelperCreator
 		int[] imsiWeek = new int[7];
 		Calendar calStart = Calendar.getInstance();
 		Calendar calEnd = Calendar.getInstance();
+		long timeSpan = (TimeSpace.getTimeSpaceWeek().getEndTime() - TimeSpace.getTimeSpaceWeek().getStartTime()) / 7;
 		
 		for (int i=0; i<imsiWeek.length; i++)
 		{
-			imsiWeek[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - 86400000, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - 86400000);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - 86400000);
+			imsiWeek[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
+			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
+			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
 		}
 		
 		return imsiWeek;
@@ -222,12 +231,13 @@ public class MSDServiceHelperCreator
 		int[] imsiDay = new int[6];
 		Calendar calStart = Calendar.getInstance();
 		Calendar calEnd = Calendar.getInstance();
+		long timeSpan = (TimeSpace.getTimeSpaceDay().getEndTime() - TimeSpace.getTimeSpaceDay().getStartTime()) / 6;
 		
 		for (int i=0; i<imsiDay.length; i++)
 		{
-			imsiDay[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - 14400000, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - 14400000);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - 14400000);
+			imsiDay[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
+			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
+			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
 		}
 		
 		return imsiDay;
@@ -246,12 +256,13 @@ public class MSDServiceHelperCreator
 		int[] imsiHour = new int[12];
 		Calendar calStart = Calendar.getInstance();
 		Calendar calEnd = Calendar.getInstance();
+		long timeSpan = (TimeSpace.getTimeSpaceHour().getEndTime() - TimeSpace.getTimeSpaceHour().getStartTime()) / 4;
 		
 		for (int i=0; i<imsiHour.length; i++)
 		{
-			imsiHour[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - 300000, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - 300000);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - 300000);
+			imsiHour[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
+			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
+			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
 		}
 		
 		return imsiHour;
@@ -271,9 +282,9 @@ public class MSDServiceHelperCreator
 		
 		for (SMS s : msdServiceHelper.getData().getSMS(startTime, endTime)) 
 		{
-			if (s.getType().equals(type))
+			if (!s.getType().equals(type))
 			{
-				sms.add(s);
+				sms.remove(s);
 			}
 		}
 		

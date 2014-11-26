@@ -3,14 +3,18 @@ package de.srlabs.msd;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
+import de.srlabs.msd.util.Utils;
 import de.srlabs.msd.views.DashboardThreatChart;
 
 public class DashboardActivity extends BaseActivity 
@@ -27,7 +31,7 @@ public class DashboardActivity extends BaseActivity
 	private TextView txtImsiWeekCount;
 	private TextView txtImsiDayCount;
 	private TextView txtImsiHourCount;
-	private TextView txtLastUpdate;
+	private TextView txtLastScan;
 	private TextView txtScanToUpload;
 	private ImageView imgSilentSms;
 	private ImageView imgImsiCatcher;
@@ -57,6 +61,7 @@ public class DashboardActivity extends BaseActivity
 		     .show();
 		}
 		
+				
 		txtSmsMonthCount = (TextView) findViewById(R.id.txtDashboardSilentSmsMonthCount);
 		txtSmsWeekCount = (TextView) findViewById(R.id.txtDashboardSilentSmsWeekCount);
 		txtSmsDayCount = (TextView) findViewById(R.id.txtDashboardSilentSmsDayCount);
@@ -65,7 +70,7 @@ public class DashboardActivity extends BaseActivity
 		txtImsiWeekCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherWeekCount);
 		txtImsiDayCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherDayCount);
 		txtImsiHourCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherHourCount);
-		txtLastUpdate = (TextView) findViewById(R.id.txtDashboardLastUpdate);
+		txtLastScan = (TextView) findViewById(R.id.txtDashboardLastScan);
 		txtScanToUpload = (TextView) findViewById(R.id.txtDashboardScansToUpload);
 		imgSilentSms = (ImageView) findViewById(R.id.imgDashboardSilentSms);
 		imgImsiCatcher = (ImageView) findViewById(R.id.imgDashboardImsiCatcher);

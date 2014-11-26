@@ -1,11 +1,13 @@
 package de.srlabs.msd;
 
 import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.analysis.SMS.Type;
 import de.srlabs.msd.util.TimeSpace;
 import de.srlabs.msd.views.adapter.DetailChartGalleryAdapter;
 import de.srlabs.msd.views.adapter.ListViewImsiCatcherAdapter;
 import de.srlabs.msd.views.adapter.ListViewSmsAdapter;
 
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -14,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,7 +28,13 @@ public class DetailChartActivity extends BaseActivity
 	private Spinner spinner;
 	private ListView listView;
 	private ImageView _imgThreatType;
-	private TextView _txtThreatType;
+	private TextView _txtThreatTypeImsiCatcher;
+	private TextView _txtThreatTypeSilentSms;
+	private TextView _txtThreatTypeSilentSmsCount;
+	private TextView _txtThreatTypeBinarySms;
+	private TextView _txtThreatTypeBinarySmsCount;
+	private LinearLayout _llThreatTypeSms;
+	
 	DetailChartGalleryAdapter mPagerAdapter;
 	ViewPager mPager;
 	int _threatType;
@@ -39,7 +48,12 @@ public class DetailChartActivity extends BaseActivity
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		_imgThreatType = (ImageView) findViewById(R.id.imgDetailChartThreatType);
-		_txtThreatType = (TextView) findViewById(R.id.txtDetailChartThreatType);
+		_txtThreatTypeImsiCatcher = (TextView) findViewById(R.id.txtDetailChartThreatTypeImsiCatcher);
+		_txtThreatTypeSilentSms = (TextView) findViewById(R.id.txtDetailChartThreatTypeSilentSms);
+		_txtThreatTypeSilentSmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeSilentSmsCount);
+		_txtThreatTypeBinarySms = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySms);
+		_txtThreatTypeBinarySmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySmsCount);
+		_llThreatTypeSms = (LinearLayout) findViewById(R.id.llThreatTypeSms);
 		
 		_threatType = getIntent().getIntExtra("ThreatType", R.id.IMSICatcherCharts);
 		
@@ -164,6 +178,15 @@ public class DetailChartActivity extends BaseActivity
 			ListViewSmsAdapter listViewAdapter = new ListViewSmsAdapter(this, 
 					getMsdServiceHelperCreator().getMsdServiceHelper().getData().getSMS(_startTime, _endTime));
 			listView.setAdapter(listViewAdapter);
+			
+			if (_txtThreatTypeSilentSmsCount != null && _txtThreatTypeBinarySmsCount != null)
+			{
+				_txtThreatTypeSilentSmsCount.setText(String.valueOf(getMsdServiceHelperCreator().
+						getSmsOfType(Type.SILENT_SMS, _startTime, _endTime).size()));
+
+				_txtThreatTypeBinarySmsCount.setText(String.valueOf(getMsdServiceHelperCreator().
+						getSmsOfType(Type.BINARY_SMS, _startTime, _endTime).size()));
+			}
 		}
 		else
 		{
@@ -188,12 +211,14 @@ public class DetailChartActivity extends BaseActivity
 		if (_threatType == R.id.IMSICatcherCharts)
 		{
 			_imgThreatType.setBackground(getResources().getDrawable(R.drawable.ic_content_imsi_event));
-			_txtThreatType.setText("IMSI Catcher");
+			_txtThreatTypeImsiCatcher.setVisibility(View.VISIBLE);
+			_llThreatTypeSms.setVisibility(View.GONE);
 		}
 		else
 		{
 			_imgThreatType.setBackground(getResources().getDrawable(R.drawable.ic_content_sms_event));
-			_txtThreatType.setText("X Silent SMS | Y Binary SMS");
+			_llThreatTypeSms.setVisibility(View.VISIBLE);
+			_txtThreatTypeImsiCatcher.setVisibility(View.GONE);
 		}
 	}
 }

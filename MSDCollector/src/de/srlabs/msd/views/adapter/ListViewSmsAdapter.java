@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import de.srlabs.msd.R;
 import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.util.MSDServiceHelperCreator;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -43,20 +44,30 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 		TextView txtType = (TextView) rowView.findViewById(R.id.txtDetailListSmsType);
 		if (values.get(position).getType().equals(SMS.Type.BINARY_SMS))
 		{
-			txtType.setText("Binary SMS");
+			txtType.setText(context.getResources().getText(R.string.common_binary_sms));
 		}
 		else
 		{
-			txtType.setText("Silent SMS");
+			txtType.setText(context.getResources().getText(R.string.common_silent_sms));
 		}
 		
 		// Set date/time
 		TextView txtDateTime = (TextView) rowView.findViewById(R.id.txtDetailListDateTime);
 		Timestamp stamp = new Timestamp(values.get(position).getTimestamp());
-		;
-		new SimpleDateFormat();
 		txtDateTime.setText(DateFormat.getDateTimeInstance().format(stamp.getTime()));
 	
+		// Set position
+		((TextView) rowView.findViewById(R.id.txtListviewSmsPosition)).setText("pos");
+		
+		// Set phone number
+		((TextView) rowView.findViewById(R.id.txtListviewSmsPhoneNumber)).setText("num");
+		
+		// Set cell id
+		((TextView) rowView.findViewById(R.id.txtListviewSmsCellId)).setText("id");
+		
+		// Set source
+		((TextView) rowView.findViewById(R.id.txtListviewSmsSource)).setText("src");
+		
 		return rowView;
 	 }
 	

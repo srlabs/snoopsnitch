@@ -2,10 +2,10 @@
 <resources>
     
     <string-array name="settings_durations_entries">
-        <item>daily</item>
-        <item>weekly</item>
-        <item>monthly</item>
-        <item>never</item>
+        <item>täglich</item>
+        <item>wöchentlich</item>
+        <item>monatlich</item>
+        <item>nie</item>
     </string-array>
     
     <string-array name="settings_durations_values">

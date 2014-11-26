@@ -1,8 +1,12 @@
 package de.srlabs.msd;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -18,6 +22,8 @@ import android.widget.Toast;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.MSDServiceHelperCreator;
+import de.srlabs.msd.util.MsdConfig;
+import de.srlabs.msd.util.Utils;
 
 public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 {	
@@ -40,11 +46,6 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		messageText = (TextView) messageLayout.findViewById(R.id.text);
 		messageToast = new Toast(getApplicationContext());
 		
-		// Set title/subtitle of the action bar...
-		ActionBar ab = getActionBar();
-		ab.setTitle(R.string.actionBar_title);
-		ab.setSubtitle(R.string.actionBar_subTitle);
-		
 		// Get MsdService Helper
 		msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext(), this);
 	}
@@ -53,6 +54,11 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected void onResume() 
 	{	
 		isInForeground = true;
+		// Set title/subtitle of the action bar...
+		ActionBar ab = getActionBar();
+		
+		ab.setTitle(R.string.actionBar_title);
+		ab.setSubtitle(setAppId ());
 		super.onResume();
 	}
 	
@@ -191,12 +197,31 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 			{
 				menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_record_disable));
 				//showMessage("Recording started...");
+				showMessage(getResources().getString(R.string.message_recordingStarted));
+				
+				// Set time of "last scan"
+				((TextView)findViewById(R.id.txtDashboardLastScanTime)).setText(
+						new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
 			}
 			else
 			{
 				menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
 				//showMessage("Recording stopped...");
+				showMessage(getResources().getString(R.string.message_recordingStopped));
 			}	
 		}
+	}
+	private String setAppId ()
+	{
+		SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
+
+		if (sharedPreferences.getString("settings_appId", "") == "")
+		{
+	        SharedPreferences.Editor editor = sharedPreferences.edit();
+	        editor.putString("settings_appId", Utils.generateAppId());
+	        editor.commit();
+		}
+		
+		return "App-ID: " + sharedPreferences.getString("settings_appId", "");
 	}
 }

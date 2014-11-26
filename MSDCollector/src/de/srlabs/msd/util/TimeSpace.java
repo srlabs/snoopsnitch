@@ -40,7 +40,7 @@ public class TimeSpace
 	static Times getTimeSpaceMonth ()
 	{
 		Calendar calStart = Calendar.getInstance();
-		calStart.add(Calendar.MONTH, -1);
+		calStart.add(Calendar.DATE, -28);
 		
 		Times.Month.setStartTime(calStart.getTimeInMillis());
 		Times.Month.setEndTime(Calendar.getInstance().getTimeInMillis());

@@ -1,49 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:picker="http://schemas.android.com/apk/res/com.michaelnovakjr.sample.numberpicker"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" > 
     
    	<ListPreference
-        android:key="pref_syncConnectionType"
-        android:title="Test"
-        android:summary="%s hours..."
-        android:dialogTitle="Test"
+        android:key="settings_basebandLogKeepDuration"
+        android:title="@string/settings_basebandlogkeepduration_title"
+        android:summary="%s"
+        android:dialogTitle="@string/settings_basebandlogkeepduration_dialogtitle"
         android:entries="@array/settings_durations_entries"
-        android:entryValues="@array/settings_durations_values" />
+        android:entryValues="@array/settings_durations_values"
+        android:defaultValue="30" />
+   	
+  	<ListPreference
+        android:key="settings_locationLogKeepDuration"
+        android:title="@string/settings_locationlogkeepduration_title"
+        android:summary="%s"
+        android:dialogTitle="@string/settings_locationlogkeepduration_dialogtitle"
+        android:entries="@array/settings_durations_entries"
+        android:entryValues="@array/settings_durations_values"
+        android:defaultValue="30" />
+  	
+  	<ListPreference
+        android:key="settings_sessionInfoKeepDuration"
+        android:title="@string/settings_sessioninfokeepduration_title"
+        android:summary="%s"
+        android:dialogTitle="@string/settings_sessioninfokeepduration_dialogtitle"
+        android:entries="@array/settings_durations_entries"
+        android:entryValues="@array/settings_durations_values"
+        android:defaultValue="30" />
+  	
+	<ListPreference
+        android:key="settings_cellInfoKeepDuration"
+        android:title="@string/settings_cellinfokeepduration_title"
+        android:summary="%s"
+        android:dialogTitle="@string/settings_cellinfokeepduration_dialogtitle"
+        android:entries="@array/settings_durations_entries"
+        android:entryValues="@array/settings_durations_values"
+        android:defaultValue="30" />
     
 	<CheckBoxPreference 
 	    android:key="settings_gpsRecording"
-        android:title="GPS Recording"
-        android:summary="This is a description..."
+        android:title="@string/settings_gpsrecording_title"
+        android:summary="@string/settings_gpsrecording_summary"
         android:defaultValue="false"
  	/>
 	
 	<CheckBoxPreference 
 	    android:key="settings_networkLocationRecording"
-        android:title="Network location recording"
-        android:summary="This is a description..."
+        android:title="@string/settings_networklocationrecording_title"
+        android:summary="@string/settings_networklocationrecording_summary"
         android:defaultValue="true"
  	/>
 	
 	<CheckBoxPreference 
 	    android:key="settings_recordUnencryptedDumpfiles"
-        android:title="Record unencrypted dumpfiles"
-        android:summary="This is a description..."
+        android:title="@string/settings_unencrypteddumpfilesrecording_title"
+        android:summary="@string/settings_unencrypteddumpfilesrecording_summary"
         android:defaultValue="false"
  	/>
 	
 	<CheckBoxPreference 
 	    android:key="settings_recordEncryptedDumpfiles"
-        android:title="record encrypted dumpfiles"
-        android:summary="This is a description..."
+        android:title="@string/settings_encrypteddumpfilesrecording_title"
+        android:summary="@string/settings_encrypteddumpfilesrecording_summary"
         android:defaultValue="true"
  	/>
 	
 	<Preference 
 	    android:key="settings_appId"
-	    android:title="Application ID"
-	    android:summary="The application ID is %s"/>
+	    android:title="@string/settings_applicationid_title"
+	    android:summary="@string/settings_applicationid_summary"
+	/>
     
 </PreferenceScreen>
