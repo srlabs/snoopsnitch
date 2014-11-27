@@ -221,4 +221,17 @@ public class DetailChartActivity extends BaseActivity
 			_txtThreatTypeImsiCatcher.setVisibility(View.GONE);
 		}
 	}
+	
+	@Override
+	protected void refreshView() 
+	{
+		// Reset the listview and count text
+		resetListView();
+	}
+	
+	private void resetListView ()
+	{
+		fillList(_threatType, mPager.getCurrentItem());
+		mPager.getAdapter().notifyDataSetChanged();
+	}
 }

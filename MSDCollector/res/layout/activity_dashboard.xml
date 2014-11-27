@@ -51,6 +51,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/dashboardChartSection"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
@@ -103,6 +104,7 @@
                 android:background="@color/common_sectionSeparator" />
 
             <LinearLayout
+                android:id="@+id/dashboardSmsChartSectionHour"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
@@ -134,6 +136,7 @@
                 android:background="@color/common_sectionSeparator" />
 
             <LinearLayout
+                android:id="@+id/dashboardSmsChartSectionDay"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
@@ -165,6 +168,7 @@
                 android:background="@color/common_sectionSeparator" />
 
             <LinearLayout
+                android:id="@+id/dashboardSmsChartSectionWeek"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
@@ -196,6 +200,7 @@
                 android:background="@color/common_sectionSeparator" />
 
             <LinearLayout
+                android:id="@+id/dashboardSmsChartSectionMonth"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"

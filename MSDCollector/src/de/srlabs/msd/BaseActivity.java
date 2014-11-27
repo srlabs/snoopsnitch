@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -35,6 +36,8 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected Toast messageToast;
 	protected Menu menu;
 	protected Boolean isInForeground = false;
+	protected Handler handler;
+	protected final int refresh_intervall = 60000;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -50,6 +53,9 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext(), this);
 		MsdLog.init(msdServiceHelperCreator.getMsdServiceHelper());
 		MsdLog.i("MSD","MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
+		
+		handler = new Handler();
+		handler.postDelayed(runnable, refresh_intervall);
 	}
 	
 	@Override
@@ -196,7 +202,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	{	
 		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
 		{
-			recreate();
+			refreshView();
 		}
 		
 		Log.e("msd","REASON: " + reason.name());
@@ -233,4 +239,18 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		
 		return "App-ID: " + sharedPreferences.getString("settings_appId", "");
 	}
+	
+	protected Runnable runnable = new Runnable() 
+	{
+		   @Override
+		   public void run() 
+		   {
+		      /* do what you need to do */
+		      //refreshView();
+		      /* and here comes the "trick" */
+		      handler.postDelayed(runnable, refresh_intervall);
+		   }
+		};
+	
+	protected void refreshView () {}
 }

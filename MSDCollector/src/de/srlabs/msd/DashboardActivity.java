@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,14 @@ public class DashboardActivity extends BaseActivity
 	private TextView txtImsiWeekCount;
 	private TextView txtImsiDayCount;
 	private TextView txtImsiHourCount;
+	private DashboardThreatChart dtcSmsHour;
+	private DashboardThreatChart dtcSmsDay;
+	private DashboardThreatChart dtcSmsWeek;
+	private DashboardThreatChart dtcSmsMonth;
+	private DashboardThreatChart dtcImsiHour;
+	private DashboardThreatChart dtcImsiDay;
+	private DashboardThreatChart dtcImsiWeek;
+	private DashboardThreatChart dtcImsiMonth;
 	private TextView txtLastScan;
 	private ImageView imgSilentSms;
 	private ImageView imgImsiCatcher;
@@ -60,8 +69,7 @@ public class DashboardActivity extends BaseActivity
 		     })
 		    .setIcon(android.R.drawable.ic_dialog_alert)
 		     .show();
-		}
-		
+		}	
 				
 		txtSmsMonthCount = (TextView) findViewById(R.id.txtDashboardSilentSmsMonthCount);
 		txtSmsWeekCount = (TextView) findViewById(R.id.txtDashboardSilentSmsWeekCount);
@@ -74,22 +82,15 @@ public class DashboardActivity extends BaseActivity
 		txtLastScan = (TextView) findViewById(R.id.txtDashboardLastScan);
 		imgSilentSms = (ImageView) findViewById(R.id.imgDashboardSilentSms);
 		imgImsiCatcher = (ImageView) findViewById(R.id.imgDashboardImsiCatcher);
-	}
-	
-	@Override
-	protected void onResume() 
-	{
-		super.onResume();
 		
-		// Set text
-		txtSmsMonthCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsMonthSum()));
-		txtSmsWeekCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsWeekSum()));
-		txtSmsDayCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsDaySum()));
-		txtSmsHourCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsHourSum()));
-		txtImsiMonthCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiMonthSum()));
-		txtImsiWeekCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiWeekSum()));
-		txtImsiDayCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiDaySum()));
-		txtImsiHourCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiHourSum()));
+		dtcSmsHour = (DashboardThreatChart) findViewById(R.id.SilentSMSChartHour);
+		dtcSmsDay = (DashboardThreatChart) findViewById(R.id.SilentSMSChartDay);
+		dtcSmsWeek = (DashboardThreatChart) findViewById(R.id.SilentSMSChartWeek);
+		dtcSmsMonth = (DashboardThreatChart) findViewById(R.id.SilentSMSChartMonth);
+		dtcImsiHour = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartHour);
+		dtcImsiDay = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartDay);
+		dtcImsiWeek = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartWeek);
+		dtcImsiMonth = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartMonth);
 	}
 	
 	@Override
@@ -107,6 +108,8 @@ public class DashboardActivity extends BaseActivity
 		        setRectWidth(layout.getMeasuredWidth());
 		    } 
 		});
+		
+		resetThreatCounts();
 	}
 	
 	private void setRectWidth (int columnWidth)
@@ -154,5 +157,50 @@ public class DashboardActivity extends BaseActivity
 			myIntent.putExtra("ThreatType", view.getId());
 			startActivity(myIntent);
 		}
+	}
+	
+	@Override
+	public void stateChanged(StateChangedReason reason) 
+	{
+		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
+		{
+			refreshView();
+		}
+		
+		super.stateChanged(reason);
+	}
+
+	@Override
+	protected void refreshView() 
+	{
+		// Redraw charts
+		resetCharts();
+		
+		// Set texts
+		resetThreatCounts();
+	}
+	
+	private void resetThreatCounts ()
+	{
+		txtSmsMonthCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsMonthSum()));
+		txtSmsWeekCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsWeekSum()));
+		txtSmsDayCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsDaySum()));
+		txtSmsHourCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsHourSum()));
+		txtImsiMonthCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiMonthSum()));
+		txtImsiWeekCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiWeekSum()));
+		txtImsiDayCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiDaySum()));
+		txtImsiHourCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiHourSum()));
+	}
+	
+	private void resetCharts ()
+	{
+		dtcSmsHour.invalidate();
+		dtcSmsDay.invalidate();
+		dtcSmsWeek.invalidate();
+		dtcSmsMonth.invalidate();
+		dtcImsiHour.invalidate();
+		dtcImsiDay.invalidate();
+		dtcImsiWeek.invalidate();
+		dtcImsiMonth.invalidate();
 	}
 }
