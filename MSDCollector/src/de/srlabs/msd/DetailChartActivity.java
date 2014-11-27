@@ -34,11 +34,9 @@ public class DetailChartActivity extends BaseActivity
 	private TextView _txtThreatTypeBinarySms;
 	private TextView _txtThreatTypeBinarySmsCount;
 	private LinearLayout _llThreatTypeSms;
-	
-	DetailChartGalleryAdapter mPagerAdapter;
-	ViewPager mPager;
-	int _threatType;
-	
+	private DetailChartGalleryAdapter mPagerAdapter;
+	private ViewPager mPager;
+	private int _threatType;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -54,6 +52,12 @@ public class DetailChartActivity extends BaseActivity
 		_txtThreatTypeBinarySms = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySms);
 		_txtThreatTypeBinarySmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySmsCount);
 		_llThreatTypeSms = (LinearLayout) findViewById(R.id.llThreatTypeSms);
+	}
+	
+	@Override
+	protected void onResume() 
+	{
+		super.onResume();
 		
 		_threatType = getIntent().getIntExtra("ThreatType", R.id.IMSICatcherCharts);
 		

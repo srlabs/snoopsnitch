@@ -37,7 +37,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected Menu menu;
 	protected Boolean isInForeground = false;
 	protected Handler handler;
-	protected final int refresh_intervall = 60000;
+	protected final int refresh_intervall = 300000;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -55,7 +55,6 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		MsdLog.i("MSD","MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 		
 		handler = new Handler();
-		handler.postDelayed(runnable, refresh_intervall);
 	}
 	
 	@Override
@@ -69,12 +68,15 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		
 		ab.setTitle(R.string.actionBar_title);
 		ab.setSubtitle(setAppId ());
+		
+		handler.postDelayed(runnable, refresh_intervall);
 	}
 	
 	@Override
 	protected void onPause() 
 	{
 		isInForeground = false;
+		handler.removeCallbacks(runnable);
 		super.onPause();
 	}
 	
@@ -246,7 +248,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		   public void run() 
 		   {
 		      /* do what you need to do */
-		      //refreshView();
+		      refreshView();
 		      /* and here comes the "trick" */
 		      handler.postDelayed(runnable, refresh_intervall);
 		   }
