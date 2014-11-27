@@ -700,7 +700,7 @@ public class MsdService extends Service{
 									start.get(Calendar.SECOND));
 
 							if (MsdServiceAnalysis.runCatcherAnalysis(MsdService.this, db)) {
-								sendStateChanged(StateChangedReason.IMSI_DETECTED);
+								sendStateChanged(StateChangedReason.CATCHER_DETECTED);
 							};
 							if (MsdServiceAnalysis.runSMSAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.SMS_DETECTED);

@@ -194,7 +194,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	@Override
 	public void stateChanged(StateChangedReason reason) 
 	{	
-		if (reason.equals(StateChangedReason.IMSI_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
+		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
 		{
 			recreate();
 		}

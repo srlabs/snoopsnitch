@@ -146,7 +146,7 @@ public class DummyMsdService extends Service{
 		}
 		if(notificationCachers.size() > 0){
 			msdServiceNotifications.showImsiCatcherNotification(notificationCachers.size(), notificationCachers.lastElement().getId());
-			sendStateChanged(StateChangedReason.IMSI_DETECTED);
+			sendStateChanged(StateChangedReason.CATCHER_DETECTED);
 		}
 		timeCallbacksDone = currentTime;
 	}
