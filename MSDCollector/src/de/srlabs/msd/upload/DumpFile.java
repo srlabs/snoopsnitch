@@ -21,8 +21,9 @@ public class DumpFile {
 	private int file_type;
 	public static final int TYPE_DEBUG_LOG = 1;
 	public static final int TYPE_ENCRYPTED_QDMON = 2;
-	private boolean sms;
-	private boolean imsi_catcher;
+	private boolean sms = false;
+	private boolean imsi_catcher = false;
+	private boolean crash = false;
 	private int state;
 	public static final int STATE_RECORDING = 1;
 	public static final int STATE_AVAILABLE = 2;
@@ -47,9 +48,16 @@ public class DumpFile {
 		file_type = c.getInt(c.getColumnIndex("file_type"));
 		sms = c.getInt(c.getColumnIndex("sms")) != 0;
 		imsi_catcher = c.getInt(c.getColumnIndex("imsi_catcher")) != 0;
+		crash = c.getInt(c.getColumnIndex("crash")) != 0;
 		state = c.getInt(c.getColumnIndex("state"));
 	}
 
+	public static DumpFile get(SQLiteDatabase db, long id){
+		Vector<DumpFile> files = getFiles(db, "_id = " + id);
+		if(files.size() == 0)
+			return null;
+		return files.firstElement();
+	}
 	/**
 	 * Gets all files between time1 and time2 from the database. time2 can be null to get only files containing time1.
 	 * @param db An SQLiteDatabase object to get the files from
@@ -148,6 +156,7 @@ public class DumpFile {
 		result.put("file_type",file_type);
 		result.put("sms",sms ? 1:0);
 		result.put("imsi_catcher",imsi_catcher ? 1:0);
+		result.put("crash",crash ? 1:0);
 		result.put("state", state);
 		return result;
 	}
@@ -258,6 +267,12 @@ public class DumpFile {
 		return numModified == 1;
 	}
 
+	public boolean updateCrash(SQLiteDatabase db, boolean b) {
+		ContentValues values = new ContentValues();
+		values.put("crash", b?1:0);
+		int numModified = db.update("files", values, "_id = " + id, null);
+		return numModified == 1;
+	}
 	public boolean updateImsi(SQLiteDatabase db, boolean b) {
 		ContentValues values = new ContentValues();
 		values.put("imsi_catcher", b?1:0);

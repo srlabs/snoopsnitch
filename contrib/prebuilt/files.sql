@@ -7,5 +7,6 @@ CREATE TABLE files(
   file_type INTEGER NOT NULL,			-- Type of the file, can be one of the following: 0 (Debug log), 1 (Encrypted Qdmon dump)
   sms INTEGER NOT NULL,				-- Actually a boolean, indicates whether a binary/silent SMS was detected in this dump
   imsi_catcher INTEGER NOT NULL,		-- Actually a boolean, indicates whether an IMSI catcher was detected in this dump
-  state INTEGER NOT NULL			-- State of the file, one of the constants defined in File.java (RECORDING, AVAILABLE, PENDING, UPLOADED, DELETED, RECORDING_PENDING)
+  crash INTEGER NOT NULL,  			-- Actually a boolean, indicates whether a debug logfile contains a crash (Uncaught Exception or other fatal error)
+  state INTEGER NOT NULL			-- State of the file, one of the constants defined in DumpFile.java (RECORDING, AVAILABLE, PENDING, UPLOADED, DELETED, RECORDING_PENDING)
 );

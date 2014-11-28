@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -22,7 +21,6 @@ import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.zip.GZIPOutputStream;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -36,6 +34,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
@@ -51,10 +50,13 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
+import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdConfig;
 import de.srlabs.msd.util.MsdDatabaseManager;
+import de.srlabs.msd.util.MsdLog;
+import de.srlabs.msd.util.Utils;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";
@@ -95,6 +97,11 @@ public class MsdService extends Service{
 			// Do nothing here, the real Service doesn't deliver dummy events
 			return 0;
 		}
+
+		@Override
+		public void writeLog(String logData) throws RemoteException {
+			MsdService.this.writeLog(logData);
+		}
 	};
 	AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
@@ -105,7 +112,6 @@ public class MsdService extends Service{
 	FromDiagThread fromDiagThread;
 
 	private BlockingQueue<DiagMsgWrapper> toParserMsgQueue = new LinkedBlockingQueue<DiagMsgWrapper>();
-	private BlockingQueue<DiagMsgWrapper> rawFileWriterMsgQueue = new LinkedBlockingQueue<DiagMsgWrapper>();
 	private BlockingQueue<QueueElementWrapper<byte[]>> toDiagMsgQueue = new LinkedBlockingQueue<MsdService.QueueElementWrapper<byte[]>>();
 	private BlockingQueue<PendingSqliteStatement> pendingSqlStatements = new LinkedBlockingQueue<PendingSqliteStatement>();
 
@@ -117,13 +123,13 @@ public class MsdService extends Service{
 	private ParserErrorThread parserErrorThread;
 	private FromParserThread fromParserThread;
 	private ToParserThread toParserThread;
-	private RawFileWriterThread rawFileWriterThread;
 	private ToDiagThread toDiagThread;
 	private DiagErrorThread diagErrorThread;
 	private volatile boolean shutdownError = false;
 	private AtomicBoolean readyForStartRecording = new AtomicBoolean(true);
-	private Handler msdServiceMainThreadHandler = new Handler();
 	private PeriodicCheckRecordingStateRunnable periodicCheckRecordingStateRunnable = new PeriodicCheckRecordingStateRunnable();
+	private ExceptionHandlingRunnable periodicCheckRecordingStateRunnableWrapper = new ExceptionHandlingRunnable(periodicCheckRecordingStateRunnable);
+	private PeriodicFlushRunnable periodicFlushRunnable = new PeriodicFlushRunnable();
 	private boolean recording = false;
 	private LocationManager locationManager;
 	private MyLocationListener myLocationListener;
@@ -137,6 +143,16 @@ public class MsdService extends Service{
 	private boolean fatalErrorOccured = false;
 
 	private MsdServiceNotifications msdServiceNotifications = new MsdServiceNotifications(this);
+
+	private EncryptedFileWriter rawWriter;
+	private long rawLogFileId = 0;
+	private EncryptedFileWriter debugLogWriter;
+	private long debugLogFileStartTime = 0;
+	private long debugLogFileId = 0;
+
+	private Object currentRawWriterBaseFilename;
+
+	private StringBuffer logBuffer = null;
 
 	class QueueElementWrapper<T>{
 		T obj;
@@ -153,26 +169,74 @@ public class MsdService extends Service{
 	}
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.i(TAG,"MsdService.onBind() called");
+		info("MsdService.onBind() called");
 		return mBinder;
+	}
+
+	public void writeLog(String logData) {
+		if(debugLogWriter == null){
+			if(logBuffer == null){
+				logBuffer = new StringBuffer();
+				logBuffer.append(logData);
+			}
+		} else{
+			debugLogWriter.write(logData);
+			debugLogWriter.flushIfUnflushedDataSince(10000);
+		}
 	}
 
 	class PeriodicCheckRecordingStateRunnable implements Runnable{
 		@Override
 		public void run() {
 			checkRecordingState();
-			msdServiceMainThreadHandler.postDelayed(this, 1000);
+			mainThreadHandler.postDelayed(periodicCheckRecordingStateRunnableWrapper, 1000);
 		}
 	}
+
+	class PeriodicFlushRunnable implements Runnable{
+		@Override
+		public void run() {
+			debugLogWriter.flushIfUnflushedDataSince(10000);
+			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(this), 1000);
+		}
+	}
+
+	/**
+	 * This wrapper class handles all uncaught Exceptions in a Runnable. This is
+	 * neccessary since Thread.setDefaultUncaughtExceptionHandler will stop the
+	 * main Looper Thread and we still need it for the shutdown of the Service.
+	 * 
+	 * 
+	 */
+	class ExceptionHandlingRunnable implements Runnable{
+		Runnable r;
+		public ExceptionHandlingRunnable(Runnable r) {
+			this.r = r;
+		}
+		@Override
+		public void run() {
+			try{
+				r.run();
+			} catch(Exception e){
+				handleFatalError("Uncaught Exception in ExceptionHandlingRunnable => " + r.getClass(), e);
+			}
+		}
+	}
+
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		MsdLog.init(this);
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
+		cleanupIncompleteOldFiles();
+		openOrReopenDebugLog();
+		mainThreadHandler.post(new ExceptionHandlingRunnable(periodicFlushRunnable));
 		Thread.setDefaultUncaughtExceptionHandler(
 				new Thread.UncaughtExceptionHandler() {
 					@Override
 					public void uncaughtException(Thread t, Throwable e) {
-						handleFatalError("Uncought Exception in MsdService Thread " + t.getClass(), e);
+						handleFatalError("Uncaught Exception in MsdService Thread " + t.getClass(), e);
 					}
 				});
 		telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
@@ -189,6 +253,7 @@ public class MsdService extends Service{
 	public void onDestroy() {
 		info("MsdService.onDestroy() called, shutting down");
 		shutdown(false);
+		closeDebugLog(false);
 		super.onDestroy();
 	}
 	private void startLocationRecording(){
@@ -220,12 +285,11 @@ public class MsdService extends Service{
 			return false;
 		}
 		try {
-			cleanupIncompleteOldFiles();
 			this.shuttingDown.set(false);
 			this.sqliteThread = new SqliteThread();
 			sqliteThread.start();
 			launchParser();
-			launchRawFileWriter();
+			openOrReopenRawWriter();
 			launchHelper();
 			mainThreadHandler.post(new Runnable(){
 				@Override
@@ -235,10 +299,16 @@ public class MsdService extends Service{
 			});
 			startPhoneStateRecording();
 			this.recording  = true;
-			msdServiceMainThreadHandler.removeCallbacks(periodicCheckRecordingStateRunnable);
-			msdServiceMainThreadHandler.post(periodicCheckRecordingStateRunnable);
+			mainThreadHandler.removeCallbacks(periodicCheckRecordingStateRunnableWrapper);
+			mainThreadHandler.post(periodicCheckRecordingStateRunnableWrapper);
 			doStartForeground();
 			sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
+//			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(new Runnable() {				
+//				@Override
+//				public void run() {
+//					throw new IllegalStateException("Let's test error reporting");
+//				}
+//			}), 3000);
 			return true;
 		} catch (Exception e) { 
 			handleFatalError("Exception in startRecording(): ", e);
@@ -261,7 +331,7 @@ public class MsdService extends Service{
 				}
 			}
 			shutdownError = false;
-			msdServiceMainThreadHandler.removeCallbacks(periodicCheckRecordingStateRunnable);
+			mainThreadHandler.removeCallbacks(periodicCheckRecordingStateRunnableWrapper);
 			// DIAG Helper
 			if(helper != null){
 				try{
@@ -316,15 +386,10 @@ public class MsdService extends Service{
 			diagStdin = null;
 			diagStdout = null;
 			diagStderr = null;
-			// Terminate raw file write
-			if(rawFileWriterThread != null){
-				rawFileWriterMsgQueue.add(new DiagMsgWrapper()); // Send shutdown marker to message queue
-				rawFileWriterThread.join(3000);
-				if(rawFileWriterThread.isAlive()){
-					handleFatalError("Failed to stop rawFileWriter");
-				}
-				rawFileWriterThread = null;
-			}
+			// Terminate rawWriter
+			rawWriter.close();
+			rawWriter = null;
+			currentRawWriterBaseFilename = null;
 			// Termiante parser
 			if(parser != null){
 				toParserMsgQueue.add(new DiagMsgWrapper()); // Send shutdown marker to message queue
@@ -398,8 +463,14 @@ public class MsdService extends Service{
 			sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 			this.readyForStartRecording.set(!shutdownError);
 			doStopForeground();
+			debugLogWriter.flush();
 			return !shutdownError;
 		} catch (Exception e) {
+			// Prevent data loss by making sure that rawWriter is always closed during shutdown
+			if(rawWriter != null){
+				rawWriter.close();
+				rawWriter = null;
+			}
 			handleFatalError("Received Exception during shutdown", e);
 			return false;
 		}
@@ -420,7 +491,7 @@ public class MsdService extends Service{
 					for(byte[] buf:fromDev(individual_buf, 0, individual_buf.length)){
 						DiagMsgWrapper msg = new DiagMsgWrapper(buf);
 						toParserMsgQueue.add(msg);
-						rawFileWriterMsgQueue.add(msg);
+						rawWriter.write(buf);
 					}
 				}
 			} catch (EOFException e) {
@@ -528,180 +599,6 @@ public class MsdService extends Service{
 		}
 	}
 
-	/**
-	 * The Thread saves raw diag messages to files, which can be uploaded later.
-	 * Depending on the configuration, the messages are written to an encrypted
-	 * and/or unencrypted file.
-	 * 
-	 */
-	class RawFileWriterThread extends Thread{
-		private Process openssl;
-		GZIPOutputStream unencryptedOutputStream = null;
-		OutputStream encryptedOutputStream = null;
-		private BufferedReader opensslStderr;
-		private boolean closeOutputRunning = false;
-		private OpensslErrorThread opensslErrorThread;
-
-		public void run() {
-			String currentDumpfileName = null;
-			try {
-				while(true){
-					DiagMsgWrapper msg = rawFileWriterMsgQueue.take();
-					if(msg.shutdownMarker){
-						info("RawFileWriterThread shutting down due to shutdown marker, OK");
-						closeOutput();
-						return;
-					}
-					// Create a new dump file every 10 minutes, name it with the
-					// UTC time so that it does not reuse the same filename if
-					// the user	switches between different timezones.
-					Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-					// Calendar.MONTH starts counting with 0
-					String filename = String.format(Locale.US, "qdmon_%04d-%02d-%02d_%02d-%02dUTC",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), 10*(c.get(Calendar.MINUTE) / 10));
-					if(currentDumpfileName == null || !filename.equals(currentDumpfileName)){
-						closeOutput();
-						if(MsdConfig.recordUnencryptedDumpfiles(MsdService.this)){
-							info("Opening new raw file " + filename + ".gz");
-							// Use MODE_APPEND so that it appends to the existing
-							// file if the file already exists (e.g. because the
-							// user stopped recording or restarted the app in
-							// between). Gzip does allow concatenating files so it
-							// is acceptable to just append to an existing gzip
-							// file.
-							unencryptedOutputStream = new GZIPOutputStream(openFileOutput(filename + ".gz", Context.MODE_APPEND));
-						}
-						if(MsdConfig.recordEncryptedDumpfiles(MsdService.this)){
-							String libdir = getApplicationInfo().nativeLibraryDir;
-							String openssl_binary = libdir + "/libopenssl.so";
-							boolean ok = true;
-							if(!((new File(openssl_binary)).exists())){
-								handleFatalError("Not recording encrypted dumpfiles since the openssl binary " + openssl_binary + " does not exist");
-								ok = false;
-							}
-							String crtFile = libdir + "/libsmime_crt.so";
-							if(!((new File(crtFile)).exists())){
-								handleFatalError("Not recording encrypted dumpfiles since the certificate file " + crtFile + " does not exist");
-								ok = false;
-							}
-							if(ok){
-								String encryptedOutputFileName = getFilesDir().toString() + "/" + filename + ".smime";
-								if((new File(encryptedOutputFileName)).exists()){
-									// When restarting recording within a 10 minutes
-									// interval, the file may already exist. Since
-									// smime files can't simply be appended (like
-									// gzip files), we have to create a new
-									// filename e.g. by appending a number
-									int i;
-									for(i=1;i<30 && (new File(encryptedOutputFileName + "." + i)).exists();i++);
-									encryptedOutputFileName += "." + i;
-									if((new File(encryptedOutputFileName)).exists()){
-										handleFatalError("Failed to find a new filename for encrypted output file " + encryptedOutputFileName);
-										unencryptedOutputStream.close();
-										return;
-									}
-								}
-								info("Writing encrypted output to " + encryptedOutputFileName);
-								String cmd[] = {openssl_binary, "smime", "-encrypt", "-binary", "-aes256", "-outform", "DER", "-out", encryptedOutputFileName, crtFile};
-								String env[] = {"LD_LIBRARY_PATH=" + libdir, "OPENSSL_CONF=/dev/null", "RANDFILE=/dev/null"};
-								info("Launching openssl: " + TextUtils.join(" ",cmd));
-								openssl =  Runtime.getRuntime().exec(cmd, env, null);
-								encryptedOutputStream = openssl.getOutputStream();
-								opensslStderr = new BufferedReader(new InputStreamReader(openssl.getErrorStream()));
-								opensslErrorThread = new OpensslErrorThread();
-								opensslErrorThread.start();
-							}
-						}
-						currentDumpfileName = filename;
-					}
-					if(MsdConfig.recordUnencryptedDumpfiles(MsdService.this)){
-						// Flush after each write, this may decrease the compression rate
-						// Maybe we have to write stuff to a temporary file ang gzip it as a whole file when opening a new file.
-						unencryptedOutputStream.write(msg.buf);
-						unencryptedOutputStream.flush();
-					}
-					if(MsdConfig.recordEncryptedDumpfiles(MsdService.this) && encryptedOutputStream != null){
-						encryptedOutputStream.write(msg.buf);
-						encryptedOutputStream.flush();
-					}
-				}
-			} catch (InterruptedException e) {
-				closeOutput();
-				handleFatalError("RawFileWriterThread shutting down due to InterruptedException", e);
-			} catch (IOException e) {
-				closeOutput();
-				if(MsdService.this.shuttingDown.get())
-					info("RawFileWriterThread: IOException while shutting down: " + e.getMessage());
-				else
-					handleFatalError("RawFileWriterThread: IOException: " + e.getMessage());
-			}
-		}
-		private void closeOutput(){
-			closeOutputRunning  = true;
-			try{
-				if(unencryptedOutputStream != null){
-					unencryptedOutputStream.close();
-					unencryptedOutputStream = null;
-				}
-				if(encryptedOutputStream != null){
-					encryptedOutputStream.close();
-					encryptedOutputStream = null;
-					Thread t = new Thread(){
-						public void run() {
-							try{
-								openssl.waitFor();
-							} catch(InterruptedException e){
-							}
-						};
-					};
-					t.start();
-					t.join(3000);
-					t.interrupt();
-					try{
-						int exitValue = openssl.exitValue();
-						info("Openssl terminated with exit value " + exitValue);
-						if(exitValue != 0){
-							handleFatalError("Openssl terminated with an error, exit value: " + exitValue);
-						}
-					} catch(IllegalThreadStateException e){
-						handleFatalError("Failed to stop diag helper, calling destroy(): " + e.getMessage());		
-						helper.destroy();
-					}
-				}
-			} catch (InterruptedException e) {
-				handleFatalError("RawFileWriterThread.closeOutput() failed with InterruptedException", e);
-			} catch (IOException e) {
-				handleFatalError("RawFileWriterThread.closeOutput() failed with IOException", e);
-			}
-			closeOutputRunning = false;
-		}
-		class OpensslErrorThread extends Thread{
-			@Override
-			public void run() {
-				try {
-					while(true){
-						String line = opensslStderr.readLine();
-						if(line == null){
-							if(closeOutputRunning){
-								info("opensslStderr.readLine() returned null while closeOutputRunning is set, OK");
-							} else{
-								handleFatalError("opensslStderr.readLine() returned null");
-							}
-							return;
-						}
-						handleFatalError("Openssl Error: " + line);
-					}
-				} catch(EOFException e){
-					if(shuttingDown.get()){
-						info("ParserErrorThread received IOException while shutting down, OK");
-					} else{
-						handleFatalError("EOFException while reading from opensslStderr: " + e.getMessage());
-					}
-				} catch(IOException e){
-					handleFatalError("IOException while reading from opensslStderr: " + e.getMessage());
-				}
-			}
-		}
-	}
 	class FromParserThread extends Thread{
 		public void run() {
 			try {
@@ -816,7 +713,7 @@ public class MsdService extends Service{
 							};
 							lastAnalysisTime = System.currentTimeMillis();
 
-							Log.i(TAG,time + ": Analysis took " + (lastAnalysisTime - start.getTimeInMillis()) + "ms");
+							info(time + ": Analysis took " + (lastAnalysisTime - start.getTimeInMillis()) + "ms");
 
 						} catch(Exception e){
 							// Terminate the service with a fatal error if there is a any uncaught Exception in the Analysis
@@ -1072,10 +969,6 @@ public class MsdService extends Service{
 			return 0;
 		}
 	}
-	private void launchRawFileWriter(){
-		this.rawFileWriterThread = new RawFileWriterThread();
-		this.rawFileWriterThread.start();
-	}
 	private void launchHelper() throws IOException {
 		String libdir = this.getApplicationInfo().nativeLibraryDir;
 		String diag_helper = libdir + "/libdiag-helper.so";
@@ -1143,15 +1036,15 @@ public class MsdService extends Service{
 		result.put(bytes);
 		return result.array();
 	}
-	private void sendErrorMessage(String msg, Throwable e){
+	private void sendFatalErrorMessage(String msg, Throwable e){
 		if(e == null){
-			Log.e(TAG,"sendErrorMessage: " + msg);
+			MsdLog.e(TAG,"sendErrorMessage: " + msg);
 		} else{
-			Log.e(TAG,"sendErrorMessage: " + msg,e);
+			MsdLog.e(TAG,"sendErrorMessage: " + msg,e);
 			msg += " " + e.getClass().getSimpleName() + ": " + e.getMessage();
 		}
-		// TODO: Reopen the debug log so that the user can upload an error log
-		msdServiceNotifications.showInternalErrorNotification(msg, null);
+		closeDebugLog(true);
+		msdServiceNotifications.showInternalErrorNotification(msg, debugLogFileId);
 	}
 	private void sendStateChanged(StateChangedReason reason){
 		Vector<IMsdServiceCallback> callbacksToRemove = new Vector<IMsdServiceCallback>();
@@ -1159,15 +1052,15 @@ public class MsdService extends Service{
 			try {
 				callback.stateChanged(reason.name());
 			} catch (DeadObjectException e) {
-				Log.i(TAG,"DeadObjectException in MsdService.sendStateChanged() => unregistering callback");
+				info("DeadObjectException in MsdService.sendStateChanged() => unregistering callback");
 				callbacksToRemove.add(callback);
 			} catch (RemoteException e) {
-				Log.e(TAG,"Exception in MsdService.sendStateChanged() => callback.recordingStateChanged();");
+				warn("Exception in MsdService.sendStateChanged() => callback.recordingStateChanged();");
 			}
 		}
 		mBinder.callbacks.removeAll(callbacksToRemove);
 	}
-	private void handleFatalError(String msg, final Throwable e){
+	void handleFatalError(String msg, final Throwable e){
 		boolean doShutdown = false;
 		if(recording && shuttingDown.compareAndSet(false, true)){
 			msg += " => shutting down service";
@@ -1176,7 +1069,7 @@ public class MsdService extends Service{
 				try{
 					((String)null).toString();
 				} catch(Exception e1){
-					Log.e(TAG, "Dummy Exception to get stack trace of fatal error:",e1);
+					MsdLog.e(TAG, "Dummy Exception to get stack trace of fatal error:",e1);
 				}
 			}
 			doShutdown = true;
@@ -1186,36 +1079,37 @@ public class MsdService extends Service{
 		} else{
 			msg = "Error while not recording: " + msg;
 		}
-		Log.e(TAG,"handleFatalError: " + msg,e);
+		MsdLog.e(TAG,"handleFatalError: " + msg,e);
 		final String finalMsg = msg;
 		if(doShutdown){
 			// Call shutdown in the main thread so that the thread causing the Error can terminate
 			fatalErrorOccured = true;
-			msdServiceMainThreadHandler.post(new Runnable(){
+			mainThreadHandler.post(new ExceptionHandlingRunnable(new Runnable(){
 				public void run() {
+					Log.e(TAG,"shutdownDueToError(finalMsg,e);");
 					shutdownDueToError(finalMsg,e);
 				};
-			});
+			}));
 		} else{
 			// Only send the first fatal error to the UI
 			if(!fatalErrorOccured)
-				sendErrorMessage(msg, e);
+				sendFatalErrorMessage(msg, e);
 			fatalErrorOccured = true;
 		}
 	}
-	private void handleFatalError(String msg){
+	void handleFatalError(String msg){
 		handleFatalError(msg,null);
 	}
 	private static void info(String msg){
-		Log.i(TAG,msg);
+		MsdLog.i(TAG,msg);
 	}
 	private static void warn(String msg){
-		Log.w(TAG,msg);
+		MsdLog.w(TAG,msg);
 	}
 	private void shutdownDueToError(String msg, Throwable e){
 		shutdown(true);
-		sendErrorMessage(msg, e);
-		Log.e(TAG, "Terminating MsdService after shutting down due to an unexpected error");
+		sendFatalErrorMessage(msg, e);
+		MsdLog.e(TAG, "Terminating MsdService after shutting down due to an unexpected error");
 		System.exit(1);
 	}
 	/**
@@ -1264,8 +1158,8 @@ public class MsdService extends Service{
 			handleFatalError("testRecordingState(): diagMsgQueue contains too many entries");
 			ok = false;
 		}		
-		if(rawFileWriterMsgQueue.size() > 100){
-			handleFatalError("testRecordingState(): rawFileWriterMsgQueue contains too many entries");
+		if(rawWriter.getQueueSize() > 100){
+			handleFatalError("testRecordingState(): rawWriter contains too many queue entries");
 			ok = false;
 		}
 
@@ -1338,11 +1232,146 @@ public class MsdService extends Service{
 				}
 			} catch (Exception e) {
 				handleFatalError("Failed to get parser memory consumption",e);
+				ok = false;
 			}
 		} else{
 			handleFatalError("Failed to get parser pid, parser class name is " + parser.getClass().getName() + " instead of java.lang.ProcessManager$ProcessImpl");
+			ok = false;
 		}
 		// TODO: Maybe check memory usage of this Service process as well.
+		if(ok){
+			openOrReopenRawWriter();
+			openOrReopenDebugLog();
+		}
+	}
+	private void openOrReopenRawWriter() {
+		// Create a new dump file every 10 minutes, name it with the
+		// UTC time so that it does not reuse the same filename if
+		// the user	switches between different timezones.
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		// Calendar.MONTH starts counting with 0
+		String baseFilename = String.format(Locale.US, "qdmon_%04d-%02d-%02d_%02d-%02dUTC",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), 10*(c.get(Calendar.MINUTE) / 10));
+		if(rawWriter != null && currentRawWriterBaseFilename != null && currentRawWriterBaseFilename.equals(baseFilename))
+			return; // No reopen needed
+		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+		// Save the old writer
+		currentRawWriterBaseFilename = baseFilename;
+		EncryptedFileWriter oldRawWrite = rawWriter;
+		long oldRawLogFileId = rawLogFileId;
+		// Get the filename for the new file
+		// When restarting recording within a 10 minutes interval, the file may
+		// already exist. Since smime files can't simply be appended (like gzip
+		// files), we have to create a new filename e.g. by appending a number
+		String encryptedFilename = null;
+		String plaintextFilename = null;
+		for(int i=0;i<300;i++){
+			plaintextFilename = baseFilename + (i>0 ? "." + i : "") +  ".gz";
+			encryptedFilename = plaintextFilename + ".smime";
+			if((new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() || (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists() ){
+				plaintextFilename = null;
+				encryptedFilename = null;
+			} else{
+				break;
+			}
+		}
+		if(encryptedFilename == null){
+			handleFatalError("Couldn't find a non-existing filename for raw qdmon dump, baseFilename=" + baseFilename);
+			return;
+		}
+		rawWriter = new EncryptedFileWriter(this, encryptedFilename, true, plaintextFilename, true);
+		// Register the file in database
+		DumpFile df = new DumpFile(encryptedFilename,DumpFile.TYPE_ENCRYPTED_QDMON);
+		df.insert(db);
+		rawLogFileId = df.getId();
+		if(oldRawWrite != null){
+			// There is an open debug logfile already, so let's close it and set the end time in the database
+			oldRawWrite.close();
+			df = DumpFile.get(db, oldRawLogFileId);
+			df.endRecording(db);
+		}
+		MsdDatabaseManager.getInstance().closeDatabase();
+	}
+
+	/**
+	 * Closes the debug logfile. This method should be called when the service
+	 * is terminated by the Android system or when it is terminated due to a
+	 * fatal error.
+	 * 
+	 * Please note that messages sent after closeDebugOutput will be written to
+	 * Android Logcat only and not to a new debug logfile.
+	 * 
+	 * @param crash
+	 */
+	private void closeDebugLog(boolean crash){
+		if(debugLogWriter == null)
+			return;
+		info("MsdService.closeDebugLog(" + crash + ") called, closing log " + debugLogWriter.getEncryptedFilename());
+		EncryptedFileWriter tmp = debugLogWriter; // Make sure there are no writes to debugLogWriter after the close()
+		debugLogWriter = null;
+		tmp.close();
+		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+		DumpFile df = DumpFile.get(db, debugLogFileId);
+		df.endRecording(db);
+		if(crash){
+			df.updateCrash(db, true);
+		}
+		MsdDatabaseManager.getInstance().closeDatabase();
+	}
+
+	/**
+	 * Opens or reopens the debug log so that it only contains e.g. 1 hour of
+	 * output (which should be enough to debug a crash).
+	 */
+	private void openOrReopenDebugLog(){
+		if(debugLogFileStartTime + 3600 * 1000 > System.currentTimeMillis())
+			return; // No reopen needed
+		debugLogFileStartTime = System.currentTimeMillis();
+		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+		// Save the existing writer so that it can be closed after the new one has been opened (so we can't loose any messages).
+		EncryptedFileWriter oldDebugLogWriter = debugLogWriter;
+		long oldDebugLogId = debugLogFileId;
+		// Create a new dump file every 10 minutes, name it with the
+		// UTC time so that it does not reuse the same filename if
+		// the user	switches between different timezones.
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		// Calendar.MONTH starts counting with 0
+		String timestampStr = String.format(Locale.US, "%04d-%02d-%02d_%02d-%02d-%02dUTC",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
+		String plaintextFilename = null;
+		String encryptedFilename = null;
+		for(int i=0;i<10;i++){
+			plaintextFilename = "debug_" + timestampStr + (i>0 ? "." + i : "") +  ".gz";
+			encryptedFilename = plaintextFilename + ".smime";
+			if((new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() || (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists() ){
+				plaintextFilename = null;
+				encryptedFilename = null;
+			} else{
+				break;
+			}
+		}
+		if(encryptedFilename == null){
+			handleFatalError("openOrReopenDebugLog(): Couldn't find an available filename for debug log");
+			return;
+		}
+		// Uncomment the following line to disable plaintext logs (might be good for the final release):
+		// plaintextFilename = null;
+		EncryptedFileWriter newDebugLogWriter = new EncryptedFileWriter(this, encryptedFilename, true, plaintextFilename, true);
+		newDebugLogWriter.write(MsdLog.getLogStartInfo());
+		if(logBuffer != null){
+			newDebugLogWriter.write("LOGBUFFER: " + logBuffer.toString() + ":LOGBUFFER_END");
+			logBuffer = null;
+		}
+		// Everything logged from other threads until now still gets to the old file.
+		debugLogWriter = newDebugLogWriter;
+		DumpFile df = new DumpFile(encryptedFilename,DumpFile.TYPE_DEBUG_LOG);
+		df.insert(db);
+		debugLogFileId = df.getId();
+		if(oldDebugLogWriter != null){
+			// There is an open debug logfile already, so let's close it and set the end time in the database
+			oldDebugLogWriter.close();
+			df = DumpFile.get(db, oldDebugLogId);
+			df.endRecording(db);
+		}
+		MsdDatabaseManager.getInstance().closeDatabase();
 	}
 	private void restartRecording(){
 		if(!shutdown(false)){
@@ -1353,17 +1382,17 @@ public class MsdService extends Service{
 
 	/**
 	 * Deletes all files with STATE_RECORDINIG in the database, should be called
-	 * before startRecording(). This will delete incomplete old files which are
+	 * in onCreate(). This will delete incomplete old files which are
 	 * created when MsdService crashes.
 	 */
 	private void cleanupIncompleteOldFiles(){
 		// TODO: Implement
 	}
-	private void cleanupRawFiles(){
+	private void cleanupFiles(){
 		// TODO: Cleanup encrypted files after some time, excluding pending files
-		// TODO: Cleanup debug logs
-		// TODO: Cleanup old files still marked as STATE_RECORDING (this happens if MsdService crashes)
-		// Cleanup unencrypted dumpfiles after MsdConfig.getBasebandLogKeepDurationHours()
+		// TODO: Cleanup debug logs after a configurable delay (depending on whether it contains a crash)
+		// TODO: Cleanup raw dumps after a configurable delay (depending on whether it contains an IMSI/SMS)
+		// TODO: Cleanup untracked files (which don't have a db entry)
 		for(String filename:fileList()){
 			if(!filename.startsWith("qdmon_"))
 				continue;

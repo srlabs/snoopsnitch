@@ -18,6 +18,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 import android.content.Context;
+import android.telephony.TelephonyManager;
 
 
 public class Utils {
@@ -36,6 +37,7 @@ public class Utils {
 		final SSLContext sslContext = SSLContext.getInstance("TLS");
 		sslContext.init(null, tmf.getTrustManagers(), null);
 
+		// TODO: Handle pinning errors with an appropriate error message/Notification
 		((HttpsURLConnection) connection).setSSLSocketFactory(sslContext.getSocketFactory());
 		return connection;
 	}
@@ -57,5 +59,30 @@ public class Utils {
 		Date date = new Date(millis);
 		return dateFormat.format(date);
 	}
-
+	/**
+	 * Determines the network generation based on the networkType retrieved via telephonyManager.getNetworkType()
+	 * @param networkType
+	 * @return
+	 * 0: Invalid value
+	 * 2: GSM
+	 * 3: 3G
+	 * 4: LTE
+	 */
+	public static int networkTypeToNetworkGeneration(int networkType) {
+		if (networkType == 0)
+			return 0;
+		else if (networkType == TelephonyManager.NETWORK_TYPE_UMTS || networkType == TelephonyManager.NETWORK_TYPE_HSDPA
+				|| networkType == TelephonyManager.NETWORK_TYPE_HSPA
+				|| networkType == TelephonyManager.NETWORK_TYPE_HSPAP
+				|| networkType == TelephonyManager.NETWORK_TYPE_HSUPA)
+			return 3;
+		else if (networkType == TelephonyManager.NETWORK_TYPE_GPRS || networkType == TelephonyManager.NETWORK_TYPE_EDGE
+				|| networkType == TelephonyManager.NETWORK_TYPE_CDMA)
+			return 2;
+		else if(networkType == TelephonyManager.NETWORK_TYPE_LTE){
+			return 4;
+		} else{
+			return 0;
+		}
+	}
 }

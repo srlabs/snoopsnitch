@@ -23,6 +23,7 @@ import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.MSDServiceHelperCreator;
 import de.srlabs.msd.util.MsdConfig;
+import de.srlabs.msd.util.MsdLog;
 import de.srlabs.msd.util.Utils;
 
 public class BaseActivity extends FragmentActivity implements MsdServiceCallback
@@ -39,7 +40,8 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		
+		MsdLog.init(msdServiceHelperCreator.getMsdServiceHelper());
+		MsdLog.i("MSD","MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 		LayoutInflater inflater = getLayoutInflater();
 		messageLayout = inflater.inflate(R.layout.custom_message_popdown,
                 (ViewGroup) findViewById(R.id.toast_layout_root));	
@@ -106,6 +108,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected void showTestScreen ()
 	{
 	    Intent intent = new Intent(this, MsdServiceHelperTest.class);
+	    // intent = new Intent(this, ActiveTestAdvanced.class);
 	    startActivity(intent);
 	}
 	

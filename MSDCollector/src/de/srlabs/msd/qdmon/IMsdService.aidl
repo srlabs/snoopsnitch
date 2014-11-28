@@ -8,4 +8,5 @@ interface IMsdService {
 	boolean startRecording();
 	boolean stopRecording();
 	long getServiceStartTime();
+	void writeLog(String logData);
 }

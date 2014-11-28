@@ -1,15 +1,18 @@
 package de.srlabs.msd.qdmon;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.Toast;
-import de.srlabs.msd.util.Constants;
+import de.srlabs.msd.CrashUploadActivity;
 import de.srlabs.msd.R;
+import de.srlabs.msd.util.Constants;
 
 public class MsdServiceNotifications {
 	Service service;
@@ -48,15 +51,21 @@ public class MsdServiceNotifications {
 		Toast.makeText(service, "Showing Error notification for errorId=" + errorId, Toast.LENGTH_SHORT).show();
 		// TODO: Implement notification and remove Toast
 	}
-	public void showInternalErrorNotification(String msg, Integer debugLogFileId){
+	public void showInternalErrorNotification(String msg, Long debugLogFileId){
+		// TODO: Maybe directly start the error reporting activity if the app was on top when the error occured
 		Log.i("MsdServiceNotifications","showInternalErrorNotification(" + msg + "  debugLogFileId=" + debugLogFileId + ")");
+		Intent intent = new Intent(service, CrashUploadActivity.class);
+		intent.putExtra(CrashUploadActivity.EXTRA_ERROR_ID, debugLogFileId == null ? 0:(long)debugLogFileId);
+		intent.putExtra(CrashUploadActivity.EXTRA_ERROR_TEXT, msg);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		// TODO: Make this notification pretty
-		// TODO: Add a button for marking the error log file as pending for upload
 		NotificationCompat.Builder notificationBuilder =
 				new NotificationCompat.Builder(service)
 		.setSmallIcon(R.drawable.ic_launcher)
-		.setContentTitle("showInternalErrorNotification")
-		.setContentText(msg);
+		.setContentTitle("MSD has crashed")
+		.setContentText("Please submit an error report")
+		.setContentIntent(pendingIntent);
 		Notification n = notificationBuilder.build();
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
 		notificationManager.notify(Constants.NOTIFICATION_ID_INTERNAL_ERROR, n);

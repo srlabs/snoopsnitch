@@ -67,6 +67,11 @@ public class DummyMsdService extends Service{
 		public long getServiceStartTime() throws RemoteException {
 			return serviceStartTime;
 		}
+
+		@Override
+		public void writeLog(String logData) throws RemoteException {
+			Log.i(TAG,"DummyMsdService.MyMsdServiceStub.writeLog: " + logData);
+		}
 	};
 	private class DummyDataRunnable implements Runnable{
 		private boolean recordingStopped = false;

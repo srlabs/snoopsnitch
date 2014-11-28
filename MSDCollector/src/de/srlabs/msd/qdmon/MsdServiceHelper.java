@@ -31,6 +31,7 @@ public class MsdServiceHelper{
 	private boolean connected = false;
 	private boolean dummy;
 	private AnalysisEventDataInterface data = null;
+	private StringBuffer logDataBuffer;
 
 	public MsdServiceHelper(Context context, MsdServiceCallback callback, boolean dummy){
 		this.context = context;
@@ -79,9 +80,10 @@ public class MsdServiceHelper{
 		return result;
 	}
 	public boolean isRecording(){
-		Log.i(TAG,"MsdServiceHelper.isRecording() called");
-		if(!connected)
+		if(!connected){
+			Log.i(TAG,"MsdServiceHelper.isRecording(): Not connected => false");
 			return false;
+		}
 		boolean result = false;
 		try {
 			result = mIMsdService.isRecording();
@@ -106,8 +108,15 @@ public class MsdServiceHelper{
 					dummyData.clearDynamicEvents();
 					dummyData.addDynamicDummyEvents(mIMsdService.getServiceStartTime());
 				}
+				// Write pending log data when the service is connected
+				if(logDataBuffer != null){
+					mIMsdService.writeLog("START Pending messages:\n");
+					mIMsdService.writeLog(logDataBuffer.toString());
+					mIMsdService.writeLog("END Pending messages:\n");
+					logDataBuffer = null;
+				}
 			} catch (RemoteException e) {
-				handleFatalError("RemoteException while calling mIMsdService.registerCallback(msdCallback) or mIMsdService.isRecording() in MsdServiceHelper.MyServiceConnection.onServiceConnected()", e);
+				handleFatalError("RemoteException in MsdServiceHelper.MyServiceConnection.onServiceConnected()", e);
 			}
 			connected = true;
 			callback.stateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
@@ -134,5 +143,18 @@ public class MsdServiceHelper{
 	}
 	public AnalysisEventDataInterface getData(){
 		return data;
+	}
+	public void writeLog(String logData) {
+		if(isConnected())
+			try {
+				mIMsdService.writeLog(logData);
+			} catch (RemoteException e) {
+				handleFatalError("RemoteException in writeLog()",e);
+			}
+		else{
+			if(logDataBuffer == null)
+				logDataBuffer = new StringBuffer();
+			logDataBuffer.append(logData);
+		}
 	}
 }
