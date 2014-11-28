@@ -85,5 +85,5 @@ INSERT INTO config VALUES
 
 		-- catcher_min_score
 		-- TODO: Evaluate minimal score, show everything for now
-		0.0
+		2.0
 );
