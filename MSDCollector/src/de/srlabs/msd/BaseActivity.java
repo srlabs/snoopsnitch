@@ -40,8 +40,6 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		MsdLog.init(msdServiceHelperCreator.getMsdServiceHelper());
-		MsdLog.i("MSD","MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 		LayoutInflater inflater = getLayoutInflater();
 		messageLayout = inflater.inflate(R.layout.custom_message_popdown,
                 (ViewGroup) findViewById(R.id.toast_layout_root));	
@@ -50,6 +48,8 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		
 		// Get MsdService Helper
 		msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext(), this);
+		MsdLog.init(msdServiceHelperCreator.getMsdServiceHelper());
+		MsdLog.i("MSD","MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 	}
 	
 	@Override
@@ -108,7 +108,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected void showTestScreen ()
 	{
 	    Intent intent = new Intent(this, MsdServiceHelperTest.class);
-	    // intent = new Intent(this, ActiveTestAdvanced.class);
+	    intent = new Intent(this, ActiveTestAdvanced.class);
 	    startActivity(intent);
 	}
 	
