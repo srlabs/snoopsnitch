@@ -37,7 +37,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected Menu menu;
 	protected Boolean isInForeground = false;
 	protected Handler handler;
-	protected final int refresh_intervall = 300000;
+	protected final int refresh_intervall = 60000;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
