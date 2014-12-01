@@ -108,7 +108,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected void showTestScreen ()
 	{
 	    Intent intent = new Intent(this, MsdServiceHelperTest.class);
-	    intent = new Intent(this, ActiveTestAdvanced.class);
+	    //intent = new Intent(this, ActiveTestAdvanced.class);
 	    startActivity(intent);
 	}
 	
