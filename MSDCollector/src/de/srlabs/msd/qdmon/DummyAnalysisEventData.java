@@ -3,6 +3,7 @@ package de.srlabs.msd.qdmon;
 import java.util.Vector;
 
 import de.srlabs.msd.analysis.ImsiCatcher;
+import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.analysis.SMS;
 
 public class DummyAnalysisEventData implements AnalysisEventDataInterface {
@@ -106,13 +107,8 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 		dynamicImsiCatchers = new Vector<ImsiCatcher>();
 	}
 	@Override
-	public double get2GScore() {
+	public Risk getScores(Operator operator) {
 		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public double get3GScore() {
-		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 }

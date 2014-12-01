@@ -144,14 +144,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	}
 
 	@Override
-	public double get2GScore() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public double get3GScore() {
-		// TODO Auto-generated method stub
-		return 0;
+	public Risk getScores(Operator operator) {
+		return new Risk(db, operator.getMcc(), operator.getMnc());
 	}
 }

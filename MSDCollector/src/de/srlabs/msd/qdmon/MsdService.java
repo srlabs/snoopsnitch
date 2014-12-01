@@ -705,11 +705,8 @@ public class MsdService extends Service{
 							if (MsdServiceAnalysis.runSMSAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.SMS_DETECTED);
 							};
-							if (MsdServiceAnalysis.run2GAnalysis(MsdService.this, db)) {
-								sendStateChanged(StateChangedReason.SEC_2G_CHANGED);
-							};
-							if (MsdServiceAnalysis.run3GAnalysis(MsdService.this, db)) {
-								sendStateChanged(StateChangedReason.SEC_3G_CHANGED);
+							if (MsdServiceAnalysis.runSecurityAnalysis(MsdService.this, db)) {
+								sendStateChanged(StateChangedReason.SEC_METRICS_CHANGED);
 							};
 							lastAnalysisTime = System.currentTimeMillis();
 
