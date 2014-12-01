@@ -34,7 +34,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
@@ -56,7 +55,6 @@ import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdConfig;
 import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.MsdLog;
-import de.srlabs.msd.util.Utils;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";
@@ -101,6 +99,32 @@ public class MsdService extends Service{
 		@Override
 		public void writeLog(String logData) throws RemoteException {
 			MsdService.this.writeLog(logData);
+		}
+
+		@Override
+		public long getExtraRecordingId() throws RemoteException {
+			return extraRecordingFileId;
+		}
+
+		@Override
+		public boolean startExtraRecording(String filename) throws RemoteException {
+			try{
+				return MsdService.this.startExraRecording(filename);
+			} catch(Exception e){
+				handleFatalError("Exception in startExtraRecording:", e);
+				return false;
+			}
+		}
+
+		@Override
+		public boolean endExtraRecording(boolean markForUpload)
+				throws RemoteException {
+			try{
+				return MsdService.this.endExtraRecording(markForUpload);
+			} catch(Exception e){
+				handleFatalError("Exception in endExtraRecording:", e);
+				return false;
+			}
 		}
 	};
 	AtomicBoolean shuttingDown = new AtomicBoolean(false);
@@ -154,6 +178,10 @@ public class MsdService extends Service{
 
 	private StringBuffer logBuffer = null;
 
+	private long extraRecordingStartTime = 0;
+	private EncryptedFileWriter extraRecordingRawFileWriter;
+	private long extraRecordingFileId = 0;
+
 	class QueueElementWrapper<T>{
 		T obj;
 		boolean done = false;
@@ -171,6 +199,37 @@ public class MsdService extends Service{
 	public IBinder onBind(Intent intent) {
 		info("MsdService.onBind() called");
 		return mBinder;
+	}
+
+	public boolean endExtraRecording(boolean markForUpload) {
+		if(extraRecordingRawFileWriter == null)
+			return false;
+		EncryptedFileWriter copyExtraRecordingRawFileWriter = extraRecordingRawFileWriter;
+		extraRecordingRawFileWriter = null;
+		copyExtraRecordingRawFileWriter.close();
+		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+		DumpFile df = DumpFile.get(db, extraRecordingFileId);
+		df.endRecording(db);
+		if(markForUpload){
+			df.updateState(db, DumpFile.STATE_AVAILABLE, DumpFile.STATE_PENDING, null);
+		}
+		MsdDatabaseManager.getInstance().closeDatabase();
+		extraRecordingStartTime = 0;
+		extraRecordingFileId = 0;
+		return true;
+	}
+
+	public boolean startExraRecording(String filename) {
+		if(!recording)
+			return false;
+		this.extraRecordingStartTime = System.currentTimeMillis();
+		this.extraRecordingRawFileWriter = new EncryptedFileWriter(this, filename + ".gz.smime", true, filename + ".gz", true);
+		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+		DumpFile df = new DumpFile(filename,DumpFile.TYPE_ENCRYPTED_QDMON);
+		df.insert(db);
+		this.extraRecordingFileId = df.getId();
+		MsdDatabaseManager.getInstance().closeDatabase();
+		return true;
 	}
 
 	public void writeLog(String logData) {
@@ -303,12 +362,13 @@ public class MsdService extends Service{
 			mainThreadHandler.post(periodicCheckRecordingStateRunnableWrapper);
 			doStartForeground();
 			sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
-//			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(new Runnable() {				
-//				@Override
-//				public void run() {
-//					throw new IllegalStateException("Let's test error reporting");
-//				}
-//			}), 3000);
+			//  Use the following snippet to test handling of fatal errors.
+			//			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(new Runnable() {				
+			//				@Override
+			//				public void run() {
+			//					throw new IllegalStateException("Let's test error reporting");
+			//				}
+			//			}), 3000);
 			return true;
 		} catch (Exception e) { 
 			handleFatalError("Exception in startRecording(): ", e);
@@ -492,6 +552,13 @@ public class MsdService extends Service{
 						DiagMsgWrapper msg = new DiagMsgWrapper(buf);
 						toParserMsgQueue.add(msg);
 						rawWriter.write(buf);
+						if(extraRecordingRawFileWriter != null){
+							try{
+								extraRecordingRawFileWriter.write(buf);
+							} catch(NullPointerException e){
+								// The check extraRecordingRawFileWriter != null is not thread safe, so let's just ignore a NullPointerException
+							}
+						}
 					}
 				}
 			} catch (EOFException e) {
@@ -1035,9 +1102,9 @@ public class MsdService extends Service{
 	}
 	private void sendFatalErrorMessage(String msg, Throwable e){
 		if(e == null){
-			MsdLog.e(TAG,"sendErrorMessage: " + msg);
+			MsdLog.e(TAG,"sendFatalErrorMessage: " + msg);
 		} else{
-			MsdLog.e(TAG,"sendErrorMessage: " + msg,e);
+			MsdLog.e(TAG,"sendFatalErrorMessage: " + msg,e);
 			msg += " " + e.getClass().getSimpleName() + ": " + e.getMessage();
 		}
 		closeDebugLog(true);
@@ -1165,6 +1232,12 @@ public class MsdService extends Service{
 		if (sqlQueueSize > sqlQueueWatermark){
 			sqlQueueWatermark = sqlQueueSize;
 			warn("DEBUG: SQL queue high mark: " + sqlQueueWatermark);
+		}
+
+		// Terminate extra file recording if the ActiveTestService doesn't terminate it (e.g. because it disappears)		
+		if(extraRecordingRawFileWriter != null){
+			if(System.currentTimeMillis() > extraRecordingStartTime + 10*60*1000)
+				endExtraRecording(false);
 		}
 
 		// Check parser memory usage by evaluating the stack/heap size in /proc/pid/maps

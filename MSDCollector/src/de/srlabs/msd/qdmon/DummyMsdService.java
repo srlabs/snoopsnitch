@@ -72,6 +72,23 @@ public class DummyMsdService extends Service{
 		public void writeLog(String logData) throws RemoteException {
 			Log.i(TAG,"DummyMsdService.MyMsdServiceStub.writeLog: " + logData);
 		}
+
+		@Override
+		public long getExtraRecordingId() throws RemoteException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public boolean startExtraRecording(String filename) throws RemoteException {
+			return true;
+		}
+
+		@Override
+		public boolean endExtraRecording(boolean markForUpload)
+				throws RemoteException {
+			return true;			
+		}
 	};
 	private class DummyDataRunnable implements Runnable{
 		private boolean recordingStopped = false;

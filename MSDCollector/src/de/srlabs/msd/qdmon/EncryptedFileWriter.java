@@ -241,7 +241,9 @@ public class EncryptedFileWriter{
 			if(encryptedOutputStream != null)
 				encryptedOutputStream.flush();
 			if(compressPlaintextFile){
-				// GZIPOutputStream doesn't allow reliable flushing of output, so let's just reopen the file with MODE_APPEND, gzip files can be concatenated.
+				// GZIPOutputStream doesn't allow reliable flushing of output,
+				// so let's just reopen the file with MODE_APPEND, gzip files
+				// can be concatenated.
 				plaintextOutputStream.close();
 				plaintextOutputStream = msdService.openFileOutput(plaintextFilename, Context.MODE_APPEND);
 				if(compressPlaintextFile){
@@ -271,15 +273,7 @@ public class EncryptedFileWriter{
 	public int getQueueSize(){
 		return msgQueue.size();
 	}
-//	public void reopen(String encryptedFilename, String plaintextFilename){
-//		info("reopen(" + encryptedFilename + ", " + plaintextFilename);
-//		reopenRunning = true;
-//		close();
-//		this.encryptedFilename = encryptedFilename;
-//		this.plaintextFilename = plaintextFilename;
-//		openOutput();
-//		reopenRunning = false;
-//	}
+
 	public String getEncryptedFilename() {
 		return encryptedFilename;
 	}

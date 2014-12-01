@@ -9,4 +9,8 @@ interface IMsdService {
 	boolean stopRecording();
 	long getServiceStartTime();
 	void writeLog(String logData);
+	// Extra file recording for active test:
+	long getExtraRecordingId();
+	boolean startExtraRecording(String filename);
+	boolean endExtraRecording(boolean markForUpload);
 }
