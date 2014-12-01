@@ -37,5 +37,64 @@ DROP TABLE IF EXISTS pending_uploads;
 CREATE TABLE pending_uploads(
   _id integer PRIMARY KEY,					-- Upload ID, incremental and unique in the db
   filename CHAR(64) NOT NULL UNIQUE, 		-- The filename of the file to upload, file must be located in context.getFilesDir()
-  delete_after_uploading INTEGER NOT NULL 	-- 0/1, Indicates whether the file should be deleted directly after uploading
+  delete_after_uploading INTEGER NOT NULL 	-- 0/1, Indicates whether the file should be deleted directly after uploadingG
+);
+
+DROP TABLE IF EXISTS gsmmap_operators;
+CREATE TABLE gsmmap_operators(
+  id integer PRIMARY KEY,		-- Provider ID
+  name char(32) DEFAULT NULL,		-- Provider name
+  color char(9) DEFAULT NULL		-- HTML color used for provider
+);
+
+DROP TABLE IF EXISTS gsmmap_codes;
+CREATE TABLE gsmmap_codes(
+  id INTEGER UNSIGNED NOT NULL,		-- Provider ID
+  mcc SMALLINT NOT NULL,		-- mobile country code
+  mnc SMALLINT NOT NULL 		-- mobile network code
+);
+
+DROP TABLE IF EXISTS gsmmap_inter;
+CREATE TABLE gsmmap_inter(
+  id INTEGER UNSIGNED NOT NULL,		-- Provider ID
+  year SMALLINT UNSIGNED NOT NULL,	-- Year
+  month SMALLINT UNSIGNED NOT NULL,	-- Month
+  value DOUBLE,				-- Intercept value
+  PRIMARY KEY(id, year, month, value)
+);
+
+DROP TABLE IF EXISTS gsmmap_imper;
+CREATE TABLE gsmmap_imper(
+  id INTEGER UNSIGNED NOT NULL,		-- Provider ID
+  year SMALLINT UNSIGNED NOT NULL,	-- Year
+  month SMALLINT UNSIGNED NOT NULL,	-- Month
+  value DOUBLE,				-- Impersonation value
+  PRIMARY KEY(id, year, month, value)
+);
+
+DROP TABLE IF EXISTS gsmmap_track;
+CREATE TABLE gsmmap_track(
+  id INTEGER UNSIGNED NOT NULL,		-- Provider ID
+  year SMALLINT UNSIGNED NOT NULL,	-- Year
+  month SMALLINT UNSIGNED NOT NULL,	-- Month
+  value DOUBLE,				-- Tracking value
+  PRIMARY KEY(id, year, month, value)
+);
+
+DROP TABLE IF EXISTS gsmmap_inter3G;
+CREATE TABLE gsmmap_inter3G(
+  id INTEGER UNSIGNED NOT NULL,		-- Provider ID
+  year SMALLINT UNSIGNED NOT NULL,	-- Year
+  month SMALLINT UNSIGNED NOT NULL,	-- Month
+  value DOUBLE,				-- Intercept value
+  PRIMARY KEY(id, year, month, value)
+);
+
+DROP TABLE IF EXISTS gsmmap_imper3G;
+CREATE TABLE gsmmap_imper3G(
+  id INTEGER UNSIGNED NOT NULL,		-- Provider ID
+  year SMALLINT UNSIGNED NOT NULL,	-- Year
+  month SMALLINT UNSIGNED NOT NULL,	-- Month
+  value DOUBLE,				-- Impersonation value
+  PRIMARY KEY(id, year, month, value)
 );
