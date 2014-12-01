@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.upload.DumpFile;
+import de.srlabs.msd.util.MsdDatabaseManager;
 
 /**
  * This Activity can be opened from an Android Notification after a fatal error
@@ -51,11 +52,11 @@ public class CrashUploadActivity extends Activity
 		btnUpload.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				MsdSQLiteOpenHelper helper = new MsdSQLiteOpenHelper(CrashUploadActivity.this);
-				SQLiteDatabase db = helper.getWritableDatabase();
+				MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(CrashUploadActivity.this));
+				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 				DumpFile df = DumpFile.get(db, fileId);
 				df.markForUpload(db);
-				db.close();
+				MsdDatabaseManager.getInstance().closeDatabase();
 				// TODO: Start actual upload activity now, at the moment the file is only marked for upload
 			}
 		});

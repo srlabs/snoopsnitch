@@ -16,6 +16,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.qdmon.MsdService;
+import de.srlabs.msd.util.MsdDatabaseManager;
 
 public class UploadServiceHelper {
 	private static String TAG = "msd-upload-service-helper";
@@ -88,8 +89,8 @@ public class UploadServiceHelper {
 	 * @return
 	 */
 	public static UploadState createUploadState(Context context){
-		MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(context);
-		SQLiteDatabase db = msdSQLiteOpenHelper.getReadableDatabase();
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
+		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		Vector<DumpFile> files = DumpFile.getFiles(db, "state = " + DumpFile.STATE_PENDING);
 		long totalSize = 0;
 		// TODO: Maybe we need to add STATE_RECORDING_PENDING and add a mechanism to automatically restart recording
@@ -97,7 +98,7 @@ public class UploadServiceHelper {
 			File f = new File(context.getFilesDir() + "/" + file.getFilename());
 			totalSize += f.length();
 		}
-		db.close();
+		MsdDatabaseManager.getInstance().closeDatabase();
 		UploadState result = new UploadState(UploadState.State.IDLE, files.toArray(new DumpFile[0]), totalSize, 0, null);
 		return result;
 	}

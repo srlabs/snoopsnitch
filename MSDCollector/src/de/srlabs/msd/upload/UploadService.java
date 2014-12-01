@@ -21,6 +21,7 @@ import android.util.Log;
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.MsdConfig;
+import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.Utils;
 
 /**
@@ -176,8 +177,8 @@ public class UploadService extends Service{
 				return;
 			final int responseCode = connection.getResponseCode();
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				MsdSQLiteOpenHelper msdSQLiteOpenHelper = new MsdSQLiteOpenHelper(this);
-				SQLiteDatabase db = msdSQLiteOpenHelper.getWritableDatabase();
+				MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(UploadService.this));
+				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 				if(!file.updateState(db, DumpFile.STATE_PENDING,  DumpFile.STATE_UPLOADED, null)){
 					uploadState.error("Failed to change state for file " + file.getFilename() + " from STATE_PENDING to STATE_UPLOADED");
 					return;
