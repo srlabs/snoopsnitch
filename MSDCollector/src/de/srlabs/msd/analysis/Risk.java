@@ -23,8 +23,8 @@ public class Risk {
 		this.inter = query2GScores(db, currentMCC, currentMNC, "intercept");
 		this.imper = query2GScores(db, currentMCC, currentMNC, "impersonation");
 		this.track = query2GScores(db, currentMCC, currentMNC, "tracking");
-		this.inter3G = query3GScores(db, currentMCC, currentMNC, "intercept");
-		this.imper3G = query3GScores(db, currentMCC, currentMNC, "impersonation");
+		this.inter3G = query3GScores(db, currentMCC, currentMNC, "intercept3G");
+		this.imper3G = query3GScores(db, currentMCC, currentMNC, "impersonation3G");
 
 		queryOperatorData(db, currentMCC, currentMNC);
 

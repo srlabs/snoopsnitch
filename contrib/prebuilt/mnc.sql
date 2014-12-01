@@ -782,7 +782,7 @@ INSERT INTO mnc VALUES(456,2,'hello');
 INSERT INTO mnc VALUES(456,3,'S Telecom');
 INSERT INTO mnc VALUES(456,4,'qb');
 INSERT INTO mnc VALUES(456,5,'Star-Cell');
-INSERT INTO mnc VALUES(456,6,' Smart Mobile');
+INSERT INTO mnc VALUES(456,6,'Smart Mobile');
 INSERT INTO mnc VALUES(456,8,'Metfone');
 INSERT INTO mnc VALUES(456,9,'Beeline');
 INSERT INTO mnc VALUES(456,11,'Excell');
