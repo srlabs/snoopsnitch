@@ -26,7 +26,7 @@ public class MsdServiceAnalysis {
 		}
 	}
 
-	public static boolean runCatcherAnalysis(Context context, SQLiteDatabase db){
+	public static boolean runCatcherAnalysis(Context context, SQLiteDatabase db) throws Exception{
 		int before, after;
 
 		before = getLast(db, "catcher", "id");
@@ -51,7 +51,7 @@ public class MsdServiceAnalysis {
 		return false;
 	}
 
-	public static boolean runSMSAnalysis(Context context, SQLiteDatabase db){
+	public static boolean runSMSAnalysis(Context context, SQLiteDatabase db) throws Exception{
 		int before, after;
 
 		String[] sms_cols = new String[]
@@ -98,7 +98,7 @@ public class MsdServiceAnalysis {
 		}
 	}
 
-	public static boolean runSecurityAnalysis(Context context, SQLiteDatabase db){
+	public static boolean runSecurityAnalysis(Context context, SQLiteDatabase db) throws Exception{
 
 		boolean result = false;
 		Operator op = new Operator(db);

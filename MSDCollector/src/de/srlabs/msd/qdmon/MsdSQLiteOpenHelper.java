@@ -18,7 +18,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		this.context = context;
 	}
 
-	public static void readSQLAsset(Context context, SQLiteDatabase db, String file, Boolean verbose) {
+	public static void readSQLAsset(Context context, SQLiteDatabase db, String file, Boolean verbose) throws Exception {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") called");
 		db.execSQL("BEGIN TRANSACTION;");
 		try {
@@ -48,8 +48,9 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 					db.execSQL(statement);
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			db.execSQL("ROLLBACK;");
+			throw e;
 		}
 		db.execSQL("COMMIT;");
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") done");
@@ -58,17 +59,21 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
-		readSQLAsset(context, db, "si.sql", true);
-		readSQLAsset(context, db, "sm.sql", true);
-		readSQLAsset(context, db, "cell_info.sql", true);
-		readSQLAsset(context, db, "sms.sql", true);
-		readSQLAsset(context, db, "config.sql", true);
-		readSQLAsset(context, db, "mcc.sql", true);
-		readSQLAsset(context, db, "mnc.sql", true);
-		readSQLAsset(context, db, "hlr_info.sql", true);
-		readSQLAsset(context, db, "analysis_tables.sql", true);
-		readSQLAsset(context, db, "local.sqlx", true);
-		readSQLAsset(context, db, "files.sql", true);
+		try{
+			readSQLAsset(context, db, "si.sql", true);
+			readSQLAsset(context, db, "sm.sql", true);
+			readSQLAsset(context, db, "cell_info.sql", true);
+			readSQLAsset(context, db, "sms.sql", true);
+			readSQLAsset(context, db, "config.sql", true);
+			readSQLAsset(context, db, "mcc.sql", true);
+			readSQLAsset(context, db, "mnc.sql", true);
+			readSQLAsset(context, db, "hlr_info.sql", true);
+			readSQLAsset(context, db, "analysis_tables.sql", true);
+			readSQLAsset(context, db, "local.sqlx", true);
+			readSQLAsset(context, db, "files.sql", true);
+		} catch(Exception e){
+			Log.e("MSD","Failed to create database",e);
+		}
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() done");
 	}
 
