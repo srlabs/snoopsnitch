@@ -12,7 +12,6 @@ public class DetailThreatChartDay extends DetailThreatChart
 	public DetailThreatChartDay(Context context, AttributeSet attrs) 
 	{
 		super(context, attrs);
-	
 	}
 
 	@Override

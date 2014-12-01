@@ -2,10 +2,12 @@ package de.srlabs.msd.views;
 
 import de.srlabs.msd.DetailChartActivity;
 import de.srlabs.msd.R;
+import de.srlabs.msd.util.MSDServiceHelperCreator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -14,11 +16,12 @@ public class DetailThreatChart extends View
 	int _timePeriod;
 	int _threatType;
 	int _amount;	
-	int _rectWidth = 10;
+	int _rectWidth;
 	int _color;
 	int[] _items;
 	private DetailChartActivity _activity;
 	ImageView _imgThreatType;
+	private Context context;
 	
 	public DetailThreatChart(Context context, AttributeSet attrs) 
 	{
@@ -36,6 +39,9 @@ public class DetailThreatChart extends View
 			_color = getResources().getColor(R.color.common_chartRed);
 			//_imgThreatType.setBackgroundResource(R.drawable.ic_content_sms_event);
 		}
+		
+		this._rectWidth = MSDServiceHelperCreator.getInstance(null).getRectWidth();
+		this.context = context;
 	}
 	
 	@Override
@@ -86,5 +92,10 @@ public class DetailThreatChart extends View
 				}
 			}
 		}
+	}
+	
+	protected int getPxFromDp (int dp)
+	{
+		return (int)((dp * context.getResources().getDisplayMetrics().density) + 0.5);
 	}
 }

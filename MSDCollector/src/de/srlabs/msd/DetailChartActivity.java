@@ -2,6 +2,7 @@ package de.srlabs.msd;
 
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.analysis.SMS.Type;
+import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.TimeSpace;
 import de.srlabs.msd.views.adapter.DetailChartGalleryAdapter;
 import de.srlabs.msd.views.adapter.ListViewImsiCatcherAdapter;
@@ -135,7 +136,7 @@ public class DetailChartActivity extends BaseActivity
 		if (id == R.id.IMSICatcherCharts)
 		{
 			ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, 
-					android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.imsi_types));
+					android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.imsi_types));
 		    spinner.setAdapter(spinnerAdapter);
 		    
 			spinner.setVisibility(View.INVISIBLE);
@@ -146,6 +147,8 @@ public class DetailChartActivity extends BaseActivity
 			ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, 
 					android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.sms_types));
 			    spinner.setAdapter(spinnerAdapter);
+			
+			spinner.setSelection(0);
 		}
 	}
 	

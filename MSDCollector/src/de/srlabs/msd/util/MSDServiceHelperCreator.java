@@ -17,12 +17,13 @@ public class MSDServiceHelperCreator
 	// Attributes
 	private static MSDServiceHelperCreator _instance = null;
 	private MsdServiceHelper msdServiceHelper;
+	private int rectWidth;
 	
 	// Methods
 	public MSDServiceHelperCreator (Context context, MsdServiceCallback callback) 
 	{
 
-		msdServiceHelper = new MsdServiceHelper(context, callback, false);
+		msdServiceHelper = new MsdServiceHelper(context, callback, true);
 	}
 	
 	public static MSDServiceHelperCreator getInstance (Context context, MsdServiceCallback callback)
@@ -289,5 +290,15 @@ public class MSDServiceHelperCreator
 		}
 		
 		return sms;
+	}
+	
+	public void setRectWidth (int rectWidth)
+	{
+		this.rectWidth = rectWidth;
+	}
+	
+	public int getRectWidth ()
+	{
+		return rectWidth;
 	}
 }

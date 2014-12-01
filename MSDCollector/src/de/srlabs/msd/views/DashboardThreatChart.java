@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import de.srlabs.msd.DashboardActivity;
 import de.srlabs.msd.R;
+import de.srlabs.msd.util.MSDServiceHelperCreator;
 
 public class DashboardThreatChart extends View 
 {
@@ -47,6 +48,7 @@ public class DashboardThreatChart extends View
 	@Override
 	protected void onDraw(Canvas canvas) 
 	{
+		this._rectWidth = MSDServiceHelperCreator.getInstance(null).getRectWidth();
 		int _rectSpace = 2;
 		
 		if (_threatType == 0)
@@ -186,16 +188,6 @@ public class DashboardThreatChart extends View
 				}
 			}
 		}
-	}
-
-	public int getRectWidth() 
-	{
-		return _rectWidth;
-	}
-
-	public void setRectWidth(int rectWidth) 
-	{
-		this._rectWidth = rectWidth;
 	}
 	
 	private void setColor ()

@@ -7,7 +7,9 @@
     <string name="website">uid.com</string>
     <string name="common_silent_sms">Silent SMS</string>
     <string name="common_binary_sms">Binary SMS</string>
-    <string name="common_imsi_catcher">IMSI Catcher</string>
+    <string name="common_imsi_catcher">IMSI-Catcher</string>
+    <string name="common_3g_title">3G</string>
+    <string name="common_2g_title">2G</string>
     
     <!-- Action Bar Titles -->
     <string name="actionBar_title">GSMMap-App</string>
@@ -31,7 +33,7 @@
     
     <!-- Alerts -->
     <string name="alert_deviceCompatibility_title">Device Compatibility</string>
-    <string name="alert_deviceCompatibility_message">Device is not compatible.</string>
+    <string name="alert_deviceCompatibility_message">Device is not compatible. To get more information visit http://gsmmap.org/</string>
     
     <!-- Dashboard Screen -->
     <string name="dashboard_upload_description"> scans are ready to upload</string>
@@ -41,6 +43,16 @@
     <string name="dashboard_imsi_description">IMSI-Catcher</string>
     <string name="dashboard_timeline_lasthour">Last hour</string>
     <string name="dashboard_timeline_today">Today</string>
+    <string name="dashboard_network_security_title">Network Security</string>
+    <string name="dashboard_network_security_provider_scrollview_header">Provider results in comparison:</string>
+    <string name="dashboard_network_security_interception_title">Interception</string>
+    <string name="dashboard_network_security_impersonation_title">Impersonation</string>
+    <!--
+    <string name="dashboard_network_security_protectionLevel_high">higher\nprotection</string>
+    <string name="dashboard_network_security_protectionLevel_low">lower\nprotection</string>
+    -->
+    <string name="dashboard_network_security_protectionLevel_high"></string>
+    <string name="dashboard_network_security_protectionLevel_low"></string>
     
     <!-- Detail Screen -->
     <string name="detailChart_title_month">Last weeks</string>
@@ -67,20 +79,20 @@
     <string name="settings_cellinfokeepduration_summary"></string>
     <string name="settings_cellinfokeepduration_dialogtitle">Select duration:</string>
     
-    <string name="settings_gpsrecording_title"></string>
+    <string name="settings_gpsrecording_title">GPS Recording</string>
     <string name="settings_gpsrecording_summary"></string>
     
-    <string name="settings_networklocationrecording_title"></string>
+    <string name="settings_networklocationrecording_title">Network location recording</string>
     <string name="settings_networklocationrecording_summary"></string>
     
-    <string name="settings_unencrypteddumpfilesrecording_title"></string>
+    <string name="settings_unencrypteddumpfilesrecording_title">Unencrypted files recording</string>
     <string name="settings_unencrypteddumpfilesrecording_summary"></string>
     
-    <string name="settings_encrypteddumpfilesrecording_title"></string>
+    <string name="settings_encrypteddumpfilesrecording_title">Encrypted files recording</string>
     <string name="settings_encrypteddumpfilesrecording_summary"></string>
     
     <string name="settings_applicationid_title">Application ID</string>
-    <string name="settings_applicationid_summary">Tap here to reset the application ID.</string>
+    <string name="settings_applicationid_summary">Tap to reset the application ID.</string>
     
      <!-- List view row -->
      <string name="listview_sms_item_position">Position:</string>
@@ -89,6 +101,8 @@
      <string name="listview_sms_item_source">Source:</string>
      <string name="listview_imsi_item_position">Position:</string>
      <string name="listview_imsi_item_cellid">Cell-ID:</string>
+     <string name="listview_provider_item_ownprovider_text">Your provider</string>
+     <string name="listview_provider_item_testresult">Your test result</string>
      
      <!-- Alert Dialog (to Refresh App ID) -->
      <string name="alert_dialog_refreshappid_button_refresh">Refresh</string>

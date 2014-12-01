@@ -64,12 +64,14 @@ public class DashboardActivity extends BaseActivity
 		        @Override
 				public void onClick(DialogInterface dialog, int which) 
 		        {   	
-		        	android.os.Process.killProcess(android.os.Process.myPid());
+		        	//android.os.Process.killProcess(android.os.Process.myPid());
 		        }
 		     })
 		    .setIcon(android.R.drawable.ic_dialog_alert)
 		     .show();
 		}	
+		
+		this.rectWidth = msdServiceHelperCreator.getRectWidth();
 				
 		txtSmsMonthCount = (TextView) findViewById(R.id.txtDashboardSilentSmsMonthCount);
 		txtSmsWeekCount = (TextView) findViewById(R.id.txtDashboardSilentSmsWeekCount);
@@ -105,48 +107,48 @@ public class DashboardActivity extends BaseActivity
 		    @Override 
 		    public void onGlobalLayout() 
 		    { 
-		        setRectWidth(layout.getMeasuredWidth());
+		        msdServiceHelperCreator.setRectWidth(layout.getMeasuredWidth() / 2);
 		    } 
 		});
 		
 		resetThreatCounts();
 	}
 	
-	private void setRectWidth (int columnWidth)
-	{
-		int _rectWidth = columnWidth / 2;
+	private void setRectWidth (int rectWidth)
+	{		
+//		LinearLayout silentSMSCharts = (LinearLayout) findViewById(R.id.SilentSMSCharts);
+//		int countSMSCharts = silentSMSCharts.getChildCount();
+//		
+//		for (int i=0; i<=countSMSCharts; i++) 
+//		{
+//		    View v = silentSMSCharts.getChildAt(i);
+//		    
+//		    if (v instanceof LinearLayout) 
+//		    {
+//		    	if (((LinearLayout) v).getChildAt(1) instanceof DashboardThreatChart)
+//		    	{
+//		    		((DashboardThreatChart)((LinearLayout) v).getChildAt(1)).setRectWidth(_rectWidth);		 
+//		    	}
+//		    }
+//		}
+//		
+//		LinearLayout imsiCatcherCharts = (LinearLayout) findViewById(R.id.IMSICatcherCharts);
+//		int countImsiCharts = imsiCatcherCharts.getChildCount();
+//		
+//		for (int i=0; i<=countImsiCharts; i++) 
+//		{
+//		    View v = imsiCatcherCharts.getChildAt(i);
+//		    
+//		    if (v instanceof LinearLayout) 
+//		    {
+//		    	if (((LinearLayout) v).getChildAt(1) instanceof DashboardThreatChart)
+//		    	{
+//		    		((DashboardThreatChart)((LinearLayout) v).getChildAt(1)).setRectWidth(_rectWidth);	    		
+//		    	}
+//		    }
+//		}
 		
-		LinearLayout silentSMSCharts = (LinearLayout) findViewById(R.id.SilentSMSCharts);
-		int countSMSCharts = silentSMSCharts.getChildCount();
-		
-		for (int i=0; i<=countSMSCharts; i++) 
-		{
-		    View v = silentSMSCharts.getChildAt(i);
-		    
-		    if (v instanceof LinearLayout) 
-		    {
-		    	if (((LinearLayout) v).getChildAt(1) instanceof DashboardThreatChart)
-		    	{
-		    		((DashboardThreatChart)((LinearLayout) v).getChildAt(1)).setRectWidth(_rectWidth);		 
-		    	}
-		    }
-		}
-		
-		LinearLayout imsiCatcherCharts = (LinearLayout) findViewById(R.id.IMSICatcherCharts);
-		int countImsiCharts = imsiCatcherCharts.getChildCount();
-		
-		for (int i=0; i<=countImsiCharts; i++) 
-		{
-		    View v = imsiCatcherCharts.getChildAt(i);
-		    
-		    if (v instanceof LinearLayout) 
-		    {
-		    	if (((LinearLayout) v).getChildAt(1) instanceof DashboardThreatChart)
-		    	{
-		    		((DashboardThreatChart)((LinearLayout) v).getChildAt(1)).setRectWidth(_rectWidth);	    		
-		    	}
-		    }
-		}
+		msdServiceHelperCreator.setRectWidth (rectWidth);
 	}
 	
 	public void openDetailView (View view)

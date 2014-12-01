@@ -29,4 +29,12 @@
        	</attr>
 	</declare-styleable>
 	
+	<!-- Dashboard Provider Charts -->
+   	<declare-styleable name="DashboardProviderChart">
+       	<attr name="type" format="enum">
+           	<enum name="interception" value="0"/>
+           	<enum name="impersonation" value="1"/>
+       	</attr>
+   	</declare-styleable>
+	
 </resources>

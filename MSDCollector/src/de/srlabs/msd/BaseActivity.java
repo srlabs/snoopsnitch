@@ -202,30 +202,29 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	@Override
 	public void stateChanged(StateChangedReason reason) 
 	{	
-		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
+		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED) || 
+				reason.equals(StateChangedReason.RECORDING_STATE_CHANGED))
 		{
 			refreshView();
 		}
-		
-		Log.e("msd","REASON: " + reason.name());
-		if (menu != null)
+		else if (reason.equals(StateChangedReason.RECORDING_STATE_CHANGED))
 		{
-			if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
+			Log.e("msd","REASON: " + reason.name());
+			Toast.makeText(this, "Changed...", 2).show();
+			
+			if (menu != null)
 			{
-				menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_record_disable));
-				//showMessage("Recording started...");
-				showMessage(getResources().getString(R.string.message_recordingStarted));
-				
-				// Set time of "last scan"
-				((TextView)findViewById(R.id.txtDashboardLastScanTime)).setText(
-						new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
+				if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
+				{
+					menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_record_disable));
+					showMessage(getResources().getString(R.string.message_recordingStarted));
+				}
+				else
+				{
+					menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
+					showMessage(getResources().getString(R.string.message_recordingStopped));
+				}	
 			}
-			else
-			{
-				menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
-				//showMessage("Recording stopped...");
-				showMessage(getResources().getString(R.string.message_recordingStopped));
-			}	
 		}
 	}
 	private String setAppId ()
