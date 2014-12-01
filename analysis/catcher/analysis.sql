@@ -53,14 +53,16 @@ SELECT
 	max(ci.r1) +
 	max(ci.r2) +
 	max(ci.f1) as score
-FROM si, ci, config
+FROM si LEFT JOIN ci
 ON
 	ci.mcc = si.mcc AND
 	ci.mnc = si.mnc AND
 	ci.lac = si.lac AND
-	ci.cid = si.cid AND
-	abs(strftime('%s', ci.last_seen) - strftime('%s', si.timestamp)) < 3600
+	ci.cid = si.cid,
+config
+ON
+	abs(strftime('%s', ci.last_seen) - strftime('%s', si.timestamp)) < 10000
 GROUP BY
-	ci.mcc, ci.mnc, ci.lac, ci.cid
+	id
 HAVING
 	score > config.catcher_min_score;
