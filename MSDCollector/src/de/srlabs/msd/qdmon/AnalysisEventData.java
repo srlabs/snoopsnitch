@@ -28,86 +28,102 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 
 	public AnalysisEventData(Context context) {
 
-		long operator_id = 0;
-		JSONObject gsmmapData;
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
-
 		this.db = MsdDatabaseManager.getInstance().openDatabase();
 
-		File sdcard = Environment.getExternalStorageDirectory();
-		File file = new File(sdcard, "data.js");
-		StringBuilder text = new StringBuilder();
+		String text = null;
+		try {
+			text = readFromExternal("data.js");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line;
-			while ((line = br.readLine()) != null) {
-				text.append(line);
-			}
-			br.close();
-
-			gsmmapData = new JSONObject(text.toString().split("^\\s*var\\s*data\\s*=\\s*", 2)[1]);
-
-			db.delete("gsmmap_operators", null, null);
-			db.delete("gsmmap_codes", null, null);
-			db.delete("gsmmap_inter", null, null);
-			db.delete("gsmmap_imper", null, null);
-			db.delete("gsmmap_track", null, null);
-			db.delete("gsmmap_inter3G", null, null);
-			db.delete("gsmmap_imper3G", null, null);
-
-			// Iterate overall countries
-			JSONArray countries = gsmmapData.getJSONArray("countries");
-			for (int c = 0, cs = countries.length(); c < cs; c++) {
-
-				JSONObject country = countries.getJSONObject(c);
-
-				// Iterate over all operators
-				JSONArray operators = country.getJSONArray("operators");
-				for (int o = 0, os = operators.length(); o < os; o++) {
-
-					JSONObject operator = operators.getJSONObject(o);
-
-					String operator_name = operator.get("name").toString();
-					String operator_color = operator.has("color") ? operator.get("color").toString() : null;
-
-					// Store operator in database
-					ContentValues opval = new ContentValues();
-					opval.put("id", operator_id);
-					opval.put("name", operator_name);
-					opval.put("color", operator_color);
-					db.insert("gsmmap_operators", null, opval);
-					opval.clear();
-
-					// Store all values
-					JSONObject values = operator.getJSONObject("values");
-					updateValue(operator_id, values, "inter");
-					updateValue(operator_id, values, "imper");
-					updateValue(operator_id, values, "track");
-					updateValue(operator_id, values, "inter3G");
-					updateValue(operator_id, values, "imper3G");
-
-					// Store all MCC/MNC combinations for an operator
-					JSONArray mcc_mncs = operator.getJSONArray("mcc_mnc");
-					for (int m = 0, ms = mcc_mncs.length(); m < ms; m++) {
-
-						JSONObject mcc_mnc = mcc_mncs.getJSONObject(m);
-						int mcc = mcc_mnc.getInt("mcc");
-						int mnc = mcc_mnc.getInt("mnc");
-
-						ContentValues codes_val = new ContentValues();
-						codes_val.put("id", operator_id);
-						codes_val.put("mcc", mcc);
-						codes_val.put("mnc", mnc);
-						db.insert("gsmmap_codes", null, codes_val);
-						codes_val.clear();
-					}
-					operator_id++;
-				}
-			}
-
-		} catch (IOException e) {
+			parseGSMmapData(text);
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private String readFromExternal(String fileName) throws IOException {
+
+		File sdcard = Environment.getExternalStorageDirectory();
+		File file = new File(sdcard, fileName);
+		StringBuilder text = new StringBuilder();
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String line;
+		while ((line = br.readLine()) != null) {
+			text.append(line);
+		}
+		br.close();
+		return text.toString();
+	}
+
+	private void parseGSMmapData(String text) throws JSONException {
+
+		JSONObject gsmmapData;
+		long operator_id = 0;
+		gsmmapData = new JSONObject(text.split("^\\s*var\\s*data\\s*=\\s*", 2)[1]);
+
+		// Empty all GSMmap databases
+		db.delete("gsmmap_operators", null, null);
+		db.delete("gsmmap_codes", null, null);
+		db.delete("gsmmap_inter", null, null);
+		db.delete("gsmmap_imper", null, null);
+		db.delete("gsmmap_track", null, null);
+		db.delete("gsmmap_inter3G", null, null);
+		db.delete("gsmmap_imper3G", null, null);
+
+		// Iterate overall countries
+		JSONArray countries = gsmmapData.getJSONArray("countries");
+		for (int c = 0, cs = countries.length(); c < cs; c++) {
+
+			JSONObject country = countries.getJSONObject(c);
+
+			// Iterate over all operators
+			JSONArray operators = country.getJSONArray("operators");
+			for (int o = 0, os = operators.length(); o < os; o++) {
+
+				JSONObject operator = operators.getJSONObject(o);
+
+				String operator_name = operator.get("name").toString();
+				String operator_color = operator.has("color") ? operator.get("color").toString() : null;
+
+				// Store operator in database
+				ContentValues opval = new ContentValues();
+				opval.put("id", operator_id);
+				opval.put("name", operator_name);
+				opval.put("color", operator_color);
+				db.insert("gsmmap_operators", null, opval);
+				opval.clear();
+
+				// Store all values
+				JSONObject values = operator.getJSONObject("values");
+				updateValue(operator_id, values, "inter");
+				updateValue(operator_id, values, "imper");
+				updateValue(operator_id, values, "track");
+				updateValue(operator_id, values, "inter3G");
+				updateValue(operator_id, values, "imper3G");
+
+				// Store all MCC/MNC combinations for an operator
+				JSONArray mcc_mncs = operator.getJSONArray("mcc_mnc");
+				for (int m = 0, ms = mcc_mncs.length(); m < ms; m++) {
+
+					JSONObject mcc_mnc = mcc_mncs.getJSONObject(m);
+					int mcc = mcc_mnc.getInt("mcc");
+					int mnc = mcc_mnc.getInt("mnc");
+
+					ContentValues codes_val = new ContentValues();
+					codes_val.put("id", operator_id);
+					codes_val.put("mcc", mcc);
+					codes_val.put("mnc", mnc);
+					db.insert("gsmmap_codes", null, codes_val);
+					codes_val.clear();
+				}
+				operator_id++;
+			}
 		}
 	}
 
