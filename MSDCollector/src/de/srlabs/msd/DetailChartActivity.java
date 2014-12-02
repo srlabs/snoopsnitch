@@ -30,9 +30,7 @@ public class DetailChartActivity extends BaseActivity
 	private ListView listView;
 	private ImageView _imgThreatType;
 	private TextView _txtThreatTypeImsiCatcher;
-	private TextView _txtThreatTypeSilentSms;
 	private TextView _txtThreatTypeSilentSmsCount;
-	private TextView _txtThreatTypeBinarySms;
 	private TextView _txtThreatTypeBinarySmsCount;
 	private LinearLayout _llThreatTypeSms;
 	private DetailChartGalleryAdapter mPagerAdapter;
@@ -48,9 +46,7 @@ public class DetailChartActivity extends BaseActivity
 		
 		_imgThreatType = (ImageView) findViewById(R.id.imgDetailChartThreatType);
 		_txtThreatTypeImsiCatcher = (TextView) findViewById(R.id.txtDetailChartThreatTypeImsiCatcher);
-		_txtThreatTypeSilentSms = (TextView) findViewById(R.id.txtDetailChartThreatTypeSilentSms);
 		_txtThreatTypeSilentSmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeSilentSmsCount);
-		_txtThreatTypeBinarySms = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySms);
 		_txtThreatTypeBinarySmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySmsCount);
 		_llThreatTypeSms = (LinearLayout) findViewById(R.id.llThreatTypeSms);
 	}
