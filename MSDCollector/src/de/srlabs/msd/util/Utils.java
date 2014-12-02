@@ -21,6 +21,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
@@ -53,6 +54,7 @@ public class Utils {
 	 * 
 	 * @return
 	 */
+	@SuppressLint("TrulyRandom")
 	public static String generateAppId(){
 		SecureRandom sr = new SecureRandom();
 		byte[] random = new byte[4];
