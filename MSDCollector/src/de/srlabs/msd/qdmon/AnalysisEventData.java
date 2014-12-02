@@ -1,11 +1,9 @@
 package de.srlabs.msd.qdmon;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Vector;
 
 import org.json.JSONArray;
@@ -24,6 +22,7 @@ import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.analysis.SMS.Type;
 import de.srlabs.msd.util.MsdDatabaseManager;
+import de.srlabs.msd.util.Utils;
 
 public class AnalysisEventData implements AnalysisEventDataInterface{
 	private SQLiteDatabase db;
@@ -36,7 +35,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		String text = null;
 		try {
 			// text = readFromExternal("data.js");
-			text = readFromAssets(context, "data.js");
+			text = Utils.readFromAssets(context, "data.js");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -63,25 +62,6 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		}
 		br.close();
 		return text.toString();
-	}
-
-	private String readFromAssets(Context context, String fileName) throws IOException {
-
-		InputStream inputStream = context.getAssets().open(fileName);
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		int i;
-		try {
-			i = inputStream.read();
-			while (i != -1)
-			{
-				byteArrayOutputStream.write(i);
-				i = inputStream.read();
-			}
-			inputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return byteArrayOutputStream.toString();
 	}
 
 	private void parseGSMmapData(String text) throws JSONException {

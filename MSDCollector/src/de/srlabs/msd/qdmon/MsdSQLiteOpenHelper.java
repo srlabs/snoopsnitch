@@ -1,8 +1,6 @@
 package de.srlabs.msd.qdmon;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import de.srlabs.msd.util.Utils;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,21 +20,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") called");
 		db.execSQL("BEGIN TRANSACTION;");
 		try {
-			InputStream sqlInputStream = context.getAssets().open(file);
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			int i;
-			try {
-				i = sqlInputStream.read();
-				while (i != -1)
-				{
-					byteArrayOutputStream.write(i);
-					i = sqlInputStream.read();
-				}
-				sqlInputStream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			String sql = byteArrayOutputStream.toString();
+			String sql = Utils.readFromAssets(context, file);
 			if (verbose){
 				Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): " + sql);
 			}

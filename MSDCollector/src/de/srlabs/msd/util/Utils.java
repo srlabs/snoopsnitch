@@ -1,5 +1,6 @@
 package de.srlabs.msd.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -84,5 +85,24 @@ public class Utils {
 		} else{
 			return 0;
 		}
+	}
+
+	public static String readFromAssets(Context context, String fileName) throws IOException {
+
+		InputStream inputStream = context.getAssets().open(fileName);
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		int i;
+		try {
+			i = inputStream.read();
+			while (i != -1)
+			{
+				byteArrayOutputStream.write(i);
+				i = inputStream.read();
+			}
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return byteArrayOutputStream.toString();
 	}
 }
