@@ -56,9 +56,12 @@ SELECT
 	valid_si.mcc,
 	valid_si.mnc,
 	strftime( "%Y-%m",valid_si.timestamp) as month,
+	lac,
 	valid_op.country,
 	valid_op.operator,
-	count(*) as samples,
+	count(*) as total_samples,
+	sum(is_call OR is_sms) as intercept_samples,
+	sum(is_mo AND (is_call OR is_sms)) as impersonation_samples,
 	(sum(is_call+0.0))/count(*) as call_perc,
 	(sum(is_sms+0.0))/count(*)  as sms_perc,
 	(sum(is_lu+0.0))/count(*)   as lu_perc,
@@ -85,5 +88,5 @@ WHERE
 GROUP BY
 	valid_si.mcc,
 	valid_si.mnc,
-	month;
+	month, lac;
 

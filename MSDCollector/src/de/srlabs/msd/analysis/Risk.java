@@ -88,31 +88,22 @@ public class Risk {
 	}
 
 	private Vector<Score> query2GScores(SQLiteDatabase db, int currentMCC, int currentMNC, String scoreName) {
+		return queryScores(db, currentMCC, currentMNC, "risk_category", scoreName);
+	}
+
+	private Vector<Score> query3GScores(SQLiteDatabase db, int currentMCC, int currentMNC, String scoreName) {
+		return queryScores(db, currentMCC, currentMNC, "risk_3G", scoreName);
+	}
+
+	private Vector<Score> queryScores(SQLiteDatabase db, int currentMCC, int currentMNC, String tableName, String scoreName) {
+		Vector<Score> result = new Vector<Score>();
 
 		Cursor c = db.query
-				("risk_category",
+				(tableName,
 				 new String[] {"month", "avg(" + scoreName + ")" },
 				 "mcc = ? AND mnc = ?",
 				 new String[] {Integer.toString(currentMCC), Integer.toString(currentMNC)},
 				 "mcc, mnc, lac", null, null);
-
-		return queryScores(c);
-	}
-
-	private Vector<Score> query3GScores(SQLiteDatabase db, int currentMCC, int currentMNC, String scoreName) {
-
-		Cursor c = db.query
-				("risk_3G",
-				 new String[] {"month", scoreName },
-				 "mcc = ? AND mnc = ?",
-				 new String[] {Integer.toString(currentMCC), Integer.toString(currentMNC)},
-				 "mcc, mnc", null, null);
-
-		return queryScores(c);
-	}
-
-	private Vector<Score> queryScores(Cursor c) {
-		Vector<Score> result = new Vector<Score>();
 
 		if (c.moveToFirst()){
 			do {
