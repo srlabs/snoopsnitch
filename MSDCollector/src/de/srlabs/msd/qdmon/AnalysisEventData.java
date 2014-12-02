@@ -28,6 +28,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
 		this.db = MsdDatabaseManager.getInstance().openDatabase();
 
+		// TODO: Factor out GSMmap data handling into own class.
 		String text = null;
 		try {
 			// text = readFromExternal("data.js");
@@ -37,12 +38,22 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 			e1.printStackTrace();
 		}
 
-		try {
-			parseGSMmapData(text);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (!gsmmapDataPresent()) {
+			try {
+				parseGSMmapData(text);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+	}
+
+	private boolean gsmmapDataPresent(){
+		boolean result;
+		Cursor c = db.query("gsmmap_operators", new String[] {"id"}, null, null, null, null, null);
+		result = c.moveToFirst();
+		c.close();
+		return result;
 	}
 
 	private void parseGSMmapData(String text) throws JSONException {
