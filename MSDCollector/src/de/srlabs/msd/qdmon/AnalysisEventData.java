@@ -1,8 +1,5 @@
 package de.srlabs.msd.qdmon;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
 
@@ -14,7 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
 import android.util.Log;
 
 import de.srlabs.msd.analysis.ImsiCatcher;
@@ -47,21 +43,6 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	@SuppressWarnings("unused")
-	private String readFromExternal(String fileName) throws IOException {
-
-		File sdcard = Environment.getExternalStorageDirectory();
-		File file = new File(sdcard, fileName);
-		StringBuilder text = new StringBuilder();
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String line;
-		while ((line = br.readLine()) != null) {
-			text.append(line);
-		}
-		br.close();
-		return text.toString();
 	}
 
 	private void parseGSMmapData(String text) throws JSONException {

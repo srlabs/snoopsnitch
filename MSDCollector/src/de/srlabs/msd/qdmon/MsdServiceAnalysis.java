@@ -8,7 +8,6 @@ import android.util.Log;
 
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.analysis.Risk;
-import de.srlabs.msd.analysis.Score;
 
 public class MsdServiceAnalysis {
 
