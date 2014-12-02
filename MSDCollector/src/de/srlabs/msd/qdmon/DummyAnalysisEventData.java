@@ -107,7 +107,7 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 		dynamicImsiCatchers = new Vector<ImsiCatcher>();
 	}
 	@Override
-	public Risk getScores(Operator operator) {
+	public Risk getScores() {
 		// TODO Auto-generated method stub
 		return null;
 	}
