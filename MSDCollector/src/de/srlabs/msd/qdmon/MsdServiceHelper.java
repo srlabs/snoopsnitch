@@ -43,7 +43,7 @@ public class MsdServiceHelper{
 		if(dummy){
 			context.startService(new Intent(context, DummyMsdService.class));
 			context.bindService(new Intent(context, DummyMsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
-			data = new DummyAnalysisEventData();
+			data = new DummyAnalysisEventData(context);
 		} else{
 			context.startService(new Intent(context, MsdService.class));
 			context.bindService(new Intent(context, MsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);

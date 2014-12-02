@@ -34,7 +34,7 @@ public class DummyMsdService extends Service{
 	private DummyDataRunnable dummyDataRunnable;
 	private DumpFile df;
 	private PrintStream dummyLogPrintStream = null;
-	private DummyAnalysisEventData dummyData = new DummyAnalysisEventData();
+	private DummyAnalysisEventData dummyData = null;
 
 	private long timeCallbacksDone = 0;
 
@@ -213,7 +213,7 @@ public class DummyMsdService extends Service{
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		dummyData = new DummyAnalysisEventData();
+		dummyData = new DummyAnalysisEventData(this);
 		serviceStartTime = System.currentTimeMillis();
 		dummyData.addDynamicDummyEvents(serviceStartTime);
 	}

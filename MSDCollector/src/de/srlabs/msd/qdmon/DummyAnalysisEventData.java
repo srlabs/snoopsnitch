@@ -2,9 +2,13 @@ package de.srlabs.msd.qdmon;
 
 import java.util.Vector;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
 import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.util.MsdDatabaseManager;
 
 public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	private Vector<SMS> existingSms = new Vector<SMS>();
@@ -13,8 +17,13 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	private long nextImsiId = 1;
 	private Vector<ImsiCatcher> existingImsiCatchers = new Vector<ImsiCatcher>();
 	private Vector<ImsiCatcher> dynamicImsiCatchers = new Vector<ImsiCatcher>();
+	private SQLiteDatabase db;
 
-	public DummyAnalysisEventData(){
+	public DummyAnalysisEventData(Context context){
+
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
+		this.db = MsdDatabaseManager.getInstance().openDatabase();
+
 		// A few dummy binary/silent SMS in the past
 		existingSms.add(new SMS(1413387583L*1000L, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.BINARY_SMS));
 		existingSms.add(new SMS(1413819629L*1000L, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
@@ -108,7 +117,7 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	}
 	@Override
 	public Risk getScores() {
-		// TODO Auto-generated method stub
-		return null;
+		// Vodafone Germany
+		return new Risk(db, 262, 2);
 	}
 }
