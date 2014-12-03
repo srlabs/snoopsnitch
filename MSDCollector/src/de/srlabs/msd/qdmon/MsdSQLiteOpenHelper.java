@@ -1,11 +1,10 @@
 package de.srlabs.msd.qdmon;
 
-import de.srlabs.msd.util.Utils;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import de.srlabs.msd.util.Utils;
 
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "msd.db";

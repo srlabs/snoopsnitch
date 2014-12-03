@@ -5,173 +5,132 @@
     android:background="@color/common_sectionBackground"
     android:orientation="horizontal"
     android:paddingBottom="4dp"
-    android:paddingTop="4dp" >
+    android:paddingTop="4dp"
+    android:weightSum="5" >
 
     <ImageView
         android:id="@+id/ImageView01"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="4dp"
         android:src="@drawable/ic_content_sms_event" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:weightSum="2" >
+        android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:weightSum="5" >
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3.5"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/txtDetailListSmsType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/common_silent_sms"
-                    android:textSize="@dimen/text_medium"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtDetailListDateTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="today, 07.57 pm"
-                    android:textSize="@dimen/text_medium" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/view1"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/common_applicationSeparator" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/txtSmsRowTypeTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:weightSum="2" >
+            android:text="@string/listview_sms_item_type"
+            android:textSize="@dimen/text_medium" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical" >
+        <TextView
+            android:id="@+id/txtSmsRowTimeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listview_sms_item_Time"
+            android:textSize="@dimen/text_medium" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+        <TextView
+            android:id="@+id/txtSmsRowPositionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listview_sms_item_position"
+            android:textSize="@dimen/text_medium" />
 
-                    <TextView
-                        android:id="@+id/TextView07"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="2dp"
-                        android:text="@string/listview_sms_item_position"
-                        android:textSize="@dimen/text_medium"
-                        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/txtSmsRowCellIdTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listview_sms_item_cellid"
+            android:textSize="@dimen/text_medium" />
 
-                    <TextView
-                        android:id="@+id/txtListviewSmsPosition"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textSize="@dimen/text_medium" />
+        <TextView
+            android:id="@+id/txtSmsRowSmsCTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listview_sms_item_smsc"
+            android:textSize="@dimen/text_medium" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
-
-                    <TextView
-                        android:id="@+id/txtDetailListRate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="2dp"
-                        android:text="@string/listview_sms_item_phonenumber"
-                        android:textSize="@dimen/text_medium"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/txtListviewSmsPhoneNumber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textSize="@dimen/text_medium" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
-
-                    <TextView
-                        android:id="@+id/TextView09"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="2dp"
-                        android:text="@string/listview_sms_item_cellid"
-                        android:textSize="@dimen/text_medium"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/txtListviewSmsCellId"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textSize="@dimen/text_medium" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
-
-                    <TextView
-                        android:id="@+id/TextView05"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="2dp"
-                        android:text="@string/listview_sms_item_source"
-                        android:textSize="@dimen/text_medium"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/txtListviewSmsSource"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textSize="@dimen/text_medium" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/txtSmsRowSourceTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listview_sms_item_source"
+            android:textSize="@dimen/text_medium" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="5"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txtSmsRowTypeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSmsRowTimeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSmsRowPositionValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSmsRowCellIdValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSmsRowSmsCValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSmsRowSourceValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/bt_content_contributedata_enable"
+        android:text="@string/common_button_upload" />
 
 </LinearLayout> 

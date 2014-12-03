@@ -9,130 +9,100 @@
 
     <ImageView
         android:id="@+id/imgDetailListThreatType"
-        android:contentDescription=""
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_marginLeft="4sp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="4dp"
+        android:contentDescription=""
         android:src="@drawable/ic_content_imsi_event" >
 
     </ImageView>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:weightSum="3" >
+        android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:weightSum="5" >
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3.5"
-                android:orientation="vertical"
-                android:weightSum="3" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2" >
-
-                    <TextView
-                        android:id="@+id/txtDetailListThreatType"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/common_imsi_catcher"
-                        android:textSize="@dimen/text_medium"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/txtListViewImsiScore"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
-                        android:layout_weight="1"
-                        android:text="TextView"
-                        android:textSize="@dimen/text_medium"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/txtDetailListDateTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="today, 07.57 pm"
-                    android:textSize="@dimen/text_medium" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/view1"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/common_applicationSeparator" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/txtImsiRowScoreTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2" >
+            android:text="@string/listview_imsi_item_score"
+            android:textSize="@dimen/text_medium" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/txtImsiRowTimeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listview_imsi_item_time"
+            android:textSize="@dimen/text_medium" />
 
-                <TextView
-                    android:id="@+id/TextView03"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/listview_imsi_item_position"
-                    android:textSize="@dimen/text_medium"
-                    android:textStyle="bold" />
+        <TextView
+            android:id="@+id/txtImsiRowPositionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listview_imsi_item_position"
+            android:textSize="@dimen/text_medium" />
 
-                <TextView
-                    android:id="@+id/txtListViewImsiPosition"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView"
-                    android:textSize="@dimen/text_medium" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/TextView01"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/listview_imsi_item_cellid"
-                    android:textSize="@dimen/text_medium"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtListViewImsiCellId"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView"
-                    android:textSize="@dimen/text_medium" />
-            </LinearLayout>
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/txtImsiRowCellIdTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listview_imsi_item_cellid"
+            android:textSize="@dimen/text_medium" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="5"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txtImsiRowScoreValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtImsiRowTimeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtImsiRowPositionValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtImsiRowCellIdValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/bt_content_contributedata_enable"
+        android:text="@string/common_button_upload" />
 
 </LinearLayout> 

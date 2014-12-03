@@ -2,8 +2,8 @@ package de.srlabs.msd.analysis;
 
 import java.util.Vector;
 
-import de.srlabs.msd.upload.DumpFile;
 import android.database.sqlite.SQLiteDatabase;
+import de.srlabs.msd.upload.DumpFile;
 
 public interface AnalysisEvent {
 	public static final int STATE_AVAILABLE = 0;

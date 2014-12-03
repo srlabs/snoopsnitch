@@ -40,10 +40,12 @@ public class TimeSpace
 	static Times getTimeSpaceMonth ()
 	{
 		Calendar calStart = Calendar.getInstance();
-		calStart.add(Calendar.DATE, -28);
+		calStart.add(Calendar.DATE, -35);
+		Calendar calEnd = Calendar.getInstance();
+		calEnd.add(Calendar.DATE, -8);
 		
 		Times.Month.setStartTime(calStart.getTimeInMillis());
-		Times.Month.setEndTime(Calendar.getInstance().getTimeInMillis());
+		Times.Month.setEndTime(calEnd.getTimeInMillis());
 		
 		return Times.Month;
 	}
@@ -51,10 +53,12 @@ public class TimeSpace
 	static Times getTimeSpaceWeek ()
 	{
 		Calendar calStart = Calendar.getInstance();
-		calStart.add(Calendar.DATE, -7);
+		calStart.add(Calendar.DATE, -8);
+		Calendar calEnd = Calendar.getInstance();
+		calEnd.add(Calendar.DATE, -1);
 		
 		Times.Week.setStartTime(calStart.getTimeInMillis());
-		Times.Week.setEndTime(Calendar.getInstance().getTimeInMillis());
+		Times.Week.setEndTime(calEnd.getTimeInMillis());
 		
 		return Times.Week;
 	}
@@ -62,10 +66,12 @@ public class TimeSpace
 	static Times getTimeSpaceDay ()
 	{
 		Calendar calStart = Calendar.getInstance();
-		calStart.add(Calendar.DATE, -1);
+		calStart.add(Calendar.HOUR, -25);
+		Calendar calEnd = Calendar.getInstance();
+		calEnd.add(Calendar.HOUR, -1);
 		
 		Times.Day.setStartTime(calStart.getTimeInMillis());
-		Times.Day.setEndTime(Calendar.getInstance().getTimeInMillis());
+		Times.Day.setEndTime(calEnd.getTimeInMillis());
 		
 		return Times.Day;
 	}

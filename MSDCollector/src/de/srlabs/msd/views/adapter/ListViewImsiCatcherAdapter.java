@@ -5,15 +5,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 
-import de.srlabs.msd.R;
-import de.srlabs.msd.analysis.ImsiCatcher;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
+import de.srlabs.msd.R;
+import de.srlabs.msd.analysis.ImsiCatcher;
 
 public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 {
@@ -36,12 +35,6 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 			.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.custom_row_layout_imsicatcher, parent, false);
 		
-		// Set date/time
-		TextView txtDateTime = (TextView) rowView.findViewById(R.id.txtDetailListDateTime);
-		Timestamp stamp = new Timestamp(values.get(position).getStartTime() * 1000L);
-		new SimpleDateFormat();
-		txtDateTime.setText(DateFormat.getDateTimeInstance().format(stamp.getTime()));
-		
 		// Set button
 //		Button btnContribute = (Button) rowView.findViewById(R.id.btnDetailListContribute);
 //		btnContribute.setOnClickListener(new View.OnClickListener() 
@@ -54,14 +47,18 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 //		});
 		
 		// Set score
-		((TextView) rowView.findViewById(R.id.txtListViewImsiScore)).setText("(" + String.valueOf(values.get(position).getScore()) + ")");
+		((TextView) rowView.findViewById(R.id.txtImsiRowScoreValue)).setText(String.valueOf(values.get(position).getScore()));
+		
+		// Set time
+		Timestamp stamp = new Timestamp(values.get(position).getStartTime());
+		((TextView) rowView.findViewById(R.id.txtImsiRowTimeValue)).setText(DateFormat.getDateTimeInstance().format(stamp.getTime()));
 		
 		// Set position
-		((TextView) rowView.findViewById(R.id.txtListViewImsiPosition)).setText(String.valueOf(values.get(position).getLatitude()) + " | " + 
+		((TextView) rowView.findViewById(R.id.txtImsiRowPositionValue)).setText(String.valueOf(values.get(position).getLatitude()) + " | " + 
 				String.valueOf(values.get(position).getLatitude()));
 		
 		// Set cell id
-		((TextView) rowView.findViewById(R.id.txtListViewImsiCellId)).setText(String.valueOf(values.get(position).getFullCellID()));
+		((TextView) rowView.findViewById(R.id.txtImsiRowCellIdValue)).setText(String.valueOf(values.get(position).getFullCellID()));
 	
 		return rowView;
 	 }

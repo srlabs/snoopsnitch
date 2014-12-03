@@ -1,24 +1,23 @@
 package de.srlabs.msd;
 
+import java.util.Calendar;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
-import de.srlabs.msd.util.Utils;
+import de.srlabs.msd.util.TimeSpace;
 import de.srlabs.msd.views.DashboardThreatChart;
+import de.srlabs.msd.views.adapter.ListViewProviderAdapter;
 
 public class DashboardActivity extends BaseActivity 
 {	
@@ -42,9 +41,10 @@ public class DashboardActivity extends BaseActivity
 	private DashboardThreatChart dtcImsiDay;
 	private DashboardThreatChart dtcImsiWeek;
 	private DashboardThreatChart dtcImsiMonth;
-	private TextView txtLastScan;
+	private TextView txtLastMeasurementTime;
 	private ImageView imgSilentSms;
 	private ImageView imgImsiCatcher;
+	private ListView lstDashboardProviderList;
 
 	// Methods
 	@Override
@@ -81,7 +81,7 @@ public class DashboardActivity extends BaseActivity
 		txtImsiWeekCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherWeekCount);
 		txtImsiDayCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherDayCount);
 		txtImsiHourCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherHourCount);
-		txtLastScan = (TextView) findViewById(R.id.txtDashboardLastScan);
+		txtLastMeasurementTime = (TextView) findViewById(R.id.txtDashboardLastMeasurementTime);
 		imgSilentSms = (ImageView) findViewById(R.id.imgDashboardSilentSms);
 		imgImsiCatcher = (ImageView) findViewById(R.id.imgDashboardImsiCatcher);
 		
@@ -93,6 +93,8 @@ public class DashboardActivity extends BaseActivity
 		dtcImsiDay = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartDay);
 		dtcImsiWeek = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartWeek);
 		dtcImsiMonth = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartMonth);
+		
+		lstDashboardProviderList = (ListView) findViewById(R.id.lstDashboardProviderList);
 	}
 	
 	@Override
@@ -100,7 +102,7 @@ public class DashboardActivity extends BaseActivity
 	{
 		super.onStart();
 		
-		layout = (DashboardThreatChart)findViewById(R.id.SilentSMSChartWeek);
+		layout = (DashboardThreatChart)findViewById(R.id.SilentSMSChartMonth);
 		vto = layout.getViewTreeObserver(); 
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() 
 		{ 
@@ -110,8 +112,20 @@ public class DashboardActivity extends BaseActivity
 		        msdServiceHelperCreator.setRectWidth(layout.getMeasuredWidth() / 2);
 		    } 
 		});
+	}
+	
+	@Override
+	protected void onResume() 
+	{				
+		super.onResume();
 		
-		resetThreatCounts();
+		refreshView();
+		
+		// Set time of last measurement
+		txtLastMeasurementTime.setText(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+		
+		// Fill provider list
+		fillProviderList();
 	}
 	
 	private void setRectWidth (int rectWidth)
@@ -204,5 +218,12 @@ public class DashboardActivity extends BaseActivity
 		dtcImsiDay.invalidate();
 		dtcImsiWeek.invalidate();
 		dtcImsiMonth.invalidate();
+	}
+	
+	private void fillProviderList ()
+	{
+		ListViewProviderAdapter adapter = new ListViewProviderAdapter(this, 
+				msdServiceHelperCreator.getMsdServiceHelper().getData().getSMS(TimeSpace.Times.Month.getStartTime(), TimeSpace.Times.Month.getEndTime()));
+		lstDashboardProviderList.setAdapter(adapter);	
 	}
 }

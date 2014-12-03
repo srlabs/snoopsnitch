@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import de.srlabs.msd.analysis.ImsiCatcher;
+import de.srlabs.msd.analysis.RAT;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.util.MsdDatabaseManager;
@@ -38,6 +39,7 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	public void addDynamicDummyEvents(long startRecordingTime){
 		// One binary SMS 5 seconds after starting to record
 		dynamicSms.add(new SMS(startRecordingTime + 5000, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.BINARY_SMS));
+		dynamicSms.add(new SMS(startRecordingTime + 8000, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
 		
 		// One IMSI Catcher 15 seconds after starting to record
 		dynamicImsiCatchers.add(new ImsiCatcher(startRecordingTime + 15000, startRecordingTime + 16000, nextImsiId++, 262, 1, 2, 3, 52.52437, 13.41053, 4.2));
@@ -119,5 +121,10 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	public Risk getScores() {
 		// Vodafone Germany
 		return new Risk(db, 262, 2);
+	}
+	@Override
+	public RAT getCurrentRAT() {
+		// Simulate 2G only for now
+		return RAT.RAT_2G;
 	}
 }

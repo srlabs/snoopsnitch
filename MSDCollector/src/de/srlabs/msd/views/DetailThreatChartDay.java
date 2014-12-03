@@ -1,11 +1,10 @@
 package de.srlabs.msd.views;
 
-import de.srlabs.msd.R;
-import de.srlabs.msd.util.MSDServiceHelperCreator;
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import de.srlabs.msd.R;
+import de.srlabs.msd.util.MSDServiceHelperCreator;
 
 public class DetailThreatChartDay extends DetailThreatChart 
 {

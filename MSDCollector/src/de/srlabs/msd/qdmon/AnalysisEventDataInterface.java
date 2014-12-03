@@ -5,6 +5,7 @@ import java.util.Vector;
 import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.analysis.RAT;
 
 public interface AnalysisEventDataInterface {
 	public SMS getSMS(long id);
@@ -12,4 +13,5 @@ public interface AnalysisEventDataInterface {
 	public ImsiCatcher getImsiCatcher(long id);
 	public Vector<ImsiCatcher> getImsiCatchers(long startTime,	long endTime);
 	public Risk getScores();
+	public RAT getCurrentRAT();
 }

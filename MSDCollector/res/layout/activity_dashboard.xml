@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content" >
 
                 <TextView
-                    android:id="@+id/txtDashboardLastScan"
+                    android:id="@+id/txtDashboardLastMeasurement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
@@ -37,7 +37,7 @@
                     android:textColor="@color/common_text" />
 
                 <TextView
-                    android:id="@+id/txtDashboardLastScanTime"
+                    android:id="@+id/txtDashboardLastMeasurementTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dashboard_lastscan_time"
@@ -105,14 +105,14 @@
                 android:background="@color/common_sectionSeparator" />
 
             <LinearLayout
-                android:id="@+id/dashboardSmsChartSectionHour"
+                android:id="@+id/dashboardSmsChartSectionMonth"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="4"
+                android:layout_weight="0.5"
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/txtDashboardSilentSmsHourCount"
+                    android:id="@+id/txtDashboardSilentSmsMonthCount"
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
@@ -122,48 +122,15 @@
                     android:textStyle="bold" />
 
                 <de.srlabs.msd.views.DashboardThreatChart
-                    android:id="@+id/SilentSMSChartHour"
+                    android:id="@+id/SilentSMSChartMonth"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    custom:timePeriodDashboard="hour"
+                    custom:timePeriodDashboard="month"
                     custom:typeOfThreatDashboard="silentSMS" />
-
             </LinearLayout>
 
             <View
-                android:id="@+id/View24"
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/common_sectionSeparator" />
-
-            <LinearLayout
-                android:id="@+id/dashboardSmsChartSectionDay"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/txtDashboardSilentSmsDayCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="1"
-                    android:textColor="@color/common_chartYellow"
-                    android:textSize="@dimen/text_medium"
-                    android:textStyle="bold" />
-
-                <de.srlabs.msd.views.DashboardThreatChart
-                    android:id="@+id/SilentSMSChartDay"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    custom:timePeriodDashboard="day"
-                    custom:typeOfThreatDashboard="silentSMS" />
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/View07"
+                android:id="@+id/View06"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="@color/common_sectionSeparator" />
@@ -191,24 +158,23 @@
                     android:layout_height="match_parent"
                     custom:timePeriodDashboard="week"
                     custom:typeOfThreatDashboard="silentSMS" />
-
             </LinearLayout>
 
             <View
-                android:id="@+id/View06"
+                android:id="@+id/View07"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="@color/common_sectionSeparator" />
 
             <LinearLayout
-                android:id="@+id/dashboardSmsChartSectionMonth"
+                android:id="@+id/dashboardSmsChartSectionDay"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"
+                android:layout_weight="2"
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/txtDashboardSilentSmsMonthCount"
+                    android:id="@+id/txtDashboardSilentSmsDayCount"
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
@@ -218,10 +184,41 @@
                     android:textStyle="bold" />
 
                 <de.srlabs.msd.views.DashboardThreatChart
-                    android:id="@+id/SilentSMSChartMonth"
+                    android:id="@+id/SilentSMSChartDay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    custom:timePeriodDashboard="month"
+                    custom:timePeriodDashboard="day"
+                    custom:typeOfThreatDashboard="silentSMS" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/View24"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/common_sectionSeparator" />
+
+            <LinearLayout
+                android:id="@+id/dashboardSmsChartSectionHour"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/txtDashboardSilentSmsHourCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="1"
+                    android:textColor="@color/common_chartYellow"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="bold" />
+
+                <de.srlabs.msd.views.DashboardThreatChart
+                    android:id="@+id/SilentSMSChartHour"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    custom:timePeriodDashboard="hour"
                     custom:typeOfThreatDashboard="silentSMS" />
 
             </LinearLayout>
@@ -282,11 +279,11 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="4"
+                android:layout_weight="0.5"
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/txtDashboardImsiCatcherHourCount"
+                    android:id="@+id/txtDashboardImsiCatcherMonthCount"
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
@@ -296,47 +293,15 @@
                     android:textStyle="bold" />
 
                 <de.srlabs.msd.views.DashboardThreatChart
-                    android:id="@+id/IMSICatcherChartHour"
+                    android:id="@+id/IMSICatcherChartMonth"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    custom:timePeriodDashboard="hour"
+                    custom:timePeriodDashboard="month"
                     custom:typeOfThreatDashboard="imsiCatcher" />
-
             </LinearLayout>
 
             <View
-                android:id="@+id/View18"
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/common_sectionSeparator" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/txtDashboardImsiCatcherDayCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="1"
-                    android:textColor="@color/common_chartRed"
-                    android:textSize="@dimen/text_medium"
-                    android:textStyle="bold" />
-
-                <de.srlabs.msd.views.DashboardThreatChart
-                    android:id="@+id/IMSICatcherChartDay"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    custom:timePeriodDashboard="day"
-                    custom:typeOfThreatDashboard="imsiCatcher" />
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/View09"
+                android:id="@+id/View08"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="@color/common_sectionSeparator" />
@@ -363,11 +328,10 @@
                     android:layout_height="match_parent"
                     custom:timePeriodDashboard="week"
                     custom:typeOfThreatDashboard="imsiCatcher" />
-
             </LinearLayout>
-            
+
             <View
-                android:id="@+id/View08"
+                android:id="@+id/View09"
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="@color/common_sectionSeparator" />
@@ -375,11 +339,11 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"
+                android:layout_weight="2"
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/txtDashboardImsiCatcherMonthCount"
+                    android:id="@+id/txtDashboardImsiCatcherDayCount"
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
@@ -389,10 +353,40 @@
                     android:textStyle="bold" />
 
                 <de.srlabs.msd.views.DashboardThreatChart
-                    android:id="@+id/IMSICatcherChartMonth"
+                    android:id="@+id/IMSICatcherChartDay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    custom:timePeriodDashboard="month"
+                    custom:timePeriodDashboard="day"
+                    custom:typeOfThreatDashboard="imsiCatcher" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/View18"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/common_sectionSeparator" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/txtDashboardImsiCatcherHourCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="1"
+                    android:textColor="@color/common_chartRed"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="bold" />
+
+                <de.srlabs.msd.views.DashboardThreatChart
+                    android:id="@+id/IMSICatcherChartHour"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    custom:timePeriodDashboard="hour"
                     custom:typeOfThreatDashboard="imsiCatcher" />
 
             </LinearLayout>
@@ -414,6 +408,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
                 android:layout_weight="6"
                 android:orientation="vertical"
                 android:weightSum="5" >
@@ -460,6 +455,124 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:weightSum="5" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:weightSum="4" >
+
+                    <View
+                        android:id="@+id/View26"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+
+                    <View
+                        android:id="@+id/View25"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/common_sectionSeparator" />
+
+                    <View
+                        android:id="@+id/View27"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/View20"
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:weightSum="5" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:weightSum="4" >
+
+                    <View
+                        android:id="@+id/View03"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+
+                    <View
+                        android:id="@+id/View04"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/common_sectionSeparator" />
+
+                    <View
+                        android:id="@+id/View13"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:orientation="vertical"
+                android:weightSum="4" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:weightSum="4" >
+
+                    <View
+                        android:id="@+id/View02"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+
+                    <View
+                        android:id="@+id/View01"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/common_sectionSeparator" />
+
+                    <View
+                        android:id="@+id/view1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/TextView04"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="4"
+                    android:gravity="top|center_horizontal"
+                    android:text="@string/dashboard_timeline_today"
+                    android:textColor="@color/common_text" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/View11"
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="8"
                 android:orientation="vertical"
                 android:weightSum="5" >
@@ -497,127 +610,6 @@
                     android:gravity="top|center_horizontal"
                     android:text="@string/dashboard_timeline_lasthour"
                     android:textColor="@color/common_text" />
-            </LinearLayout>
-
-            <View
-                android:id="@+id/View11"
-                android:layout_width="1dp"
-                android:layout_height="match_parent" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:orientation="vertical"
-                android:weightSum="4" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:weightSum="4" >
-
-                    <View
-                        android:id="@+id/View02"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2" />
-
-                    <View
-                        android:id="@+id/View01"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/common_sectionSeparator" />
-
-                    <View
-                        android:id="@+id/view1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/TextView04"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="4"
-                    android:gravity="top|center_horizontal"
-                    android:text="@string/dashboard_timeline_today"
-                    android:textColor="@color/common_text" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:weightSum="5" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:weightSum="4" >
-
-                    <View
-                        android:id="@+id/View03"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2" />
-
-                    <View
-                        android:id="@+id/View04"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/common_sectionSeparator" />
-
-                    <View
-                        android:id="@+id/View13"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/View20"
-                android:layout_width="1dp"
-                android:layout_height="match_parent" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:weightSum="5" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:weightSum="4" >
-
-                    <View
-                        android:id="@+id/View26"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2" />
-
-                    <View
-                        android:id="@+id/View25"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/common_sectionSeparator" />
-
-                    <View
-                        android:id="@+id/View27"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2" />
-                </LinearLayout>
             </LinearLayout>
             
         </LinearLayout>
@@ -701,7 +693,7 @@
                 android:background="@color/common_sectionSeparator" />
 
             <ListView
-                android:id="@+id/listView1"
+                android:id="@+id/lstDashboardProviderList"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="10.5" >

@@ -23,7 +23,7 @@
     <string name="action_about">About</string>
     
     <!-- Common Buttons -->
-    <string name="common_button_upload">Upload</string>
+    <string name="common_button_upload">upload</string>
     
     <!-- Messages -->
     <string name="message_smsDetected">New SMS detected&#8230;</string>
@@ -99,6 +99,8 @@
      <string name="listview_sms_item_cellid">Cell-ID:</string>
      <string name="listview_sms_item_phonenumber">SMS-C:</string>
      <string name="listview_sms_item_source">Source:</string>
+     <string name="listview_imsi_item_score">Score:</string>
+     <string name="listview_imsi_item_time">Time:</string>   
      <string name="listview_imsi_item_position">Position:</string>
      <string name="listview_imsi_item_cellid">Cell-ID:</string>
      <string name="listview_provider_item_ownprovider_text">Your provider</string>
