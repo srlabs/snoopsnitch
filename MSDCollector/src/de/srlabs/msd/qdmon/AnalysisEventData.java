@@ -197,7 +197,9 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		if(!c.moveToFirst()) {
 			throw new IllegalStateException("Requesting non-existing SMS " + Long.toString(id));
 		}
-		return smsFromCursor (c);
+		SMS result = smsFromCursor (c);
+		c.close();
+		return result;
 	}
 
 	@Override
@@ -213,6 +215,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 				result.add(smsFromCursor(c));
 			} while (c.moveToNext());
 		}
+		c.close();
 		return result;
 	}
 
@@ -241,7 +244,9 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		if(!c.moveToFirst()) {
 			throw new IllegalStateException("Requesting non-existing IMSI catcher");
 		}
-		return catcherFromCursor (c);
+		ImsiCatcher result = catcherFromCursor (c);
+		c.close();
+		return result;
 	}
 
 	@Override
@@ -260,6 +265,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 				result.add(catcher);
 			} while (c.moveToNext());
 		}
+		c.close();
 		return result;
 	}
 

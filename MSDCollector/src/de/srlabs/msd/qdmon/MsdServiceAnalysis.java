@@ -19,7 +19,9 @@ public class MsdServiceAnalysis {
 			if (!c.moveToFirst()){
 				throw new IllegalStateException("Invalid SQL result");
 			}
-			return c.getInt(0);
+			int result = c.getInt(0);
+			c.close();
+			return result;
 		} catch(SQLException e){
 			throw new IllegalStateException("SQLException in getLast(" + tableName + "," + rowName + ",): ", e);
 		}
@@ -78,7 +80,7 @@ public class MsdServiceAnalysis {
 			}
 			silent = c.getInt(1);
 			binary = c.getInt(0);
-
+			c.close();
 			Log.i(TAG,"SMSAnalysis: " + numResults + " new result(s), " + silent + " silent and " + binary + " binary");
 
 			if (silent > 0 || binary > 0)

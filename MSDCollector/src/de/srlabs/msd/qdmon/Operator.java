@@ -27,5 +27,6 @@ class Operator {
 			mnc = c.getInt(2);
 			valid = true;
 		};
+		c.close();
 	}
 }

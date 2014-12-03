@@ -39,6 +39,7 @@ public class Risk {
 				serverData.add(new Risk(db, c.getLong(0), c.getString(1), c.getString(2)));
 			} while (c.moveToNext());
 		}
+		c.close();
 
 	}
 
@@ -69,6 +70,7 @@ public class Risk {
 				result.add(new Score(year, month, score));
 			} while (c.moveToNext());
 		}
+		c.close();
 		return result;
 	}
 

@@ -1,6 +1,9 @@
 package de.srlabs.msd.upload;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Vector;
 
 import android.content.ContentValues;
@@ -79,7 +82,7 @@ public class DumpFile {
 			time1 -= rangeSeconds * 1000L;
 			time2 += rangeSeconds * 1000L;
 		}
-		String selection = "end_time >= '" + (new Timestamp(time1)).toString() + "' AND start_time <= '" + (new Timestamp(time1)).toString() + "'";
+		String selection = "end_time >= '" + (new Timestamp(time1)).toString() + "' AND start_time <= '" + (new Timestamp(time2)).toString() + "'";
 		if(type != null)
 			selection += " AND file_type = " + type;
 		return getFiles(db, selection);
@@ -91,6 +94,7 @@ public class DumpFile {
 			DumpFile entry = new DumpFile(c);
 			result.add(entry);
 		}
+		c.close();
 		return result;
 	}
 	@Override
@@ -278,6 +282,12 @@ public class DumpFile {
 		values.put("imsi_catcher", b?1:0);
 		int numModified = db.update("files", values, "_id = " + id, null);
 		return numModified == 1;
+	}
+	
+	public String getReportId(){
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MMddHHmmss", Locale.getDefault());
+		Date date = new Date(getStart_time());
+		return dateFormat.format(date);
 	}
 	
 }
