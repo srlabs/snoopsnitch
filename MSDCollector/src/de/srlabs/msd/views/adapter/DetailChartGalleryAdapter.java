@@ -1,11 +1,11 @@
 package de.srlabs.msd.views.adapter;
 
-import de.srlabs.msd.R;
-import de.srlabs.msd.views.ChartSlidePageFragment;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import de.srlabs.msd.R;
+import de.srlabs.msd.views.ChartSlidePageFragment;
 
 public class DetailChartGalleryAdapter extends FragmentStatePagerAdapter
 {

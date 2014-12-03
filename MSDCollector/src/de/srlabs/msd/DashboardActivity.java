@@ -5,23 +5,17 @@ import java.util.Calendar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.TimeSpace;
-import de.srlabs.msd.util.Utils;
 import de.srlabs.msd.views.DashboardThreatChart;
 import de.srlabs.msd.views.adapter.ListViewProviderAdapter;
 
@@ -108,7 +102,7 @@ public class DashboardActivity extends BaseActivity
 	{
 		super.onStart();
 		
-		layout = (DashboardThreatChart)findViewById(R.id.SilentSMSChartWeek);
+		layout = (DashboardThreatChart)findViewById(R.id.SilentSMSChartMonth);
 		vto = layout.getViewTreeObserver(); 
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() 
 		{ 
@@ -132,8 +126,6 @@ public class DashboardActivity extends BaseActivity
 		
 		// Fill provider list
 		fillProviderList();
-		
-		Toast.makeText(this, "Ausgefuehrt!", 2).show();
 	}
 	
 	private void setRectWidth (int rectWidth)

@@ -2,9 +2,6 @@ package de.srlabs.msd.views;
 
 import java.util.ArrayList;
 
-import de.srlabs.msd.R;
-import de.srlabs.msd.util.ProviderScore;
-import android.R.bool;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +14,8 @@ import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import de.srlabs.msd.R;
+import de.srlabs.msd.util.ProviderScore;
 
 public class DashboardProviderChart extends View
 {	
@@ -76,7 +75,8 @@ public class DashboardProviderChart extends View
 			
 			for (int i=0; i<providerScoreList.indexOf(ps); i++)
 			{
-				if (providerScoreList.get(i).getScore() == ps.getScore())
+				if (providerScoreList.get(i).getScore() == ps.getScore() && 
+						providerScoreList.get(i).getIs2G() == ps.getIs2G())
 				{
 					offset += circleOffset;
 				}

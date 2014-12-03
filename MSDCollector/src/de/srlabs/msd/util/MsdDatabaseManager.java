@@ -1,7 +1,8 @@
 package de.srlabs.msd.util;
 
-import android.database.sqlite.SQLiteDatabase;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import android.database.sqlite.SQLiteDatabase;
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 
 // Class for concurrent database access.

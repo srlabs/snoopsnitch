@@ -1,12 +1,10 @@
 package de.srlabs.msd.qdmon;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
-import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.analysis.Risk;
 
 public class MsdServiceAnalysis {

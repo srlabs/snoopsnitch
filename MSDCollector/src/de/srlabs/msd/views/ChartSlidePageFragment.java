@@ -3,17 +3,15 @@ package de.srlabs.msd.views;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import javax.crypto.spec.PSource;
-
-import de.srlabs.msd.R;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import de.srlabs.msd.R;
+import de.srlabs.msd.util.TimeSpace;
 
 public class ChartSlidePageFragment extends Fragment 
 {
@@ -63,7 +61,7 @@ public class ChartSlidePageFragment extends Fragment
     
     private void setTimeLegend (View view)
     {
-    	Calendar c = Calendar.getInstance();
+    	long c;
     	SimpleDateFormat s;
     	LinearLayout layout;
     	
@@ -71,6 +69,7 @@ public class ChartSlidePageFragment extends Fragment
     	{
     		layout = (LinearLayout)view.findViewById(R.id.llTimeLineChartHour);
         	s = new SimpleDateFormat("HH:mm");
+        	c = TimeSpace.Times.Hour.getEndTime();
         	
         	for (int i=layout.getChildCount()-1; i>=0; i--)
         	{
@@ -78,16 +77,17 @@ public class ChartSlidePageFragment extends Fragment
         		
     			if (v instanceof LinearLayout)
     			{
-    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(c.getTime()));
+    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(c));
     			}
     			
-        		c.add(Calendar.MINUTE, -5);
+        		c -= 300000;
     		}
     	}
     	else if (position == 1)
     	{
     		layout = (LinearLayout)view.findViewById(R.id.llTimeLineChartDay);
         	s = new SimpleDateFormat("HH:mm");
+        	c = TimeSpace.Times.Day.getEndTime();
         	
         	for (int i=layout.getChildCount()-1; i>=0; i--)
         	{
@@ -95,16 +95,17 @@ public class ChartSlidePageFragment extends Fragment
         		
     			if (v instanceof LinearLayout)
     			{
-    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(c.getTime()));
+    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(c));
     			}
     			
-        		c.add(Calendar.HOUR, -4);
+        		c -= 14400000;
     		}
     	}
     	else if (position == 2)
     	{
     		layout = (LinearLayout)view.findViewById(R.id.llTimeLineChartWeek);
         	s = new SimpleDateFormat("dd.MM");
+        	c = TimeSpace.Times.Week.getEndTime();
         	
         	for (int i=layout.getChildCount()-1; i>=0; i--)
         	{
@@ -112,30 +113,31 @@ public class ChartSlidePageFragment extends Fragment
         		
     			if (v instanceof LinearLayout)
     			{
-    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(c.getTime()));
+    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(c));
     			}
     			
-        		c.add(Calendar.DATE, -1);
+        		c -= 86400000;
     		}
     	}
     	else if (position == 3)
     	{
     		layout = (LinearLayout)view.findViewById(R.id.llTimeLineChartMonth);
         	s = new SimpleDateFormat("dd.MM");
-    		Calendar cc = Calendar.getInstance();
+        	c = TimeSpace.Times.Month.getEndTime();
+    		long cc = TimeSpace.Times.Month.getEndTime();
         	
         	for (int i=layout.getChildCount()-1; i>=0; i--)
         	{
         		View v = layout.getChildAt(i);
-        		cc.add(Calendar.DATE, -6);
+        		cc -= 518400000;
         		
     			if (v instanceof LinearLayout)
     			{
-    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(cc.getTime()) + " - " + s.format(c.getTime()));
+    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(cc) + " - " + s.format(c));
     			}
     			
-    			cc.add(Calendar.DATE, -1);
-        		c.add(Calendar.DATE, -7);
+    			cc -= 86400000;
+        		c -= 604800000;
     		}
     	}
     }

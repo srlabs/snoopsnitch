@@ -2,12 +2,7 @@ package de.srlabs.msd.views.adapter;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Vector;
-
-import de.srlabs.msd.R;
-import de.srlabs.msd.analysis.SMS;
-import de.srlabs.msd.util.MSDServiceHelperCreator;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import de.srlabs.msd.R;
+import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.analysis.SMS.Type;
 
 public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 {
@@ -41,33 +39,33 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 		View rowView = inflater.inflate(R.layout.custom_row_layout_sms, parent, false);
 		
 		// Set type
-		TextView txtType = (TextView) rowView.findViewById(R.id.txtDetailListSmsType);
-		if (values.get(position).getType().equals(SMS.Type.BINARY_SMS))
+		if (values.get(position).getType().name().equals(Type.BINARY_SMS.name()))
 		{
-			txtType.setText(context.getResources().getText(R.string.common_binary_sms));
+			((TextView) rowView.findViewById(R.id.txtSmsRowTypeValue)).setText(context.getResources().getString(R.string.common_binary_sms));			
 		}
 		else
 		{
-			txtType.setText(context.getResources().getText(R.string.common_silent_sms));
+			((TextView) rowView.findViewById(R.id.txtSmsRowTypeValue)).setText(context.getResources().getString(R.string.common_silent_sms));					
 		}
+
 		
 		// Set date/time
-		TextView txtDateTime = (TextView) rowView.findViewById(R.id.txtDetailListDateTime);
+		TextView txtDateTime = (TextView) rowView.findViewById(R.id.txtSmsRowTimeValue);
 		Timestamp stamp = new Timestamp(values.get(position).getTimestamp() + 1000L);
 		txtDateTime.setText(DateFormat.getDateTimeInstance().format(stamp.getTime()));
 	
 		// Set position
-		((TextView) rowView.findViewById(R.id.txtListviewSmsPosition)).setText(String.valueOf(values.get(position).getLatitude()) + " | " + 
+		((TextView) rowView.findViewById(R.id.txtSmsRowPositionValue)).setText(String.valueOf(values.get(position).getLatitude()) + " | " + 
 				String.valueOf(values.get(position).getLatitude()));
 		
-		// Set phone number
-		((TextView) rowView.findViewById(R.id.txtListviewSmsPhoneNumber)).setText(values.get(position).getSmsc());
-		
 		// Set cell id
-		((TextView) rowView.findViewById(R.id.txtListviewSmsCellId)).setText(String.valueOf(values.get(position).getCid()));
+		((TextView) rowView.findViewById(R.id.txtSmsRowCellIdValue)).setText(String.valueOf(values.get(position).getCid()));
+		
+		// Set phone number
+		((TextView) rowView.findViewById(R.id.txtSmsRowSmsCValue)).setText(values.get(position).getSmsc());
 		
 		// Set source
-		((TextView) rowView.findViewById(R.id.txtListviewSmsSource)).setText(values.get(position).getSender());
+		((TextView) rowView.findViewById(R.id.txtSmsRowSourceValue)).setText(values.get(position).getSender());
 		
 		return rowView;
 	 }

@@ -1,17 +1,9 @@
 package de.srlabs.msd;
 
-import de.srlabs.msd.util.Utils;
-import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.os.Debug;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
+import de.srlabs.msd.util.Utils;
 
 public class SettingsActivity extends PreferenceActivity
 {	

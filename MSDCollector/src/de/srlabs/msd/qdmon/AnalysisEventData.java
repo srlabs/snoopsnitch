@@ -13,7 +13,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-
 import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.RAT;
 import de.srlabs.msd.analysis.Risk;

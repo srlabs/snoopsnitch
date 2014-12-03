@@ -1,19 +1,16 @@
 package de.srlabs.msd.views.adapter;
 
-import java.util.List;
 import java.util.Vector;
 
-import de.srlabs.msd.R;
-import de.srlabs.msd.analysis.SMS;
-import de.srlabs.msd.util.ProviderScore;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.srlabs.msd.R;
+import de.srlabs.msd.analysis.SMS;
 
 public class ListViewProviderAdapter extends ArrayAdapter<SMS>
 {
@@ -38,8 +35,6 @@ public class ListViewProviderAdapter extends ArrayAdapter<SMS>
 			
 		// Set provider name
 		((TextView) rowView.findViewById(R.id.txtProviderName)).setText("Vodafone");
-		
-		Toast.makeText(context, "Reihe hinzugefuegt...!", 2).show();
 		
 		return rowView;
 	}

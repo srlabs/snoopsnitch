@@ -1,15 +1,14 @@
 package de.srlabs.msd.views;
 
-import de.srlabs.msd.DetailChartActivity;
-import de.srlabs.msd.R;
-import de.srlabs.msd.util.MSDServiceHelperCreator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
+import de.srlabs.msd.DetailChartActivity;
+import de.srlabs.msd.R;
+import de.srlabs.msd.util.MSDServiceHelperCreator;
 
 public class DetailThreatChart extends View
 {
@@ -42,11 +41,6 @@ public class DetailThreatChart extends View
 		
 		this._rectWidth = MSDServiceHelperCreator.getInstance(null).getRectWidth();
 		this.context = context;
-	}
-	
-	@Override
-	protected void onFinishInflate() {
-		super.onFinishInflate();
 	}
 
 	protected void drawChartColumn (int startX, int endX, int elementWidth, int numberOfElements, Canvas canvas)

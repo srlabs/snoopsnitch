@@ -1,14 +1,5 @@
 package de.srlabs.msd;
 
-import de.srlabs.msd.analysis.SMS;
-import de.srlabs.msd.analysis.SMS.Type;
-import de.srlabs.msd.qdmon.StateChangedReason;
-import de.srlabs.msd.util.TimeSpace;
-import de.srlabs.msd.views.adapter.DetailChartGalleryAdapter;
-import de.srlabs.msd.views.adapter.ListViewImsiCatcherAdapter;
-import de.srlabs.msd.views.adapter.ListViewSmsAdapter;
-
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -22,6 +13,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.analysis.SMS.Type;
+import de.srlabs.msd.util.TimeSpace;
+import de.srlabs.msd.views.adapter.DetailChartGalleryAdapter;
+import de.srlabs.msd.views.adapter.ListViewImsiCatcherAdapter;
+import de.srlabs.msd.views.adapter.ListViewSmsAdapter;
 
 public class DetailChartActivity extends BaseActivity
 {
@@ -30,8 +27,10 @@ public class DetailChartActivity extends BaseActivity
 	private ListView listView;
 	private ImageView _imgThreatType;
 	private TextView _txtThreatTypeImsiCatcher;
+	private TextView _txtThreatTypeImsiCatcherCount;
 	private TextView _txtThreatTypeSilentSmsCount;
 	private TextView _txtThreatTypeBinarySmsCount;
+	private LinearLayout _llThreatTypeImsiCatcher;
 	private LinearLayout _llThreatTypeSms;
 	private DetailChartGalleryAdapter mPagerAdapter;
 	private ViewPager mPager;
@@ -46,8 +45,10 @@ public class DetailChartActivity extends BaseActivity
 		
 		_imgThreatType = (ImageView) findViewById(R.id.imgDetailChartThreatType);
 		_txtThreatTypeImsiCatcher = (TextView) findViewById(R.id.txtDetailChartThreatTypeImsiCatcher);
+		_txtThreatTypeImsiCatcherCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeImsiCatcherCount);
 		_txtThreatTypeSilentSmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeSilentSmsCount);
 		_txtThreatTypeBinarySmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySmsCount);
+		_llThreatTypeImsiCatcher = (LinearLayout) findViewById(R.id.llThreatTypeImsiCatcher);
 		_llThreatTypeSms = (LinearLayout) findViewById(R.id.llThreatTypeSms);
 	}
 	
@@ -171,8 +172,8 @@ public class DetailChartActivity extends BaseActivity
 			_endTime = TimeSpace.Times.Month.getEndTime();
 			break;
 		default:
-			_startTime = TimeSpace.Times.Month.getStartTime();
-			_endTime = TimeSpace.Times.Month.getEndTime();
+			_startTime = 0;
+			_endTime = 0;
 			break;
 		}
 		
@@ -196,6 +197,12 @@ public class DetailChartActivity extends BaseActivity
 			ListViewImsiCatcherAdapter listViewAdapter = new ListViewImsiCatcherAdapter (this, 
 					getMsdServiceHelperCreator().getMsdServiceHelper().getData().getImsiCatchers (_startTime, _endTime));
 			listView.setAdapter(listViewAdapter);
+			
+			if (_txtThreatTypeImsiCatcherCount != null)
+			{
+				_txtThreatTypeImsiCatcherCount.setText(String.valueOf(getMsdServiceHelperCreator().
+						getMsdServiceHelper().getData().getImsiCatchers(_startTime, _endTime).size()));
+			}
 		}
 	}
 	
@@ -214,14 +221,14 @@ public class DetailChartActivity extends BaseActivity
 		if (_threatType == R.id.IMSICatcherCharts)
 		{
 			_imgThreatType.setBackground(getResources().getDrawable(R.drawable.ic_content_imsi_event));
-			_txtThreatTypeImsiCatcher.setVisibility(View.VISIBLE);
+			_llThreatTypeImsiCatcher.setVisibility(View.VISIBLE);
 			_llThreatTypeSms.setVisibility(View.GONE);
 		}
 		else
 		{
 			_imgThreatType.setBackground(getResources().getDrawable(R.drawable.ic_content_sms_event));
 			_llThreatTypeSms.setVisibility(View.VISIBLE);
-			_txtThreatTypeImsiCatcher.setVisibility(View.GONE);
+			_llThreatTypeImsiCatcher.setVisibility(View.GONE);
 		}
 	}
 	

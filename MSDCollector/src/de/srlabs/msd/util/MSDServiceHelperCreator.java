@@ -3,13 +3,10 @@ package de.srlabs.msd.util;
 import java.util.Calendar;
 import java.util.Vector;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import de.srlabs.msd.analysis.SMS;
-import de.srlabs.msd.qdmon.MsdServiceHelper;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
+import de.srlabs.msd.qdmon.MsdServiceHelper;
 
 
 public class MSDServiceHelperCreator
@@ -58,13 +55,6 @@ public class MSDServiceHelperCreator
 	
 	public int getThreatsSmsMonthSum ()
 	{
-		/*
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.MONTH, -1);
-		
-		return msdServiceHelper.getSMS(cal.getTimeInMillis(), Calendar.getInstance().getTimeInMillis()).size();
-		*/
-		
 		return msdServiceHelper.getData().getSMS(TimeSpace.getTimeSpaceMonth().getStartTime(), 
 				TimeSpace.getTimeSpaceMonth().getEndTime()).size();
 	}
@@ -72,16 +62,15 @@ public class MSDServiceHelperCreator
 	public int[] getThreatsSmsMonth ()
 	{
 		int[] smsMonth = new int[4];
-		Calendar calStart = Calendar.getInstance();
-		Calendar calEnd = Calendar.getInstance();
+		long calStart = TimeSpace.getTimeSpaceMonth().getStartTime();
+		long calEnd = TimeSpace.getTimeSpaceMonth().getEndTime();
 		
-		long timeSpan = (TimeSpace.getTimeSpaceMonth().getEndTime() - TimeSpace.getTimeSpaceMonth().getStartTime()) / 4;
+		long timeSpan = (calEnd - calStart) / 4;
 		
 		for (int i=0; i<smsMonth.length; i++)
 		{
-			smsMonth[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
+			smsMonth[i] = msdServiceHelper.getData().getSMS(calEnd - timeSpan,  calEnd).size();
+			calEnd -= timeSpan;
 		}
 		
 		return smsMonth;
@@ -89,13 +78,6 @@ public class MSDServiceHelperCreator
 	
 	public int getThreatsSmsWeekSum ()
 	{
-		/*
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -7);
-		
-		return msdServiceHelper.getSMS(cal.getTimeInMillis(), Calendar.getInstance().getTimeInMillis()).size();
-		*/
-		
 		return msdServiceHelper.getData().getSMS(TimeSpace.getTimeSpaceWeek().getStartTime(), 
 				TimeSpace.getTimeSpaceWeek().getEndTime()).size();
 	}
@@ -103,15 +85,14 @@ public class MSDServiceHelperCreator
 	public int[] getThreatsSmsWeek ()
 	{
 		int[] smsWeek = new int[7];
-		Calendar calStart = Calendar.getInstance();
-		Calendar calEnd = Calendar.getInstance();
+		long calStart = TimeSpace.getTimeSpaceWeek().getStartTime();
+		long calEnd = TimeSpace.getTimeSpaceWeek().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceWeek().getEndTime() - TimeSpace.getTimeSpaceWeek().getStartTime()) / 7;
 		
 		for (int i=0; i<smsWeek.length; i++)
 		{
-			smsWeek[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
+			smsWeek[i] = msdServiceHelper.getData().getSMS(calEnd - timeSpan, calEnd).size();
+			calEnd = (calEnd - timeSpan);
 		}
 		
 		return smsWeek;
@@ -120,15 +101,14 @@ public class MSDServiceHelperCreator
 	public int[] getThreatsSmsDay ()
 	{		
 		int[] smsDay = new int[6];
-		Calendar calStart = Calendar.getInstance();
-		Calendar calEnd = Calendar.getInstance();
+		long calStart = TimeSpace.getTimeSpaceDay().getStartTime();
+		long calEnd = TimeSpace.getTimeSpaceDay().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceDay().getEndTime() - TimeSpace.getTimeSpaceDay().getStartTime()) / 6;
 		
 		for (int i=0; i<smsDay.length; i++)
 		{
-			smsDay[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
+			smsDay[i] = msdServiceHelper.getData().getSMS(calEnd - timeSpan, calEnd).size();
+			calEnd = (calEnd - timeSpan);
 		}
 		
 		return smsDay;
@@ -150,15 +130,14 @@ public class MSDServiceHelperCreator
 	public int[] getThreatsSmsHour ()
 	{
 		int[] smsHour = new int[12];
-		Calendar calStart = Calendar.getInstance();
-		Calendar calEnd = Calendar.getInstance();
+		long calStart = TimeSpace.getTimeSpaceHour().getStartTime();
+		long calEnd = TimeSpace.getTimeSpaceHour().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceHour().getEndTime() - TimeSpace.getTimeSpaceHour().getStartTime()) / 12;
 		
 		for (int i=0; i<smsHour.length; i++)
 		{
-			smsHour[i] = msdServiceHelper.getData().getSMS(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
+			smsHour[i] = msdServiceHelper.getData().getSMS(calEnd - timeSpan, calEnd).size();
+			calEnd -= timeSpan;
 		}
 		
 		return smsHour;
@@ -166,62 +145,49 @@ public class MSDServiceHelperCreator
 	
 	public int getThreatsSmsHourSum ()
 	{
-		/*
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.HOUR, -1);
-		
-		return msdServiceHelper.getSMS(cal.getTimeInMillis(), Calendar.getInstance().getTimeInMillis()).size();
-		*/
-		
 		return msdServiceHelper.getData().getSMS(TimeSpace.getTimeSpaceHour().getStartTime(), 
 				TimeSpace.getTimeSpaceHour().getEndTime()).size();
 	}
 	
 	public int getThreatsImsiMonthSum ()
-	{
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.MONTH, -1);
-		
-		return msdServiceHelper.getData().getImsiCatchers(cal.getTimeInMillis(), Calendar.getInstance().getTimeInMillis()).size();
+	{	
+		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceMonth().getStartTime(), 
+				TimeSpace.getTimeSpaceMonth().getEndTime()).size();
 	}
 	
 	public int[] getThreatsImsiMonth ()
 	{
 		int[] imsiMonth = new int[4];
-		Calendar calStart = Calendar.getInstance();
-		Calendar calEnd = Calendar.getInstance();
+		long calStart = TimeSpace.getTimeSpaceMonth().getStartTime();
+		long calEnd = TimeSpace.getTimeSpaceMonth().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceMonth().getEndTime() - TimeSpace.getTimeSpaceMonth().getStartTime()) / 4;
 		
 		for (int i=0; i<imsiMonth.length; i++)
 		{
-			imsiMonth[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
+			imsiMonth[i] = msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd).size();
+			calEnd -= timeSpan;
 		}
 		
 		return imsiMonth;
 	}
 	
 	public int getThreatsImsiWeekSum ()
-	{
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -7);
-		
-		return msdServiceHelper.getData().getImsiCatchers(cal.getTimeInMillis(), Calendar.getInstance().getTimeInMillis()).size();
+	{		
+		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.Times.Week.getStartTime(), 
+				TimeSpace.Times.Week.getStartTime()).size();
 	}
 	
 	public int[] getThreatsImsiWeek ()
 	{
 		int[] imsiWeek = new int[7];
-		Calendar calStart = Calendar.getInstance();
-		Calendar calEnd = Calendar.getInstance();
+		long calStart = TimeSpace.getTimeSpaceWeek().getStartTime();
+		long calEnd = TimeSpace.getTimeSpaceWeek().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceWeek().getEndTime() - TimeSpace.getTimeSpaceWeek().getStartTime()) / 7;
 		
 		for (int i=0; i<imsiWeek.length; i++)
 		{
-			imsiWeek[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
+			imsiWeek[i] = msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd).size();
+			calEnd -= timeSpan;
 		}
 		
 		return imsiWeek;
@@ -230,40 +196,36 @@ public class MSDServiceHelperCreator
 	public int[] getThreatsImsiDay ()
 	{		
 		int[] imsiDay = new int[6];
-		Calendar calStart = Calendar.getInstance();
-		Calendar calEnd = Calendar.getInstance();
+		long calStart = TimeSpace.getTimeSpaceDay().getStartTime();
+		long calEnd = TimeSpace.getTimeSpaceDay().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceDay().getEndTime() - TimeSpace.getTimeSpaceDay().getStartTime()) / 6;
 		
 		for (int i=0; i<imsiDay.length; i++)
 		{
-			imsiDay[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
+			imsiDay[i] = msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd).size();
+			calEnd = (calEnd - timeSpan);
 		}
 		
 		return imsiDay;
 	}
 	
 	public int getThreatsImsiDaySum ()
-	{
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -1);
-		
-		return msdServiceHelper.getData().getImsiCatchers(cal.getTimeInMillis(), Calendar.getInstance().getTimeInMillis()).size();
+	{		
+		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.Times.Day.getStartTime(), 
+				TimeSpace.Times.Day.getStartTime()).size();
 	}
 	
 	public int[] getThreatsImsiHour ()
 	{
 		int[] imsiHour = new int[12];
-		Calendar calStart = Calendar.getInstance();
-		Calendar calEnd = Calendar.getInstance();
+		long calStart = TimeSpace.Times.Hour.getStartTime();
+		long calEnd = TimeSpace.Times.Hour.getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceHour().getEndTime() - TimeSpace.getTimeSpaceHour().getStartTime()) / 4;
 		
 		for (int i=0; i<imsiHour.length; i++)
 		{
-			imsiHour[i] = msdServiceHelper.getData().getImsiCatchers(calStart.getTimeInMillis() - timeSpan, calEnd.getTimeInMillis()).size();
-			calStart.setTimeInMillis(calStart.getTimeInMillis() - timeSpan);
-			calEnd.setTimeInMillis(calEnd.getTimeInMillis() - timeSpan);
+			imsiHour[i] = msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd).size();
+			calEnd = (calEnd - timeSpan);
 		}
 		
 		return imsiHour;
@@ -271,10 +233,8 @@ public class MSDServiceHelperCreator
 	
 	public int getThreatsImsiHourSum ()
 	{
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.HOUR, -1);
-		
-		return msdServiceHelper.getData().getImsiCatchers(cal.getTimeInMillis(), Calendar.getInstance().getTimeInMillis()).size();
+		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.Times.Hour.getStartTime(), 
+				TimeSpace.Times.Hour.getEndTime()).size();
 	}
 	
 	public Vector<SMS> getSmsOfType (SMS.Type type, long startTime, long endTime)
