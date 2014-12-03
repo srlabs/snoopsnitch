@@ -80,6 +80,10 @@ public class MsdService extends Service{
 
 		@Override
 		public boolean stopRecording() throws RemoteException {
+			if(!isRecording()){
+				sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
+				return true;
+			}
 			return MsdService.this.shutdown(false);
 		}
 
@@ -286,6 +290,8 @@ public class MsdService extends Service{
 	class PeriodicFlushRunnable implements Runnable{
 		@Override
 		public void run() {
+			if(shuttingDown.get())
+				return;
 			debugLogWriter.flushIfUnflushedDataSince(10000);
 			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(this), 1000);
 		}
