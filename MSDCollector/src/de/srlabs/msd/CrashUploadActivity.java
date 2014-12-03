@@ -33,6 +33,7 @@ public class CrashUploadActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(CrashUploadActivity.this));
 		setContentView(R.layout.activity_crash_upload);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		Bundle extras = getIntent().getExtras();
@@ -46,13 +47,14 @@ public class CrashUploadActivity extends Activity
 			textView1.setText("Something went wrong with collecting a crash report. Please run 'adb logcat -v time > log.txt' and submit the resulting log to TODO\n" + errorText);
 			btnUpload.setEnabled(false);
 		} else{
-			textView1.setText("Error file id: " + fileId + "\n" + errorText);
+			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+			DumpFile df = DumpFile.get(db, fileId);
+			MsdDatabaseManager.getInstance().closeDatabase();
+			textView1.setText("Error file: " + df.getFilename() + "\nReport ID: " + df.getReportId() + "\n" + errorText);
 		}
-		// TODO: Maybe we should add textfields so that the user can type in an email address and comment for the bug report
 		btnUpload.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(CrashUploadActivity.this));
 				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 				DumpFile df = DumpFile.get(db, fileId);
 				df.markForUpload(db);
