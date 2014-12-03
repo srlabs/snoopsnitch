@@ -11,9 +11,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import de.srlabs.msd.analysis.ImsiCatcher;
+import de.srlabs.msd.analysis.RAT;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.analysis.SMS.Type;
@@ -22,11 +24,13 @@ import de.srlabs.msd.util.Utils;
 
 public class AnalysisEventData implements AnalysisEventDataInterface{
 	private SQLiteDatabase db;
+	private Context context;
 
 	public AnalysisEventData(Context context) {
 
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
 		this.db = MsdDatabaseManager.getInstance().openDatabase();
+		this.context = context;
 
 		// TODO: Factor out GSMmap data handling into own class.
 		String text = null;
@@ -273,5 +277,19 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	public Risk getScores() {
 		Operator operator = new Operator(db);
 		return new Risk(db, operator.getMcc(), operator.getMnc());
+	}
+
+	@Override
+	public RAT getCurrentRAT() {
+	    TelephonyManager mTelephonyManager = (TelephonyManager)
+	            context.getSystemService(Context.TELEPHONY_SERVICE);
+	    int networkType = mTelephonyManager.getNetworkType();
+	    switch (Utils.networkTypeToNetworkGeneration(networkType)) {
+	    	case 0:  return RAT.RAT_UNKNOWN;
+	    	case 2:  return RAT.RAT_2G;
+	    	case 3:  return RAT.RAT_3G;
+	    	case 4:  return RAT.RAT_LTE;
+	    	default: return RAT.RAT_UNKNOWN;
+	    }
 	}
 }
