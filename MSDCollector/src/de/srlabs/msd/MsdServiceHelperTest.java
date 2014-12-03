@@ -11,11 +11,7 @@ import android.widget.TextView;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.MsdServiceHelper;
 import de.srlabs.msd.qdmon.StateChangedReason;
-import de.srlabs.msd.upload.UploadServiceHelper;
-import de.srlabs.msd.upload.UploadState;
-import de.srlabs.msd.upload.UploadStateCallback;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
-import de.srlabs.msd.R;
 
 public class MsdServiceHelperTest extends Activity implements MsdServiceCallback{
 	private Button btnStart;
@@ -90,21 +86,9 @@ public class MsdServiceHelperTest extends Activity implements MsdServiceCallback
 			}
 		});
 		this.btnUpload.setOnClickListener(new OnClickListener() {
-			private UploadServiceHelper uploadServiceHelper;
 			@Override
 			public void onClick(View v) {
-				if(uploadServiceHelper == null || !uploadServiceHelper.isUploadRunnung()){
-					uploadServiceHelper = new UploadServiceHelper();
-					uploadServiceHelper.startUploading(MsdServiceHelperTest.this, new UploadStateCallback() {
-						@Override
-						public void uploadStateChanged(UploadState state) {
-							textView1.setText(state.toString());
-						}
-					});
-				} else{
-					uploadServiceHelper.stopUploading();
-					uploadServiceHelper = null;
-				}
+
 			}
 		});
 	}

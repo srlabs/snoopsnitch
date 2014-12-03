@@ -50,6 +50,7 @@ import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
 import de.srlabs.msd.upload.DumpFile;
+import de.srlabs.msd.upload.MsdServiceUploadThread;
 import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdConfig;
@@ -126,6 +127,16 @@ public class MsdService extends Service{
 				return false;
 			}
 		}
+
+		@Override
+		public void triggerUploading() throws RemoteException {
+			MsdService.this.triggerUploading();
+		}
+
+		@Override
+		public long reopenAndUploadDebugLog() throws RemoteException {
+			return MsdService.this.reopenAndUploadDebugLog();
+		}
 	};
 	AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
@@ -182,6 +193,8 @@ public class MsdService extends Service{
 	private EncryptedFileWriter extraRecordingRawFileWriter;
 	private long extraRecordingFileId = 0;
 
+	private MsdServiceUploadThread uploadThread = null;
+
 	class QueueElementWrapper<T>{
 		T obj;
 		boolean done = false;
@@ -199,6 +212,24 @@ public class MsdService extends Service{
 	public IBinder onBind(Intent intent) {
 		info("MsdService.onBind() called");
 		return mBinder;
+	}
+
+	public void triggerUploading() {
+		info("MsdService.triggerUploading() called");
+		if(uploadThread != null && uploadThread.isAlive())
+			uploadThread.requestUploadRound();
+		if(uploadThread == null || !uploadThread.isAlive()){
+			uploadThread = new MsdServiceUploadThread(this);
+			uploadThread.requestUploadRound();
+			info("MsdService.triggerUploading() calling uploadThread.start()");
+			uploadThread.start();
+		}
+	}
+
+	public long reopenAndUploadDebugLog() {
+		long result = openOrReopenDebugLog(true,true);
+		triggerUploading();
+		return result;
 	}
 
 	public boolean endExtraRecording(boolean markForUpload) {
@@ -289,7 +320,7 @@ public class MsdService extends Service{
 		MsdLog.init(this);
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 		cleanupIncompleteOldFiles();
-		openOrReopenDebugLog();
+		openOrReopenDebugLog(false,false);
 		mainThreadHandler.post(new ExceptionHandlingRunnable(periodicFlushRunnable));
 		Thread.setDefaultUncaughtExceptionHandler(
 				new Thread.UncaughtExceptionHandler() {
@@ -1027,7 +1058,9 @@ public class MsdService extends Service{
 				handleFatalError("getNextRowId(" + tableName + ") failed because c.moveToFirst() returned false, this shouldn't happen");
 				return 0;
 			}
-			return c.getLong(0) + 1;
+			long result = c.getLong(0) + 1;
+			c.close();
+			return result;
 		} catch(SQLException e){
 			handleFatalError("SQLException in getNextRowId(" + tableName + "): ",e);
 			return 0;
@@ -1311,7 +1344,7 @@ public class MsdService extends Service{
 		// TODO: Maybe check memory usage of this Service process as well.
 		if(ok){
 			openOrReopenRawWriter();
-			openOrReopenDebugLog();
+			openOrReopenDebugLog(false, false);
 		}
 	}
 	private void openOrReopenRawWriter() {
@@ -1360,6 +1393,7 @@ public class MsdService extends Service{
 			df.endRecording(db);
 		}
 		MsdDatabaseManager.getInstance().closeDatabase();
+		triggerUploading();
 	}
 
 	/**
@@ -1392,9 +1426,9 @@ public class MsdService extends Service{
 	 * Opens or reopens the debug log so that it only contains e.g. 1 hour of
 	 * output (which should be enough to debug a crash).
 	 */
-	private void openOrReopenDebugLog(){
-		if(debugLogFileStartTime + 3600 * 1000 > System.currentTimeMillis())
-			return; // No reopen needed
+	private long openOrReopenDebugLog(boolean forceReopen, boolean markForUpload){
+		if(!forceReopen && debugLogFileStartTime + 3600 * 1000 > System.currentTimeMillis())
+			return 0; // No reopen needed
 		debugLogFileStartTime = System.currentTimeMillis();
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		// Save the existing writer so that it can be closed after the new one has been opened (so we can't loose any messages).
@@ -1420,7 +1454,7 @@ public class MsdService extends Service{
 		}
 		if(encryptedFilename == null){
 			handleFatalError("openOrReopenDebugLog(): Couldn't find an available filename for debug log");
-			return;
+			return 0;
 		}
 		// Uncomment the following line to disable plaintext logs (might be good for the final release):
 		// plaintextFilename = null;
@@ -1439,9 +1473,12 @@ public class MsdService extends Service{
 			// There is an open debug logfile already, so let's close it and set the end time in the database
 			oldDebugLogWriter.close();
 			df = DumpFile.get(db, oldDebugLogId);
+			if(markForUpload)
+				df.markForUpload(db);
 			df.endRecording(db);
 		}
 		MsdDatabaseManager.getInstance().closeDatabase();
+		return oldDebugLogId;
 	}
 	private void restartRecording(){
 		if(!shutdown(false)){

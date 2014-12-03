@@ -2,9 +2,12 @@ package de.srlabs.msd;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Vector;
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -22,8 +25,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.StateChangedReason;
+import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.MSDServiceHelperCreator;
 import de.srlabs.msd.util.MsdConfig;
+import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.MsdLog;
 import de.srlabs.msd.util.Utils;
 
@@ -116,7 +121,6 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	protected void showTestScreen ()
 	{
 	    Intent intent = new Intent(this, MsdServiceHelperTest.class);
-	    //intent = new Intent(this, ActiveTestAdvanced.class);
 	    startActivity(intent);
 	}
 	
@@ -165,6 +169,57 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		    case R.id.menu_action_info:
 		      showTestScreen();
 		      break;
+		    case R.id.menu_action_active_test_advanced:
+//			    Intent intent = new Intent(this, ActiveTestAdvanced.class);
+//			    startActivity(intent);
+		    	break;
+		    case R.id.menu_action_upload_pending_files:
+		    	getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
+		    	break;
+		    case R.id.menu_action_upload_suspicious_dumps:
+				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+		    	Vector<DumpFile> files = DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, System.currentTimeMillis() - 3600 * 1000, System.currentTimeMillis(), 0);
+		    	long firstStartTime = System.currentTimeMillis();
+		    	String reportId = "";
+		    	for(DumpFile file:files){
+		    		if(file.getStart_time() < firstStartTime){
+		    			firstStartTime = file.getStart_time();
+		    			reportId = file.getReportId();
+		    		}
+		    	}
+		    	if(reportId == null){
+		    		// TODO: Show error message, no file is available
+					MsdDatabaseManager.getInstance().closeDatabase();
+		    		return true;
+		    	}
+		    	// TODO: Show dialog for confirmation:
+		    	// * Inform user about uploading private data
+		    	// * Show report ID and encourage user to send context information to some email address
+		    	boolean confirmed = true;
+		    	if(confirmed){
+			    	for(DumpFile file:files){
+			    		file.markForUpload(db);
+			    	}
+					getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
+		    	}
+				MsdDatabaseManager.getInstance().closeDatabase();
+		    	break;
+		    case R.id.menu_action_upload_debug_logs:
+		    	// TODO: Show confirmation dialog
+		    	confirmed = true;
+		    	if(confirmed){
+					long debugLogId = getMsdServiceHelperCreator().getMsdServiceHelper().reopenAndUploadDebugLog();
+					if(debugLogId == 0){
+						// TODO Show error dialog
+					} else{
+						db = MsdDatabaseManager.getInstance().openDatabase();
+						DumpFile df = DumpFile.get(db, debugLogId);
+						MsdDatabaseManager.getInstance().closeDatabase();
+						reportId = df.getReportId();
+						// TODO: Show dialog with reportId, encourage user to report additional info via email
+					}
+		    	}
+		    	break;
 		    case R.id.menu_action_settings:
 		    	showSettings ();
 		    	break;
@@ -175,6 +230,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		        NavUtils.navigateUpFromSameTask(this);
 		        break;
 		    default:
+		    	MsdLog.e("BaseActivity","Invalid menu entry pressed,  id=" + item.getItemId());
 		      break;
 	    }
 

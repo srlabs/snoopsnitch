@@ -89,6 +89,17 @@ public class DummyMsdService extends Service{
 				throws RemoteException {
 			return true;			
 		}
+
+		@Override
+		public void triggerUploading() throws RemoteException {
+			Log.i(TAG,"triggerUploading() called");
+		}
+
+		@Override
+		public long reopenAndUploadDebugLog() throws RemoteException {
+			Log.i(TAG,"reopenAndUploadDebugLog() called");
+			return 0;
+		}
 	};
 	private class DummyDataRunnable implements Runnable{
 		private boolean recordingStopped = false;

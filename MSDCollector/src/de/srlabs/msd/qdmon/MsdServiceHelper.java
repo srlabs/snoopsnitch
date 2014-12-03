@@ -157,4 +157,19 @@ public class MsdServiceHelper{
 			logDataBuffer.append(logData);
 		}
 	}
+	public void triggerUploading() {
+		try {
+			mIMsdService.triggerUploading();
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.triggerUploading()", e);
+		}
+	}
+	public long reopenAndUploadDebugLog(){
+		try {
+			return mIMsdService.reopenAndUploadDebugLog();
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.reopenAndUploadDebugLog()", e);
+			return 0;
+		}
+	}
 }
