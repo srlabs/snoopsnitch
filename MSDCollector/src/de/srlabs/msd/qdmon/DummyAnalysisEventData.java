@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-
 import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.RAT;
 import de.srlabs.msd.analysis.Risk;

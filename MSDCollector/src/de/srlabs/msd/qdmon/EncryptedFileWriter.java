@@ -195,6 +195,7 @@ public class EncryptedFileWriter{
 			if(openssl != null){
 				info("Waiting for openssl to terminate during close()");
 				Thread t = new Thread(){
+					@Override
 					public void run() {
 						try{
 							openssl.waitFor();

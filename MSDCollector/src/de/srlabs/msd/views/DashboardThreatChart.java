@@ -48,7 +48,7 @@ public class DashboardThreatChart extends View
 	@Override
 	protected void onDraw(Canvas canvas) 
 	{
-		this._rectWidth = MSDServiceHelperCreator.getInstance(null).getRectWidth();
+		this._rectWidth = MSDServiceHelperCreator.getInstance().getRectWidth();
 		int _rectSpace = 2;
 		
 		if (_threatType == 0)

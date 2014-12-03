@@ -44,7 +44,7 @@ public class Utils {
 		sslContext.init(null, tmf.getTrustManagers(), null);
 
 		// TODO: Handle pinning errors with an appropriate error message/Notification
-		((HttpsURLConnection) connection).setSSLSocketFactory(sslContext.getSocketFactory());
+		connection.setSSLSocketFactory(sslContext.getSocketFactory());
 		return connection;
 	}
 

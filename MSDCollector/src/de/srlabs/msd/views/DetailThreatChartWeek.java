@@ -20,11 +20,11 @@ public class DetailThreatChartWeek extends DetailThreatChart
 
 		if (_threatType == R.id.SilentSMSCharts)
 		{
-			_items = MSDServiceHelperCreator.getInstance(null).getThreatsSmsWeek();
+			_items = MSDServiceHelperCreator.getInstance().getThreatsSmsWeek();
 		}
 		else
 		{
-			_items = MSDServiceHelperCreator.getInstance(null).getThreatsImsiWeek();
+			_items = MSDServiceHelperCreator.getInstance().getThreatsImsiWeek();
 		}
 		
 		drawChartColumn((getMeasuredWidth() / 14) - (_rectWidth / 2), (getMeasuredWidth() / 14) + (_rectWidth / 2), _rectWidth, _items[6], canvas);

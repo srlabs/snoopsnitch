@@ -2,6 +2,7 @@ package de.srlabs.msd.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,8 +14,16 @@ public class DashboardProviderList extends View
 	public DashboardProviderList(Context context, AttributeSet attrs) 
 	{
 		super(context, attrs);
+	}
+	
+	@Override
+	protected void onDraw(Canvas canvas) 
+	{
+		super.onDraw(canvas);
 		
 		this.canvas = canvas;
+		
+		drawCircle(Color.RED, false, false);
 	}
 
 	private void drawCircle (int color, Boolean isOwnProvider, Boolean isResult)

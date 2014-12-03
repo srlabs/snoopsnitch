@@ -3,9 +3,9 @@ package de.srlabs.msd.qdmon;
 import java.util.Vector;
 
 import de.srlabs.msd.analysis.ImsiCatcher;
+import de.srlabs.msd.analysis.RAT;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.analysis.SMS;
-import de.srlabs.msd.analysis.RAT;
 
 public interface AnalysisEventDataInterface {
 	public SMS getSMS(long id);

@@ -20,11 +20,11 @@ public class DetailThreatChartHour extends DetailThreatChart
 		
 		if (_threatType == R.id.SilentSMSCharts)
 		{
-			_items = MSDServiceHelperCreator.getInstance(null).getThreatsSmsHour();
+			_items = MSDServiceHelperCreator.getInstance().getThreatsSmsHour();
 		}
 		else
 		{
-			_items = MSDServiceHelperCreator.getInstance(null).getThreatsImsiHour();
+			_items = MSDServiceHelperCreator.getInstance().getThreatsImsiHour();
 		}
 		
 //		drawChartColumn((getMeasuredWidth() / 24) - (_rectWidth / 2), (getMeasuredWidth() / 24) + (_rectWidth / 2), _rectWidth, _items[11], canvas);

@@ -1,6 +1,5 @@
 package de.srlabs.msd.util;
 
-import java.util.Calendar;
 import java.util.Vector;
 
 import android.content.Context;
@@ -33,13 +32,8 @@ public class MSDServiceHelperCreator
 		return _instance;
 	}
 	
-	public static MSDServiceHelperCreator getInstance (MsdServiceCallback callback)
+	public static MSDServiceHelperCreator getInstance ()
 	{
-		if (_instance == null)
-		{
-			_instance = new MSDServiceHelperCreator (null, callback);
-		}
-		
 		return _instance;
 	}
 	

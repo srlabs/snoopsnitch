@@ -39,7 +39,7 @@ public class DetailThreatChart extends View
 			//_imgThreatType.setBackgroundResource(R.drawable.ic_content_sms_event);
 		}
 		
-		this._rectWidth = MSDServiceHelperCreator.getInstance(null).getRectWidth();
+		this._rectWidth = MSDServiceHelperCreator.getInstance().getRectWidth();
 		this.context = context;
 	}
 

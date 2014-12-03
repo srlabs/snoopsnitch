@@ -20,11 +20,11 @@ public class DetailThreatChartMonth extends DetailThreatChart
 
 		if (_threatType == R.id.SilentSMSCharts)
 		{
-			_items = MSDServiceHelperCreator.getInstance(null).getThreatsSmsMonth();
+			_items = MSDServiceHelperCreator.getInstance().getThreatsSmsMonth();
 		}
 		else
 		{
-			_items = MSDServiceHelperCreator.getInstance(null).getThreatsImsiMonth();
+			_items = MSDServiceHelperCreator.getInstance().getThreatsImsiMonth();
 		}
 		
 		drawChartColumn((getMeasuredWidth() / 8) - (_rectWidth / 2), (getMeasuredWidth() / 8) + (_rectWidth / 2), _rectWidth, _items[3], canvas);

@@ -21,10 +21,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         
-        Preference myPref = (Preference) findPreference("settings_appId");
+        Preference myPref = findPreference("settings_appId");
         myPref.setOnPreferenceClickListener(new OnPreferenceClickListener() 
         {
-                     public boolean onPreferenceClick(Preference preference) 
+                     @Override
+					public boolean onPreferenceClick(Preference preference) 
                      {
                     	 showgenerateAppIdDialog ();
                     	 
@@ -33,6 +34,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                  });
     }
 	
+	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) 
 	{

@@ -459,6 +459,7 @@ public class MsdService extends Service{
 			}
 			if(helper != null){
 				Thread t = new Thread(){
+					@Override
 					public void run() {
 						try{
 							helper.waitFor();
@@ -501,6 +502,7 @@ public class MsdService extends Service{
 				}
 				info("Waiting for parser to terminate after closing parserStdin");
 				Thread t = new Thread(){
+					@Override
 					public void run() {
 						try{
 							parser.waitFor();
@@ -579,6 +581,7 @@ public class MsdService extends Service{
 	 *
 	 */
 	class FromDiagThread extends Thread{
+		@Override
 		public void run() {
 			try {
 				while (true) {
@@ -680,6 +683,7 @@ public class MsdService extends Service{
 	 *
 	 */
 	class ToParserThread extends Thread{
+		@Override
 		public void run() {
 			try {
 				while(true){
@@ -704,6 +708,7 @@ public class MsdService extends Service{
 	}
 
 	class FromParserThread extends Thread{
+		@Override
 		public void run() {
 			try {
 				while(true){
@@ -769,6 +774,7 @@ public class MsdService extends Service{
 	class SqliteThread extends Thread{
 		boolean shuttingDown = false;
 		private long lastAnalysisTime;
+		@Override
 		public void run() {
 			lastAnalysisTime = System.currentTimeMillis();
 			MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
@@ -1193,6 +1199,7 @@ public class MsdService extends Service{
 			// Call shutdown in the main thread so that the thread causing the Error can terminate
 			fatalErrorOccured = true;
 			mainThreadHandler.post(new ExceptionHandlingRunnable(new Runnable(){
+				@Override
 				public void run() {
 					Log.e(TAG,"shutdownDueToError(finalMsg,e);");
 					shutdownDueToError(finalMsg,e);

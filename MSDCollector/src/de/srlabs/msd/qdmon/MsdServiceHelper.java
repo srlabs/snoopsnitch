@@ -20,6 +20,7 @@ public class MsdServiceHelper{
 		@Override
 		public void stateChanged(final String reason) throws RemoteException {
 			(new Handler(Looper.getMainLooper())).post(new Runnable(){
+				@Override
 				public void run() {
 					callback.stateChanged(StateChangedReason.valueOf(reason));
 				};

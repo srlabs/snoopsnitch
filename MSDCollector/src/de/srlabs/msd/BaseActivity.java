@@ -1,7 +1,5 @@
 package de.srlabs.msd;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Vector;
 
 import android.app.ActionBar;
@@ -26,7 +24,6 @@ import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.MSDServiceHelperCreator;
-import de.srlabs.msd.util.MsdConfig;
 import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.MsdLog;
 import de.srlabs.msd.util.Utils;

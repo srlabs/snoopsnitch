@@ -27,7 +27,7 @@ public class Risk {
 		this.imper3G = query3GScores(db, currentMCC, currentMNC, "impersonation3G");
 
 		queryOperatorData(db, currentMCC, currentMNC);
-
+ 
 		// Set other operators
 		serverData = new Vector<Risk>();
 		Cursor c = db.rawQuery

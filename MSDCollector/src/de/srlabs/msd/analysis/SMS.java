@@ -110,6 +110,7 @@ public class SMS implements AnalysisEvent{
 		// TODO: Add more fields
 		return result.toString();
 	}
+	@Override
 	public int getUploadState(SQLiteDatabase db){
 		boolean uploaded = false;
 		for(DumpFile file:getFiles(db)){
@@ -123,9 +124,11 @@ public class SMS implements AnalysisEvent{
 		else
 			return STATE_DELETED;
 	}
+	@Override
 	public Vector<DumpFile> getFiles(SQLiteDatabase db){
 		return DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, timestamp, null, 0);
 	}
+	@Override
 	public void markForUpload(SQLiteDatabase db){
 		Log.e("msd","markForUpload()");
 		for(DumpFile file:getFiles(db)){
