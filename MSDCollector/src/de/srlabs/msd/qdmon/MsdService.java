@@ -815,6 +815,7 @@ public class MsdService extends Service{
 							lastAnalysisTime = System.currentTimeMillis();
 
 							info(time + ": Analysis took " + (lastAnalysisTime - start.getTimeInMillis()) + "ms");
+							sendStateChanged(StateChangedReason.ANALYSIS_DONE);
 
 						} catch(Exception e){
 							// Terminate the service with a fatal error if there is a any uncaught Exception in the Analysis
