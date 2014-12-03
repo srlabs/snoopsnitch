@@ -9,7 +9,9 @@ import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.RAT;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.analysis.GSMmap;
 import de.srlabs.msd.util.MsdDatabaseManager;
+import de.srlabs.msd.util.Utils;
 
 public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	private Vector<SMS> existingSms = new Vector<SMS>();
@@ -24,6 +26,16 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
 		this.db = MsdDatabaseManager.getInstance().openDatabase();
+
+		GSMmap gsmmap = new GSMmap(context);
+		if (!gsmmap.dataPresent()) {
+			try {
+				String data = Utils.readFromAssets(context, "data.js");
+				gsmmap.parse(data);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
 		// A few dummy binary/silent SMS in the past
 		existingSms.add(new SMS(1413387583L*1000L, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, "012345678", "+4912345678", SMS.Type.BINARY_SMS));
