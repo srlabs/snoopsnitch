@@ -817,6 +817,10 @@ public class MsdService extends Service{
 							info(time + ": Analysis took " + (lastAnalysisTime - start.getTimeInMillis()) + "ms");
 							sendStateChanged(StateChangedReason.ANALYSIS_DONE);
 
+							// TODO: This should be done somewhere else, when we really detect a change from
+							// telephony service
+							sendStateChanged(StateChangedReason.RAT_CHANGED);
+
 						} catch(Exception e){
 							// Terminate the service with a fatal error if there is a any uncaught Exception in the Analysis
 							handleFatalError("Exception during analysis",e);
