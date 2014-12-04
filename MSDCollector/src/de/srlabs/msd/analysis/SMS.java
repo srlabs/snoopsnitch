@@ -5,6 +5,8 @@ import java.util.Vector;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import de.srlabs.msd.upload.DumpFile;
+import de.srlabs.msd.upload.FileState;
+import de.srlabs.msd.util.MsdDatabaseManager;
 
 
 public class SMS implements AnalysisEvent{
@@ -22,11 +24,10 @@ public class SMS implements AnalysisEvent{
 		SILENT_SMS,
 		BINARY_SMS,
 		INVALID_SMS
-		// TODO: Define the required types here
 	}
 	private Type type;
-	public SMS() {
-	}
+	SQLiteDatabase db;
+
 	public SMS(long timestamp, long id, int mcc, int mnc, int lac, int cid,
 			double latitude, double longitude, String sender, String smsc, Type type) {
 		super();
@@ -41,6 +42,22 @@ public class SMS implements AnalysisEvent{
 		this.sender = sender;
 		this.smsc = smsc;
 		this.type = type;
+		db = MsdDatabaseManager.getInstance().openDatabase();
+	}
+
+	/**
+	 * Mark raw data related to this SMS for upload
+	 */
+	public void upload() {
+		DumpFile.markForUpload(db, DumpFile.TYPE_ENCRYPTED_QDMON, timestamp, null, 0);
+	}
+
+	/**
+	 * Return upload state of SMS object
+	 * @return
+	 */
+	public FileState getUploadState() {
+		return DumpFile.getState(db, DumpFile.TYPE_ENCRYPTED_QDMON, timestamp, null, 0);
 	}
 
 	/**

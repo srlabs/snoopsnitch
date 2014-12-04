@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import android.database.sqlite.SQLiteDatabase;
 import de.srlabs.msd.upload.DumpFile;
+import de.srlabs.msd.upload.FileState;
+import de.srlabs.msd.util.MsdDatabaseManager;
 
 
 public class ImsiCatcher implements AnalysisEvent{
@@ -17,10 +19,8 @@ public class ImsiCatcher implements AnalysisEvent{
 	private double latitude;
 	private double longitude;
 	private double score;
+	SQLiteDatabase db;
 
-	public ImsiCatcher() {
-	}
-	
 	public ImsiCatcher(long startTime, long endTime, long id, int mcc,
 			int mnc, int lac, int cid, double latitude, double longitude, double score) {
 		super();
@@ -34,7 +34,24 @@ public class ImsiCatcher implements AnalysisEvent{
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.score = score;
+		db = MsdDatabaseManager.getInstance().openDatabase();
 	}
+
+	/**
+	 * Mark raw data related to this IMSI catcher for upload
+	 */
+	public void upload() {
+		DumpFile.markForUpload(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);
+	}
+
+	/**
+	 * Return upload state of IMSI catcher object
+	 * @return
+	 */
+	public FileState getUploadState() {
+		return DumpFile.getState(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);
+	}
+
 	/**
 	 * Start time when the IMSI Catcher was detected
 	 * @return

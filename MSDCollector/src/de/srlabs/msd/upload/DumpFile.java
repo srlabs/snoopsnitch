@@ -219,6 +219,67 @@ public class DumpFile {
 		return state;
 	}
 
+	/**
+	 * Gets combined upload state of all files between time1 and time2 from the database. time2 can be null to get only files containing time1.
+	 * @param db An SQLiteDatabase object to get the files from
+	 * @param type Optional, get files of a specific type only
+	 * @param time1 Start time
+	 * @param time2 End time
+	 * @param rangeSeconds Extend the range from time1 to time2 by rangeSeconds seconds to get the surrounding dumps as well
+	 * @return
+	 */
+	public static FileState getState(SQLiteDatabase db, Integer type, long time1, Long time2, Integer rangeSeconds){
+
+		int recording = 0, available = 0, pending = 0, uploaded = 0, deleted = 0, recording_pending = 0, invalid = 0, total = 0;
+
+		for (DumpFile file:getFiles(db, type, time1, time2, rangeSeconds)) {
+			switch (file.getState()) {
+				case STATE_RECORDING:   	  recording++;
+				case STATE_AVAILABLE:   	  available++;
+				case STATE_PENDING:     	  pending++;
+				case STATE_UPLOADED:    	  uploaded++;
+				case STATE_DELETED:     	  deleted++;
+				case STATE_RECORDING_PENDING: recording_pending++;
+				default: invalid++;
+			}
+			total++;
+		}
+
+		//  No results in that time frame
+		if (total == 0) {
+			return FileState.STATE_INVALID;
+		}
+
+		//  Should not happen if above switch statement is complete
+		if (invalid > 0) {
+			return FileState.STATE_INVALID;
+		}
+
+		//  This is how the result is calculated:
+		//
+		//  1. STATE_DELETED:   All files have state DELETED
+		//  2. STATE_AVAILABLE: At least one file has state RECORDING or AVAILABLE
+		//  3. STATE_UPLOADED:  No file has state RECORDING or AVAILABLE, at least one file has state PENDING, UPLOADED or RECORDING_PENDING
+
+		//  Case 1.
+		if (total == deleted) {
+			return FileState.STATE_DELETED;
+		}
+
+		//  Case 2.
+		if (recording > 0 || available > 0) {
+			return FileState.STATE_AVAILABLE;
+		}
+
+		//  Case 3.
+		if (pending > 0 || uploaded > 0 || recording_pending > 0) {
+			return FileState.STATE_UPLOADED;
+		}
+
+		//  Should not happen
+		return FileState.STATE_INVALID;
+	}
+
 	public void endRecording(SQLiteDatabase db){
 		this.end_time = System.currentTimeMillis();
 		ContentValues values = new ContentValues();
@@ -246,6 +307,23 @@ public class DumpFile {
 				return;
 		}
 		Log.e("DumpFile", "markForUpload failed: " + this);
+	}
+
+	/**
+	 * Marks all files between time1 and time2 for upload. time2 can be null to get only files containing time1.
+	 * @param db An SQLiteDatabase object to get the files from
+	 * @param type Optional, get files of a specific type only
+	 * @param time1 Start time
+	 * @param time2 End time
+	 * @param rangeSeconds Extend the range from time1 to time2 by rangeSeconds seconds to get the surrounding dumps as well
+	 * @return
+	 */
+	public static void markForUpload(SQLiteDatabase db, Integer type, long time1, Long time2, Integer rangeSeconds){
+		for (DumpFile file:getFiles(db, type, time1, time2, rangeSeconds)) {
+			if (file.getState() == STATE_AVAILABLE || file.getState() == STATE_RECORDING) {
+				file.markForUpload(db);
+			}
+		}
 	}
 
 	/**
