@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.MSDServiceHelperCreator;
@@ -28,7 +27,7 @@ import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.MsdLog;
 import de.srlabs.msd.util.Utils;
 
-public class BaseActivity extends FragmentActivity implements MsdServiceCallback
+public class BaseActivity extends FragmentActivity
 {	
 	// Attributes
 	protected MSDServiceHelperCreator msdServiceHelperCreator;
@@ -51,7 +50,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		messageToast = new Toast(getApplicationContext());
 		
 		// Get MsdService Helper
-		msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext(), this);
+		msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext());
 		MsdLog.init(msdServiceHelperCreator.getMsdServiceHelper());
 		MsdLog.i("MSD","MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 		
@@ -60,8 +59,8 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	
 	@Override
 	protected void onResume() 
-	{	
-		super.onResume();
+	{		
+		msdServiceHelperCreator.setCurrentActivity(this);
 		
 		isInForeground = true;
 		// Set title/subtitle of the action bar...
@@ -71,6 +70,10 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		ab.setSubtitle(setAppId ());
 		
 		handler.postDelayed(runnable, refresh_intervall);
+			
+		setRecordingIcon ();
+		
+		super.onResume();
 	}
 	
 	@Override
@@ -84,7 +87,6 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 	@Override
 	protected void onDestroy() 
 	{	
-		//msdServiceHelperCreator.destroy();
 		super.onDestroy();
 	}
 	
@@ -245,24 +247,20 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		}
 	}
 
-	@Override
 	public void internalError(String errorMsg) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void stateChanged(StateChangedReason reason) 
 	{	
-		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED) || 
-				reason.equals(StateChangedReason.RECORDING_STATE_CHANGED))
+		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
 		{
 			refreshView();
 		}
 		else if (reason.equals(StateChangedReason.RECORDING_STATE_CHANGED))
 		{
 			Log.e("msd","REASON: " + reason.name());
-			Toast.makeText(this, "Changed...", 2).show();
 			
 			if (menu != null)
 			{
@@ -279,6 +277,7 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 			}
 		}
 	}
+	
 	private String setAppId ()
 	{
 		SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
@@ -306,4 +305,19 @@ public class BaseActivity extends FragmentActivity implements MsdServiceCallback
 		};
 	
 	protected void refreshView () {}
+	
+	private void setRecordingIcon ()
+	{
+		if (menu != null)
+		{
+			if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
+			{
+				menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_record_disable));
+			}
+			else
+			{
+				menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
+			}	
+		}
+	}
 }

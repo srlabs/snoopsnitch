@@ -13,7 +13,6 @@ import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.Toast;
 import de.srlabs.msd.DashboardActivity;
 import de.srlabs.msd.R;
 import de.srlabs.msd.analysis.Risk;
@@ -30,8 +29,8 @@ public class DashboardProviderChart extends View
 	private float circleRadius;
 	private float circleLineSpace;
 	private float circleOffset;
-	private double minScore;
-	private double maxScore;
+	private double minScore = 0.5;
+	private double maxScore = 0.5;
 	private int interImper;
 	
 	
@@ -61,8 +60,6 @@ public class DashboardProviderChart extends View
 		   {
 		       a.recycle();
 		   }
-		   
-		   Toast.makeText(context, String.valueOf(interImper), 10).show();
 		
 		this.host = (DashboardActivity) context;
 	}
@@ -78,6 +75,8 @@ public class DashboardProviderChart extends View
 		drawProviderChart();
 		
 		drawMinMaxBackground ();
+		
+		drawProvider();
 	}
 	
 	private void drawProviderChart ()
@@ -100,26 +99,37 @@ public class DashboardProviderChart extends View
 		Paint paint = new Paint(); 
 		paint.setShader(shader); 
 		canvas.drawRect(new RectF(getWidth()/2-chartWidth, chartOffsetTopBottom, getWidth()/2+chartWidth, getHeight() - chartOffsetTopBottom), paint);
-	
-		// Set provider data
-		drawProvider();
 	}
 	
 	private void drawProvider ()
 	{
-//        for (Risk op : host.getProviderData()) 
-//        {
-//        	if (interImper == 0)
-//        	{
-//                drawProviderScore(op.getInter3G().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), false, 0);
-//                drawProviderScore(op.getInter().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), true, 0);	
-//        	}
-//        	else
-//        	{
-//                drawProviderScore(op.getImper3G().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), false, 0);	
-//                drawProviderScore(op.getImper().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), true, 0);
-//        	}	
-//		}
+        for (Risk op : host.getProviderData()) 
+        {
+        	if (interImper == 0)
+        	{
+        		if (!op.getInter3G().isEmpty())
+        		{
+            		drawProviderScore(op.getInter3G().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), false, 0);
+        		}
+        		
+        		if (!op.getInter().isEmpty())
+        		{
+        			drawProviderScore(op.getInter().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), true, 0);
+        		}
+        	}
+        	else
+        	{
+        		if (!op.getImper3G().isEmpty())
+        		{
+        			drawProviderScore(op.getImper3G().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), false, 0);	
+        		}
+        		
+        		if (!op.getImper().isEmpty())
+        		{
+        			 drawProviderScore(op.getImper().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), true, 0);
+        		}
+        	}	
+		}
 	}
 	
 	private void drawProviderScore (double score, int color, boolean is2G, float offset)
@@ -202,30 +212,34 @@ public class DashboardProviderChart extends View
 	}
 	
 	private void setMinMaxScore ()
-	{	
-//		while (providerList.hasNext())
-//		{
-//            Risk op = providerList.next();
-//			
-//			if (op.)
-//		}
-//				
-//		
-//		if (host.getProviderData().firstElement() != null)
-//		{
-//			minScore = maxScore = host.getProviderData().firstElement().getImper().lastElement().getScore();
-//			
-//			for (Risk r : host.getProviderData()) 
-//			{
-//				if (r.getImper().lastElement().getScore() > maxScore)
-//				{
-//					maxScore = r.getImper().lastElement().getScore();
-//				}
-//				else if (r.getImper().lastElement().getScore() < minScore)
-//				{
-//					minScore = r.getImper().lastElement().getScore();
-//				}
-//			}
-//		}
+	{		
+		if (interImper == 0)
+		{
+			for (Risk r : host.getProviderData()) 
+			{
+				if (r.getInter().lastElement().getScore() > maxScore)
+				{
+					maxScore = r.getInter().lastElement().getScore();
+				}
+				else if (r.getInter().lastElement().getScore() < minScore)
+				{
+					minScore = r.getInter().lastElement().getScore();
+				}
+			}
+		}
+		else
+		{
+			for (Risk r : host.getProviderData()) 
+			{
+				if (r.getImper().lastElement().getScore() > maxScore)
+				{
+					maxScore = r.getImper().lastElement().getScore();
+				}
+				else if (r.getImper().lastElement().getScore() < minScore)
+				{
+					minScore = r.getImper().lastElement().getScore();
+				}
+			}
+		}
 	}
 }

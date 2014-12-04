@@ -1,11 +1,11 @@
 package de.srlabs.msd.views;
 
-import de.srlabs.msd.DashboardActivity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+import de.srlabs.msd.DashboardActivity;
 
 public class DashboardProviderList extends View
 {

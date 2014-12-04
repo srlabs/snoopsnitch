@@ -131,7 +131,14 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	@Override
 	public Risk getScores() {
 		// Vodafone Germany
-		return new Risk(db, 262, 2);
+//		return new Risk(db, 262, 2);
+		return new Risk(db, 405, 47);  // India
+//		return new Risk(db, 240, 24);  // Sweden
+//		return new Risk(db, 452, 7);   // Vietnam
+//		return new Risk(db, 401, 77);  // Kazakhstan 
+//		return new Risk(db, 302, 720); // Canada
+//		return new Risk(db, 242, 5);   // Norway
+
 	}
 	@Override
 	public RAT getCurrentRAT() {

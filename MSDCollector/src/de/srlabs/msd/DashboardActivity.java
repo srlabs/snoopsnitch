@@ -198,7 +198,7 @@ public class DashboardActivity extends BaseActivity
 		}
 		else if (reason.equals(StateChangedReason.ANALYSIS_DONE))
 		{
-			updateInterseptionImpersonation();
+			updateLastAnalysis();
 		}
 		
 		super.stateChanged(reason);

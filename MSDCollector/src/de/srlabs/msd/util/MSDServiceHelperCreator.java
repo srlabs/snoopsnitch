@@ -2,31 +2,38 @@ package de.srlabs.msd.util;
 
 import java.util.Vector;
 
+import android.app.Activity;
 import android.content.Context;
+import android.widget.Toast;
+import de.srlabs.msd.BaseActivity;
+import de.srlabs.msd.DashboardActivity;
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.MsdServiceHelper;
+import de.srlabs.msd.qdmon.StateChangedReason;
 
 
-public class MSDServiceHelperCreator
+public class MSDServiceHelperCreator implements MsdServiceCallback
 {
 	// Attributes
 	private static MSDServiceHelperCreator _instance = null;
 	private MsdServiceHelper msdServiceHelper;
 	private int rectWidth;
+	private Context context;
+	private Activity currentActivity;
 	
 	// Methods
-	public MSDServiceHelperCreator (Context context, MsdServiceCallback callback) 
+	private MSDServiceHelperCreator (Context context) 
 	{
-
-		msdServiceHelper = new MsdServiceHelper(context, callback, false);
+		msdServiceHelper = new MsdServiceHelper(context, this, false);
+		this.context = context;
 	}
 	
-	public static MSDServiceHelperCreator getInstance (Context context, MsdServiceCallback callback)
+	public static MSDServiceHelperCreator getInstance (Context context)
 	{
 		if (_instance == null)
 		{
-			_instance = new MSDServiceHelperCreator (context, callback);
+			_instance = new MSDServiceHelperCreator (context);
 		}
 		
 		return _instance;
@@ -254,5 +261,32 @@ public class MSDServiceHelperCreator
 	public int getRectWidth ()
 	{
 		return rectWidth;
+	}
+	
+	public void setCurrentActivity (Activity activity)
+	{
+		this.currentActivity = activity;
+	}
+
+	@Override
+	public void stateChanged(StateChangedReason reason) 
+	{
+		try
+		{
+			((BaseActivity) currentActivity).stateChanged(reason);
+		}
+		catch (Exception e)
+		{
+			// TODO: Log output...
+		}
+	}
+
+	@Override
+	public void internalError(String msg) 
+	{
+		if (currentActivity instanceof BaseActivity)
+		{
+			((BaseActivity) currentActivity).internalError(msg);	
+		}
 	}
 }
