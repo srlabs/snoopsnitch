@@ -730,6 +730,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3" >
+
+                <Button
+                    android:id="@+id/button1"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/bt_content_contributedata_enable"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/common_button_networktest" />
+
             </LinearLayout>
 
             <View
@@ -808,6 +820,22 @@
                         android:layout_weight="1" />
                 </LinearLayout>
 
+                <View
+                    android:id="@+id/View40"
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/common_sectionBackground" />
+
+                <View
+                    android:id="@+id/View41"
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="6dp"
+                    android:background="@color/common_sectionBackground" />
+
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
@@ -826,7 +854,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="8dp"
                     android:gravity="center_vertical|center_horizontal"
                     android:paddingBottom="2dp"
                     android:paddingTop="2dp"

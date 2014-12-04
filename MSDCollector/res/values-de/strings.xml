@@ -24,6 +24,7 @@
     
     <!-- Common Buttons -->
     <string name="common_button_upload">upload</string>
+    <string name="common_button_networktest">Test Network</string>
     
     <!-- Messages -->
     <string name="message_smsDetected">New SMS detected&#8230;</string>
@@ -47,13 +48,9 @@
     <string name="dashboard_network_security_provider_scrollview_header">Provider results in comparison:</string>
     <string name="dashboard_network_security_interception_title">Interception</string>
     <string name="dashboard_network_security_impersonation_title">Impersonation</string>
-    <!--
     <string name="dashboard_network_security_protectionLevel_high">higher\nprotection</string>
     <string name="dashboard_network_security_protectionLevel_low">lower\nprotection</string>
-    -->
-    <string name="dashboard_network_security_protectionLevel_high"></string>
-    <string name="dashboard_network_security_protectionLevel_low"></string>
-    
+
     <!-- Detail Screen -->
     <string name="detailChart_title_month">Last weeks</string>
     <string name="detailChart_title_week">Last 7 days</string>
