@@ -1,5 +1,6 @@
 package de.srlabs.msd;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Vector;
 
@@ -200,6 +201,10 @@ public class DashboardActivity extends BaseActivity
 		{
 			updateLastAnalysis();
 		}
+		else if (reason.equals(StateChangedReason.RAT_CHANGED))
+		{
+			updateInterseptionImpersonation();
+		}
 		
 		super.stateChanged(reason);
 	}
@@ -247,7 +252,7 @@ public class DashboardActivity extends BaseActivity
 	private void updateLastAnalysis ()
 	{
 		// Set time of last measurement
-		txtLastAnalysisTime.setText(String.valueOf(Calendar.getInstance().getTime()));
+		txtLastAnalysisTime.setText(String.valueOf(DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())));
 	}
 	
 	private void updateInterseptionImpersonation ()
