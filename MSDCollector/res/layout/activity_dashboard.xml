@@ -847,15 +847,15 @@
                 android:weightSum="4" >
 
                 <TextView
-                    android:id="@+id/TextView11"
+                    android:id="@+id/txtDashboardInterception3g"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/common_3g_title"
+                    android:textColor="@color/common_text"
                     android:textSize="@dimen/text_medium"
-                    android:textStyle="bold"
-                    android:textColor="@color/common_text" />
+                    android:textStyle="bold" />
 
                 <View
                     android:id="@+id/View37"
@@ -864,7 +864,7 @@
                     android:background="@color/common_sectionSeparator" />
 
                 <TextView
-                    android:id="@+id/TextView12"
+                    android:id="@+id/txtDashboardInterception2g"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -880,7 +880,7 @@
                     android:background="@color/common_sectionSeparator" />
 
                 <TextView
-                    android:id="@+id/TextView10"
+                    android:id="@+id/txtDashboardImpersonation3g"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -897,7 +897,7 @@
                     android:background="@color/common_sectionSeparator" />
 
                 <TextView
-                    android:id="@+id/TextView09"
+                    android:id="@+id/txtDashboardImpersonation2g"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"

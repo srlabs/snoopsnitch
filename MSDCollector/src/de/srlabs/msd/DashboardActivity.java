@@ -5,6 +5,7 @@ import java.util.Calendar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -12,6 +13,8 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import de.srlabs.msd.qdmon.AnalysisEventData;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.TimeSpace;
@@ -41,6 +44,10 @@ public class DashboardActivity extends BaseActivity
 	private DashboardThreatChart dtcImsiWeek;
 	private DashboardThreatChart dtcImsiMonth;
 	private TextView txtLastMeasurementTime;
+	private TextView txtDashboardInterception3g;
+	private TextView txtDashboardInterception2g;
+	private TextView txtDashboardImpersonation3g;
+	private TextView txtDashboardImpersonation2g;
 	private ImageView imgSilentSms;
 	private ImageView imgImsiCatcher;
 	private ListView lstDashboardProviderList;
@@ -94,6 +101,11 @@ public class DashboardActivity extends BaseActivity
 		dtcImsiMonth = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartMonth);
 		
 		lstDashboardProviderList = (ListView) findViewById(R.id.lstDashboardProviderList);
+		
+		txtDashboardInterception3g = (TextView) findViewById(R.id.txtDashboardInterception3g);
+		txtDashboardInterception2g = (TextView) findViewById(R.id.txtDashboardInterception2g);
+		txtDashboardImpersonation3g = (TextView) findViewById(R.id.txtDashboardImpersonation3g);
+		txtDashboardImpersonation2g = (TextView) findViewById(R.id.txtDashboardImpersonation2g);
 	}
 	
 	@Override
@@ -120,11 +132,11 @@ public class DashboardActivity extends BaseActivity
 		
 		refreshView();
 		
-		// Set time of last measurement
-		txtLastMeasurementTime.setText(String.valueOf(Calendar.getInstance().getTimeInMillis()));
-		
 		// Fill provider list
 		fillProviderList();
+		
+		// Update RAT
+		updateInterseptionImpersonation();
 	}
 	
 	private void setRectWidth (int rectWidth)
@@ -181,6 +193,10 @@ public class DashboardActivity extends BaseActivity
 		{
 			refreshView();
 		}
+		else if (reason.equals(StateChangedReason.ANALYSIS_DONE))
+		{
+			
+		}
 		
 		super.stateChanged(reason);
 	}
@@ -224,5 +240,50 @@ public class DashboardActivity extends BaseActivity
 		ListViewProviderAdapter adapter = new ListViewProviderAdapter(this, 
 				msdServiceHelperCreator.getMsdServiceHelper().getData().getSMS(TimeSpace.Times.Month.getStartTime(), TimeSpace.Times.Month.getEndTime()));
 		lstDashboardProviderList.setAdapter(adapter);	
+	}
+	
+	private void updateLastAnalysis ()
+	{
+		// Set time of last measurement
+		txtLastMeasurementTime.setText(String.valueOf(Calendar.getInstance().getTime()));
+	}
+	
+	private void updateInterseptionImpersonation ()
+	{
+		Toast.makeText(this, msdServiceHelperCreator.getMsdServiceHelper().getData().getCurrentRAT().name(), 2).show();
+		
+		switch (msdServiceHelperCreator.getMsdServiceHelper().getData().getCurrentRAT()) 
+		{		
+			case RAT_2G:
+				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT);
+				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT_BOLD);
+				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
+				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT_BOLD);
+				break;
+			case RAT_3G:
+				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT_BOLD);
+				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT);
+				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT_BOLD);
+				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT);
+				break;
+			case RAT_LTE:
+				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT);
+				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT);
+				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
+				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT);
+				break;	
+			case RAT_UNKNOWN:
+				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT);
+				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT);
+				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
+				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT);
+				break;
+			default:
+				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT);
+				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT);
+				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
+				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT);
+				break;
+		}
 	}
 }
