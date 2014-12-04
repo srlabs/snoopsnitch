@@ -1,6 +1,7 @@
 package de.srlabs.msd;
 
 import java.util.Calendar;
+import java.util.Vector;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,11 +14,9 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import de.srlabs.msd.qdmon.AnalysisEventData;
+import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
-import de.srlabs.msd.util.TimeSpace;
 import de.srlabs.msd.views.DashboardThreatChart;
 import de.srlabs.msd.views.adapter.ListViewProviderAdapter;
 
@@ -43,7 +42,7 @@ public class DashboardActivity extends BaseActivity
 	private DashboardThreatChart dtcImsiDay;
 	private DashboardThreatChart dtcImsiWeek;
 	private DashboardThreatChart dtcImsiMonth;
-	private TextView txtLastMeasurementTime;
+	private TextView txtLastAnalysisTime;
 	private TextView txtDashboardInterception3g;
 	private TextView txtDashboardInterception2g;
 	private TextView txtDashboardImpersonation3g;
@@ -51,6 +50,7 @@ public class DashboardActivity extends BaseActivity
 	private ImageView imgSilentSms;
 	private ImageView imgImsiCatcher;
 	private ListView lstDashboardProviderList;
+	private Vector<Risk> providerList;
 
 	// Methods
 	@Override
@@ -87,7 +87,7 @@ public class DashboardActivity extends BaseActivity
 		txtImsiWeekCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherWeekCount);
 		txtImsiDayCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherDayCount);
 		txtImsiHourCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherHourCount);
-		txtLastMeasurementTime = (TextView) findViewById(R.id.txtDashboardLastMeasurementTime);
+		txtLastAnalysisTime = (TextView) findViewById(R.id.txtDashboardLastAnalysisTime);
 		imgSilentSms = (ImageView) findViewById(R.id.imgDashboardSilentSms);
 		imgImsiCatcher = (ImageView) findViewById(R.id.imgDashboardImsiCatcher);
 		
@@ -131,6 +131,9 @@ public class DashboardActivity extends BaseActivity
 		super.onResume();
 		
 		refreshView();
+		
+		// Get provider data
+		this.providerList = msdServiceHelperCreator.getMsdServiceHelper().getData().getScores().getServerData();
 		
 		// Fill provider list
 		fillProviderList();
@@ -195,7 +198,7 @@ public class DashboardActivity extends BaseActivity
 		}
 		else if (reason.equals(StateChangedReason.ANALYSIS_DONE))
 		{
-			
+			updateInterseptionImpersonation();
 		}
 		
 		super.stateChanged(reason);
@@ -237,21 +240,18 @@ public class DashboardActivity extends BaseActivity
 	
 	private void fillProviderList ()
 	{
-		ListViewProviderAdapter adapter = new ListViewProviderAdapter(this, 
-				msdServiceHelperCreator.getMsdServiceHelper().getData().getSMS(TimeSpace.Times.Month.getStartTime(), TimeSpace.Times.Month.getEndTime()));
-		lstDashboardProviderList.setAdapter(adapter);	
+		ListViewProviderAdapter providerAdapter = new ListViewProviderAdapter(this, providerList);
+		lstDashboardProviderList.setAdapter(providerAdapter);	
 	}
 	
 	private void updateLastAnalysis ()
 	{
 		// Set time of last measurement
-		txtLastMeasurementTime.setText(String.valueOf(Calendar.getInstance().getTime()));
+		txtLastAnalysisTime.setText(String.valueOf(Calendar.getInstance().getTime()));
 	}
 	
 	private void updateInterseptionImpersonation ()
-	{
-		Toast.makeText(this, msdServiceHelperCreator.getMsdServiceHelper().getData().getCurrentRAT().name(), 2).show();
-		
+	{		
 		switch (msdServiceHelperCreator.getMsdServiceHelper().getData().getCurrentRAT()) 
 		{		
 			case RAT_2G:
@@ -285,5 +285,10 @@ public class DashboardActivity extends BaseActivity
 				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT);
 				break;
 		}
+	}
+	
+	public Vector<Risk> getProviderData ()
+	{
+		return providerList;
 	}
 }

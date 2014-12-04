@@ -1,8 +1,7 @@
 package de.srlabs.msd.views;
 
-import java.util.Vector;
-
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -15,13 +14,14 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
+import de.srlabs.msd.DashboardActivity;
 import de.srlabs.msd.R;
 import de.srlabs.msd.analysis.Risk;
-import de.srlabs.msd.util.MSDServiceHelperCreator;
 
 public class DashboardProviderChart extends View
 {	
 	private Canvas canvas;
+	private DashboardActivity host;
 	private float itemHeight;
 	private float itemWidth;
 	private float itemStrokeWidth;
@@ -30,9 +30,10 @@ public class DashboardProviderChart extends View
 	private float circleRadius;
 	private float circleLineSpace;
 	private float circleOffset;
-	private float minScore;
-	private float maxScore;
-	private Vector<Risk> riskList;
+	private double minScore;
+	private double maxScore;
+	private int interImper;
+	
 	
 	public DashboardProviderChart(Context context, AttributeSet attrs) 
 	{
@@ -45,6 +46,25 @@ public class DashboardProviderChart extends View
 		circleRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, getResources().getDisplayMetrics());
 		circleLineSpace = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, getResources().getDisplayMetrics()) + (circleRadius / 2);
 		circleOffset = (circleRadius / 2);
+		
+		// Read attribute from XML
+		TypedArray a = context.getTheme().obtainStyledAttributes(
+		        attrs,
+		        R.styleable.DashboardProviderChart,
+		        0, 0);
+
+		   try 
+		   {
+			   interImper = a.getInteger(R.styleable.DashboardProviderChart_type, 0);
+		   } 
+		   finally 
+		   {
+		       a.recycle();
+		   }
+		   
+		   Toast.makeText(context, String.valueOf(interImper), 10).show();
+		
+		this.host = (DashboardActivity) context;
 	}
 
 	@Override
@@ -53,50 +73,11 @@ public class DashboardProviderChart extends View
 		super.onDraw(canvas);
 		
 		this.canvas = canvas;
-	
+		
+		
 		drawProviderChart();
 		
-		riskList = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores().getServerData();
-		
-		for (Risk r : riskList) 
-		{
-			
-			if(r.getInter3G().isEmpty())
-			{
-				Toast.makeText(getContext(), "Empty", 2).show();
-			}
-			else
-			{
-				Toast.makeText(getContext(), String.valueOf(r.getInter3G().size()), 2).show();	
-			}
-//			drawProviderScore(r.getInter3G().isEmpty()  .getScore(), Color.RED, false, 0);
-//			Toast.makeText(getContext(), r.getOperatorName() + "Test", 2).show();
-		}
-//		Toast.makeText(getContext(), risgetOperatorName() + "Test", 2).show();
-//		
-//		providerScoreList.add(new ProviderScore(0.81f, false, Color.BLUE));
-//		providerScoreList.add(new ProviderScore(0.64f, false, Color.CYAN));
-//		providerScoreList.add(new ProviderScore(0.89f, false, Color.RED));
-//		providerScoreList.add(new ProviderScore(0.15f, false, Color.GRAY));
-//		providerScoreList.add(new ProviderScore(0.26f, false, Color.GREEN));
-//		providerScoreList.add(new ProviderScore(0.64f, false, Color.MAGENTA));
-		
 		drawMinMaxBackground ();
-		
-//		for (Risk r : riskList) 
-//		{
-//			float offset = 0;
-//			
-//			for (int i=0; i<riskList.indexOf(r); i++)
-//			{
-//				if (r. == r.get && 
-//						providerScoreList.get(i).getIs2G() == ps.getIs2G())
-//				{
-//					offset += circleOffset;
-//				}
-//			}
-//		}
-//		}	
 	}
 	
 	private void drawProviderChart ()
@@ -119,6 +100,26 @@ public class DashboardProviderChart extends View
 		Paint paint = new Paint(); 
 		paint.setShader(shader); 
 		canvas.drawRect(new RectF(getWidth()/2-chartWidth, chartOffsetTopBottom, getWidth()/2+chartWidth, getHeight() - chartOffsetTopBottom), paint);
+	
+		// Set provider data
+		drawProvider();
+	}
+	
+	private void drawProvider ()
+	{
+//        for (Risk op : host.getProviderData()) 
+//        {
+//        	if (interImper == 0)
+//        	{
+//                drawProviderScore(op.getInter3G().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), false, 0);
+//                drawProviderScore(op.getInter().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), true, 0);	
+//        	}
+//        	else
+//        	{
+//                drawProviderScore(op.getImper3G().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), false, 0);	
+//                drawProviderScore(op.getImper().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), true, 0);
+//        	}	
+//		}
 	}
 	
 	private void drawProviderScore (double score, int color, boolean is2G, float offset)
@@ -201,20 +202,29 @@ public class DashboardProviderChart extends View
 	}
 	
 	private void setMinMaxScore ()
-	{
-//		maxScore = providerScoreList.get(0).getScore();
-//		minScore = providerScoreList.get(0).getScore();
-//		
-//		for (ProviderScore ps : providerScoreList) 
+	{	
+//		while (providerList.hasNext())
 //		{
-//			if (ps.getScore() > maxScore)
-//			{
-//				maxScore = ps.getScore();
-//			}
+//            Risk op = providerList.next();
 //			
-//			if (ps.getScore() < minScore)
+//			if (op.)
+//		}
+//				
+//		
+//		if (host.getProviderData().firstElement() != null)
+//		{
+//			minScore = maxScore = host.getProviderData().firstElement().getImper().lastElement().getScore();
+//			
+//			for (Risk r : host.getProviderData()) 
 //			{
-//				minScore = ps.getScore();
+//				if (r.getImper().lastElement().getScore() > maxScore)
+//				{
+//					maxScore = r.getImper().lastElement().getScore();
+//				}
+//				else if (r.getImper().lastElement().getScore() < minScore)
+//				{
+//					minScore = r.getImper().lastElement().getScore();
+//				}
 //			}
 //		}
 	}

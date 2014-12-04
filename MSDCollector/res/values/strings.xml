@@ -41,8 +41,8 @@
     
     <!-- Dashboard Screen -->
     <string name="dashboard_upload_description"> scans are ready to upload</string>
-    <string name="dashboard_lastscan">Last scan: </string>
-    <string name="dashboard_lastscan_time"></string>
+    <string name="dashboard_lastanalysis">Last analysis: </string>
+    <string name="dashboard_lastanalysis_time"></string>
     <string name="dashboard_sms_description">Silent &amp; Binary SMS</string>
     <string name="dashboard_imsi_description">IMSI-Catcher</string>
     <string name="dashboard_timeline_lasthour">Last hour</string>

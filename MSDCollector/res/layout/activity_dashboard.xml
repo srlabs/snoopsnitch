@@ -29,18 +29,18 @@
                 android:layout_height="wrap_content" >
 
                 <TextView
-                    android:id="@+id/txtDashboardLastMeasurement"
+                    android:id="@+id/txtDashboardLastAnalysis"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
-                    android:text="@string/dashboard_lastscan"
+                    android:text="@string/dashboard_lastanalysis"
                     android:textColor="@color/common_text" />
 
                 <TextView
-                    android:id="@+id/txtDashboardLastMeasurementTime"
+                    android:id="@+id/txtDashboardLastAnalysisTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/dashboard_lastscan_time"
+                    android:text="@string/dashboard_lastanalysis_time"
                     android:textColor="@color/common_text"
                     android:textStyle="bold" />
 
@@ -788,7 +788,8 @@
                     android:weightSum="2" >
 
                     <de.srlabs.msd.views.DashboardProviderChart
-                        android:id="@+id/dashboardProviderChart1"
+                        android:id="@+id/pvcDashboardInterception"
+                        custom:type="interception"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
@@ -800,7 +801,8 @@
                         android:background="@color/common_sectionSeparator" />
 
                     <de.srlabs.msd.views.DashboardProviderChart
-                        android:id="@+id/DashboardProviderChart01"
+                        android:id="@+id/pvcDashboardImpersonation"
+                        custom:type="impersonation"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
