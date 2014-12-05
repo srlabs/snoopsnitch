@@ -96,21 +96,14 @@ public class TimeSpace
 	static Times getTimeSpaceHour ()
 	{
     	Calendar calEnd = Calendar.getInstance();
-    	int offsetMin = 5;
-    	int offsetSec = 0;
+    	int offset = 5;
     	
     	if ((Calendar.MINUTE)%5 != 0)
     	{
-        	offsetMin = 5-(calEnd.get(Calendar.MINUTE)%5);	
+        	offset = 5-(calEnd.get(Calendar.MINUTE)%5);	
     	}
     	
-    	if ((Calendar.SECOND)%5 != 0)
-    	{
-        	offsetSec = 60-(calEnd.get(Calendar.SECOND)%5);	
-    	}
-    	
-    	calEnd.add(Calendar.MINUTE, offsetMin);
-    	calEnd.add(Calendar.SECOND, offsetSec);
+    	calEnd.add(Calendar.MINUTE, offset);
 		Calendar calStart = (Calendar) calEnd.clone();
 		calStart.add(Calendar.HOUR, -1);
 
