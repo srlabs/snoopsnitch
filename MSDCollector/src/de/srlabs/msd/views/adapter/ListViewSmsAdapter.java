@@ -51,7 +51,6 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 		{
 			((TextView) rowView.findViewById(R.id.txtSmsRowTypeValue)).setText(context.getResources().getString(R.string.common_silent_sms));					
 		}
-
 		
 		// Set date/time
 		TextView txtDateTime = (TextView) rowView.findViewById(R.id.txtSmsRowTimeValue);
@@ -79,10 +78,14 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 		case STATE_UPLOADED:
 			btnUpload.setBackgroundResource(R.drawable.ic_content_checkmark);
 			btnUpload.setText("");
+			btnUpload.setEnabled(true);
+			btnUpload.setVisibility(View.VISIBLE);
 			break;
 		case STATE_AVAILABLE:
 			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_enable);
 			btnUpload.setText(context.getResources().getString(R.string.common_button_upload));
+			btnUpload.setEnabled(true);
+			btnUpload.setVisibility(View.VISIBLE);
 			btnUpload.setOnClickListener(new View.OnClickListener() 
 			{		
 				@Override
@@ -95,12 +98,19 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 			break;
 		case STATE_DELETED:
 			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
+			btnUpload.setText(context.getResources().getString(R.string.common_button_nodata));
+			btnUpload.setEnabled(true);
+			btnUpload.setVisibility(View.VISIBLE);
 			break;
 		case STATE_INVALID:
-			btnUpload.setBackgroundResource(R.drawable.ic_content_checkmark);
+			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
+			btnUpload.setText(context.getResources().getString(R.string.common_button_nodata));
+			btnUpload.setEnabled(true);
+			btnUpload.setVisibility(View.VISIBLE);
 			break;
 		default:
-			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
+			btnUpload.setEnabled(false);
+			btnUpload.setVisibility(View.GONE);
 			break;
 		}
 		

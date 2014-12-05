@@ -43,13 +43,13 @@ public class DetailChartGalleryAdapter extends FragmentStatePagerAdapter
     {
     	switch (position) {
 		case 0:
-			return _context.getResources().getString(R.string.detailChart_title_hour);
-		case 1:
-			return _context.getResources().getString(R.string.detailChart_title_day);
-		case 2:
-			return _context.getResources().getString(R.string.detailChart_title_week);
-		case 3:
 			return _context.getResources().getString(R.string.detailChart_title_month);
+		case 1:
+			return _context.getResources().getString(R.string.detailChart_title_week);
+		case 2:
+			return _context.getResources().getString(R.string.detailChart_title_day);
+		case 3:
+			return _context.getResources().getString(R.string.detailChart_title_hour);
 		default:
 			return "";
     	}

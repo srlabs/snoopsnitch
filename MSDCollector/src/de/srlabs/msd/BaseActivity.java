@@ -37,7 +37,7 @@ public class BaseActivity extends FragmentActivity
 	protected Menu menu;
 	protected Boolean isInForeground = false;
 	protected Handler handler;
-	protected final int refresh_intervall = 60000;
+	protected final int refresh_intervall = 1000;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -254,11 +254,7 @@ public class BaseActivity extends FragmentActivity
 
 	public void stateChanged(StateChangedReason reason) 
 	{	
-		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
-		{
-			refreshView();
-		}
-		else if (reason.equals(StateChangedReason.RECORDING_STATE_CHANGED))
+		if (reason.equals(StateChangedReason.RECORDING_STATE_CHANGED))
 		{
 			Log.e("msd","REASON: " + reason.name());
 			

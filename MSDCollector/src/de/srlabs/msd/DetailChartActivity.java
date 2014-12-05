@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.analysis.SMS.Type;
+import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.TimeSpace;
 import de.srlabs.msd.views.adapter.DetailChartGalleryAdapter;
 import de.srlabs.msd.views.adapter.ListViewImsiCatcherAdapter;
@@ -50,12 +51,6 @@ public class DetailChartActivity extends BaseActivity
 		_txtThreatTypeBinarySmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySmsCount);
 		_llThreatTypeImsiCatcher = (LinearLayout) findViewById(R.id.llThreatTypeImsiCatcher);
 		_llThreatTypeSms = (LinearLayout) findViewById(R.id.llThreatTypeSms);
-	}
-	
-	@Override
-	protected void onResume() 
-	{
-		super.onResume();
 		
 		_threatType = getIntent().getIntExtra("ThreatType", R.id.IMSICatcherCharts);
 		
@@ -72,6 +67,7 @@ public class DetailChartActivity extends BaseActivity
 			@Override
 			public void onPageSelected(int position) 
 			{
+				spinner.setSelection(0);
 				fillList(_threatType, position);
 			}
 
@@ -128,6 +124,14 @@ public class DetailChartActivity extends BaseActivity
 		});
 	}
 	
+	@Override
+	protected void onResume() 
+	{
+		super.onResume();
+		
+		resetListView();
+	}
+	
 	private void configureSpinner (int id)
 	{
 		if (id == R.id.IMSICatcherCharts)
@@ -144,8 +148,6 @@ public class DetailChartActivity extends BaseActivity
 			ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, 
 					android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.sms_types));
 			    spinner.setAdapter(spinnerAdapter);
-			
-			spinner.setSelection(0);
 		}
 	}
 	
@@ -155,19 +157,19 @@ public class DetailChartActivity extends BaseActivity
 		long _endTime;
 		
 		switch (position) {
-		case 0:
+		case 3:
 			_startTime = TimeSpace.Times.Hour.getStartTime();
 			_endTime = TimeSpace.Times.Hour.getEndTime();
 			break;
-		case 1:
+		case 2:
 			_startTime = TimeSpace.Times.Day.getStartTime();
 			_endTime = TimeSpace.Times.Day.getEndTime();
 			break;
-		case 2:
+		case 1:
 			_startTime = TimeSpace.Times.Week.getStartTime();
 			_endTime = TimeSpace.Times.Week.getEndTime();
 			break;
-		case 3:
+		case 0:
 			_startTime = TimeSpace.Times.Month.getStartTime();
 			_endTime = TimeSpace.Times.Month.getEndTime();
 			break;
@@ -204,6 +206,8 @@ public class DetailChartActivity extends BaseActivity
 						getMsdServiceHelper().getData().getImsiCatchers(_startTime, _endTime).size()));
 			}
 		}
+		
+
 	}
 	
 	public void contributeData (View view)
@@ -233,14 +237,25 @@ public class DetailChartActivity extends BaseActivity
 	}
 	
 	@Override
+	public void stateChanged(StateChangedReason reason) 
+	{
+		super.stateChanged(reason);
+		
+		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
+		{
+			resetListView();
+			
+		}
+	}
+	
+	@Override
 	public void refreshView() 
 	{
-		// Reset the listview and count text
-		resetListView();
+		mPager.invalidate();
 	}
 	
 	private void resetListView ()
-	{
+	{		
 		fillList(_threatType, mPager.getCurrentItem());
 		mPager.getAdapter().notifyDataSetChanged();
 	}

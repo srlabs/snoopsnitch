@@ -18,6 +18,7 @@ import android.widget.TextView;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
+import de.srlabs.msd.views.DashboardProviderChart;
 import de.srlabs.msd.views.DashboardThreatChart;
 import de.srlabs.msd.views.adapter.ListViewProviderAdapter;
 
@@ -43,6 +44,8 @@ public class DashboardActivity extends BaseActivity
 	private DashboardThreatChart dtcImsiDay;
 	private DashboardThreatChart dtcImsiWeek;
 	private DashboardThreatChart dtcImsiMonth;
+	private DashboardProviderChart pvcProviderInterception;
+	private DashboardProviderChart pvcProviderImpersonation;
 	private TextView txtLastAnalysisTime;
 	private TextView txtDashboardInterception3g;
 	private TextView txtDashboardInterception2g;
@@ -101,6 +104,9 @@ public class DashboardActivity extends BaseActivity
 		dtcImsiWeek = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartWeek);
 		dtcImsiMonth = (DashboardThreatChart) findViewById(R.id.IMSICatcherChartMonth);
 		
+		pvcProviderInterception = (DashboardProviderChart) findViewById(R.id.pvcDashboardInterception);
+		pvcProviderImpersonation = (DashboardProviderChart) findViewById(R.id.pvcDashboardImpersonation);
+		
 		lstDashboardProviderList = (ListView) findViewById(R.id.lstDashboardProviderList);
 		
 		txtDashboardInterception3g = (TextView) findViewById(R.id.txtDashboardInterception3g);
@@ -131,12 +137,11 @@ public class DashboardActivity extends BaseActivity
 	{				
 		super.onResume();
 		
-		refreshView();
-		
 		// Get provider data
 		this.providerList = msdServiceHelperCreator.getMsdServiceHelper().getData().getScores().getServerData();
 		
-		// Fill provider list
+		refreshView();
+		
 		fillProviderList();
 		
 		// Update RAT
@@ -199,7 +204,7 @@ public class DashboardActivity extends BaseActivity
 		}
 		else if (reason.equals(StateChangedReason.ANALYSIS_DONE))
 		{
-			updateLastAnalysis();
+			refreshView();
 		}
 		else if (reason.equals(StateChangedReason.RAT_CHANGED))
 		{
@@ -214,6 +219,10 @@ public class DashboardActivity extends BaseActivity
 	{
 		// Redraw charts
 		resetCharts();
+		
+		resetPoviderCharts();
+		
+		refreshProviderList();
 		
 		// Set texts
 		resetThreatCounts();
@@ -243,10 +252,21 @@ public class DashboardActivity extends BaseActivity
 		dtcImsiMonth.invalidate();
 	}
 	
+	private void resetPoviderCharts ()
+	{
+		pvcProviderImpersonation.invalidate();
+		pvcProviderInterception.invalidate();
+	}
+	
 	private void fillProviderList ()
 	{
 		ListViewProviderAdapter providerAdapter = new ListViewProviderAdapter(this, providerList);
 		lstDashboardProviderList.setAdapter(providerAdapter);	
+	}
+	
+	private void refreshProviderList ()
+	{
+		lstDashboardProviderList.invalidate();
 	}
 	
 	private void updateLastAnalysis ()

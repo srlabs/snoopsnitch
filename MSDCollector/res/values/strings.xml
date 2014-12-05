@@ -28,6 +28,7 @@
     
     <!-- Common Buttons -->
     <string name="common_button_upload">upload</string>
+    <string name="common_button_nodata">No data</string>
     <string name="common_button_networktest">Test Network</string>
     
     <!-- Messages -->
@@ -58,7 +59,7 @@
     <!-- Detail Screen -->
     <string name="detailChart_title_month">Last weeks</string>
     <string name="detailChart_title_week">Last 7 days</string>
-    <string name="detailChart_title_day">Today</string>
+    <string name="detailChart_title_day">Last 24 hours</string>
     <string name="detailChart_title_hour">Last hour</string>
     
     <!-- Preferences Screen -->
