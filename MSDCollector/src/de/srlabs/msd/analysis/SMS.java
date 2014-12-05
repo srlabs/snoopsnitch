@@ -147,4 +147,11 @@ public class SMS implements AnalysisEvent{
 	public double getLatitude() {
 		return latitude;
 	}
+
+	public String getFullCellID() {
+		return Integer.toString(mcc) +
+				"/" + Integer.toString(mnc) +
+				"/" + Integer.toString(lac) +
+				"/" + Integer.toString(cid);
+	}
 }

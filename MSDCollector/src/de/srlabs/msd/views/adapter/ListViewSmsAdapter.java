@@ -63,7 +63,7 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 				String.valueOf(values.get(position).getLatitude()));
 		
 		// Set cell id
-		((TextView) rowView.findViewById(R.id.txtSmsRowCellIdValue)).setText(String.valueOf(values.get(position).getCid()));
+		((TextView) rowView.findViewById(R.id.txtSmsRowCellIdValue)).setText(String.valueOf(values.get(position).getFullCellID()));
 		
 		// Set phone number
 		((TextView) rowView.findViewById(R.id.txtSmsRowSmsCValue)).setText(values.get(position).getSmsc());
