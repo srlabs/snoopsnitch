@@ -38,7 +38,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	}
 
 	private static String[] sms_cols =
-			new String[] {"strftime('%s',timestamp)", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "smsc", "msisdn", "sms_type"};
+			new String[] {"strftime('%s',timestamp)", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "msisdn", "smsc", "sms_type"};
 
 	static private void logCatcher(ImsiCatcher c) {
 
@@ -78,8 +78,8 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 				 c.getInt(5),		// cid
 				 c.getDouble(6),	// latitude
 				 c.getDouble(7),	// longitude
-				 c.getString(8),	// smsc
-				 c.getString(9),	// msisdn
+				 c.getString(8),	// msisdn
+				 c.getString(9),	// smsc
 				 sms_type			// SMS type
 				);
 	}
