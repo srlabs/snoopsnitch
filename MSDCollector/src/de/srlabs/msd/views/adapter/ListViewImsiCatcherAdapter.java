@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import de.srlabs.msd.DetailChartActivity;
 import de.srlabs.msd.R;
 import de.srlabs.msd.analysis.ImsiCatcher;
 
@@ -18,32 +20,22 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 	// Attributes
 	private final Context context;
 	private final Vector<ImsiCatcher> values;
+	private DetailChartActivity host;
 	
 	public ListViewImsiCatcherAdapter (Context context, Vector<ImsiCatcher> values) 
 	{
 		super(context, R.layout.custom_row_layout_sms, values);
 	    this.context = context;
 	    this.values = values;
+	    this.host = (DetailChartActivity) context;
 	}
 	
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) 
+	public View getView(final int position, View convertView, ViewGroup parent) 
 	{
-		final int pos = position;
 		LayoutInflater inflater = (LayoutInflater) context
 			.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.custom_row_layout_imsicatcher, parent, false);
-		
-		// Set button
-//		Button btnContribute = (Button) rowView.findViewById(R.id.btnDetailListContribute);
-//		btnContribute.setOnClickListener(new View.OnClickListener() 
-//		{		
-//			@Override
-//			public void onClick(View v) 
-//			{
-//				System.out.println(values.get(pos).toString());
-//			}
-//		});
 		
 		// Set score
 		((TextView) rowView.findViewById(R.id.txtImsiRowScoreValue)).setText(String.valueOf(values.get(position).getScore()));
@@ -58,6 +50,39 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 		
 		// Set cell id
 		((TextView) rowView.findViewById(R.id.txtImsiRowCellIdValue)).setText(String.valueOf(values.get(position).getFullCellID()));
+		
+		// Check upload state and set button
+		Button btnUpload = (Button) rowView.findViewById(R.id.btnUploadImsi);
+		
+		switch (values.get(position).getUploadState()) 
+		{
+		case STATE_UPLOADED:
+			btnUpload.setBackgroundResource(R.drawable.ic_content_checkmark);
+			btnUpload.setText("");
+			break;
+		case STATE_AVAILABLE:
+			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_enable);
+			btnUpload.setText(context.getResources().getString(R.string.common_button_upload));
+			btnUpload.setOnClickListener(new View.OnClickListener() 
+			{		
+				@Override
+				public void onClick(View v) 
+				{
+					values.get(position).upload();
+					host.refreshView();
+				}
+			});
+			break;
+		case STATE_DELETED:
+			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
+			break;
+		case STATE_INVALID:
+			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
+			break;
+		default:
+			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
+			break;
+		}
 	
 		return rowView;
 	 }

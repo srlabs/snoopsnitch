@@ -233,7 +233,7 @@ public class DetailChartActivity extends BaseActivity
 	}
 	
 	@Override
-	protected void refreshView() 
+	public void refreshView() 
 	{
 		// Reset the listview and count text
 		resetListView();

@@ -11,7 +11,7 @@
     <de.srlabs.msd.views.DashboardProviderList
         android:id="@+id/dashboardProviderList1"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="35dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_weight="1" />
@@ -23,7 +23,7 @@
         android:layout_gravity="left|center_vertical"
         android:layout_weight="7"
         android:gravity="left|fill_vertical"
-        android:text="Provider Name"
+        android:text="@string/listview_provider_item_testresult"
         android:textSize="@dimen/text_medium"
         android:textStyle="bold" />
 

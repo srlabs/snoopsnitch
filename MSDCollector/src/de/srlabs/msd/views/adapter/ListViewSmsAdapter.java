@@ -9,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import de.srlabs.msd.DetailChartActivity;
 import de.srlabs.msd.R;
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.analysis.SMS.Type;
@@ -22,6 +24,7 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 	private final Context context;
 	private final Vector<SMS> allSms;
 	private Vector<SMS> values;
+	private DetailChartActivity host;
 	
 	public ListViewSmsAdapter (Context context, Vector<SMS> values) 
 	{
@@ -29,10 +32,11 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 	    this.context = context;
 	    this.allSms = values;
 	    this.values = values;
+	    this.host = (DetailChartActivity) context;
 	}
 	
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) 
+	public View getView(final int position, View convertView, ViewGroup parent) 
 	{
 		LayoutInflater inflater = (LayoutInflater) context
 			.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -66,6 +70,39 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 		
 		// Set source
 		((TextView) rowView.findViewById(R.id.txtSmsRowSourceValue)).setText(values.get(position).getSender());
+		
+		// Check upload state and set button
+		Button btnUpload = (Button) rowView.findViewById(R.id.btnUploadSms);
+		
+		switch (values.get(position).getUploadState()) 
+		{
+		case STATE_UPLOADED:
+			btnUpload.setBackgroundResource(R.drawable.ic_content_checkmark);
+			btnUpload.setText("");
+			break;
+		case STATE_AVAILABLE:
+			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_enable);
+			btnUpload.setText(context.getResources().getString(R.string.common_button_upload));
+			btnUpload.setOnClickListener(new View.OnClickListener() 
+			{		
+				@Override
+				public void onClick(View v) 
+				{
+					values.get(position).upload();
+					host.refreshView();
+				}
+			});
+			break;
+		case STATE_DELETED:
+			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
+			break;
+		case STATE_INVALID:
+			btnUpload.setBackgroundResource(R.drawable.ic_content_checkmark);
+			break;
+		default:
+			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
+			break;
+		}
 		
 		return rowView;
 	 }
