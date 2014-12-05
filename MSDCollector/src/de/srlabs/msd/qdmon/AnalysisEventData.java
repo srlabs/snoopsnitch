@@ -28,7 +28,6 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 
 		GSMmap gsmmap = new GSMmap(context);
 
-		// TODO: Factor out GSMmap data handling into own class.
 		if (!gsmmap.dataPresent()) {
 			try {
 				gsmmap.parse(Utils.readFromAssets(context, "data.js"));
