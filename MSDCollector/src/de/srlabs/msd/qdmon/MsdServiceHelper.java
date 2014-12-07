@@ -173,4 +173,26 @@ public class MsdServiceHelper{
 			return 0;
 		}
 	}
+	public int getParserNetworkGeneration(){
+		try {
+			return mIMsdService.getParserNetworkGeneration();
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.getParserNetworkGeneration()", e);
+			return 0;
+		}
+	}
+	public void endExtraRecording(boolean upload) {
+		try {
+			mIMsdService.endExtraRecording(upload);
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.getParserNetworkGeneration()", e);
+		}
+	}
+	public void startExtraRecording(String filename) {
+		try {
+			mIMsdService.startExtraRecording(filename);
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.getParserNetworkGeneration()", e);
+		}
+	}
 }

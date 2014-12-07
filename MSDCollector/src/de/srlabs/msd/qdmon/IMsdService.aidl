@@ -20,4 +20,6 @@ interface IMsdService {
 	void triggerUploading();
 	// Retopens the debug log and marks it for uploading
 	long reopenAndUploadDebugLog();
+	// Returns the network generation detected by the parser (2,3,4) or 0 if it is unknown.
+	int getParserNetworkGeneration();
 }

@@ -100,6 +100,11 @@ public class DummyMsdService extends Service{
 			Log.i(TAG,"reopenAndUploadDebugLog() called");
 			return 0;
 		}
+
+		@Override
+		public int getParserNetworkGeneration() throws RemoteException {
+			return 0;
+		}
 	};
 	private class DummyDataRunnable implements Runnable{
 		private boolean recordingStopped = false;

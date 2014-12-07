@@ -141,6 +141,11 @@ public class MsdService extends Service{
 		public long reopenAndUploadDebugLog() throws RemoteException {
 			return MsdService.this.reopenAndUploadDebugLog();
 		}
+
+		@Override
+		public int getParserNetworkGeneration() throws RemoteException {
+			return parserRatGeneration;
+		}
 	};
 	AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
@@ -199,6 +204,8 @@ public class MsdService extends Service{
 
 	private MsdServiceUploadThread uploadThread = null;
 
+	public int parserRatGeneration = 0;
+
 	class QueueElementWrapper<T>{
 		T obj;
 		boolean done = false;
@@ -251,6 +258,8 @@ public class MsdService extends Service{
 		MsdDatabaseManager.getInstance().closeDatabase();
 		extraRecordingStartTime = 0;
 		extraRecordingFileId = 0;
+		if(markForUpload)
+			triggerUploading();
 		return true;
 	}
 
@@ -260,7 +269,7 @@ public class MsdService extends Service{
 		this.extraRecordingStartTime = System.currentTimeMillis();
 		this.extraRecordingRawFileWriter = new EncryptedFileWriter(this, filename + ".gz.smime", true, filename + ".gz", true);
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
-		DumpFile df = new DumpFile(filename,DumpFile.TYPE_ENCRYPTED_QDMON);
+		DumpFile df = new DumpFile(filename + ".gz.smime",DumpFile.TYPE_ENCRYPTED_QDMON);
 		df.insert(db);
 		this.extraRecordingFileId = df.getId();
 		MsdDatabaseManager.getInstance().closeDatabase();
@@ -727,6 +736,20 @@ public class MsdService extends Service{
 						String sql = line.substring(4);
 						info("FromParserThread enqueueing SQL Statement: " + sql);
 						pendingSqlStatements.add(new PendingSqliteStatement(sql));
+					} else if(line.startsWith("RAT:")){
+						String parserRat = line.substring("RAT:".length()).trim();
+						info("Parser RAT: " + parserRat);
+						if(parserRat.equals("GSM")){
+							parserRatGeneration = 2;
+						} else if(parserRat.equals("3G")){
+							parserRatGeneration = 3;
+						} else if(parserRat.equals("LTE")){
+							parserRatGeneration = 4;
+						} else if(parserRat.equals("UNKNOWN")){
+							parserRatGeneration = 0;
+						} else{
+							handleFatalError("Invalid RAT: output from parser: " + line);
+						}
 					} else{
 						info("Parser: " + line);
 					}

@@ -168,8 +168,8 @@ public class BaseActivity extends FragmentActivity
 		      showTestScreen();
 		      break;
 		    case R.id.menu_action_active_test_advanced:
-//			    Intent intent = new Intent(this, ActiveTestAdvanced.class);
-//			    startActivity(intent);
+			    Intent intent = new Intent(this, ActiveTestAdvanced.class);
+			    startActivity(intent);
 		    	break;
 		    case R.id.menu_action_upload_pending_files:
 		    	getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
