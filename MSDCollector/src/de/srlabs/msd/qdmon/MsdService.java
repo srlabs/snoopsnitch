@@ -1,20 +1,18 @@
 package de.srlabs.msd.qdmon;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -26,8 +24,6 @@ import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -64,6 +60,7 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
+import de.srlabs.msd.analysis.GSMmap;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.upload.MsdServiceUploadThread;
 import de.srlabs.msd.util.Constants;
@@ -71,6 +68,7 @@ import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdConfig;
 import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.MsdLog;
+import de.srlabs.msd.util.Utils;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";
@@ -818,6 +816,7 @@ public class MsdService extends Service{
 	class SqliteThread extends Thread{
 		boolean shuttingDown = false;
 		private long lastAnalysisTime;
+
 		@Override
 		public void run() {
 			lastAnalysisTime = System.currentTimeMillis();
@@ -1046,11 +1045,20 @@ public class MsdService extends Service{
 	}
 
 	class DownloadDataJsThread extends Thread{
+
+		private GSMmap gsmmap;
+
+		public DownloadDataJsThread() {
+
+			this.gsmmap = new GSMmap(MsdService.this);
+		}
+
 		@Override
 		public void run() {
 			// info("DownloadDataJsThread.run() called");
 			// Check for a new version at most once in 24 hours
 			long lastCheckTime = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getLong("data_js_last_check_time",0);
+
 			if(System.currentTimeMillis() > lastCheckTime + 24*3600*1000){
 				try {
 					// Using Apache HttpClient since HttpURLConnection is very buggy:
@@ -1088,6 +1096,10 @@ public class MsdService extends Service{
 							editor.putString("data_js_last_modified_header",lastModifiedHeader);
 							editor.commit();
 						}
+						//  Parse data
+						gsmmap.parse(buf.toString());
+						//  FIXME: Should have a dedicated reason for changed data
+						sendStateChanged(StateChangedReason.ANALYSIS_DONE);
 					} else if(statusCode == 304){ // Not Modified
 						info("checkAndDownloadDataJs() received 304 not modified response");
 					} else{ // Unexpected
