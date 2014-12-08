@@ -186,6 +186,7 @@ public class ActiveTestService extends Service{
 			if(state == State.CALL_MT_WAITING){
 				setState(State.CALL_MT_ACTIVE, "handleTelRinging()", Constants.CALL_MT_ACTIVE_TIMEOUT);
 				results.getCurrentTest().updateTimeout(Constants.CALL_MT_ACTIVE_TIMEOUT);
+				results.getCurrentTest().stateTestRunning();
 				broadcastTestResults();
 			} else if(state == State.CALL_MT_API){
 				// The SMS is coming in before the API reports a result, this
@@ -195,6 +196,7 @@ public class ActiveTestService extends Service{
 				api.abort();
 				api = null;
 				setState(State.CALL_MT_ACTIVE, "handleTelRinging()", Constants.CALL_MT_ACTIVE_TIMEOUT);
+				results.getCurrentTest().stateTestRunning();
 				broadcastTestResults();
 			} else{
 				stateInfo("Received unexpected call in state " + state.name());
@@ -412,7 +414,14 @@ public class ActiveTestService extends Service{
 			}
 		}
 		void handleApiFail(String apiId, String errorStr){
-			debugInfo("handleApiFail() received in state " + state.name());
+			debugInfo("handleApiFail() received in state " + state.name());				
+			if(errorStr != null && errorStr.equals("BLACKLISTED")){
+				results.getCurrentTest().failApiError(apiId, errorStr);
+				endExtraFileRecording(false);
+				setState(State.END, "Phone is blacklisted", 0);
+				broadcastTestResults();
+				return;
+			}
 			if(state == State.CALL_MT_API){
 				stateInfo("Call API failed, switching to offline mode: " + errorStr);
 				results.getCurrentTest().failApiError(apiId, errorStr);
@@ -476,15 +485,15 @@ public class ActiveTestService extends Service{
 				handleFatalError("triggerApiCallback called but api != null");
 			this.api = new ApiCall(ApiCall.Action.CALL,ownNumber,ActiveTestService.this) {
 				@Override
-				protected void onSuccess() {
+				protected void onSuccess(String requestId) {
 					api = null;
-					handleApiSuccess("OLD_API");
+					handleApiSuccess(requestId);
 				}
 
 				@Override
-				protected void onFail() {
+				protected void onFail(String requestId, String errorStr) {
 					api = null;
-					handleApiFail("OLD_API", null);
+					handleApiFail(requestId, errorStr);
 				}
 			};
 			this.api.start();
@@ -494,15 +503,15 @@ public class ActiveTestService extends Service{
 				handleFatalError("triggerApiCallback called but api != null");
 			this.api = new ApiCall(ApiCall.Action.SMS,ownNumber,ActiveTestService.this) {
 				@Override
-				protected void onSuccess() {
+				protected void onSuccess(String requestId) {
 					api = null;
-					handleApiSuccess("OLD_API");
+					handleApiSuccess(requestId);
 				}
 
 				@Override
-				protected void onFail() {
+				protected void onFail(String requestId, String errorStr) {
 					api = null;
-					handleApiFail("OLD_API", null);
+					handleApiFail(requestId, errorStr);
 				}
 			};
 			this.api.start();

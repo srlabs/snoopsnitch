@@ -140,6 +140,12 @@ public class ActiveTestAdvanced extends BaseActivity implements MsdServiceCallba
 		updateButtons();
 		getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
+	@Override
+	public void onBackPressed() {
+	    Intent intent = new Intent(this, DashboardActivity.class);
+	    startActivity(intent);
+		super.onBackPressed();
+	}
 
 	protected void updateButtons() {
 		Log.i("ActiveTestAdvanced", "updateButtons()");

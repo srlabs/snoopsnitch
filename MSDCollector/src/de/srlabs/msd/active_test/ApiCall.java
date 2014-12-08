@@ -1,6 +1,8 @@
 package de.srlabs.msd.active_test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -14,9 +16,6 @@ import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.MsdLog;
 import de.srlabs.msd.util.Utils;
 
-/**
- * @author Andreas Schildbach
- */
 public abstract class ApiCall extends Thread {
 	private static final String TAG = "msd-active-test-service-api";
 
@@ -29,11 +28,13 @@ public abstract class ApiCall extends Thread {
 	private final Handler callbackHandler;
 	private Context context;
 	private boolean aborted = false;
+	private String appId;
 
 	public ApiCall(final Action action, final String number, final Context context) {
 		this.action = action;
 		this.number = number;
 		this.context = context;
+		this.appId = context.getSharedPreferences("preferences", Context.MODE_PRIVATE).getString("settings_appId", "NO_APPI_ID");
 		this.callbackHandler = new Handler(Looper.myLooper());
 	}
 
@@ -47,7 +48,7 @@ public abstract class ApiCall extends Thread {
 			final URL url = new URL(Constants.API_URL + "&client_MSISDN="
 					+ URLEncoder.encode(number)
 					+ "&requested_action="
-					+ action.name().toLowerCase(Locale.US));
+					+ action.name().toLowerCase(Locale.US) + "&appid=" + URLEncoder.encode(this.appId));
 
 			MsdLog.i(TAG, "invoking api: " + url);
 			final long start = System.currentTimeMillis();
@@ -62,57 +63,88 @@ public abstract class ApiCall extends Thread {
 			final int responseCode = connection.getResponseCode();
 			final long duration = System.currentTimeMillis() - start;
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				String tmp = connection.getResponseMessage();
-				final String responseData;
+				InputStream inputStream = connection.getInputStream();
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				int i;
+				try {
+					i = inputStream.read();
+					while (i != -1)
+					{
+						byteArrayOutputStream.write(i);
+						i = inputStream.read();
+					}
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				String tmp = byteArrayOutputStream.toString();
+				final String apiResponseData;
 				if(tmp.length() > 256)
-					responseData = tmp.substring(0,256);
+					apiResponseData = tmp.substring(0,256);
 				else
-					responseData = tmp;
-				MsdLog.d(TAG, "API RESPONSE DATA: " + responseData);
-				if(responseData.contains("all ok")){
-					MsdLog.i(TAG, "invoking api succeeded, took " + duration + " ms");
-					postOnSuccess();
+					apiResponseData = tmp;
+				String[] lines = apiResponseData.split("\\r?\\n"); // Accept both newline and CRLF
+				if(lines.length < 2){
+					postOnFail(null,"Invalid response data");
+					return;
+				}
+				String requestId = null;
+				if(lines[0].startsWith("REQUEST_ID:")){
+					requestId = lines[0].substring("REQUEST_ID:".length()).trim();
 				} else{
-					MsdLog.i(TAG, "invoking api failed with invalid response data: " + responseData + ", took " +
-							duration
-							+ " ms");
-					postOnFail();
+					postOnFail(null,"No REQUEST_ID in first API line");
+					return;
+				}
+				String apiStatus = null;
+				if(lines[1].startsWith("STATUS:")){
+					apiStatus = lines[1].substring("STATUS:".length()).trim();
+				} else{
+					postOnFail(null,"No STATUS in second API line");
+					return;
+				}
+				if(apiStatus.equals("SUCCESS")){
+					MsdLog.i(TAG, "invoking api " + action.name() + " succeeded, took " + duration + " ms");
+					postOnSuccess(requestId);
+				} else{
+					MsdLog.i(TAG, "API returned status " + apiStatus);
+					postOnFail(null,apiStatus);
 				}
 			} else {
 				MsdLog.w(TAG, "Invalid API response code: " + responseCode + " " + connection.getResponseMessage());
-				postOnFail();
+				postOnFail(null,"Invalid HTTP response code: " + responseCode);
 			}
 		} catch (final IOException x) {
-			MsdLog.e(TAG, "error invoking api: " + x.getMessage());
-			postOnFail();
+			MsdLog.e(TAG, "error invoking api " + action.name() + ": " + x.getMessage());
+			postOnFail(null,"IOException");
 		} catch (final GeneralSecurityException x) {
 			MsdLog.e(TAG, "error invoking api: " + x.getMessage());
-			postOnFail();
+			postOnFail(null,"GeneralSecurityException");
 		} finally {
 			connection.disconnect();
 		}
 	}
-	private void postOnSuccess(){
+	private void postOnSuccess(final String requestId){
+		callbackHandler.post(new Runnable() {
+			@Override
+			public void run() {
+				if(!aborted){
+					onSuccess(requestId);
+				}
+			}
+		});
+	}
+	private void postOnFail(final String requestId, final String errorStr){
 		callbackHandler.post(new Runnable() {
 			@Override
 			public void run() {
 				if(!aborted)
-					onSuccess();
+					onFail(requestId, errorStr);
 			}
 		});
 	}
-	private void postOnFail(){
-		callbackHandler.post(new Runnable() {
-			@Override
-			public void run() {
-				if(!aborted)
-					onFail();
-			}
-		});
-	}
-	protected abstract void onSuccess();
+	protected abstract void onSuccess(String requestId);
 
-	protected abstract void onFail();
+	protected abstract void onFail(String requestId, String errorStr);
 	public void abort(){
 		this.aborted = true;
 	}
