@@ -171,6 +171,7 @@ public class DashboardActivity extends BaseActivity
 		}
 		else if (reason.equals(StateChangedReason.ANALYSIS_DONE))
 		{
+			updateLastAnalysis();
 			refreshView();
 		}
 		else if (reason.equals(StateChangedReason.RAT_CHANGED))
