@@ -3,8 +3,11 @@ package de.srlabs.msd;
 import java.util.Vector;
 
 import android.app.ActionBar;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,10 +23,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.MSDServiceHelperCreator;
 import de.srlabs.msd.util.MsdDatabaseManager;
+import de.srlabs.msd.util.MsdDialog;
 import de.srlabs.msd.util.MsdLog;
 import de.srlabs.msd.util.Utils;
 
@@ -247,9 +252,16 @@ public class BaseActivity extends FragmentActivity
 		}
 	}
 
-	public void internalError(String errorMsg) {
-		// TODO Auto-generated method stub
-		
+	public void internalError(String errorMsg) 
+	{
+		MsdDialog.makeFatalConditionDialog(this, "A fatal error occured!", new OnClickListener() 
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				quitApplication();
+			}
+		}, errorMsg).show();
 	}
 
 	public void stateChanged(StateChangedReason reason) 
@@ -315,5 +327,10 @@ public class BaseActivity extends FragmentActivity
 				menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
 			}	
 		}
+	}
+	
+	protected void quitApplication ()
+	{
+		
 	}
 }

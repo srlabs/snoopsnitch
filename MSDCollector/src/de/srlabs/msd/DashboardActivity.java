@@ -6,7 +6,9 @@ import java.util.Vector;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
+import de.srlabs.msd.util.MsdDialog;
 import de.srlabs.msd.views.DashboardProviderChart;
 import de.srlabs.msd.views.DashboardThreatChart;
 import de.srlabs.msd.views.adapter.ListViewProviderAdapter;
@@ -66,19 +69,15 @@ public class DashboardActivity extends BaseActivity
 		// Compatibility check
 		if (DeviceCompatibilityChecker.checkDeviceCompatibility() != null)
 		{
-			new AlertDialog.Builder(this)
-		    .setTitle(R.string.alert_deviceCompatibility_title)
-		    .setMessage(R.string.alert_deviceCompatibility_message)
-		    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() 
-		    {
-		        @Override
+			MsdDialog.makeFatalConditionDialog(this, getResources().getString(R.string.alert_deviceCompatibility_message), 
+					new OnClickListener() 
+			{	
+				@Override
 				public void onClick(DialogInterface dialog, int which) 
-		        {   	
-		        	//android.os.Process.killProcess(android.os.Process.myPid());
-		        }
-		     })
-		    .setIcon(android.R.drawable.ic_dialog_alert)
-		     .show();
+				{
+					quitApplication();
+				}
+			}, null).show();
 		}	
 		
 		this.rectWidth = msdServiceHelperCreator.getRectWidth();
@@ -150,38 +149,6 @@ public class DashboardActivity extends BaseActivity
 	
 	private void setRectWidth (int rectWidth)
 	{		
-//		LinearLayout silentSMSCharts = (LinearLayout) findViewById(R.id.SilentSMSCharts);
-//		int countSMSCharts = silentSMSCharts.getChildCount();
-//		
-//		for (int i=0; i<=countSMSCharts; i++) 
-//		{
-//		    View v = silentSMSCharts.getChildAt(i);
-//		    
-//		    if (v instanceof LinearLayout) 
-//		    {
-//		    	if (((LinearLayout) v).getChildAt(1) instanceof DashboardThreatChart)
-//		    	{
-//		    		((DashboardThreatChart)((LinearLayout) v).getChildAt(1)).setRectWidth(_rectWidth);		 
-//		    	}
-//		    }
-//		}
-//		
-//		LinearLayout imsiCatcherCharts = (LinearLayout) findViewById(R.id.IMSICatcherCharts);
-//		int countImsiCharts = imsiCatcherCharts.getChildCount();
-//		
-//		for (int i=0; i<=countImsiCharts; i++) 
-//		{
-//		    View v = imsiCatcherCharts.getChildAt(i);
-//		    
-//		    if (v instanceof LinearLayout) 
-//		    {
-//		    	if (((LinearLayout) v).getChildAt(1) instanceof DashboardThreatChart)
-//		    	{
-//		    		((DashboardThreatChart)((LinearLayout) v).getChildAt(1)).setRectWidth(_rectWidth);	    		
-//		    	}
-//		    }
-//		}
-		
 		msdServiceHelperCreator.setRectWidth (rectWidth);
 	}
 	

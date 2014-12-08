@@ -117,13 +117,6 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	
 	public int getThreatsSmsDaySum ()
 	{	
-		/*
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -1);
-		
-		return msdServiceHelper.getSMS(cal.getTimeInMillis(), Calendar.getInstance().getTimeInMillis()).size();
-		*/
-		
 		return msdServiceHelper.getData().getSMS(TimeSpace.getTimeSpaceDay().getStartTime(), 
 				TimeSpace.getTimeSpaceDay().getEndTime()).size();
 	}
@@ -174,8 +167,8 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	
 	public int getThreatsImsiWeekSum ()
 	{		
-		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.Times.Week.getStartTime(), 
-				TimeSpace.Times.Week.getStartTime()).size();
+		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceWeek().getStartTime(), 
+				TimeSpace.getTimeSpaceWeek().getEndTime()).size();
 	}
 	
 	public int[] getThreatsImsiWeek ()
@@ -212,8 +205,8 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	
 	public int getThreatsImsiDaySum ()
 	{		
-		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.Times.Day.getStartTime(), 
-				TimeSpace.Times.Day.getStartTime()).size();
+		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceDay().getStartTime(), 
+				TimeSpace.getTimeSpaceDay().getEndTime()).size();
 	}
 	
 	public int[] getThreatsImsiHour ()
@@ -234,8 +227,8 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	
 	public int getThreatsImsiHourSum ()
 	{
-		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.Times.Hour.getStartTime(), 
-				TimeSpace.Times.Hour.getEndTime()).size();
+		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceHour().getStartTime(), 
+				TimeSpace.getTimeSpaceHour().getEndTime()).size();
 	}
 	
 	public Vector<SMS> getSmsOfType (SMS.Type type, long startTime, long endTime)

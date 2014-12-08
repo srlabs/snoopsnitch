@@ -167,20 +167,20 @@ public class DashboardThreatChart extends View
 		{
 			for (int i=1; i<=numberOfElements; i++)
 			{
-				if (i<6)
+				if (i<5)
 				{
 					canvas.drawRect(left, top, right, bottom, myPaint);
 					top -= (elementWidth + _columnSpace);
 					bottom -= (elementWidth + _columnSpace);
 				}
-				else if (i==6 && numberOfElements>6)
+				else if (i==5 && numberOfElements>5)
 				{
 					canvas.drawRect(left, top+(_rectWidth * 0.85f), right, bottom, myPaint);
 					canvas.drawRect(left, top+(_rectWidth * 0.5875f), right, bottom-(_rectWidth * 0.2625f), myPaint);
 					canvas.drawRect(left, top+(_rectWidth * 0.33f), right, bottom-(_rectWidth * 0.525f), myPaint);
 					canvas.drawRect(left, top+(_rectWidth * 0.063f), right, bottom-(_rectWidth * 0.783f), myPaint);
 				}
-				else if (i==6 && numberOfElements<=6)
+				else if (i==5 && numberOfElements<=5)
 				{
 					canvas.drawRect(left, top, right, bottom, myPaint);
 					top -= left*2.1f;

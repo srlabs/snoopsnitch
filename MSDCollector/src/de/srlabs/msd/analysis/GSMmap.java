@@ -45,6 +45,7 @@ public class GSMmap {
 
 		// Iterate overall countries
 		JSONArray countries = gsmmapData.getJSONArray("countries");
+		db.beginTransaction();
 		for (int c = 0, cs = countries.length(); c < cs; c++) {
 
 			JSONObject country = countries.getJSONObject(c);
@@ -92,6 +93,7 @@ public class GSMmap {
 				operator_id++;
 			}
 		}
+		db.endTransaction();
 	}
 
 	private void updateValue(long operator_id, JSONObject values, String kind)

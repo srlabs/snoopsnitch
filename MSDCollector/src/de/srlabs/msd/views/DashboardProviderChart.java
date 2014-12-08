@@ -108,17 +108,23 @@ public class DashboardProviderChart extends View
 		Risk risk = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores();
         for (Risk op : host.getProviderData()) 
         {
+        	String colorString = op.getOperatorColor();
+        	if (colorString == null) {
+        		colorString = "#000000";
+        	}
+        	int color = Color.parseColor(colorString);
+
         	if (interImper == 0)
         	{
         		if (!op.getInter3G().isEmpty())
         		{
-            		drawProviderScore(op.getInter3G().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), 
+        			drawProviderScore(op.getInter3G().lastElement().getScore(), color,
             				false, 0, host.getProviderData().elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
         		}
         		
         		if (!op.getInter().isEmpty())
         		{
-        			drawProviderScore(op.getInter().lastElement().getScore(), Color.parseColor(op.getOperatorColor()),
+        			drawProviderScore(op.getInter().lastElement().getScore(), color,
         					true, 0, host.getProviderData().elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
         		}
         	}
@@ -126,13 +132,13 @@ public class DashboardProviderChart extends View
         	{
         		if (!op.getImper3G().isEmpty())
         		{
-        			drawProviderScore(op.getImper3G().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), 
+        			drawProviderScore(op.getImper3G().lastElement().getScore(), color,
         					false, 0,  host.getProviderData().elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));	
         		}
         		
         		if (!op.getImper().isEmpty())
         		{
-        			 drawProviderScore(op.getImper().lastElement().getScore(), Color.parseColor(op.getOperatorColor()), 
+        			drawProviderScore(op.getImper().lastElement().getScore(), color,
         					 true, 0,  host.getProviderData().elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
         		}
         	}	
