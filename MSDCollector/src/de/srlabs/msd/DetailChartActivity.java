@@ -33,6 +33,7 @@ public class DetailChartActivity extends BaseActivity
 	private TextView _txtThreatTypeBinarySmsCount;
 	private LinearLayout _llThreatTypeImsiCatcher;
 	private LinearLayout _llThreatTypeSms;
+	private LinearLayout _llSpinnerDetailChart;
 	private DetailChartGalleryAdapter mPagerAdapter;
 	private ViewPager mPager;
 	private int _threatType;	
@@ -51,6 +52,7 @@ public class DetailChartActivity extends BaseActivity
 		_txtThreatTypeBinarySmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySmsCount);
 		_llThreatTypeImsiCatcher = (LinearLayout) findViewById(R.id.llThreatTypeImsiCatcher);
 		_llThreatTypeSms = (LinearLayout) findViewById(R.id.llThreatTypeSms);
+		_llSpinnerDetailChart = (LinearLayout) findViewById(R.id.llSpinnerDetailChart);
 		
 		_threatType = getIntent().getIntExtra("ThreatType", R.id.IMSICatcherCharts);
 		
@@ -140,7 +142,8 @@ public class DetailChartActivity extends BaseActivity
 					android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.imsi_types));
 		    spinner.setAdapter(spinnerAdapter);
 		    
-			spinner.setVisibility(View.INVISIBLE);
+			spinner.setVisibility(View.GONE);
+			_llSpinnerDetailChart.setVisibility(View.GONE);
 			spinner.setEnabled(false);
 		}
 		else if (id == R.id.SilentSMSCharts)

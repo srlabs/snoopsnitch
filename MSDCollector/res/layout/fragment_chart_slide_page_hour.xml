@@ -5,6 +5,12 @@
     android:orientation="vertical"
     android:id="@+id/fragemntChartHour" >
 
+    <View
+        android:id="@+id/View01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/common_sectionSeparator" />
+
     <de.srlabs.msd.views.DetailThreatChartHour
         android:id="@+id/detailThreatChartHour"
         android:layout_width="match_parent"
@@ -15,7 +21,9 @@
         android:id="@+id/View16"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/common_sectionSeparator" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/common_applicationSeparator" />
 
     <LinearLayout
         android:id="@+id/llTimeLineChartHour"
@@ -47,7 +55,7 @@
                     android:id="@+id/View44"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View43"
@@ -90,7 +98,7 @@
                     android:id="@+id/View40"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View38"
@@ -133,7 +141,7 @@
                     android:id="@+id/View48"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View49"
@@ -176,7 +184,7 @@
                     android:id="@+id/View42"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View47"
@@ -219,7 +227,7 @@
                     android:id="@+id/View32"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View31"
@@ -262,7 +270,7 @@
                     android:id="@+id/View28"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View26"
@@ -305,7 +313,7 @@
                     android:id="@+id/View36"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View37"
@@ -348,7 +356,7 @@
                     android:id="@+id/View30"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View35"
@@ -391,7 +399,7 @@
                     android:id="@+id/View18"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View11"
@@ -434,7 +442,7 @@
                     android:id="@+id/View08"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View06"
@@ -477,7 +485,7 @@
                     android:id="@+id/View24"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View25"
@@ -520,7 +528,7 @@
                     android:id="@+id/View10"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/common_sectionSeparator" />
+                    android:background="@color/common_applicationSeparator" />
 
                 <View
                     android:id="@+id/View23"

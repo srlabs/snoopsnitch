@@ -5,6 +5,8 @@ import java.text.DateFormat;
 import java.util.Vector;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.opengl.Visibility;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import de.srlabs.msd.DetailChartActivity;
 import de.srlabs.msd.R;
 import de.srlabs.msd.analysis.ImsiCatcher;
+import de.srlabs.msd.util.MsdDialog;
 
 public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 {
@@ -61,8 +64,9 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 		case STATE_UPLOADED:
 			btnUpload.setBackgroundResource(R.drawable.ic_content_checkmark);
 			btnUpload.setText("");
-			btnUpload.setEnabled(true);
+			btnUpload.setEnabled(false);
 			btnUpload.setVisibility(View.VISIBLE);
+			rowView.setBackgroundColor(context.getResources().getColor(R.color.common_custom_row_background_disabled));
 			break;
 		case STATE_AVAILABLE:
 			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_enable);
@@ -74,23 +78,32 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 				@Override
 				public void onClick(View v) 
 				{
-					values.get(position).upload();
-					Toast.makeText(context, String.valueOf(position),2).show();
-					host.refreshView();
+					MsdDialog.makeConfirmationDialog(host, host.getResources().getString(R.string.alert_upload_message), 
+							new OnClickListener() 
+					{			
+						@Override
+						public void onClick(DialogInterface dialog, int which) 
+						{
+							values.get(position).upload();
+							host.refreshView();
+						}
+					}).show();
 				}
 			});
 			break;
 		case STATE_DELETED:
 			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
 			btnUpload.setText(context.getResources().getString(R.string.common_button_nodata));
-			btnUpload.setEnabled(true);
+			btnUpload.setEnabled(false);
 			btnUpload.setVisibility(View.VISIBLE);
+			rowView.setBackgroundColor(context.getResources().getColor(R.color.common_custom_row_background_disabled));
 			break;
 		case STATE_INVALID:
 			btnUpload.setBackgroundResource(R.drawable.bt_content_contributedata_disable);
 			btnUpload.setText(context.getResources().getString(R.string.common_button_nodata));
-			btnUpload.setEnabled(true);
+			btnUpload.setEnabled(false);
 			btnUpload.setVisibility(View.VISIBLE);
+			rowView.setBackgroundColor(context.getResources().getColor(R.color.common_custom_row_background_disabled));
 			break;
 		default:
 			btnUpload.setEnabled(false);

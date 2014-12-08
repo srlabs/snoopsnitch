@@ -36,6 +36,13 @@
     <!-- Alerts -->
     <string name="alert_deviceCompatibility_title">Device Compatibility</string>
     <string name="alert_deviceCompatibility_message">Device is not compatible. To get more information visit http://gsmmap.org/</string>
+    <string name="alert_button_ok">Ok</string>
+    <string name="alert_button_cancel">Cancel</string>
+    <string name="alert_button_quit">Quit</string>
+    <string name="alert_confirmation_title">Confirmation</string>
+    <string name="alert_fatal_condition_title">Fatal Condition</string>
+    <string name="alert_notification_title">Notification</string>
+    <string name="alert_upload_message">Do you really want to upload data?</string>
     
     <!-- Dashboard Screen -->
     <string name="dashboard_upload_description"> scans are ready to upload</string>
@@ -43,8 +50,10 @@
     <string name="dashboard_lastanalysis_time"></string>
     <string name="dashboard_sms_description">Silent &amp; Binary SMS</string>
     <string name="dashboard_imsi_description">IMSI-Catcher</string>
-    <string name="dashboard_timeline_lasthour">Last hour</string>
-    <string name="dashboard_timeline_today">Today</string>
+    <string name="dashboard_timeline_month">m</string>
+    <string name="dashboard_timeline_week">w</string>
+    <string name="dashboard_timeline_lasthour">last hour</string>
+    <string name="dashboard_timeline_today">24 hours</string>
     <string name="dashboard_network_security_title">Network Security</string>
     <string name="dashboard_network_security_provider_scrollview_header">Provider results in comparison:</string>
     <string name="dashboard_network_security_interception_title">Interception</string>

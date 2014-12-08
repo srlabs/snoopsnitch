@@ -3,8 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/common_sectionBackground"
-    android:paddingBottom="4dp"
-    android:paddingTop="4dp"
+    android:paddingBottom="5dp"
+    android:paddingLeft="6dp"
+    android:paddingRight="6dp"
+    android:paddingTop="5dp"
     android:weightSum="5" >
 
     <ImageView
@@ -102,7 +104,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
         android:layout_marginRight="5dp"
-        android:background="@drawable/bt_content_contributedata_enable"
-        android:text="@string/common_button_upload" />
+        android:background="@drawable/custom_upload_button_background"
+        android:text="@string/common_button_upload"
+        android:textColor="@drawable/custom_upload_button_color" />
 
 </LinearLayout> 
