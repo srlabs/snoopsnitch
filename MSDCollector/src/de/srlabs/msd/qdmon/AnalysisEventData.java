@@ -31,12 +31,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 
 		if (!gsmmap.dataPresent()) {
 			try {
-				String jsonData;
-				try{
-					jsonData = Utils.readFromFileInput(context, "data.js");
-				} catch(FileNotFoundException e){
-					jsonData = Utils.readFromAssets(context, "data.js");
-				}
+				String jsonData = Utils.readFromFileOrAssets(context, "data.js");
 				gsmmap.parse(jsonData);
 			} catch (Exception e) {
 				e.printStackTrace();

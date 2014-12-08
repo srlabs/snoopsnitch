@@ -3,6 +3,7 @@ package de.srlabs.msd.util;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -142,5 +143,16 @@ public class Utils {
 		}
 		br.close();
 		return text.toString();
+	}
+
+	public static String readFromFileOrAssets(Context context, String fileName) throws IOException {
+		String jsonData;
+		//  FIXME: Check for file existence - do not use exception for control flow
+		try{
+			jsonData = readFromFileInput(context, fileName);
+		} catch(FileNotFoundException e){
+			jsonData = readFromAssets(context, fileName);
+		}
+		return jsonData;
 	}
 }
