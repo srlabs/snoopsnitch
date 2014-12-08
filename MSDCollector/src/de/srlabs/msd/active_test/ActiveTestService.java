@@ -291,6 +291,16 @@ public class ActiveTestService extends Service{
 					minRunCount = numCallMt;
 					nextState = State.CALL_MT_API;
 				}
+				if(!onlineMode && numCallMt < minRunCount){
+					// We have to trigger CALL_MO to get to  CALL_MT in offline mode
+					minRunCount = numCallMt;
+					nextState = State.CALL_MO;
+				}
+				if(!onlineMode && numSmsMt < minRunCount){
+					// We have to trigger CALL_MO to get to  SMS_MT in offline mode
+					minRunCount = numSmsMt;
+					nextState = State.CALL_MO;
+				}
 				if(minRunCount >= results.getNumIterations()){
 					nextState = State.END;
 				}
@@ -406,10 +416,15 @@ public class ActiveTestService extends Service{
 			if(state == State.CALL_MT_API){
 				stateInfo("Call API failed, switching to offline mode: " + errorStr);
 				results.getCurrentTest().failApiError(apiId, errorStr);
+				endExtraFileRecording(false);
+				onlineMode = false;
 				iterate();
 			} else if(state == State.SMS_MT_API){
 				stateInfo("SMS API failed, switching to offline mode: " + errorStr);
 				results.getCurrentTest().failApiError(apiId, errorStr);
+				endExtraFileRecording(false);
+				onlineMode = false;
+				iterate();
 			} else{
 				handleFatalError("handleApiFail in unexpected state " + state.name());
 			}
