@@ -106,6 +106,10 @@ public class DashboardProviderChart extends View
 	{
 		
 		Risk risk = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores();
+		if (risk.getOperatorName() == null) {
+			return;
+		}
+
         for (Risk op : host.getProviderData()) 
         {
         	String colorString = op.getOperatorColor();
