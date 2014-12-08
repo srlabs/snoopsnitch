@@ -590,7 +590,8 @@ public class MsdService extends Service{
 			sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 			this.readyForStartRecording.set(!shutdownError);
 			doStopForeground();
-			debugLogWriter.flush();
+			if(debugLogWriter != null)
+				debugLogWriter.flush();
 			return !shutdownError;
 		} catch (Exception e) {
 			// Prevent data loss by making sure that rawWriter is always closed during shutdown
