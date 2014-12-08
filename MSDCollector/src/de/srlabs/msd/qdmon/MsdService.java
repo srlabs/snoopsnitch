@@ -365,6 +365,7 @@ public class MsdService extends Service{
 				});
 		telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		info("MsdService.onCreate() called");
+		sendStateChanged(StateChangedReason.ANALYSIS_DONE);
 	}
 	private void doStartForeground() {
 		Notification notification = msdServiceNotifications.getForegroundNotification();
