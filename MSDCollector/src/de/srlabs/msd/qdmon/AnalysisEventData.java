@@ -1,5 +1,6 @@
 package de.srlabs.msd.qdmon;
 
+import java.io.FileNotFoundException;
 import java.util.Vector;
 
 import android.content.Context;
@@ -30,7 +31,13 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 
 		if (!gsmmap.dataPresent()) {
 			try {
-				gsmmap.parse(Utils.readFromAssets(context, "data.js"));
+				String jsonData;
+				try{
+					jsonData = Utils.readFromFileInput(context, "data.js");
+				} catch(FileNotFoundException e){
+					jsonData = Utils.readFromAssets(context, "data.js");
+				}
+				gsmmap.parse(jsonData);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

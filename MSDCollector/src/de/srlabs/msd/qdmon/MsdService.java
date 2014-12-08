@@ -1,15 +1,20 @@
 package de.srlabs.msd.qdmon;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -22,12 +27,21 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -40,6 +54,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoWcdma;
@@ -203,6 +218,7 @@ public class MsdService extends Service{
 	private long extraRecordingFileId = 0;
 
 	private MsdServiceUploadThread uploadThread = null;
+	private DownloadDataJsThread downloadDataJsThread = null;
 
 	public int parserRatGeneration = 0;
 
@@ -234,6 +250,11 @@ public class MsdService extends Service{
 			uploadThread.requestUploadRound();
 			info("MsdService.triggerUploading() calling uploadThread.start()");
 			uploadThread.start();
+		}
+		// Refresh the data.js file
+		if(downloadDataJsThread == null || !downloadDataJsThread.isAlive()){
+			downloadDataJsThread = new DownloadDataJsThread();
+			downloadDataJsThread.start();
 		}
 	}
 
@@ -1024,6 +1045,66 @@ public class MsdService extends Service{
 		}
 	}
 
+	class DownloadDataJsThread extends Thread{
+		@Override
+		public void run() {
+			// info("DownloadDataJsThread.run() called");
+			// Check for a new version at most once in 24 hours
+			long lastCheckTime = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getLong("data_js_last_check_time",0);
+			if(System.currentTimeMillis() > lastCheckTime + 24*3600*1000){
+				try {
+					// Using Apache HttpClient since HttpURLConnection is very buggy:
+					// http://stackoverflow.com/questions/14454942/httpurlconnection-ifmodifiedsince-generates-utc-time-instead-of-gmt
+					// https://code.google.com/p/android/issues/detail?id=58637
+					// 
+					HttpClient httpClient = new DefaultHttpClient();
+					HttpGet httpGet = new HttpGet("https://gsmmap.org/assets/data/data.js");
+					String localFileLastModified = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getString("data_js_last_modified_header",null);
+					if(localFileLastModified != null){
+						httpGet.addHeader("If-Modified-Since",localFileLastModified);
+					}
+					HttpResponse resp = httpClient.execute(httpGet);
+					int statusCode = resp.getStatusLine().getStatusCode();
+					if(statusCode == 200){ // OK
+						InputStream in = resp.getEntity().getContent();
+						// Cache everything in memory and write it to disk only
+						// if we are sure that the file has been fully
+						// transmitted
+						byte[] buf = new byte[2*1024*1024];
+						int bytesRead = in.read(buf);
+						if(bytesRead == buf.length){
+							MsdLog.e(TAG, "Too much data received in DownloadDataJsThread.run()");
+							return;
+						}
+						info("Received new data.js, size=" + bytesRead);
+						FileOutputStream os = openFileOutput("data.js", 0);
+						os.write(buf);
+						// Update saved last modified time
+						Header[] lastModifiedHeaders = resp.getHeaders("Last-Modified");
+						if(lastModifiedHeaders.length == 1){
+							String lastModifiedHeader = lastModifiedHeaders[0].getValue();
+							info("lastModifiedHeader: " + lastModifiedHeader);
+							Editor editor = PreferenceManager.getDefaultSharedPreferences(MsdService.this).edit();
+							editor.putString("data_js_last_modified_header",lastModifiedHeader);
+							editor.commit();
+						}
+					} else if(statusCode == 304){ // Not Modified
+						info("checkAndDownloadDataJs() received 304 not modified response");
+					} else{ // Unexpected
+						MsdLog.e(TAG,"Unexpected HTTP response code" + statusCode + " in DownloadDataJsThread.run()");
+						return;
+					}				
+				} catch (Exception e) {
+					MsdLog.e(TAG,"Exception in DownloadDataJsThread.run()",e);
+					return;
+				}
+				// Update last check time
+				Editor editor = PreferenceManager.getDefaultSharedPreferences(MsdService.this).edit();
+				editor.putLong("data_js_last_check_time",System.currentTimeMillis());
+				editor.commit();
+			}
+		}
+	}
 	/**
 	 * Sets up the parser
 	 * * Launch parser binary

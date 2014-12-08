@@ -111,6 +111,24 @@ public class Utils {
 		}
 		return byteArrayOutputStream.toString();
 	}
+	public static String readFromFileInput(Context context, String fileName) throws IOException {
+
+		InputStream inputStream = context.openFileInput(fileName);
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		int i;
+		try {
+			i = inputStream.read();
+			while (i != -1)
+			{
+				byteArrayOutputStream.write(i);
+				i = inputStream.read();
+			}
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return byteArrayOutputStream.toString();
+	}
 
 	public static String readFromExternal(String fileName) throws IOException {
 
