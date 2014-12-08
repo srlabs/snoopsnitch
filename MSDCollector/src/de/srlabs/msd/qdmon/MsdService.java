@@ -409,6 +409,7 @@ public class MsdService extends Service{
 			return false;
 		}
 		try {
+			info("startRecording() called");
 			this.shuttingDown.set(false);
 			this.sqliteThread = new SqliteThread();
 			sqliteThread.start();
@@ -434,6 +435,7 @@ public class MsdService extends Service{
 			//					throw new IllegalStateException("Let's test error reporting");
 			//				}
 			//			}), 3000);
+			info("startRecording() finished successfully");
 			return true;
 		} catch (Exception e) { 
 			handleFatalError("Exception in startRecording(): ", e);
@@ -480,6 +482,7 @@ public class MsdService extends Service{
 			}
 			if(diagStdin != null){
 				try {
+					info("Closing diagStdin");
 					this.diagStdin.close();
 				} catch (IOException e) {
 					handleFatalError("IOException while closing diagStdin" , e);
@@ -1347,7 +1350,7 @@ public class MsdService extends Service{
 	/**
 	 * Checks whether all threads are still running and no message queue contains a huge number of messages
 	 */
-	private void checkRecordingState(){
+	private synchronized void checkRecordingState(){
 		if(shuttingDown.get())
 			return;
 		boolean ok = true;
