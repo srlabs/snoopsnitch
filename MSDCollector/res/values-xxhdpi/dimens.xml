@@ -1,7 +1,7 @@
 <resources>
 
-    <dimen name="text_small">15sp</dimen>
-    <dimen name="text_medium">25sp</dimen>
-    <dimen name="text_large">35sp</dimen>
+    <dimen name="text_small">9sp</dimen>
+    <dimen name="text_medium">11sp</dimen>
+    <dimen name="text_large">14sp</dimen>
 
 </resources>
