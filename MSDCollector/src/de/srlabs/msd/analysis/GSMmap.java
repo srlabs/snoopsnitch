@@ -34,66 +34,73 @@ public class GSMmap {
 		long operator_id = 0;
 		gsmmapData = new JSONObject(text.split("^\\s*var\\s*data\\s*=\\s*", 2)[1]);
 
-		// Empty all GSMmap databases
-		db.delete("gsmmap_operators", null, null);
-		db.delete("gsmmap_codes", null, null);
-		db.delete("gsmmap_inter", null, null);
-		db.delete("gsmmap_imper", null, null);
-		db.delete("gsmmap_track", null, null);
-		db.delete("gsmmap_inter3G", null, null);
-		db.delete("gsmmap_imper3G", null, null);
-
-		// Iterate overall countries
-		JSONArray countries = gsmmapData.getJSONArray("countries");
 		db.beginTransaction();
-		for (int c = 0, cs = countries.length(); c < cs; c++) {
 
-			JSONObject country = countries.getJSONObject(c);
+		try {
 
-			// Iterate over all operators
-			JSONArray operators = country.getJSONArray("operators");
-			for (int o = 0, os = operators.length(); o < os; o++) {
+			// Empty all GSMmap databases
+			db.delete("gsmmap_operators", null, null);
+			db.delete("gsmmap_codes", null, null);
+			db.delete("gsmmap_inter", null, null);
+			db.delete("gsmmap_imper", null, null);
+			db.delete("gsmmap_track", null, null);
+			db.delete("gsmmap_inter3G", null, null);
+			db.delete("gsmmap_imper3G", null, null);
 
-				JSONObject operator = operators.getJSONObject(o);
+			// Iterate overall countries
+			JSONArray countries = gsmmapData.getJSONArray("countries");
+			for (int c = 0, cs = countries.length(); c < cs; c++) {
 
-				String operator_name = operator.get("name").toString();
-				String operator_color = operator.has("color") ? operator.get("color").toString() : null;
+				JSONObject country = countries.getJSONObject(c);
 
-				// Store operator in database
-				ContentValues opval = new ContentValues();
-				opval.put("id", operator_id);
-				opval.put("name", operator_name);
-				opval.put("color", operator_color);
-				db.insert("gsmmap_operators", null, opval);
-				opval.clear();
 
-				// Store all values
-				JSONObject values = operator.getJSONObject("values");
-				updateValue(operator_id, values, "inter");
-				updateValue(operator_id, values, "imper");
-				updateValue(operator_id, values, "track");
-				updateValue(operator_id, values, "inter3G");
-				updateValue(operator_id, values, "imper3G");
+				// Iterate over all operators
+				JSONArray operators = country.getJSONArray("operators");
+				for (int o = 0, os = operators.length(); o < os; o++) {
 
-				// Store all MCC/MNC combinations for an operator
-				JSONArray mcc_mncs = operator.getJSONArray("mcc_mnc");
-				for (int m = 0, ms = mcc_mncs.length(); m < ms; m++) {
+					JSONObject operator = operators.getJSONObject(o);
 
-					JSONObject mcc_mnc = mcc_mncs.getJSONObject(m);
-					int mcc = mcc_mnc.getInt("mcc");
-					int mnc = mcc_mnc.getInt("mnc");
+					String operator_name = operator.get("name").toString();
+					String operator_color = operator.has("color") ? operator.get("color").toString() : null;
 
-					ContentValues codes_val = new ContentValues();
-					codes_val.put("id", operator_id);
-					codes_val.put("mcc", mcc);
-					codes_val.put("mnc", mnc);
-					db.insert("gsmmap_codes", null, codes_val);
-					codes_val.clear();
+					// Store operator in database
+					ContentValues opval = new ContentValues();
+					opval.put("id", operator_id);
+					opval.put("name", operator_name);
+					opval.put("color", operator_color);
+					db.insert("gsmmap_operators", null, opval);
+					opval.clear();
+
+					// Store all values
+					JSONObject values = operator.getJSONObject("values");
+					updateValue(operator_id, values, "inter");
+					updateValue(operator_id, values, "imper");
+					updateValue(operator_id, values, "track");
+					updateValue(operator_id, values, "inter3G");
+					updateValue(operator_id, values, "imper3G");
+
+					// Store all MCC/MNC combinations for an operator
+					JSONArray mcc_mncs = operator.getJSONArray("mcc_mnc");
+					for (int m = 0, ms = mcc_mncs.length(); m < ms; m++) {
+
+						JSONObject mcc_mnc = mcc_mncs.getJSONObject(m);
+						int mcc = mcc_mnc.getInt("mcc");
+						int mnc = mcc_mnc.getInt("mnc");
+
+						ContentValues codes_val = new ContentValues();
+						codes_val.put("id", operator_id);
+						codes_val.put("mcc", mcc);
+						codes_val.put("mnc", mnc);
+						db.insert("gsmmap_codes", null, codes_val);
+						codes_val.clear();
+					}
+					operator_id++;
 				}
-				operator_id++;
 			}
+			db.setTransactionSuccessful();
+		} finally {
+			db.endTransaction();
 		}
-		db.endTransaction();
 	}
 
 	private void updateValue(long operator_id, JSONObject values, String kind)
