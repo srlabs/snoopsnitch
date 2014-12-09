@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.Toast;
 import de.srlabs.msd.CrashUploadActivity;
+import de.srlabs.msd.DashboardActivity;
 import de.srlabs.msd.R;
 import de.srlabs.msd.util.Constants;
 
@@ -23,6 +24,8 @@ public class MsdServiceNotifications {
 		this.service = service;
 	}
 	public Notification getForegroundNotification(){
+		Intent intent = new Intent(service, DashboardActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_launcher);
 		Notification n = new NotificationCompat.Builder(service)
 		.setContentTitle("MSD.setContentTitle")
@@ -31,6 +34,7 @@ public class MsdServiceNotifications {
 		.setSmallIcon(R.drawable.ic_launcher)
 		.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
 		.setOngoing(true)
+		.setContentIntent(pendingIntent)
 		.build();
 		// TODO: Allow the user to open the UI from the Notification
 		// TODO: Allow the user to stop recording from the Notification
