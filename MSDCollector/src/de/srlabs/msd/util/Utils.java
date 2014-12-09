@@ -41,7 +41,7 @@ public class Utils {
 		final TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
 		tmf.init(keystore);
 
-		final SSLContext sslContext = SSLContext.getInstance("TLS");
+		final SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
 		sslContext.init(null, tmf.getTrustManagers(), null);
 
 		// TODO: Handle pinning errors with an appropriate error message/Notification
