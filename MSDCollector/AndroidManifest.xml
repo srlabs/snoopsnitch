@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.srlabs.msd"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="@string/app_version" >
 
     <uses-sdk
         android:minSdkVersion="16"
