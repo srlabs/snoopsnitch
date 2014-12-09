@@ -100,12 +100,13 @@
     <Button
         android:id="@+id/btnUploadImsi"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
         android:layout_marginRight="5dp"
         android:background="@drawable/custom_upload_button_background"
         android:text="@string/common_button_upload"
-        android:textColor="@drawable/custom_upload_button_color" />
+        android:textColor="@drawable/custom_upload_button_color"
+        android:textSize="@dimen/text_medium" />
 
 </LinearLayout> 

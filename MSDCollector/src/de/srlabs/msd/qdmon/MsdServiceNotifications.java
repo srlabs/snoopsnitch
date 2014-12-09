@@ -1,8 +1,10 @@
 package de.srlabs.msd.qdmon;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -42,18 +44,54 @@ public class MsdServiceNotifications {
 	}
 	public void showImsiCatcherNotification(int numCatchers, long id){
 		Log.i("MsdServiceNotifications","Showing IMSI Catcher notification for " + numCatchers + " catchers, id=" + id);
-		Toast.makeText(service, "Showing IMSI Catcher notification for " + numCatchers + " catchers, id=" + id, Toast.LENGTH_SHORT).show();
-		// TODO: Implement notification and remove Toast
+		
+		Intent intent = new Intent(service, DashboardActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Notification n = new NotificationCompat.Builder(service)
+		.setContentTitle("IMSI catcher detected")
+		.setTicker("IMSI catcher detected")
+		.setContentText("Showing IMSI Catcher notification for " + numCatchers + " catchers, id=" + id)
+		.setSmallIcon(R.drawable.ic_content_imsi_event)
+		.setOngoing(false)
+		.setContentIntent(pendingIntent)
+		.build();
+		
+		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
+		notificationManager.notify(Constants.NOTIFICATION_ID_IMSI, n);
 	}
 	public void showSmsNotification(int numSilentSms, int numBinarySms, long id){
 		Log.i("MsdServiceNotifications","Showing SMS notification for " + numSilentSms + " silent SMS and " + numBinarySms + " binary SMS , id=" + id);
-		Toast.makeText(service, "Showing SMS notification for " + numSilentSms + " silent SMS and " + numBinarySms + " binary SMS , id=" + id, Toast.LENGTH_SHORT).show();
-		// TODO: Implement notification and remove Toast
+
+		Intent intent = new Intent(service, DashboardActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Notification n = new NotificationCompat.Builder(service)
+		.setContentTitle("Silent SMS detected")
+		.setTicker("Silent SMS detected")
+		.setContentText("Showing SMS notification for " + numSilentSms + " silent SMS and " + numBinarySms + " binary SMS , id=" + id)
+		.setSmallIcon(R.drawable.ic_content_sms_event)
+		.setOngoing(false)
+		.setContentIntent(pendingIntent)
+		.build();
+		
+		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
+		notificationManager.notify(Constants.NOTIFICATION_ID_SMS, n);
 	}
 	public void showErrorNotification(int errorId){
 		Log.i("MsdServiceNotifications","Showing Error notification for errorId=" + errorId);
-		Toast.makeText(service, "Showing Error notification for errorId=" + errorId, Toast.LENGTH_SHORT).show();
-		// TODO: Implement notification and remove Toast
+
+		Intent intent = new Intent(service, DashboardActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		Notification n = new NotificationCompat.Builder(service)
+		.setContentTitle("Error occured")
+		.setTicker("Error occured")
+		.setContentText("An error occured: " + errorId)
+		.setSmallIcon(R.drawable.ic_content_network)
+		.setOngoing(false)
+		.setContentIntent(pendingIntent)
+		.build();
+		
+		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
+		notificationManager.notify(Constants.NOTIFICATION_ID_INTERNAL_ERROR, n);
 	}
 	public void showInternalErrorNotification(String msg, Long debugLogFileId){
 		// TODO: Maybe directly start the error reporting activity if the app was on top when the error occured
