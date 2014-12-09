@@ -487,11 +487,6 @@ public class ActiveTestResults implements Serializable {
 	}
 	public String getErrorLog() {
 		return errorLog;
-		//		StringBuffer result = new StringBuffer();
-		//		for(int i=0;i<30;i++){
-		//			result.append("Line " + i + "\n");
-		//		}
-		//		return result.toString();
 	}
 	public void clearErrorLog(){
 		errorLog = "";
