@@ -20,7 +20,7 @@ import de.srlabs.msd.qdmon.MsdServiceHelper;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.MsdLog;
 
-public class ActiveTestAdvanced extends BaseActivity implements MsdServiceCallback{
+public class ActiveTestAdvanced extends BaseActivity{
 	private static final String TAG = "ActiveTestAdvanced";
 	private Button btnStartStop;
 	private Button btnMode;
@@ -198,9 +198,4 @@ public class ActiveTestAdvanced extends BaseActivity implements MsdServiceCallba
 		appendLogMsg("internalError(" + msg + ")");
 	}
 
-	@Override
-	public void stateChanged(StateChangedReason reason) {
-		// TODO Auto-generated method stub
-
-	}
 }
