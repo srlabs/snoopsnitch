@@ -515,9 +515,7 @@ public class MsdService extends Service{
 			diagStdout = null;
 			diagStderr = null;
 			// Terminate rawWriter
-			rawWriter.close();
-			rawWriter = null;
-			currentRawWriterBaseFilename = null;
+			closeRawWriter();
 			// Termiante parser
 			if(parser != null){
 				toParserMsgQueue.add(new DiagMsgWrapper()); // Send shutdown marker to message queue
@@ -1531,6 +1529,16 @@ public class MsdService extends Service{
 		}
 		MsdDatabaseManager.getInstance().closeDatabase();
 		triggerUploading();
+	}
+	private void closeRawWriter(){
+		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+		rawWriter.close();
+		rawWriter = null;
+		currentRawWriterBaseFilename = null;
+		DumpFile df = DumpFile.get(db, rawLogFileId);
+		df.endRecording(db);
+		rawLogFileId = 0;
+		MsdDatabaseManager.getInstance().closeDatabase();
 	}
 
 	/**
