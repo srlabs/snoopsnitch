@@ -53,7 +53,7 @@ public class BaseActivity extends FragmentActivity
 		messageToast = new Toast(getApplicationContext());
 		
 		// Get MsdService Helper
-		msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext());
+		msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext(), true);
 		MsdLog.init(msdServiceHelperCreator.getMsdServiceHelper());
 		MsdLog.i("MSD","MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 		

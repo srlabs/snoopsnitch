@@ -19,19 +19,21 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	private int rectWidth;
 	private Context context;
 	private Activity currentActivity;
+	private boolean autostartRecordingPending = false;
 	
 	// Methods
-	private MSDServiceHelperCreator (Context context) 
+	private MSDServiceHelperCreator (Context context, boolean autostartRecording) 
 	{
 		msdServiceHelper = new MsdServiceHelper(context, this, false);
 		this.context = context;
+		this.autostartRecordingPending = autostartRecording;
 	}
 	
-	public static MSDServiceHelperCreator getInstance (Context context)
+	public static MSDServiceHelperCreator getInstance (Context context, boolean autostartRecording)
 	{
 		if (_instance == null)
 		{
-			_instance = new MSDServiceHelperCreator (context);
+			_instance = new MSDServiceHelperCreator (context, autostartRecording);
 		}
 		
 		return _instance;
@@ -262,6 +264,11 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	@Override
 	public void stateChanged(StateChangedReason reason) 
 	{
+		if(autostartRecordingPending && msdServiceHelper.isConnected()){
+			if(!msdServiceHelper.isRecording())
+				msdServiceHelper.startRecording();
+			autostartRecordingPending = false;
+		}
 		try
 		{
 			((BaseActivity) currentActivity).stateChanged(reason);

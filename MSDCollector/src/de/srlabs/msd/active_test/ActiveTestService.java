@@ -533,7 +533,7 @@ public class ActiveTestService extends Service{
 					}
 				});
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		msdServiceHelper = MSDServiceHelperCreator.getInstance(this).getMsdServiceHelper();
+		msdServiceHelper = MSDServiceHelperCreator.getInstance(this, true).getMsdServiceHelper();
 		updateNetworkOperatorAndRat();
 		broadcastTestResults();
 		handler.postDelayed(progressTickRunnable, 1000);
