@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -200,7 +201,12 @@ public class ActiveTestHelper{
 				startActiveTest(confirmedOwnNumber);
 			}
 		});
-		dialog.setNegativeButton("Cancel", null);
+		dialog.setNegativeButton("Cancel", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				callback.testStateChanged();
+			}
+		});
 		dialog.show();
 	}
 

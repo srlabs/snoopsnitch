@@ -23,6 +23,7 @@ public class ActiveTestResults implements Serializable {
 	private boolean testRoundComplete = false;
 	private String errorLog = "";
 	private boolean onlineMode = true;
+	private boolean blacklisted = false;
 
 	class NetworkOperatorTestResults implements Serializable{
 		private static final long serialVersionUID = 1L;
@@ -406,7 +407,9 @@ public class ActiveTestResults implements Serializable {
 		return result.toString();
 	}
 	public String getCurrentActionString(){
-		if(testRoundComplete){
+		if(blacklisted){
+			return "Your phone number is blacklisted. Please contact TODO";
+		} if(testRoundComplete){
 			return "Test round complete. Please upload your data";
 		} else if(getCurrentTest() != null && getCurrentTest().isRunning()){
 			return getCurrentTest().getStateDisplayText();
@@ -509,5 +512,8 @@ public class ActiveTestResults implements Serializable {
 		if(isTestTypeContinuable(TestType.CALL_MT))
 			return true;
 		return false;
+	}
+	public void setBlacklisted(boolean b) {
+		this.blacklisted = b;
 	}
 }
