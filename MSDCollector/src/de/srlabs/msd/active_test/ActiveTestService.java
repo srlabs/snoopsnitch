@@ -468,7 +468,8 @@ public class ActiveTestService extends Service{
 				currentTestSuccess();
 				iterate();
 			} else{
-				handleFatalError("handleSmsSent in unexpected state " + state.name());
+				// This can happen if sending an SMS is delayed e.g. due to an unreliable network connection.
+				stateInfo("handleSmsSent in unexpected state " + state.name());
 			}
 		}
 		public void postIterateRunnable(int delayMillis) {
