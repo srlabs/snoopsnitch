@@ -428,12 +428,14 @@ public class ActiveTestService extends Service{
 				results.getCurrentTest().failApiError(apiId, errorStr);
 				endExtraFileRecording(false);
 				onlineMode = false;
+				results.setOnlineMode(onlineMode);
 				iterate();
 			} else if(state == State.SMS_MT_API){
 				stateInfo("SMS API failed, switching to offline mode: " + errorStr);
 				results.getCurrentTest().failApiError(apiId, errorStr);
 				endExtraFileRecording(false);
 				onlineMode = false;
+				results.setOnlineMode(onlineMode);
 				iterate();
 			} else{
 				handleFatalError("handleApiFail in unexpected state " + state.name());
