@@ -503,6 +503,8 @@ public class ActiveTestResults implements Serializable {
 		return results.getNumSuccess(type) > 0 && results.getNumSuccess(type) < numIterations;
 	}
 	public boolean isTestRoundContinueable() {
+		if(blacklisted)
+			return false;
 		if(isTestTypeContinuable(TestType.SMS_MO))
 			return true;
 		if(isTestTypeContinuable(TestType.CALL_MO))

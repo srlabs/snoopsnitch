@@ -114,7 +114,7 @@ public class ActiveTestAdvanced extends BaseActivity implements MsdServiceCallba
 						activeTestHelper.clearCurrentFails();
 					} else if(startButtonMode == StartButtonMode.STARTOVER){
 						// Start over: Clear test results and start again
-						activeTestHelper.clearCurrentResults();
+						activeTestHelper.clearResults();
 					}
 					//activeTestHelper.startActiveTest("+4915784571666"); // TODO: Query for number, cache results based on IMSI
 					activeTestHelper.queryPhoneNumberAndStart();
@@ -144,7 +144,6 @@ public class ActiveTestAdvanced extends BaseActivity implements MsdServiceCallba
 	public void onBackPressed() {
 	    Intent intent = new Intent(this, DashboardActivity.class);
 	    startActivity(intent);
-		super.onBackPressed();
 	}
 
 	protected void updateButtons() {

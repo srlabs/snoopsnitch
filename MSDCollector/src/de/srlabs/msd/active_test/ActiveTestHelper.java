@@ -151,6 +151,14 @@ public class ActiveTestHelper{
 			handleFatalError("Exception in ActiveTestHelper.clearCurrentResults()",e);
 		}
 	}
+	
+	public void clearResults() {
+		try {
+			mIActiveTestService.clearResults();
+		} catch (Exception e) {
+			handleFatalError("Exception in ActiveTestHelper.clearCurrentResults()",e);
+		}
+	}
 	public void queryPhoneNumberAndStart(){
 		queryPhoneNumberAndStart(null);
 	}
