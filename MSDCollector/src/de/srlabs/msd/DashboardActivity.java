@@ -325,6 +325,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 				@Override
 				public void onClick(DialogInterface dialog, int which) 
 				{
+					activeTestHelper.clearResults();
 					activeTestHelper.queryPhoneNumberAndStart();
 				}
 			}).show();
