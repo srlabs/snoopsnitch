@@ -10,13 +10,13 @@ import android.content.DialogInterface.OnClickListener;
 public class MsdDialog extends DialogFragment
 {	
 	public static Dialog makeConfirmationDialog (Activity activity, String message, 
-			OnClickListener positiveOnClickListener)
+			OnClickListener positiveOnClickListener, OnClickListener negativeOnClickListener)
 	{
 		AlertDialog.Builder builder = getAlertDialogBuilder(activity, 
 				activity.getResources().getString(R.string.alert_confirmation_title), message);
 		
 		builder.setPositiveButton(activity.getResources().getString(R.string.alert_button_ok), positiveOnClickListener);
-		builder.setNegativeButton(activity.getString(R.string.alert_button_cancel), null);
+		builder.setNegativeButton(activity.getString(R.string.alert_button_cancel), negativeOnClickListener);
 
 		builder.setIcon(android.R.drawable.ic_dialog_info);
 		

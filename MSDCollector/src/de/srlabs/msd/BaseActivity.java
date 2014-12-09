@@ -329,6 +329,7 @@ public class BaseActivity extends FragmentActivity
 	
 	protected void quitApplication ()
 	{
-		
+		finish();
+		System.exit(0);
 	}
 }

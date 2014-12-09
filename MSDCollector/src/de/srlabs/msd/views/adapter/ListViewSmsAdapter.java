@@ -104,7 +104,7 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 							values.get(position).upload();
 							host.refreshView();
 						}
-					}).show();
+					}, null).show();
 				}
 			});
 			break;

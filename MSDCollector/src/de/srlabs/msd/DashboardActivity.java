@@ -4,9 +4,11 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Vector;
 
+import android.R.bool;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -120,6 +122,8 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		txtDashboardImpersonation2g = (TextView) findViewById(R.id.txtDashboardImpersonation2g);
 		
 		btnDashboardNetworkTest = (Button) findViewById(R.id.btnDashboardTestNetwork);
+		
+		checkFirstRun();
 	}
 	
 	@Override
@@ -328,7 +332,34 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 					activeTestHelper.clearResults();
 					activeTestHelper.queryPhoneNumberAndStart();
 				}
-			}).show();
+			}, null).show();
+		}
+	}
+	
+	private void checkFirstRun ()
+	{
+		final SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
+
+		if (sharedPreferences.getBoolean("app_first_run", true)) 
+		{
+			MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.alert_first_app_start_message),
+				new OnClickListener() 
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which) 
+					{
+					    // record the fact that the app has been started at least once
+					    sharedPreferences.edit().putBoolean("app_first_run", false).commit(); 	
+					}
+				},
+				new OnClickListener() 
+				{	
+					@Override
+					public void onClick(DialogInterface dialog, int which) 
+					{
+						quitApplication();
+					}
+				}).show();
 		}
 	}
 }
