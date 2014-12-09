@@ -567,6 +567,7 @@ public class ActiveTestService extends Service{
 
 	private boolean startTest(String ownNumber){
 		this.ownNumber = ownNumber;
+		this.msdServiceHelper.startActiveTest();
 		// TODO: Detect internet connectivity to automatically select online/offline mode
 		if(ownNumber == null || ownNumber.trim().length() == 0){
 			debugInfo("Using offline mode since ownNumer is not known");
@@ -608,6 +609,7 @@ public class ActiveTestService extends Service{
 		}
 		if(this.currentExtraRecordingFilename != null)
 			endExtraFileRecording(false);
+		this.msdServiceHelper.stopActiveTest();
 		testRunning = false;
 		AudioManager audio = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 		audio.setRingerMode(originalRingerMode);

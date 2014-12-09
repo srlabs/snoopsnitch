@@ -105,6 +105,18 @@ public class DummyMsdService extends Service{
 		public int getParserNetworkGeneration() throws RemoteException {
 			return 0;
 		}
+
+		@Override
+		public void startActiveTest() throws RemoteException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void stopActiveTest() throws RemoteException {
+			// TODO Auto-generated method stub
+			
+		}
 	};
 	private class DummyDataRunnable implements Runnable{
 		private boolean recordingStopped = false;

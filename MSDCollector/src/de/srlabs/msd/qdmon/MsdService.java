@@ -75,25 +75,33 @@ public class MsdService extends Service{
 	// TODO: Watch battery level and stop recording if battery level goes below configured limit
 
 	private final MyMsdServiceStub mBinder = new MyMsdServiceStub();
+
+	private  long activeTestTimestamp = 0;
+	private boolean recordingStartedForActiveTest = false;
 	class MyMsdServiceStub extends IMsdService.Stub {
 
 		private Vector<IMsdServiceCallback> callbacks = new Vector<IMsdServiceCallback>();
 
 		@Override
-		public boolean isRecording() throws RemoteException {
+		public synchronized boolean isRecording() throws RemoteException {
 			return recording;
 		}
 
 		@Override
-		public boolean startRecording() throws RemoteException {
+		public synchronized boolean startRecording() throws RemoteException {
 			return MsdService.this.startRecording();
 		}
 
 		@Override
-		public boolean stopRecording() throws RemoteException {
+		public synchronized boolean stopRecording() throws RemoteException {
 			if(!isRecording()){
 				sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 				return true;
+			}
+			if(System.currentTimeMillis() < activeTestTimestamp + 120 * 1000){
+				// ignore stopRecording if active test is running
+				sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
+				return false;
 			}
 			return MsdService.this.shutdown(false);
 		}
@@ -125,6 +133,7 @@ public class MsdService extends Service{
 		@Override
 		public boolean startExtraRecording(String filename) throws RemoteException {
 			try{
+				activeTestTimestamp = System.currentTimeMillis();
 				return MsdService.this.startExraRecording(filename);
 			} catch(Exception e){
 				handleFatalError("Exception in startExtraRecording:", e);
@@ -136,6 +145,7 @@ public class MsdService extends Service{
 		public boolean endExtraRecording(boolean markForUpload)
 				throws RemoteException {
 			try{
+				activeTestTimestamp = System.currentTimeMillis();
 				return MsdService.this.endExtraRecording(markForUpload);
 			} catch(Exception e){
 				handleFatalError("Exception in endExtraRecording:", e);
@@ -156,6 +166,24 @@ public class MsdService extends Service{
 		@Override
 		public int getParserNetworkGeneration() throws RemoteException {
 			return parserRatGeneration;
+		}
+
+		@Override
+		public synchronized void startActiveTest() throws RemoteException {
+			activeTestTimestamp = System.currentTimeMillis();
+			if(!isRecording()){
+				startRecording();
+				recordingStartedForActiveTest = true;
+			}
+		}
+
+		@Override
+		public void stopActiveTest() throws RemoteException {
+			activeTestTimestamp = 0;
+			if(recordingStartedForActiveTest){
+				stopRecording();
+				recordingStartedForActiveTest = false;
+			}
 		}
 	};
 	AtomicBoolean shuttingDown = new AtomicBoolean(false);

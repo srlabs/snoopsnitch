@@ -16,6 +16,8 @@ interface IMsdService {
 	long getExtraRecordingId();
 	boolean startExtraRecording(String filename);
 	boolean endExtraRecording(boolean markForUpload);
+	void startActiveTest();
+	void stopActiveTest();
 	// Uploading
 	void triggerUploading();
 	// Retopens the debug log and marks it for uploading

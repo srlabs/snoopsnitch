@@ -26,7 +26,6 @@ public class ActiveTestAdvanced extends BaseActivity{
 	private Button btnMode;
 	private Button btnNetwork;
 	//private TextView activeTestLogView;
-	protected MsdServiceHelper msdServiceHelper;
 	private ActiveTestHelper activeTestHelper;
 	private MyActiveTestCallback activeTestCallback = new MyActiveTestCallback();
 	private WebView activeTestWebView;
@@ -35,7 +34,6 @@ public class ActiveTestAdvanced extends BaseActivity{
 		START, STOP, CONTINUE, STARTOVER
 	}
 	private StartButtonMode startButtonMode;
-	protected boolean recordingStartedForActiveTest;
 
 	class MyActiveTestCallback implements ActiveTestCallback{
 		@Override
@@ -48,10 +46,6 @@ public class ActiveTestAdvanced extends BaseActivity{
 		public void testStateChanged() {
 			Log.i("ActiveTestAdvanced", "testStateChanged()");
 			updateButtons();
-			// Stop recording after the test when recording has been started for the test only.
-			if(recordingStartedForActiveTest && !activeTestHelper.isActiveTestRunning()){
-				msdServiceHelper.stopRecording();
-			}
 		}
 
 		@Override
@@ -94,20 +88,11 @@ public class ActiveTestAdvanced extends BaseActivity{
 		this.btnNetwork = (Button) findViewById(R.id.btnNetwork);
 		this.activeTestWebView = (WebView)findViewById(R.id.activeTestWebView);
 		loadWebView();
-		msdServiceHelper = getMsdServiceHelperCreator().getMsdServiceHelper();
 		activeTestHelper = new ActiveTestHelper(this, activeTestCallback, false);
 		this.btnStartStop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if(startButtonMode == StartButtonMode.START || startButtonMode == StartButtonMode.CONTINUE || startButtonMode == StartButtonMode.STARTOVER){
-					// TODO: Starting the service should probably be done in activeTestService?
-					if(!msdServiceHelper.isRecording()){
-						boolean result = msdServiceHelper.startRecording();
-						if(!result){
-							return;
-						}
-						recordingStartedForActiveTest = true;
-					}
 					if(startButtonMode == StartButtonMode.CONTINUE){
 						// Continue: Clear fails and start with current results
 						activeTestHelper.clearCurrentFails();

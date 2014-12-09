@@ -195,4 +195,18 @@ public class MsdServiceHelper{
 			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.getParserNetworkGeneration()", e);
 		}
 	}
+	public void startActiveTest(){
+		try {
+			mIMsdService.startActiveTest();
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.getParserNetworkGeneration()", e);
+		}
+	}
+	public void stopActiveTest(){
+		try {
+			mIMsdService.stopActiveTest();
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.getParserNetworkGeneration()", e);
+		}
+	}
 }
