@@ -72,17 +72,17 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		}
 
 		return new SMS
-				(c.getLong(0),		// timestamp
-				 c.getLong(1),		// id
-				 c.getInt(2),		// mcc
-				 c.getInt(3),		// mnc
-				 c.getInt(4),		// lac
-				 c.getInt(5),		// cid
-				 c.getDouble(6),	// latitude
-				 c.getDouble(7),	// longitude
-				 c.getString(8),	// msisdn
-				 c.getString(9),	// smsc
-				 sms_type			// SMS type
+				(c.getLong(0) * 1000L,	// timestamp
+				 c.getLong(1),			// id
+				 c.getInt(2),			// mcc
+				 c.getInt(3),			// mnc
+				 c.getInt(4),			// lac
+				 c.getInt(5),			// cid
+				 c.getDouble(6),		// latitude
+				 c.getDouble(7),		// longitude
+				 c.getString(8),		// msisdn
+				 c.getString(9),		// smsc
+				 sms_type				// SMS type
 				);
 	}
 
@@ -103,7 +103,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		Vector<SMS> result = new Vector<SMS>();
 
 		Cursor c = db.query("sms", sms_cols, "strftime('%s',timestamp) >= ? AND strftime('%s',timestamp) <= ?",
-				new String[] {Long.toString(startTime), Long.toString(endTime)}, null, null, null);
+				new String[] {Long.toString(startTime/1000), Long.toString(endTime/1000)}, null, null, null);
 
 		if(c.moveToFirst()) {
 			do {
@@ -120,16 +120,16 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	static private ImsiCatcher catcherFromCursor(Cursor c) {
 
 		return new ImsiCatcher
-				(c.getLong(0),		// startTime
-				 c.getLong(1),		// endTime
-				 c.getInt(2),		// id
-				 c.getInt(3),		// mcc
-				 c.getInt(4),		// mnc
-				 c.getInt(5),		// lac
-				 c.getInt(6),		// cid
-				 c.getDouble(7),	// latitude
-				 c.getDouble(8),	// longitude
-				 c.getDouble(9) 	// score
+				(c.getLong(0)*1000L,	// startTime
+				 c.getLong(1)*1000L,	// endTime
+				 c.getInt(2),			// id
+				 c.getInt(3),			// mcc
+				 c.getInt(4),			// mnc
+				 c.getInt(5),			// lac
+				 c.getInt(6),			// cid
+				 c.getDouble(7),		// latitude
+				 c.getDouble(8),		// longitude
+				 c.getDouble(9) 		// score
 				);
 	}
 
@@ -151,7 +151,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		Vector<ImsiCatcher> result = new Vector<ImsiCatcher>();
 
 		Cursor c = db.query("catcher", catcher_cols, "strftime('%s',timestamp) >= ? AND strftime('%s',timestamp) <= ?",
-				new String[] {Long.toString(startTime), Long.toString(endTime)}, null, null, null);
+				new String[] {Long.toString(startTime/1000), Long.toString(endTime/1000)}, null, null, null);
 
 		if(c.moveToFirst()) {
 			do {
