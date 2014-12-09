@@ -234,13 +234,13 @@ public class DumpFile {
 
 		for (DumpFile file:getFiles(db, type, time1, time2, rangeSeconds)) {
 			switch (file.getState()) {
-				case STATE_RECORDING:   	  recording++;
-				case STATE_AVAILABLE:   	  available++;
-				case STATE_PENDING:     	  pending++;
-				case STATE_UPLOADED:    	  uploaded++;
-				case STATE_DELETED:     	  deleted++;
-				case STATE_RECORDING_PENDING: recording_pending++;
-				default: invalid++;
+				case STATE_RECORDING:   	  recording++; break;
+				case STATE_AVAILABLE:   	  available++; break;
+				case STATE_PENDING:     	  pending++; break;
+				case STATE_UPLOADED:    	  uploaded++; break;
+				case STATE_DELETED:     	  deleted++; break;
+				case STATE_RECORDING_PENDING: recording_pending++; break;
+				default: invalid++; break;
 			}
 			total++;
 		}
