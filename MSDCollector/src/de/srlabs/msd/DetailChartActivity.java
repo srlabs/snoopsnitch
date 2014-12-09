@@ -131,6 +131,9 @@ public class DetailChartActivity extends BaseActivity
 	{
 		super.onResume();
 		
+		// Start pager adapter with hour fragment
+		this.mPager.setCurrentItem(3);
+		
 		resetListView();
 	}
 	
@@ -211,11 +214,6 @@ public class DetailChartActivity extends BaseActivity
 		}
 		
 
-	}
-	
-	public void contributeData (View view)
-	{
-		Toast.makeText(this, view.toString(), 2).show();
 	}
 	
 	public int getThreatType ()
