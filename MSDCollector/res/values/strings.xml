@@ -77,21 +77,21 @@
     <!-- Preferences Screen -->
   	<string name="settings_actionBar_title">Settings</string>
     
-    <string name="settings_basebandlogkeepduration_title">Baseband log keep duration</string>
+    <string name="settings_basebandlogkeepduration_title">Baseband log clean interval</string>
     <string name="settings_basebandlogkeepduration_summary"></string>
-    <string name="settings_basebandlogkeepduration_dialogtitle">Select duration:</string>
+    <string name="settings_basebandlogkeepduration_dialogtitle">Select interval:</string>
     
-    <string name="settings_locationlogkeepduration_title">Location log keep duration</string>
+    <string name="settings_locationlogkeepduration_title">Location log clean interval</string>
     <string name="settings_locationlogkeepduration_summary"></string>
-    <string name="settings_locationlogkeepduration_dialogtitle">Select duration:</string>
+    <string name="settings_locationlogkeepduration_dialogtitle">Select interval:</string>
     
-    <string name="settings_sessioninfokeepduration_title">Session info keep duration</string>
+    <string name="settings_sessioninfokeepduration_title">Session info clean interval</string>
     <string name="settings_sessioninfokeepduration_summary"></string>
-    <string name="settings_sessioninfokeepduration_dialogtitle">Select duration:</string>
+    <string name="settings_sessioninfokeepduration_dialogtitle">Select interval:</string>
     
-    <string name="settings_cellinfokeepduration_title">Cell info keep duration</string>
+    <string name="settings_cellinfokeepduration_title">Cell info clean interval</string>
     <string name="settings_cellinfokeepduration_summary"></string>
-    <string name="settings_cellinfokeepduration_dialogtitle">Select duration:</string>
+    <string name="settings_cellinfokeepduration_dialogtitle">Select interval:</string>
     
     <string name="settings_gpsrecording_title">GPS Recording</string>
     <string name="settings_gpsrecording_summary"></string>
