@@ -2,7 +2,7 @@
 <resources>
     
     <!-- General -->
-	<string name="app_name">MSDCollector</string>
+	<string name="app_name">SnoopSnitch</string>
     <string name="hello_world">Hallo Welt!</string>
     <string name="website">uid.com</string>
     <string name="common_silent_sms">Silent SMS</string>
@@ -12,7 +12,7 @@
     <string name="common_2g_title">2G</string>
     
     <!-- Action Bar Titles -->
-    <string name="actionBar_title">GSMMap-App</string>
+    <string name="actionBar_title">SnoopSnitch</string>
     <string name="actionBar_subTitle">App-ID: 1324687436-D</string>
    	
    	<!-- Action Bar Buttons -->
