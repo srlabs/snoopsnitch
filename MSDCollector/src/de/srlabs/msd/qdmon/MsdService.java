@@ -1514,7 +1514,9 @@ public class MsdService extends Service{
 		// Create a new dump file every 10 minutes, name it with the
 		// UTC time so that it does not reuse the same filename if
 		// the user	switches between different timezones.
+		long timestamp = System.currentTimeMillis();
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		c.setTimeInMillis(timestamp);
 		// Calendar.MONTH starts counting with 0
 		String baseFilename = String.format(Locale.US, "qdmon_%04d-%02d-%02d_%02d-%02dUTC",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), 10*(c.get(Calendar.MINUTE) / 10));
 		if(rawWriter != null && currentRawWriterBaseFilename != null && currentRawWriterBaseFilename.equals(baseFilename))
@@ -1546,7 +1548,12 @@ public class MsdService extends Service{
 		}
 		rawWriter = new EncryptedFileWriter(this, encryptedFilename, true, plaintextFilename, true);
 		// Register the file in database
-		DumpFile df = new DumpFile(encryptedFilename,DumpFile.TYPE_ENCRYPTED_QDMON);
+		// Set calendar to start of 10 minute interval
+		c.setTimeInMillis(timestamp);
+		c.set(Calendar.MILLISECOND, 0);
+		c.set(Calendar.SECOND,0);
+		c.set(Calendar.MINUTE,10*(c.get(Calendar.MINUTE)/10));
+		DumpFile df = new DumpFile(encryptedFilename,DumpFile.TYPE_ENCRYPTED_QDMON,timestamp,c.getTimeInMillis() + 10*60*1000);
 		df.insert(db);
 		rawLogFileId = df.getId();
 		if(oldRawWrite != null){

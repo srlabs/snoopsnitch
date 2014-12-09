@@ -36,11 +36,16 @@ public class DumpFile {
 	public static final int STATE_RECORDING_PENDING = 6;
 	
 	public DumpFile(String filename, int type) {
+		this(filename,type,System.currentTimeMillis(),0);
+	}
+	public DumpFile(String filename, int type, long startTime, long endTime) {
+		if(endTime == 0)
+			endTime = startTime;
 		this.filename = filename;
 		this.file_type = type;
 		this.state = STATE_RECORDING;
-		this.start_time = System.currentTimeMillis();
-		this.end_time = System.currentTimeMillis();
+		this.start_time = startTime;
+		this.end_time = endTime;
 	}
 
 	public DumpFile(Cursor c) {
