@@ -29,7 +29,8 @@
     <!-- Common Buttons -->
     <string name="common_button_upload">upload</string>
     <string name="common_button_nodata">No data</string>
-    <string name="common_button_networktest">Test Network</string> 
+    <string name="common_button_networktest_start">Start Test</string> 
+    <string name="common_button_networktest_stop">Stop Test</string> 
     
     <!-- Messages -->
     <string name="message_smsDetected">New SMS detected&#8230;</string>
@@ -47,6 +48,7 @@
     <string name="alert_fatal_condition_title">Fatal Condition</string>
     <string name="alert_notification_title">Notification</string>
     <string name="alert_upload_message">Do you really want to upload data?</string>
+    <string name="alert_networktest_message">Do you really want to start a network test?</string>
     
     <!-- Dashboard Screen -->
     <string name="dashboard_upload_description"> scans are ready to upload</string>

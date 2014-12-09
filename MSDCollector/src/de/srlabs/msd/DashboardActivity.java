@@ -14,9 +14,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+import de.srlabs.msd.active_test.ActiveTestCallback;
+import de.srlabs.msd.active_test.ActiveTestHelper;
+import de.srlabs.msd.active_test.ActiveTestResults;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
@@ -25,7 +30,7 @@ import de.srlabs.msd.views.DashboardProviderChart;
 import de.srlabs.msd.views.DashboardThreatChart;
 import de.srlabs.msd.views.adapter.ListViewProviderAdapter;
 
-public class DashboardActivity extends BaseActivity 
+public class DashboardActivity extends BaseActivity implements ActiveTestCallback
 {	
 	// Attributes
 	private int rectWidth;
@@ -57,7 +62,9 @@ public class DashboardActivity extends BaseActivity
 	private ImageView imgSilentSms;
 	private ImageView imgImsiCatcher;
 	private ListView lstDashboardProviderList;
+	private Button btnDashboardNetworkTest;
 	private Vector<Risk> providerList;
+	private ActiveTestHelper activeTestHelper;
 
 	// Methods
 	@Override
@@ -81,6 +88,8 @@ public class DashboardActivity extends BaseActivity
 		}	
 		
 		this.rectWidth = msdServiceHelperCreator.getRectWidth();
+		
+		this.activeTestHelper = new ActiveTestHelper(this, this, false);
 				
 		txtSmsMonthCount = (TextView) findViewById(R.id.txtDashboardSilentSmsMonthCount);
 		txtSmsWeekCount = (TextView) findViewById(R.id.txtDashboardSilentSmsWeekCount);
@@ -112,6 +121,8 @@ public class DashboardActivity extends BaseActivity
 		txtDashboardInterception2g = (TextView) findViewById(R.id.txtDashboardInterception2g);
 		txtDashboardImpersonation3g = (TextView) findViewById(R.id.txtDashboardImpersonation3g);
 		txtDashboardImpersonation2g = (TextView) findViewById(R.id.txtDashboardImpersonation2g);
+		
+		btnDashboardNetworkTest = (Button) findViewById(R.id.btnDashboardTestNetwork);
 	}
 	
 	@Override
@@ -283,5 +294,38 @@ public class DashboardActivity extends BaseActivity
 	public Vector<Risk> getProviderData ()
 	{
 		return providerList;
+	}
+
+	@Override
+	public void handleTestResults(ActiveTestResults results) 
+	{
+		((TextView) findViewById(R.id.txtDashboardNetworkTest)).setText(results.getCurrentActionString());
+	}
+
+	@Override
+	public void testStateChanged() 
+	{
+
+	}
+	
+	public void toggleNetworkTest (View view)
+	{
+		if (activeTestHelper.isActiveTestRunning())
+		{
+			activeTestHelper.stopActiveTest();
+			btnDashboardNetworkTest.setText(getResources().getString(R.string.common_button_networktest_start));
+		}
+		else
+		{
+			MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.alert_networktest_message), new OnClickListener() 
+			{			
+				@Override
+				public void onClick(DialogInterface dialog, int which) 
+				{
+					activeTestHelper.queryPhoneNumberAndStart();
+					btnDashboardNetworkTest.setText(getResources().getString(R.string.common_button_networktest_stop));
+				}
+			}).show();
+		}
 	}
 }

@@ -780,7 +780,17 @@
                     android:layout_marginLeft="5dp"
                     android:background="@drawable/bt_content_contributedata_enable"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/common_button_networktest" />
+                    android:onClick="toggleNetworkTest"
+                    android:text="@string/common_button_networktest_start" />
+
+                <TextView
+                    android:id="@+id/txtDashboardNetworkTest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_margin="5dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="" />
 
             </LinearLayout>
 
