@@ -4,11 +4,9 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Vector;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -18,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import de.srlabs.msd.active_test.ActiveTestCallback;
 import de.srlabs.msd.active_test.ActiveTestHelper;
 import de.srlabs.msd.active_test.ActiveTestResults;
@@ -305,7 +302,14 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	@Override
 	public void testStateChanged() 
 	{
-
+		if (activeTestHelper.isActiveTestRunning())
+		{
+			btnDashboardNetworkTest.setText(getResources().getString(R.string.common_button_networktest_stop));
+		}
+		else
+		{
+			btnDashboardNetworkTest.setText(getResources().getString(R.string.common_button_networktest_start));
+		}
 	}
 	
 	public void toggleNetworkTest (View view)
@@ -313,7 +317,6 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		if (activeTestHelper.isActiveTestRunning())
 		{
 			activeTestHelper.stopActiveTest();
-			btnDashboardNetworkTest.setText(getResources().getString(R.string.common_button_networktest_start));
 		}
 		else
 		{
@@ -323,7 +326,6 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 				public void onClick(DialogInterface dialog, int which) 
 				{
 					activeTestHelper.queryPhoneNumberAndStart();
-					btnDashboardNetworkTest.setText(getResources().getString(R.string.common_button_networktest_stop));
 				}
 			}).show();
 		}

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.util.Log;
 import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.MsdLog;
 

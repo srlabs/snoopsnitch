@@ -6,7 +6,6 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +67,6 @@ import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdConfig;
 import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.MsdLog;
-import de.srlabs.msd.util.Utils;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";

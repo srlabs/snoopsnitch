@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/de.srlabs.msd"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -10,11 +12,41 @@
         android:layout_height="1dp"
         android:background="@color/common_sectionSeparator" />
 
-    <de.srlabs.msd.views.DetailThreatChartMonth
-        android:id="@+id/detailThreatChartMonth"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:weightSum="4" >
+
+        <de.srlabs.msd.views.DetailThreatChartMonth
+            android:id="@+id/DetailThreatChartMonth03"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionMonth="Four" />
+
+        <de.srlabs.msd.views.DetailThreatChartMonth
+            android:id="@+id/DetailThreatChartMonth02"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionMonth="Three" />
+
+        <de.srlabs.msd.views.DetailThreatChartMonth
+            android:id="@+id/DetailThreatChartMonth01"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionMonth="Two" />
+
+        <de.srlabs.msd.views.DetailThreatChartMonth
+            android:id="@+id/detailThreatChartMonth"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionMonth="One" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/View16"

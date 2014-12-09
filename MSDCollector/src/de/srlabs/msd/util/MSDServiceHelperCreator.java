@@ -4,9 +4,7 @@ import java.util.Vector;
 
 import android.app.Activity;
 import android.content.Context;
-import android.widget.Toast;
 import de.srlabs.msd.BaseActivity;
-import de.srlabs.msd.DashboardActivity;
 import de.srlabs.msd.analysis.SMS;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.MsdServiceHelper;

@@ -2,8 +2,6 @@ package de.srlabs.msd.util;
 
 import java.util.Calendar;
 
-import android.nfc.cardemulation.OffHostApduService;
-
 public class TimeSpace 
 {
 	public enum Times 

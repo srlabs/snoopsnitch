@@ -18,7 +18,6 @@ import de.srlabs.msd.active_test.ActiveTestResults;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.MsdServiceHelper;
 import de.srlabs.msd.qdmon.StateChangedReason;
-import de.srlabs.msd.util.MSDServiceHelperCreator;
 import de.srlabs.msd.util.MsdLog;
 
 public class ActiveTestAdvanced extends BaseActivity implements MsdServiceCallback{

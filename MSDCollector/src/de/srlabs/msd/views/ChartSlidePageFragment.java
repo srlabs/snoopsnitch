@@ -1,8 +1,6 @@
 package de.srlabs.msd.views;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;

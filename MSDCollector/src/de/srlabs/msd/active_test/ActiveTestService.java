@@ -79,11 +79,13 @@ public class ActiveTestService extends Service{
 		}
 	};
 	class MySmsReceiver extends SmsReceiver{
+		@Override
 		protected void onReceiveSms(final SmsMessage sms) {
 			stateMachine.handleIncomingSms(sms);
 		}
 	}
 	class MyActiveTestServiceStub extends IActiveTestService.Stub {
+		@Override
 		public void registerCallback(IActiveTestCallback callback) throws RemoteException {
 			if(!callbacks.contains(callback))
 				callbacks.add(callback);

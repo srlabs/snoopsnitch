@@ -1,23 +1,38 @@
 package de.srlabs.msd.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import de.srlabs.msd.R;
 import de.srlabs.msd.util.MSDServiceHelperCreator;
 
 public class DetailThreatChartDay extends DetailThreatChart 
-{
+{	
 	public DetailThreatChartDay(Context context, AttributeSet attrs) 
 	{
 		super(context, attrs);
+		
+		TypedArray a = context.getTheme().obtainStyledAttributes(
+		        attrs,
+		        R.styleable.DetailThreatChartDay,
+		        0, 0);
+
+		   try 
+		   {
+			   this._timeSpacePosition = a.getInteger(R.styleable.DetailThreatChartDay_TimeSpacePositionDay, 0);
+		   } 
+		   finally 
+		   {
+		       a.recycle();
+		   }
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) 
 	{
 		super.onDraw(canvas);
-
+		
 		if (_threatType == R.id.SilentSMSCharts)
 		{
 			_items = MSDServiceHelperCreator.getInstance().getThreatsSmsDay();
@@ -27,11 +42,5 @@ public class DetailThreatChartDay extends DetailThreatChart
 			_items = MSDServiceHelperCreator.getInstance().getThreatsImsiDay();
 		}
 		
-		drawChartColumn((getMeasuredWidth() / 12) - (_rectWidth / 2), (getMeasuredWidth() / 12) + (_rectWidth / 2), _rectWidth, _items[5], canvas);
-		drawChartColumn((getMeasuredWidth() / 12) * 3 - (_rectWidth / 2) + 1, (getMeasuredWidth() / 12) * 3 + (_rectWidth / 2) + 1, _rectWidth, _items[4], canvas);
-		drawChartColumn((getMeasuredWidth() / 12) * 5 - (_rectWidth / 2) + 2, (getMeasuredWidth() / 12) * 5 + (_rectWidth / 2) + 2, _rectWidth, _items[3], canvas);
-		drawChartColumn((getMeasuredWidth() / 12) * 7 - (_rectWidth / 2) + 3, (getMeasuredWidth() / 12) * 7 + (_rectWidth / 2) + 3, _rectWidth, _items[2], canvas);
-		drawChartColumn((getMeasuredWidth() / 12) * 9 - (_rectWidth / 2) + 4, (getMeasuredWidth() / 12) * 9 + (_rectWidth / 2) + 4, _rectWidth, _items[1], canvas);
-		drawChartColumn((getMeasuredWidth() / 12) * 11 - (_rectWidth / 2) + 5, (getMeasuredWidth() / 12) * 11 + (_rectWidth / 2) + 5, _rectWidth, _items[0], canvas);
-	}
+		drawChartColumn((getMeasuredWidth() / 2) - (_rectWidth / 2), (getMeasuredWidth() / 2) + (_rectWidth / 2), _rectWidth, _items[_timeSpacePosition], canvas);	}
 }

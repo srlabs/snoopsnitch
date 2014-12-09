@@ -1,6 +1,7 @@
 package de.srlabs.msd.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import de.srlabs.msd.R;
@@ -11,6 +12,20 @@ public class DetailThreatChartMonth extends DetailThreatChart
 	public DetailThreatChartMonth(Context context, AttributeSet attrs) 
 	{
 		super(context, attrs);
+		
+		TypedArray a = context.getTheme().obtainStyledAttributes(
+		        attrs,
+		        R.styleable.DetailThreatChartMonth,
+		        0, 0);
+
+		   try 
+		   {
+			   this._timeSpacePosition = a.getInteger(R.styleable.DetailThreatChartMonth_TimeSpacePositionMonth, 0);
+		   } 
+		   finally 
+		   {
+		       a.recycle();
+		   }
 	}
 
 	@Override
@@ -26,10 +41,7 @@ public class DetailThreatChartMonth extends DetailThreatChart
 		{
 			_items = MSDServiceHelperCreator.getInstance().getThreatsImsiMonth();
 		}
-		
-		drawChartColumn((getMeasuredWidth() / 8) - (_rectWidth / 2), (getMeasuredWidth() / 8) + (_rectWidth / 2), _rectWidth, _items[3], canvas);
-		drawChartColumn((getMeasuredWidth() / 8) * 3 - (_rectWidth / 2) + 1, (getMeasuredWidth() / 8) * 3 + (_rectWidth / 2) + 1, _rectWidth, _items[2], canvas);
-		drawChartColumn((getMeasuredWidth() / 8) * 5 - (_rectWidth / 2) + 2, (getMeasuredWidth() / 8) * 5 + (_rectWidth / 2) + 2, _rectWidth, _items[1], canvas);
-		drawChartColumn((getMeasuredWidth() / 8) * 7 - (_rectWidth / 2) + 3, (getMeasuredWidth() / 8) * 7 + (_rectWidth / 2) + 3, _rectWidth, _items[0], canvas);
+
+		drawChartColumn((getMeasuredWidth() / 2) - (_rectWidth / 2), (getMeasuredWidth() / 2) + (_rectWidth / 2), _rectWidth, _items[_timeSpacePosition], canvas);
 	}
 }

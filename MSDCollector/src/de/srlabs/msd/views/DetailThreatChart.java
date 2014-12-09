@@ -13,6 +13,7 @@ import de.srlabs.msd.util.MSDServiceHelperCreator;
 public class DetailThreatChart extends View
 {
 	int _timePeriod;
+	int _timeSpacePosition;
 	int _threatType;
 	int _amount;	
 	int _rectWidth;
@@ -43,18 +44,18 @@ public class DetailThreatChart extends View
 		this.context = context;
 	}
 
-	protected void drawChartColumn (int startX, int endX, int elementWidth, int numberOfElements, Canvas canvas)
+	protected void drawChartColumn (float startX, float endX, int elementWidth, int numberOfElements, Canvas canvas)
 	{
 		Paint myPaint = new Paint();
 		myPaint.setStyle(Paint.Style.FILL);
 		myPaint.setColor(_color);
 		
-		int left = startX;
-		int top = this.getMeasuredHeight() - (elementWidth) - 10;
-		int right = endX;
-		int bottom = this.getMeasuredHeight()-10;
+		float left = startX;
+		float top = this.getMeasuredHeight() - (elementWidth) - 10;
+		float right = endX;
+		float bottom = this.getMeasuredHeight()-10;
 		
-		int _columnSpace = 2;
+		float _columnSpace = 2;
 		
 		if (numberOfElements == 0)
 		{

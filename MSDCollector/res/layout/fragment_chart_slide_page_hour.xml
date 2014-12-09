@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/de.srlabs.msd"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,11 +13,97 @@
         android:layout_height="1dp"
         android:background="@color/common_sectionSeparator" />
 
-    <de.srlabs.msd.views.DetailThreatChartHour
-        android:id="@+id/detailThreatChartHour"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:weightSum="12" >
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourTwelve"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Twelve"/>
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourEleven"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Eleven" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourTen"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Ten" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourNine"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Nine" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourEight"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Eight" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourSeven"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Seven" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourSix"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Six" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourFive"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Five" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourFour"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Four" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourThree"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Three" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourTwo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="Two" />
+
+        <de.srlabs.msd.views.DetailThreatChartHour
+            android:id="@+id/vwCustomHourOne"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            custom:TimeSpacePositionHour="One" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/View16"
@@ -33,6 +121,7 @@
         android:weightSum="12" >
 
         <LinearLayout
+            android:id="@+id/llHourFragmentOne"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -52,7 +141,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View44"
+                    android:id="@+id/vwHourFragmentOne"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -76,6 +165,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentTwo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -95,7 +185,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View40"
+                    android:id="@+id/vwHourFragmentTwo"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -119,6 +209,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentThree"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -138,7 +229,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View48"
+                    android:id="@+id/vwHourFragmentThree"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -162,6 +253,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentFour"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -181,7 +273,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View42"
+                    android:id="@+id/vwHourFragmentFour"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -205,6 +297,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentFive"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -224,7 +317,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View32"
+                    android:id="@+id/vwHourFragmentFive"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -248,6 +341,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentSix"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -267,7 +361,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View28"
+                    android:id="@+id/vwHourFragmentSix"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -291,6 +385,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentSeven"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -310,7 +405,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View36"
+                    android:id="@+id/vwHourFragmentSeven"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -334,6 +429,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentEight"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -353,7 +449,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View30"
+                    android:id="@+id/vwHourFragmentEight"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -377,6 +473,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentNine"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -396,7 +493,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View18"
+                    android:id="@+id/vwHourFragmentNine"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -420,6 +517,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentTen"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -439,7 +537,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View08"
+                    android:id="@+id/vwHourFragmentTen"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -463,6 +561,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentEleven"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -482,7 +581,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View24"
+                    android:id="@+id/vwHourFragmentEleven"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
@@ -506,6 +605,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llHourFragmentTwelve"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -525,7 +625,7 @@
                     android:layout_weight="2" />
 
                 <View
-                    android:id="@+id/View10"
+                    android:id="@+id/vwHourFragmentTwelve"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />

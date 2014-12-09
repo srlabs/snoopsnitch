@@ -778,10 +778,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
-                    android:background="@drawable/bt_content_contributedata_enable"
+                    android:background="@drawable/custom_upload_button_background"
                     android:gravity="center_vertical|center_horizontal"
                     android:onClick="toggleNetworkTest"
-                    android:text="@string/common_button_networktest_start" />
+                    android:text="@string/common_button_networktest_start"
+                    android:textColor="@drawable/custom_upload_button_color" />
 
                 <TextView
                     android:id="@+id/txtDashboardNetworkTest"
@@ -790,7 +791,8 @@
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_margin="5dp"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="" />
+                    android:text=""
+                    android:textSize="@dimen/text_medium" />
 
             </LinearLayout>
 

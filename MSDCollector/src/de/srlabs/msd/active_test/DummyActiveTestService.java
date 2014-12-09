@@ -24,6 +24,7 @@ public class DummyActiveTestService extends Service{
 	private StateMachine stateMachine;
 	private boolean testRunning;
 	class MyActiveTestServiceStub extends IActiveTestService.Stub {
+		@Override
 		public void registerCallback(IActiveTestCallback callback) throws RemoteException {
 			if(!callbacks.contains(callback))
 				callbacks.add(callback);
