@@ -124,11 +124,6 @@ public class ActiveTestAdvanced extends BaseActivity{
 		updateButtons();
 		getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
-	@Override
-	public void onBackPressed() {
-	    Intent intent = new Intent(this, DashboardActivity.class);
-	    startActivity(intent);
-	}
 
 	protected void updateButtons() {
 		Log.i("ActiveTestAdvanced", "updateButtons()");

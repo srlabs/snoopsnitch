@@ -12,6 +12,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -773,8 +774,9 @@ public class ActiveTestService extends Service{
 			try {
 				Class<?> c = Class.forName(foregroundActivityClassName);
 				Intent intent = new Intent(getApplicationContext(), c);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(intent);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				//intent.setComponent(new ComponentName(getApplicationContext().getPackageName(), c.getName()));
+				getApplication().startActivity(intent);
 			} catch (ClassNotFoundException e) {
 				handleFatalError("Class.forName(foregroundActivityClassName) failed", e);
 			}
