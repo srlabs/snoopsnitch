@@ -3,8 +3,7 @@
     
     <!-- General -->
 	<string name="app_name">SnoopSnitch</string>
-    <string name="hello_world">Hallo Welt!</string>
-    <string name="website">uid.com</string>
+    <string name="website">srlabs.de</string>
     <string name="common_silent_sms">Silent SMS</string>
     <string name="common_binary_sms">Binary SMS</string>
     <string name="common_imsi_catcher">IMSI-Catcher</string>
