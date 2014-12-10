@@ -212,9 +212,9 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	public int[] getThreatsImsiHour ()
 	{
 		int[] imsiHour = new int[12];
-		long calStart = TimeSpace.Times.Hour.getStartTime();
-		long calEnd = TimeSpace.Times.Hour.getEndTime();
-		long timeSpan = (TimeSpace.getTimeSpaceHour().getEndTime() - TimeSpace.getTimeSpaceHour().getStartTime()) / 4;
+		long calStart = TimeSpace.getTimeSpaceHour().getStartTime();
+		long calEnd = TimeSpace.getTimeSpaceHour().getEndTime();
+		long timeSpan = (TimeSpace.getTimeSpaceHour().getEndTime() - TimeSpace.getTimeSpaceHour().getStartTime()) / 12;
 		
 		for (int i=0; i<imsiHour.length; i++)
 		{
