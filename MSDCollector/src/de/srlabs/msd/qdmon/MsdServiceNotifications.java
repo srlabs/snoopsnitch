@@ -28,13 +28,13 @@ public class MsdServiceNotifications {
 	public Notification getForegroundNotification(){
 		Intent intent = new Intent(service, DashboardActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_launcher);
+		Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_network);
 		Notification n = new NotificationCompat.Builder(service)
-		.setContentTitle("MSD.setContentTitle")
-		.setTicker("MSD.setTicker")
-		.setContentText("MSD.setContentText")
-		.setSmallIcon(R.drawable.ic_launcher)
-		.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+		.setContentTitle(service.getString(R.string.app_name))
+		.setTicker(service.getString(R.string.app_name) + " service running")
+		.setContentText("Service running [" + service.getString(R.string.app_version) + "]")
+		.setSmallIcon(R.drawable.ic_content_network)
+		.setLargeIcon(icon)
 		.setOngoing(true)
 		.setContentIntent(pendingIntent)
 		.build();
