@@ -95,6 +95,7 @@ public class MsdServiceNotifications {
 	}
 	public void showInternalErrorNotification(String msg, Long debugLogFileId){
 		// TODO: Maybe directly start the error reporting activity if the app was on top when the error occured
+		Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_network);
 		Log.i("MsdServiceNotifications","showInternalErrorNotification(" + msg + "  debugLogFileId=" + debugLogFileId + ")");
 		Intent intent = new Intent(service, CrashUploadActivity.class);
 		intent.putExtra(CrashUploadActivity.EXTRA_ERROR_ID, debugLogFileId == null ? 0:(long)debugLogFileId);
@@ -104,9 +105,10 @@ public class MsdServiceNotifications {
 		// TODO: Make this notification pretty
 		NotificationCompat.Builder notificationBuilder =
 				new NotificationCompat.Builder(service)
-		.setSmallIcon(R.drawable.ic_launcher)
-		.setContentTitle("MSD has crashed")
-		.setContentText("Please submit an error report")
+		.setSmallIcon(R.drawable.ic_content_network)
+		.setLargeIcon(icon)
+		.setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title))
+		.setContentText(service.getString(R.string.error_notification_text))
 		.setContentIntent(pendingIntent);
 		Notification n = notificationBuilder.build();
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);

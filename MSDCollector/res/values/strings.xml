@@ -127,4 +127,9 @@
      <string name="alert_dialog_refreshappid_title">Refresh app ID</string>
      <string name="alert_dialog_refreshappid_message">You are about to refresh the app ID. Are you sure?</string>
      
+     <!-- Error notification -->
+     <string name="error_notification_title">has crashed</string>
+     <string name="error_notification_ticker">encountered an internal error</string>
+     <string name="error_notification_text">Please submit an error report!</string>
+
 </resources>
