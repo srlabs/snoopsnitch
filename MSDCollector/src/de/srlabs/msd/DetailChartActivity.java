@@ -252,7 +252,7 @@ public class DetailChartActivity extends BaseActivity
 	@Override
 	public void refreshView() 
 	{
-		mPager.invalidate();
+		mPager.getAdapter().notifyDataSetChanged();
 	}
 	
 	private void resetListView ()
