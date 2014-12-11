@@ -88,6 +88,7 @@ public abstract class ApiCall extends Thread {
 					postOnFail(null,"Invalid response data");
 					return;
 				}
+				MsdLog.i(TAG,"API_LINE0: " + lines[0] + "  API_LINE1: " + lines[1]);
 				String requestId = null;
 				if(lines[0].startsWith("REQUEST_ID:")){
 					requestId = lines[0].substring("REQUEST_ID:".length()).trim();
@@ -109,6 +110,7 @@ public abstract class ApiCall extends Thread {
 					MsdLog.i(TAG, "API returned status " + apiStatus);
 					postOnFail(null,apiStatus);
 				}
+				MsdLog.i(TAG,"REQUEST_ID: " + requestId + "  STATUS: " + apiStatus);
 			} else {
 				MsdLog.w(TAG, "Invalid API response code: " + responseCode + " " + connection.getResponseMessage());
 				postOnFail(null,"Invalid HTTP response code: " + responseCode);
