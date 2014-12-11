@@ -544,7 +544,10 @@ public class ActiveTestService extends Service{
 
 	public void updateNetworkOperatorAndRat() {
 		try{
-			results.setNetworkOperatorAndRat(telephonyManager, msdServiceHelper.getParserNetworkGeneration());
+			int fallbackGeneration = 0;
+			if(msdServiceHelper != null && msdServiceHelper.isConnected())
+				fallbackGeneration = msdServiceHelper.getParserNetworkGeneration();
+			results.setNetworkOperatorAndRat(telephonyManager, fallbackGeneration);
 		} catch(IllegalArgumentException e){
 			handleFatalError("LTE is not yet supported for the active test module. Please configure your phone to use 2G/3G only.");
 		}
