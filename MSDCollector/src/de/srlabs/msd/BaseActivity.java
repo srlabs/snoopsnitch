@@ -286,7 +286,7 @@ public class BaseActivity extends FragmentActivity
 	
 	private String setAppId ()
 	{
-		SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
+		SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_MULTI_PROCESS);
 
 		if (sharedPreferences.getString("settings_appId", "") == "")
 		{

@@ -41,7 +41,6 @@ public class MsdConfig {
 		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("settings_recordEncryptedDumpfiles", true);
 	}
 	public static String getAppId(Context context){
-
-		return PreferenceManager.getDefaultSharedPreferences(context).getString("settings_appId", "");
+		return context.getSharedPreferences("preferences", Context.MODE_MULTI_PROCESS).getString("settings_appId", "");
 	}
 }
