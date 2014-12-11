@@ -1187,7 +1187,7 @@ public class MsdService extends Service{
 			this.parserStdout = null;
 			this.parserStdin = null;
 			this.parserStderr = null;
-			throw new IOException("handshake from helper not successful");
+			throw new IOException("handshake from parser not successful");
 		}
 		try {
 			int ret = parser.exitValue();
