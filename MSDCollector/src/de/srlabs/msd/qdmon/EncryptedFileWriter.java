@@ -70,7 +70,7 @@ public class EncryptedFileWriter{
 			try {
 				plaintextOutputStream = msdService.openFileOutput(plaintextFilename, Context.MODE_APPEND);
 				if(compressPlaintextFile){
-					plaintextOutputStream = new GZIPOutputStream(plaintextOutputStream,true); // TODO: Disable syncMode again later
+					plaintextOutputStream = new GZIPOutputStream(plaintextOutputStream);
 				}
 			} catch (IOException e) {
 				msdService.handleFatalError("FileNotFoundException while opening plaintext output in EncryptedFileWrite.openOutput, file=" + encryptedFilename);
