@@ -1164,7 +1164,7 @@ public class MsdService extends Service{
 		info("Launching parser: " + TextUtils.join(" ",cmd));
 		// Warning: /data/local/tmp is not accessible by default, must be manually changed to 755 (including parent directories)
 		//String cmd[] = {libdir+"/libstrace.so","-f","-v","-s","1000","-o","/data/local/tmp/parser.strace.log",parser_binary};
-		String env[] = {"LD_LIBRARY_PATH=" + libdir};
+		String env[] = {"LD_LIBRARY_PATH=" + libdir, "LD_PRELOAD=" + libdir + "/libcompat.so"};
 		parser =  Runtime.getRuntime().exec(cmd, env, null);
 		this.parserStdout = new BufferedReader(new InputStreamReader(parser.getInputStream()));
 		this.parserStdin = new DataOutputStream(parser.getOutputStream());
