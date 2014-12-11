@@ -74,6 +74,8 @@ public class ActiveTestAdvanced extends BaseActivity{
 	}
 
 	public void updateWebView() {
+		if(lastResults == null)
+			return; // updateWebView() will be called again when results are available
 		Log.i("ActiveTestAdvanced", "JS:" + lastResults.getUpdateJavascript());
 		activeTestWebView.loadUrl("javascript:" + lastResults.getUpdateJavascript());
 		Log.i("ActiveTestAdvanced", "TEXT:" + lastResults.formatTextTable());
