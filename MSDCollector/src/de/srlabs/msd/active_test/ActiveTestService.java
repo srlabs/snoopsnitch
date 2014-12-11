@@ -589,6 +589,7 @@ public class ActiveTestService extends Service{
 		} catch (Exception e) {
 			handleFatalError("Could not get telephonyService",e);
 		}
+		stateMachine = new StateMachine();
 		// onlineMode = false;
 		results.setOnlineMode(onlineMode);
 		this.testRunning = true;
@@ -600,13 +601,13 @@ public class ActiveTestService extends Service{
 		AudioManager audio = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 		originalRingerMode = audio.getRingerMode();
 		audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-		stateMachine = new StateMachine();
 		stateMachine.postIterateRunnable(0);
 		broadcastTestStateChanged();
 		broadcastTestResults();
 		return true;
 	}
 	private void stopTest(){
+		unregisterReceiver(smsReceiver);
 		if(stateMachine != null){
 			stateMachine.stopTest();
 			stateMachine = null;
