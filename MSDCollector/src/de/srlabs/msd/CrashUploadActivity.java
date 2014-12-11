@@ -8,6 +8,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
+import de.srlabs.msd.qdmon.MsdServiceCallback;
+import de.srlabs.msd.qdmon.MsdServiceHelper;
+import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.MsdDatabaseManager;
 
@@ -20,7 +23,7 @@ import de.srlabs.msd.util.MsdDatabaseManager;
  * report the bug.
  * 
  */
-public class CrashUploadActivity extends Activity
+public class CrashUploadActivity extends Activity implements MsdServiceCallback
 {
 	public static String EXTRA_ERROR_TEXT = "ERROR_TEXT";
 	public static String EXTRA_ERROR_ID = "ERROR_ID";
@@ -28,6 +31,8 @@ public class CrashUploadActivity extends Activity
 	private long fileId;
 	private TextView textView1;
 	private Button btnUpload;
+	private MsdServiceHelper helper;
+	private boolean triggerUploadingPending = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -55,12 +60,30 @@ public class CrashUploadActivity extends Activity
 		btnUpload.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
-				DumpFile df = DumpFile.get(db, fileId);
-				df.markForUpload(db);
-				MsdDatabaseManager.getInstance().closeDatabase();
-				// TODO: Start actual upload activity now, at the moment the file is only marked for upload
+				upload();
 			}
 		});
+	}
+
+	private void upload() {
+		btnUpload.setEnabled(false);
+		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+		DumpFile df = DumpFile.get(db, fileId);
+		df.markForUpload(db);
+		MsdDatabaseManager.getInstance().closeDatabase();
+		triggerUploadingPending  = true;
+		helper = new MsdServiceHelper(this, this, false);
+	}
+
+	@Override
+	public void stateChanged(StateChangedReason reason) {
+		if(triggerUploadingPending && helper.isConnected()){
+			helper.triggerUploading();
+			triggerUploadingPending = false;
+		}
+	}
+
+	@Override
+	public void internalError(String msg) {
 	}
 }
