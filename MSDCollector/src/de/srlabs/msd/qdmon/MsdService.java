@@ -443,13 +443,18 @@ public class MsdService extends Service{
 			launchParser();
 			openOrReopenRawWriter();
 			launchHelper();
-			mainThreadHandler.post(new Runnable(){
+			mainThreadHandler.post(new ExceptionHandlingRunnable(new Runnable(){
 				@Override
 				public void run() {
 					startLocationRecording();					
 				}
-			});
-			startPhoneStateRecording();
+			}));
+			mainThreadHandler.post(new ExceptionHandlingRunnable(new Runnable(){
+				@Override
+				public void run() {
+					startPhoneStateRecording();
+				}
+			}));
 			this.recording  = true;
 			mainThreadHandler.removeCallbacks(periodicCheckRecordingStateRunnableWrapper);
 			mainThreadHandler.post(periodicCheckRecordingStateRunnableWrapper);
