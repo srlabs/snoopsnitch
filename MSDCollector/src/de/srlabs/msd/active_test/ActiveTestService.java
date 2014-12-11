@@ -448,13 +448,13 @@ public class ActiveTestService extends Service{
 			debugInfo("handleApiSuccess() received in state " + state.name());
 			if(state == State.CALL_MT_API){
 				setState(State.CALL_MT_WAITING, "handleApiSuccess", Constants.CALL_MT_TIMEOUT);
-				results.getCurrentTest().setApiId(apiId);
+				results.getCurrentTest().setRequestId(apiId);
 				results.getCurrentTest().stateWaiting();
 				// Update the timeout so that the progress indicator does not contain the API timeout any more
 				results.getCurrentTest().updateTimeout(Constants.CALL_MT_TIMEOUT + Constants.CALL_MT_ACTIVE_TIMEOUT);
 			} else if(state == State.SMS_MT_API){
 				setState(State.SMS_MT_WAITING, "handleApiSuccess", Constants.SMS_MT_TIMEOUT);
-				results.getCurrentTest().setApiId(apiId);
+				results.getCurrentTest().setRequestId(apiId);
 				results.getCurrentTest().stateWaiting();
 				// Update the timeout so that the progress indicator does not contain the API timeout any more
 				results.getCurrentTest().updateTimeout(Constants.SMS_MT_TIMEOUT);

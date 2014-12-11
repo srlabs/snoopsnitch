@@ -18,7 +18,7 @@ public class ActiveTestResults implements Serializable {
 	private HashMap<String, NetworkOperatorTestResults> networkOperators = new HashMap<String, ActiveTestResults.NetworkOperatorTestResults>();
 	private String currentMccMnc = null;
 	private SingleTestState currentTest;
-	private int numIterations = 1; // TODO: Make this a configuration setting
+	private int numIterations = 5; // TODO: Make this a configuration setting
 	private String fatalError = null;
 	private boolean testRoundComplete = false;
 	private String errorLog = "";
@@ -124,7 +124,7 @@ public class ActiveTestResults implements Serializable {
 		TestType type;
 		State state;
 		String errorStr = null;
-		private String apiId;
+		private String requestId;
 		private int num;
 		public long timeoutStartTime;
 		public SingleTestState(TestType type) {
@@ -150,7 +150,7 @@ public class ActiveTestResults implements Serializable {
 			state = State.TEST_RUNNING;
 		}
 		public String getApiId(){
-			return apiId;
+			return requestId;
 		}
 		public boolean isFailure() {
 			if(state == State.FAILED_TIMEOUT)
@@ -181,9 +181,15 @@ public class ActiveTestResults implements Serializable {
 				if(type == TestType.CALL_MO){
 					appendErrorLog("Timeout while dialing");
 				} else if(type == TestType.SMS_MT){
-					appendErrorLog("Timeout while waiting for incoming SMS");
+					String msg = "Timeout while waiting for incoming SMS";
+					if(requestId != null)
+						msg += "  Request ID: " + requestId;
+					appendErrorLog(msg);
 				} else if(type == TestType.CALL_MT){
-					appendErrorLog("Timeout while waiting for incoming CALL");
+					String msg = "Timeout while waiting for incoming CALL";
+					if(requestId != null)
+						msg += "  Request ID: " + requestId;
+					appendErrorLog(msg);
 				} else{
 					appendErrorLog("failTimeout INVALID:" + type.name() + " : " + state.name());
 				}
@@ -202,11 +208,11 @@ public class ActiveTestResults implements Serializable {
 			}
 			state = State.FAILED_TIMEOUT;
 		}
-		public void failApiError(String apiId, String errorStr){
+		public void failApiError(String requestId, String errorStr){
 			state = State.FAILED_API_ERROR;
 			this.errorStr = errorStr;
-			this.apiId = apiId;
-			String logMsg = "API failed in " + type.name() + "  id=" + apiId;
+			this.requestId = requestId;
+			String logMsg = "API failed in " + type.name() + "  id=" + requestId;
 			if(errorStr != null && errorStr.trim().length()>0)
 				logMsg += "  MSG: " + errorStr;
 			appendErrorLog(logMsg);
@@ -216,8 +222,8 @@ public class ActiveTestResults implements Serializable {
 			this.errorStr = errorStr;
 			appendErrorLog(errorStr);
 		}
-		public void setApiId(String apiId) {
-			this.apiId = apiId;
+		public void setRequestId(String requestId) {
+			this.requestId = requestId;
 		}
 		/**
 		 * Retrieves the text to be displayed for the currently running test, only valid when isRunning() == true
