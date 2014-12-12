@@ -291,11 +291,6 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 				break;
 		}
 	}
-	
-	public Vector<Risk> getProviderData ()
-	{
-		return providerList;
-	}
 
 	@Override
 	public void handleTestResults(ActiveTestResults results) 

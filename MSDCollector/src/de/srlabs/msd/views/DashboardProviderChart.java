@@ -1,5 +1,9 @@
 package de.srlabs.msd.views;
 
+import java.util.Vector;
+
+import javax.xml.datatype.Duration;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -13,6 +17,7 @@ import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Toast;
 import de.srlabs.msd.DashboardActivity;
 import de.srlabs.msd.R;
 import de.srlabs.msd.analysis.Risk;
@@ -33,6 +38,7 @@ public class DashboardProviderChart extends View
 	private double minScore = 0.5;
 	private double maxScore = 0.5;
 	private int interImper;
+	private Vector<Risk> providerData;
 	
 	
 	public DashboardProviderChart(Context context, AttributeSet attrs) 
@@ -70,6 +76,8 @@ public class DashboardProviderChart extends View
 	{
 		super.onDraw(canvas);
 		
+		providerData = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores().getServerData();
+		
 		this.canvas = canvas;
 		
 		
@@ -106,11 +114,13 @@ public class DashboardProviderChart extends View
 	{
 		
 		Risk risk = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores();
-		if (risk.getOperatorName() == null) {
+		
+		if (risk.getOperatorName() == null) 
+		{
 			return;
 		}
 
-        for (Risk op : host.getProviderData()) 
+        for (Risk op : providerData) 
         {
         	String colorString = op.getOperatorColor();
         	if (colorString == null) {
@@ -123,13 +133,13 @@ public class DashboardProviderChart extends View
         		if (!op.getInter3G().isEmpty())
         		{
         			drawProviderScore(op.getInter3G().lastElement().getScore(), color,
-            				false, 0, host.getProviderData().elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
+            				false, 0, providerData.elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
         		}
         		
         		if (!op.getInter().isEmpty())
         		{
         			drawProviderScore(op.getInter().lastElement().getScore(), color,
-        					true, 0, host.getProviderData().elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
+        					true, 0, providerData.elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
         		}
         	}
         	else
@@ -137,13 +147,13 @@ public class DashboardProviderChart extends View
         		if (!op.getImper3G().isEmpty())
         		{
         			drawProviderScore(op.getImper3G().lastElement().getScore(), color,
-        					false, 0,  host.getProviderData().elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));	
+        					false, 0,  providerData.elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));	
         		}
         		
         		if (!op.getImper().isEmpty())
         		{
         			drawProviderScore(op.getImper().lastElement().getScore(), color,
-        					 true, 0,  host.getProviderData().elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
+        					 true, 0,  providerData.elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
         		}
         	}	
 		}
@@ -261,7 +271,7 @@ public class DashboardProviderChart extends View
 	{		
 		if (interImper == 0)
 		{
-			for (Risk r : host.getProviderData()) 
+			for (Risk r : providerData) 
 			{
 				if (!r.getInter().isEmpty())
 				{
@@ -290,7 +300,7 @@ public class DashboardProviderChart extends View
 		}
 		else
 		{
-			for (Risk r : host.getProviderData()) 
+			for (Risk r : providerData) 
 			{
 				if (!r.getImper().isEmpty())
 				{
