@@ -76,6 +76,8 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk>
 			// Set provider color
 			dpl.setColor(Color.parseColor(values.elementAt(position).getOperatorColor()));
 		}
+		
+		rowView.setBackgroundColor(context.getResources().getColor(R.color.common_applicationBackground));
 	
 		
 		return rowView;

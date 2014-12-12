@@ -551,7 +551,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="4"
                 android:orientation="vertical"
-                android:weightSum="4" >
+                android:weightSum="5" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -736,7 +736,9 @@
                 android:id="@+id/lstDashboardProviderList"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="10.5" >
+                android:layout_weight="10.5"
+                android:background="@color/common_applicationBackground" >
+
             </ListView>
 
             <View
