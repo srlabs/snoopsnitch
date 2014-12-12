@@ -274,6 +274,18 @@ public class DashboardProviderChart extends View
 						minScore = r.getInter().lastElement().getScore();
 					}
 				}
+				
+				if (!r.getImper3G().isEmpty())
+				{
+					if (r.getInter3G().lastElement().getScore() > maxScore)
+					{
+						maxScore = r.getInter3G().lastElement().getScore();
+					}
+					else if (r.getInter3G().lastElement().getScore() < minScore)
+					{
+						minScore = r.getInter3G().lastElement().getScore();
+					}
+				}
 			}
 		}
 		else
@@ -289,6 +301,18 @@ public class DashboardProviderChart extends View
 					else if (r.getImper().lastElement().getScore() < minScore)
 					{
 						minScore = r.getImper().lastElement().getScore();
+					}
+				}
+				
+				if (!r.getImper3G().isEmpty())
+				{
+					if (r.getImper3G().lastElement().getScore() > maxScore)
+					{
+						maxScore = r.getImper3G().lastElement().getScore();
+					}
+					else if (r.getImper3G().lastElement().getScore() < minScore)
+					{
+						minScore = r.getImper3G().lastElement().getScore();
 					}
 				}
 			}
