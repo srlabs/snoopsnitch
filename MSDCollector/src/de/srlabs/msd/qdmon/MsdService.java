@@ -1,6 +1,7 @@
 package de.srlabs.msd.qdmon;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -28,6 +29,8 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.annotation.SuppressLint;
@@ -1083,7 +1086,6 @@ public class MsdService extends Service{
 		private GSMmap gsmmap;
 
 		public DownloadDataJsThread() {
-
 			this.gsmmap = new GSMmap(MsdService.this);
 		}
 
@@ -1092,14 +1094,18 @@ public class MsdService extends Service{
 			// info("DownloadDataJsThread.run() called");
 			// Check for a new version at most once in 24 hours
 			long lastCheckTime = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getLong("data_js_last_check_time",0);
-
 			if(System.currentTimeMillis() > lastCheckTime + 24*3600*1000){
 				try {
+					info("DownloadDataJsThread.run(): Checking if there is a new version on the server");
 					// Using Apache HttpClient since HttpURLConnection is very buggy:
 					// http://stackoverflow.com/questions/14454942/httpurlconnection-ifmodifiedsince-generates-utc-time-instead-of-gmt
 					// https://code.google.com/p/android/issues/detail?id=58637
 					// 
 					HttpClient httpClient = new DefaultHttpClient();
+					// The Apache HttpClient library shipped with Android does not support SNI.
+					// http://blog.dev001.net/post/67082904181/android-using-sni-and-tlsv1-2-with-apache
+					SchemeRegistry schemeRegistry = httpClient.getConnectionManager().getSchemeRegistry();
+					schemeRegistry.register(new Scheme("https", new TlsSniSocketFactory(), 443));
 					HttpGet httpGet = new HttpGet("https://gsmmap.org/assets/data/data.js");
 					String localFileLastModified = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getString("data_js_last_modified_header",null);
 					if(localFileLastModified != null){
@@ -1112,13 +1118,17 @@ public class MsdService extends Service{
 						// Cache everything in memory and write it to disk only
 						// if we are sure that the file has been fully
 						// transmitted
-						byte[] buf = new byte[2*1024*1024];
-						int bytesRead = in.read(buf);
-						if(bytesRead == buf.length){
-							MsdLog.e(TAG, "Too much data received in DownloadDataJsThread.run()");
-							return;
+						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+						int i;
+						i = in.read();
+						while (i != -1)
+						{
+							byteArrayOutputStream.write(i);
+							i = in.read();
 						}
-						info("Received new data.js, size=" + bytesRead);
+						in.close();
+						byte[] buf = byteArrayOutputStream.toByteArray();
+						info("Received new data.js, size=" + buf.length);
 						FileOutputStream os = openFileOutput("data.js", 0);
 						os.write(buf);
 						// Update saved last modified time
@@ -1131,7 +1141,11 @@ public class MsdService extends Service{
 							editor.commit();
 						}
 						//  Parse data
-						gsmmap.parse(buf.toString());
+						try{
+							gsmmap.parse(new String(buf));
+						} catch(Exception e){
+							handleFatalError("Exception while parsing newly downloaded data.js",e);
+						}
 						//  FIXME: Should have a dedicated reason for changed data
 						sendStateChanged(StateChangedReason.ANALYSIS_DONE);
 					} else if(statusCode == 304){ // Not Modified
