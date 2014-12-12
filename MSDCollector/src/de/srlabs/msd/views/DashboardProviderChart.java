@@ -114,6 +114,7 @@ public class DashboardProviderChart extends View
 	{
 		
 		Risk risk = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores();
+		providerData.addElement(risk);
 		
 		if (risk.getOperatorName() == null) 
 		{
@@ -128,35 +129,69 @@ public class DashboardProviderChart extends View
         	}
         	int color = Color.parseColor(colorString);
 
-        	if (interImper == 0)
+        	if (providerData.lastElement().equals(op))
         	{
-        		if (!op.getInter3G().isEmpty())
-        		{
-        			drawProviderScore(op.getInter3G().lastElement().getScore(), color,
-            				false, 0, providerData.elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
-        		}
-        		
-        		if (!op.getInter().isEmpty())
-        		{
-        			drawProviderScore(op.getInter().lastElement().getScore(), color,
-        					true, 0, providerData.elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
-        		}
+        		if (interImper == 0)
+            	{
+            		if (!op.getInter3G().isEmpty())
+            		{
+            			drawProviderScore(op.getInter3G().lastElement().getScore(), color,
+                				false, 0, true, op.getOperatorName().equals(risk.getOperatorName()));
+            		}
+            		
+            		if (!op.getInter().isEmpty())
+            		{
+            			drawProviderScore(op.getInter().lastElement().getScore(), color,
+            					true, 0, true, op.getOperatorName().equals(risk.getOperatorName()));
+            		}
+            	}
+            	else
+            	{
+            		if (!op.getImper3G().isEmpty())
+            		{
+            			drawProviderScore(op.getImper3G().lastElement().getScore(), color,
+            					false, 0,  true, op.getOperatorName().equals(risk.getOperatorName()));	
+            		}
+            		
+            		if (!op.getImper().isEmpty())
+            		{
+            			drawProviderScore(op.getImper().lastElement().getScore(), color,
+            					 true, 0,  true, op.getOperatorName().equals(risk.getOperatorName()));
+            		}
+            	}
         	}
         	else
         	{
-        		if (!op.getImper3G().isEmpty())
-        		{
-        			drawProviderScore(op.getImper3G().lastElement().getScore(), color,
-        					false, 0,  providerData.elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));	
-        		}
-        		
-        		if (!op.getImper().isEmpty())
-        		{
-        			drawProviderScore(op.getImper().lastElement().getScore(), color,
-        					 true, 0,  providerData.elementAt(0).equals(op), op.getOperatorName().equals(risk.getOperatorName()));
-        		}
-        	}	
-		}
+        		if (interImper == 0)
+            	{
+            		if (!op.getInter3G().isEmpty())
+            		{
+            			drawProviderScore(op.getInter3G().lastElement().getScore(), color,
+                				false, 0, false, op.getOperatorName().equals(risk.getOperatorName()));
+            		}
+            		
+            		if (!op.getInter().isEmpty())
+            		{
+            			drawProviderScore(op.getInter().lastElement().getScore(), color,
+            					true, 0, false, op.getOperatorName().equals(risk.getOperatorName()));
+            		}
+            	}
+            	else
+            	{
+            		if (!op.getImper3G().isEmpty())
+            		{
+            			drawProviderScore(op.getImper3G().lastElement().getScore(), color,
+            					false, 0,  false, op.getOperatorName().equals(risk.getOperatorName()));	
+            		}
+            		
+            		if (!op.getImper().isEmpty())
+            		{
+            			drawProviderScore(op.getImper().lastElement().getScore(), color,
+            					 true, 0,  false, op.getOperatorName().equals(risk.getOperatorName()));
+            		}
+            	}	
+        	}
+        }
 	}
 	
 	private void drawProviderScore (double score, int color, Boolean is2G, float offset, Boolean isResult, Boolean isOwnProvider)
