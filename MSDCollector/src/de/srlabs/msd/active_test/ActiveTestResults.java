@@ -18,7 +18,7 @@ public class ActiveTestResults implements Serializable {
 	private HashMap<String, NetworkOperatorTestResults> networkOperators = new HashMap<String, ActiveTestResults.NetworkOperatorTestResults>();
 	private String currentMccMnc = null;
 	private SingleTestState currentTest;
-	private int numIterations = 5; // TODO: Make this a configuration setting
+	private int numIterations = 5;
 	private String fatalError = null;
 	private boolean testRoundComplete = false;
 	private String errorLog = "";
@@ -474,6 +474,9 @@ public class ActiveTestResults implements Serializable {
 	}
 	public int getNumIterations() {
 		return numIterations;
+	}
+	public void setNumIterations(int numIterations){
+		this.numIterations = numIterations;
 	}
 	public void appendErrorLog(String logMsg){
 		SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());

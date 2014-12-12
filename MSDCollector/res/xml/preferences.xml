@@ -73,5 +73,19 @@
 	    android:title="@string/settings_applicationid_title"
 	    android:summary="@string/settings_applicationid_summary"
 	/>
+	<CheckBoxPreference 
+	    android:key="settings_active_test_force_offline"
+        android:title="@string/settings_active_test_force_offline_title"
+        android:summary="@string/settings_active_test_force_offline_summary"
+        android:defaultValue="false"
+ 	/>
+	<ListPreference
+        android:key="settings_active_test_num_iterations"
+        android:title="@string/settings_active_test_num_iterations_title"
+        android:summary="%s"
+        android:dialogTitle="@string/settings_active_test_num_iterations_dialogtitle"
+        android:entries="@array/settings_active_test_num_iterations_entries"
+        android:entryValues="@array/settings_active_test_num_iterations_values"
+        android:defaultValue="5" />
     
 </PreferenceScreen>

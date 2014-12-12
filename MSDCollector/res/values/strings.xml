@@ -107,6 +107,12 @@
     <string name="settings_applicationid_title">Application ID</string>
     <string name="settings_applicationid_summary">Tap to reset the application ID.</string>
     
+    <string name="settings_active_test_force_offline_title">Force offline test</string>
+    <string name="settings_active_test_force_offline_summary">Force using offline mode in active test.</string>
+    
+    <string name="settings_active_test_num_iterations_title">Active test iterations</string>
+    <string name="settings_active_test_num_iterations_dialogtitle">Number of iterations for each active test</string>
+    
      <!-- List view row -->
      <string name="listview_sms_item_type">Type:</string>
      <string name="listview_sms_item_Time">Time:</string>

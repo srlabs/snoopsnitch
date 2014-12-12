@@ -12,7 +12,6 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -23,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
@@ -44,7 +44,7 @@ import de.srlabs.msd.util.Utils;
 public class ActiveTestService extends Service{
 	private static final String TAG = "msd-active-test-service";
 	private final MyActiveTestServiceStub mBinder = new MyActiveTestServiceStub();
-	private ActiveTestResults results = new ActiveTestResults();
+	private ActiveTestResults results = new ActiveTestResults();;
 	private ProgressTickRunnable progressTickRunnable = new ProgressTickRunnable();
 	private Handler handler = new Handler();
 	private Vector<IActiveTestCallback> callbacks = new Vector<IActiveTestCallback>();
@@ -62,6 +62,7 @@ public class ActiveTestService extends Service{
 	private MsdServiceHelper msdServiceHelper;
 	public String foregroundActivityClassName;
 	private ITelephony telephonyService;
+
 	class MyPhoneStateListener extends PhoneStateListener{
 		@Override
 		public void onCallStateChanged(final int phoneState, final String incomingNumber) {
@@ -524,6 +525,15 @@ public class ActiveTestService extends Service{
 			this.api.start();
 		}
 	}
+	private void applySettings(){
+		results.setOnlineMode(true);
+		if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("settings_active_test_force_offline", false)){
+			results.setOnlineMode(false);
+		}
+		int numIterations = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString("settings_active_test_num_iterations","5"));
+		stateInfo("applySettings(): numIterations= " + numIterations);
+		results.setNumIterations(numIterations);
+	}
 	@Override
 	public IBinder onBind(Intent intent) {
 		MsdLog.i(TAG,"ActiveTestService.onBind() called");
@@ -537,6 +547,7 @@ public class ActiveTestService extends Service{
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		msdServiceHelper = MSDServiceHelperCreator.getInstance(this, true).getMsdServiceHelper();
 		updateNetworkOperatorAndRat();
+		applySettings();
 		broadcastTestResults();
 		handler.postDelayed(progressTickRunnable, 1000);
 		return mBinder;
@@ -564,7 +575,8 @@ public class ActiveTestService extends Service{
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
 		final String action = intent.getAction();
 		if (ACTION_SMS_SENT.equals(action)) {
-			stateMachine.handleSmsSent();
+			if(stateMachine != null)
+				stateMachine.handleSmsSent();
 		}
 		return START_NOT_STICKY;
 	}
@@ -572,9 +584,13 @@ public class ActiveTestService extends Service{
 	private boolean startTest(String ownNumber){
 		this.ownNumber = ownNumber;
 		this.msdServiceHelper.startActiveTest();
+		this.onlineMode = true;
 		// TODO: Detect internet connectivity to automatically select online/offline mode
 		if(ownNumber == null || ownNumber.trim().length() == 0){
 			debugInfo("Using offline mode since ownNumer is not known");
+			onlineMode = false;
+		}
+		if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("settings_active_test_force_offline", false)){
 			onlineMode = false;
 		}
 		// http://stackoverflow.com/questions/599443/how-to-hang-up-outgoing-call-in-android
