@@ -59,9 +59,20 @@ If you believe your device is compatible and this is an error, please send mail 
 list gsmmap@lists.srlabs.de.
 </string>
 
-    <string name="alert_upload_message">Do you really want to upload data?</string>
+<string name="alert_upload_message">
+Thank you for contributing radio data related to this security event
+and supporting SnoopSnitch research and development!\n
+\n
+Please send details about this incident to snoopsnitch@srlabs.de. Do not
+forget your App-ID and the time the event happened. Thank you!\n
+\n
+This upload is encrypted. Keep in mind, that radio traces may contain
+private data and location information. Have a look at the
+privacy policy on our project website on how we protect your data
+(http://opensource.srlabs.de/projects/snoopsnitch).
+</string>
 
-    <string name="alert_networktest_message">
+<string name="alert_networktest_message">
 The active network test collects security information about your current
 mobile network by sending and receiving a number of SMS and by placing and
 receiving a number of automatic calls. THIS TEST IS FREE OF CHARGE!\n
@@ -70,9 +81,9 @@ YOU MUST ONLY ENTER YOUR OWN PHONE NUMBER IN THE NEXT DIALOG. DO NOT PICK
 UP THE PHONE WHEN THE SERVER CALLS. IF YOU DO SO, YOU WILL GET BLACKLISTED
 AND BANNED FROM OUR SERVICE.\n
 \n
-Note, that radio traces may contain private information as a byeffect. See
-the privacy policy on our project website\n
-(http://opensource.srlabs.de/projects/snoopsnitch).\n
+Note, that radio traces may contain private data and location information as a
+byeffect. Have a look at the privacy policy on our project website on how we
+protect your data (http://opensource.srlabs.de/projects/snoopsnitch).\n
 \n
 Following the test, the resulting radio data is uploaded to our servers
 automatically. If you do not agree with this, press Cancel now and disable
