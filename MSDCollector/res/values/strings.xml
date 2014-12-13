@@ -38,17 +38,71 @@
     <string name="message_recordingStopped">Recording stopped&#8230;</string>
     
     <!-- Alerts -->
-    <string name="alert_deviceCompatibility_title">Device Compatibility</string>
-    <string name="alert_deviceCompatibility_message">Device is not compatible. To get more information visit http://gsmmap.org/</string>
     <string name="alert_button_ok">Ok</string>
     <string name="alert_button_cancel">Cancel</string>
     <string name="alert_button_quit">Quit</string>
     <string name="alert_confirmation_title">Confirmation</string>
     <string name="alert_fatal_condition_title">Fatal Condition</string>
     <string name="alert_notification_title">Notification</string>
+
+	<!-- Device compatibility check failure -->
+    <string name="alert_deviceCompatibility_title">Compatibility check failed</string>
+
+<string name="alert_deviceCompatibility_message">
+Your device is not compatible with SnoopSnitch.\n
+\n
+You need a rooted device with a Qualcomm chipset running stock Android 4.1 or higher.
+Unfortunately, custom ROMs are unsupported as they lack necessary proprietary drivers.\n
+\n
+For details visit the project website (http://opensource.srlabs.de/projects/snoopsnitch).
+If you believe your device is compatible and this is an error, please send mail to our
+list gsmmap@lists.srlabs.de.
+</string>
+
     <string name="alert_upload_message">Do you really want to upload data?</string>
-    <string name="alert_networktest_message">Do you really want to start a network test?</string>
-    <string name="alert_first_app_start_message">This is the first start of the app. Do you want to continue?</string>
+
+    <string name="alert_networktest_message">
+The active network test collects security information about your current
+mobile network by sending and receiving a number of SMS and by placing and
+receiving a number of automatic calls. THIS TEST IS FREE OF CHARGE!\n
+\n
+DO NOT PICK UP THE PHONE WHEN THE SERVER CALLS. IF YOU DO SO, YOU WILL GET
+BLACKLISTED AND BANNED FROM OUR SERVICE.\n
+\n
+Note, that radio traces may contain private information as a byeffect. See
+the privacy policy on our project website\n
+(http://opensource.srlabs.de/projects/snoopsnitch).\n
+\n
+Following the test, the resulting radio data is uploaded to our servers
+automatically. If you do not agree with this, press Cancel now and disable
+recording for active tests in the settings.
+</string>
+
+<string name="alert_first_app_start_message">
+Welcome! This is the first time your run SnoopSnitch.\n
+\n
+READ THIS MESSAGE CAREFULLY BEFORE PROCEEDING!\n
+\n
+SnoopSnitch collects and analyzes mobile radio data to make you aware
+of your mobile network security and to warn you about threats like fake base
+stations, user tracking and over-the-air updates.\n
+\n
+This application uses data contributed by other users. By choosing to upload your
+measurement results or security events, you can help improving this data base and
+to support future research.\n
+\n
+SnoopSnitch will ask for confirmation whenever any of your information is uploaded to
+our servers. All uploads are encrypted. Note, that uploaded radio traces may contain
+private information as a byeffect. See our privacy policy on the project website\n
+(http://opensource.srlabs.de/projects/snoopsnitch).\n
+\n
+Raw radio data is stored encrypted on your phone. However, for the continuous security
+analysis SnoopSnitch needs to maintain data that may be used to reproduce your movements
+and possibly message contents. This information is cleaned regularly - make sure to
+configure a cleanup interval that suits your needs.\n
+\n
+If SnoopSnitch\'s way of functioning concerns you, press Cancel now!
+</string>
     
     <!-- Dashboard Screen -->
     <string name="dashboard_upload_description"> scans are ready to upload</string>
