@@ -231,7 +231,7 @@ public class ActiveTestResults implements Serializable {
 		 */
 		public String getStateDisplayText(){
 			if(state == State.API_RUNNING){
-				return "API running";
+				return "Test running";
 			} else if(state == State.WAITING){
 				if(type == TestType.SMS_MO){
 					return "INVALID:" + type.name() + " : " + state.name();
@@ -414,9 +414,9 @@ public class ActiveTestResults implements Serializable {
 	}
 	public String getCurrentActionString(){
 		if(blacklisted){
-			return "Your phone number is blacklisted. Please contact TODO";
+			return "BANNED. Mail to snoopsnitch@srlabs.de.";
 		} if(testRoundComplete){
-			return "Test round complete. Please upload your data";
+			return "Test round complete. Please also test other network technologies.";
 		} else if(getCurrentTest() != null && getCurrentTest().isRunning()){
 			return getCurrentTest().getStateDisplayText();
 		} else{
