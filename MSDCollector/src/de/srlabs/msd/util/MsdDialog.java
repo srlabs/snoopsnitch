@@ -26,8 +26,9 @@ public class MsdDialog extends DialogFragment
 	public static Dialog makeFatalConditionDialog (Activity activity, String message, 
 			OnClickListener positiveOnClickListener, String detailText)
 	{
+		// TODO: Add detail text
 		AlertDialog.Builder builder = getAlertDialogBuilder(activity, 
-				activity.getResources().getString(R.string.alert_fatal_condition_title), message + detailText);
+				activity.getResources().getString(R.string.alert_fatal_condition_title), message);
 		
 		builder.setIcon(android.R.drawable.ic_dialog_alert);
 		
@@ -39,8 +40,9 @@ public class MsdDialog extends DialogFragment
 	public static Dialog makeFatalConditionDialog (Activity activity, String message, 
 			OnClickListener positiveOnClickListener, OnClickListener negativeOnClickListener, String detailText)
 	{
+		// TODO: Add detail text
 		AlertDialog.Builder builder = getAlertDialogBuilder(activity,
-				activity.getResources().getString(R.string.alert_fatal_condition_title), message + detailText);
+				activity.getResources().getString(R.string.alert_fatal_condition_title), message);
 
 		builder.setIcon(android.R.drawable.ic_dialog_alert);
 		
