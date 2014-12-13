@@ -56,6 +56,10 @@ public class DeviceCompatibilityChecker {
 				String id_line = su_stdout.readLine();
 				su_stdout.close();
 				p.waitFor();
+				// We don't receive anything if root was denied
+				if(id_line == null){
+					return null;
+				}
 				// Check whether the id command reports UID zero (root) to make sure that the su binary actually works
 				if(id_line.startsWith("uid=0")){
 					return pathDir + "/su";
