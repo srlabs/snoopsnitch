@@ -24,7 +24,10 @@ public class Risk {
 		this.imper = query2GScores(db, currentMCC, currentMNC, "impersonation");
 		this.track = query2GScores(db, currentMCC, currentMNC, "tracking");
 		this.inter3G = query3GScores(db, currentMCC, currentMNC, "intercept3G");
-		this.imper3G = query3GScores(db, currentMCC, currentMNC, "impersonation3G");
+
+		//  Impersonation makes no sense for 3G in its current form
+		//  this.imper3G = query3GScores(db, currentMCC, currentMNC, "impersonation3G");
+		this.imper3G = new Vector<Score>();
 
 		queryOperatorData(db, currentMCC, currentMNC);
  
@@ -52,7 +55,8 @@ public class Risk {
 		this.imper = retrieveValues(db, id, "gsmmap_imper");
 		this.track = retrieveValues(db, id, "gsmmap_track");
 		this.inter3G = retrieveValues(db, id, "gsmmap_inter3G");
-		this.imper3G = retrieveValues(db, id, "gsmmap_imper3G");
+		//  this.imper3G = retrieveValues(db, id, "gsmmap_imper3G");
+		this.imper3G = new Vector<Score>();
 	}
 
 	private Vector<Score> retrieveValues(SQLiteDatabase db, long id, String table) {
