@@ -40,7 +40,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	}
 
 	private static String[] sms_cols =
-			new String[] {"strftime('%s',timestamp)", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "msisdn", "smsc", "sms_type"};
+			new String[] {"strftime('%s',timestamp)", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "valid", "msisdn", "smsc", "sms_type"};
 
 	static private void logCatcher(ImsiCatcher c) {
 
@@ -80,8 +80,9 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 				 c.getInt(5),			// cid
 				 c.getDouble(6),		// latitude
 				 c.getDouble(7),		// longitude
-				 c.getString(8),		// msisdn
-				 c.getString(9),		// smsc
+				 c.getShort(8) > 0,		// valid
+				 c.getString(9),		// msisdn
+				 c.getString(10),		// smsc
 				 sms_type				// SMS type
 				);
 	}
@@ -115,7 +116,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	}
 
 	private static String[] catcher_cols =
-			new String[] {"strftime('%s',timestamp)", "strftime('%s',timestamp) + duration/1000", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "score"};
+			new String[] {"strftime('%s',timestamp)", "strftime('%s',timestamp) + duration/1000", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "valid", "score"};
 
 	static private ImsiCatcher catcherFromCursor(Cursor c) {
 
@@ -129,7 +130,8 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 				 c.getInt(6),			// cid
 				 c.getDouble(7),		// latitude
 				 c.getDouble(8),		// longitude
-				 c.getDouble(9) 		// score
+				 c.getShort(9) > 0,		// valid
+				 c.getDouble(10) 		// score
 				);
 	}
 

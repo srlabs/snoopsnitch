@@ -7,8 +7,9 @@ SELECT
 	si.mnc,
 	si.lac,
 	si.cid,
-	0.0 as longitude,	-- TODO: Get longitude from GPS table
-	0.0 as latitude,	-- TODO: Get latitude from GPS table
+	si_loc.longitude,
+	si_loc.latitude,
+	si_loc.valid,
 	sm.smsc,
 	sm.msisdn,
 	CASE
@@ -17,9 +18,10 @@ SELECT
 		ELSE 2                                 -- regular SMS
 	END as sms_type
 FROM
-	sms_meta as sm, session_info as si
+	sms_meta as sm, session_info as si, si_loc
 ON
-	sm.id = si.id
+	sm.id = si.id AND
+	si.id = si_loc.id
 WHERE
 	sms_type != 2 AND
 	from_network;

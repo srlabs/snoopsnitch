@@ -61,8 +61,7 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 		txtDateTime.setText(DateFormat.getDateTimeInstance().format(stamp.getTime()));
 	
 		// Set position
-		((TextView) rowView.findViewById(R.id.txtSmsRowPositionValue)).setText(String.valueOf(values.get(position).getLatitude()) + " | " + 
-				String.valueOf(values.get(position).getLatitude()));
+		((TextView) rowView.findViewById(R.id.txtSmsRowPositionValue)).setText(values.get(position).getLocation());
 		
 		// Set cell id
 		((TextView) rowView.findViewById(R.id.txtSmsRowCellIdValue)).setText(String.valueOf(values.get(position).getFullCellID()));

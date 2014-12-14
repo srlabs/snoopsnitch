@@ -33,7 +33,11 @@ CREATE TABLE config
 		min_pag1_rate float,
 
 		--  Minimum score we treat an analysis result as a catcher
-		catcher_min_score float
+		catcher_min_score float,
+
+		--  Maximum time delta of a location entry in seconds to be
+		--  considered related to some session entry
+		loc_max_delta
 );
 
 INSERT INTO config VALUES
@@ -85,5 +89,8 @@ INSERT INTO config VALUES
 
 		-- catcher_min_score
 		-- TODO: Evaluate minimal score, show everything for now
-		2.0
+		2.0,
+
+		-- loc_max_delta
+		600
 );

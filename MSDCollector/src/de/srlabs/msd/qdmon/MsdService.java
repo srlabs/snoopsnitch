@@ -889,6 +889,9 @@ public class MsdService extends Service{
 									start.get(Calendar.MINUTE),
 									start.get(Calendar.SECOND));
 
+							// Update location info
+							MsdSQLiteOpenHelper.readSQLAsset(MsdService.this, db, "location.sql", false);
+
 							if (MsdServiceAnalysis.runCatcherAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.CATCHER_DETECTED);
 							};

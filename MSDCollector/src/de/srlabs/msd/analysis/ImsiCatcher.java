@@ -18,11 +18,12 @@ public class ImsiCatcher implements AnalysisEvent{
 	private int cid;
 	private double latitude;
 	private double longitude;
+	private boolean valid;
 	private double score;
 	SQLiteDatabase db;
 
 	public ImsiCatcher(long startTime, long endTime, long id, int mcc,
-			int mnc, int lac, int cid, double latitude, double longitude, double score) {
+			int mnc, int lac, int cid, double latitude, double longitude, boolean valid, double score) {
 		super();
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -31,6 +32,7 @@ public class ImsiCatcher implements AnalysisEvent{
 		this.mnc = mnc;
 		this.lac = lac;
 		this.cid = cid;
+		this.valid = valid;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.score = score;
@@ -101,6 +103,10 @@ public class ImsiCatcher implements AnalysisEvent{
 		return longitude;
 	}
 
+	public boolean isValid() {
+		return valid;
+	}
+
 	/**
 	 * Score for the IMSI catcher
 	 * @return
@@ -145,5 +151,13 @@ public class ImsiCatcher implements AnalysisEvent{
 				"/" + Integer.toString(mnc) +
 				"/" + Integer.toString(lac) +
 				"/" + Integer.toString(cid);
+	}
+
+	public String getLocation() {
+		if (valid){
+			return Double.toString(latitude) + " | " + Double.toString(longitude);
+		} else {
+			return "-";
+		}
 	}
 }

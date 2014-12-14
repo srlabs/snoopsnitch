@@ -509,8 +509,9 @@ SELECT
 	max(ci.r1),
 	max(ci.r2),
 	max(ci.f1),
-	0.0,		-- TODO: Add latitude
-	0.0,		-- TODO: Add longitude
+	si_loc.longitude,
+	si_loc.latitude,
+	si_loc.valid,
 	max(ci.a1) +
 	max(ci.a2) +
 	max(ci.a4) +
@@ -527,16 +528,17 @@ SELECT
 	max(ci.r1) +
 	max(ci.r2) +
 	max(ci.f1) as score
-FROM si LEFT JOIN ci
+FROM si LEFT JOIN ci, si_loc
 ON
 	ci.mcc = si.mcc AND
 	ci.mnc = si.mnc AND
 	ci.lac = si.lac AND
-	ci.cid = si.cid,
+	ci.cid = si.cid AND
+	si.id = si_loc.id,
 config
 ON
 	abs(strftime('%s', ci.last_seen) - strftime('%s', si.timestamp)) < 10000
 GROUP BY
-	id
+	si.id
 HAVING
 	score > config.catcher_min_score;

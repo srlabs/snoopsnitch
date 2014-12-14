@@ -18,6 +18,7 @@ public class SMS implements AnalysisEvent{
 	private int cid;
 	private double longitude;
 	private double latitude;
+	private boolean valid;
 	private String sender;
 	private String smsc;
 	public enum Type {
@@ -29,7 +30,7 @@ public class SMS implements AnalysisEvent{
 	SQLiteDatabase db;
 
 	public SMS(long timestamp, long id, int mcc, int mnc, int lac, int cid,
-			double latitude, double longitude, String sender, String smsc, Type type) {
+			double latitude, double longitude, boolean valid, String sender, String smsc, Type type) {
 		super();
 		this.timestamp = timestamp;
 		this.id = id;
@@ -39,6 +40,7 @@ public class SMS implements AnalysisEvent{
 		this.cid = cid;
 		this.longitude = longitude;
 		this.latitude = latitude;
+		this.valid = valid;
 		this.sender = sender;
 		this.smsc = smsc;
 		this.type = type;
@@ -148,10 +150,22 @@ public class SMS implements AnalysisEvent{
 		return latitude;
 	}
 
+	public boolean isValid() {
+		return valid;
+	}
+
 	public String getFullCellID() {
 		return Integer.toString(mcc) +
 				"/" + Integer.toString(mnc) +
 				"/" + Integer.toString(lac) +
 				"/" + Integer.toString(cid);
+	}
+
+	public String getLocation() {
+		if (valid){
+			return Double.toString(latitude) + " | " + Double.toString(longitude);
+		} else {
+			return "-";
+		}
 	}
 }
