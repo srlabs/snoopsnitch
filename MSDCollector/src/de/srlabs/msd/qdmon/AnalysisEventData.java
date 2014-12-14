@@ -158,7 +158,6 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		if(c.moveToFirst()) {
 			do {
 				catcher = catcherFromCursor(c);
-				logCatcher(catcher);
 				result.add(catcher);
 			} while (c.moveToNext());
 		}
