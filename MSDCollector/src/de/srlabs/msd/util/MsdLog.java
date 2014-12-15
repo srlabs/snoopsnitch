@@ -2,8 +2,10 @@ package de.srlabs.msd.util;
 
 import java.util.Calendar;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import de.srlabs.msd.R;
 import de.srlabs.msd.qdmon.MsdService;
 import de.srlabs.msd.qdmon.MsdServiceHelper;
 
@@ -67,9 +69,10 @@ public class MsdLog {
 	/**
 	 * Gets some information about phone model, Android version etc.
 	 */
-	public static String getLogStartInfo() {
+	public static String getLogStartInfo(Context context) {
 		StringBuffer result = new StringBuffer();
 		result.append("Log opened " + Utils.formatTimestamp(System.currentTimeMillis()) + "\n");
+		result.append("SnoopSnitch Version: " + context.getString(R.string.app_version) + "\n");
 		result.append("Running on model " + Build.MODEL + " Android version " + Build.VERSION.RELEASE + "\n");
 		return result.toString();
 	}

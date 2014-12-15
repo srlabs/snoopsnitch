@@ -1661,7 +1661,7 @@ public class MsdService extends Service{
 		// Uncomment the following line to disable plaintext logs (might be good for the final release):
 		// plaintextFilename = null;
 		EncryptedFileWriter newDebugLogWriter = new EncryptedFileWriter(this, encryptedFilename, true, plaintextFilename, true);
-		newDebugLogWriter.write(MsdLog.getLogStartInfo());
+		newDebugLogWriter.write(MsdLog.getLogStartInfo(this));
 		if(logBuffer != null){
 			newDebugLogWriter.write("LOGBUFFER: " + logBuffer.toString() + ":LOGBUFFER_END");
 			logBuffer = null;
