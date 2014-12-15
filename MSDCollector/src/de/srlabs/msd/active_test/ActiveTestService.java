@@ -43,6 +43,7 @@ import de.srlabs.msd.util.Utils;
 
 public class ActiveTestService extends Service{
 	private static final String TAG = "msd-active-test-service";
+	private boolean uploadDisabled = false;
 	private final MyActiveTestServiceStub mBinder = new MyActiveTestServiceStub();
 	private ActiveTestResults results = new ActiveTestResults();;
 	private ProgressTickRunnable progressTickRunnable = new ProgressTickRunnable();
@@ -131,6 +132,12 @@ public class ActiveTestService extends Service{
 		public void setForegroundActivityClass(String className)
 				throws RemoteException {
 			foregroundActivityClassName = className;
+		}
+
+		@Override
+		public void setUploadDisabled(boolean uploadDisabled)
+				throws RemoteException {
+			ActiveTestService.this.uploadDisabled  = uploadDisabled;
 		}
 	}
 	class ProgressTickRunnable implements Runnable{
@@ -697,12 +704,27 @@ public class ActiveTestService extends Service{
 				type.name(),
 				iteration);
 		this.currentExtraRecordingFilename = filename;
-		stateInfo("Opening dumpfile " + filename);
-		msdServiceHelper.startExtraRecording(filename);
+		if(uploadDisabled){
+			stateInfo("Would now open dumpfile " + filename);
+			msdServiceHelper.startActiveTest(); // Make sure MsdService keeps recording (for the local analysis) even if we don't upload anything
+		} else{
+			stateInfo("Opening dumpfile " + filename);
+			msdServiceHelper.startExtraRecording(filename);
+		}
 	}
 	private void endExtraFileRecording(boolean upload){
+		if(uploadDisabled){
+			if(upload){
+				stateInfo("Would now close and upload " + currentExtraRecordingFilename);
+			} else{
+				stateInfo("Would now discard " + currentExtraRecordingFilename);			
+			}
+			msdServiceHelper.endExtraRecording(upload); // Just to make sure there is no extra recording
+			currentExtraRecordingFilename = null;
+			return;
+		}
 		if(currentExtraRecordingFilename == null)
-			throw new IllegalStateException("ndExtraFileRecording(" + upload + ") called but currentExtraRecordingFilename == null");
+			throw new IllegalStateException("endExtraFileRecording(" + upload + ") called but currentExtraRecordingFilename == null");
 		if(upload){
 			stateInfo("Closing and uploading " + currentExtraRecordingFilename);
 		} else{

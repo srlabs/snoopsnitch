@@ -17,13 +17,15 @@ import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
+import de.srlabs.msd.R;
 import de.srlabs.msd.qdmon.MsdService;
 import de.srlabs.msd.util.Constants;
+import de.srlabs.msd.util.MsdDialog;
 import de.srlabs.msd.util.MsdLog;
 
 public class ActiveTestHelper{
 	private static String TAG = "msd-active-test-helper";
-	private Context context;
+	private Activity context;
 	private ActiveTestCallback callback;
 	private boolean dummy;
 	private MyServiceConnection serviceConnection = new MyServiceConnection();
@@ -218,5 +220,26 @@ public class ActiveTestHelper{
 		dialog.show();
 	}
 
-
+	public void showConfirmDialogAndStart(final boolean clearResults){
+		final boolean uploadDisabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("settings_active_test_disable_upload", false);
+		String positiveButtonText = context.getString(R.string.test_and_upload);
+		if(uploadDisabled)
+			positiveButtonText = context.getResources().getString(R.string.alert_button_ok);
+		MsdDialog.makeConfirmationDialog(context, context.getResources().getString(R.string.alert_networktest_message), new OnClickListener() 
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				if(clearResults)
+					clearResults();
+				try {
+					mIActiveTestService.setUploadDisabled(uploadDisabled);
+				} catch (Exception e) {
+					handleFatalError("Exception in ActiveTestHelper.clearCurrentResults()",e);
+				}
+				queryPhoneNumberAndStart();
+			}
+		}, null,null,
+		positiveButtonText, context.getString(R.string.alert_button_cancel)).show();
+	}
 }

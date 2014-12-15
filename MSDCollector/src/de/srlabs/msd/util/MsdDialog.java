@@ -16,13 +16,19 @@ public class MsdDialog extends DialogFragment
 	}
 	public static Dialog makeConfirmationDialog (Activity activity, String message, 
 			OnClickListener positiveOnClickListener, OnClickListener negativeOnClickListener,
-			OnCancelListener onCancelListener)
+			OnCancelListener onCancelListener){
+		return makeConfirmationDialog(activity, message, positiveOnClickListener, negativeOnClickListener,null, 
+				activity.getResources().getString(R.string.alert_button_ok), activity.getString(R.string.alert_button_cancel));	
+	}
+	public static Dialog makeConfirmationDialog (Activity activity, String message, 
+			OnClickListener positiveOnClickListener, OnClickListener negativeOnClickListener,
+			OnCancelListener onCancelListener, String positiveButtonText, String negativeButtonText)
 	{
 		AlertDialog.Builder builder = getAlertDialogBuilder(activity, 
 				activity.getResources().getString(R.string.alert_confirmation_title), message);
 		
-		builder.setPositiveButton(activity.getResources().getString(R.string.alert_button_ok), positiveOnClickListener);
-		builder.setNegativeButton(activity.getString(R.string.alert_button_cancel), negativeOnClickListener);
+		builder.setPositiveButton(positiveButtonText, positiveOnClickListener);
+		builder.setNegativeButton(negativeButtonText, negativeOnClickListener);
 		builder.setOnCancelListener(onCancelListener);
 
 		builder.setIcon(android.R.drawable.ic_dialog_info);

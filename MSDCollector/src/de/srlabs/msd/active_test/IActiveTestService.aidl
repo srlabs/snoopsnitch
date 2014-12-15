@@ -11,4 +11,5 @@ interface IActiveTestService {
 	void clearCurrentResults();
 	void clearCurrentFails();
 	boolean isTestRunning();
+	void setUploadDisabled(boolean uploadDisabled);
 }

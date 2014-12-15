@@ -87,5 +87,11 @@
         android:entries="@array/settings_active_test_num_iterations_entries"
         android:entryValues="@array/settings_active_test_num_iterations_values"
         android:defaultValue="5" />
+	<CheckBoxPreference 
+	    android:key="settings_active_test_disable_upload"
+        android:title="@string/settings_active_test_disable_upload_title"
+        android:summary="@string/settings_active_test_disable_upload_summary"
+        android:defaultValue="false"
+ 	/>
     
 </PreferenceScreen>

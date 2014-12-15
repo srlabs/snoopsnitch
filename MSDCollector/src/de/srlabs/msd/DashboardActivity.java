@@ -302,15 +302,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		}
 		else
 		{
-			MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.alert_networktest_message), new OnClickListener() 
-			{			
-				@Override
-				public void onClick(DialogInterface dialog, int which) 
-				{
-					activeTestHelper.clearResults();
-					activeTestHelper.queryPhoneNumberAndStart();
-				}
-			}, null).show();
+			activeTestHelper.showConfirmDialogAndStart(true);
 		}
 	}
 }

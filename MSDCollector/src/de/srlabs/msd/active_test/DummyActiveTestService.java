@@ -68,6 +68,13 @@ public class DummyActiveTestService extends Service{
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public void setUploadDisabled(boolean uploadDisabled)
+				throws RemoteException {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 	class ProgressTickRunnable implements Runnable{
 		boolean stopped = false;

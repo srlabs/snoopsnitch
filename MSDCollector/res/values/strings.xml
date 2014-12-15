@@ -179,6 +179,9 @@ If SnoopSnitch\'s way of functioning concerns you, press Cancel now!
     <string name="settings_active_test_num_iterations_title">Active test iterations</string>
     <string name="settings_active_test_num_iterations_dialogtitle">Number of iterations for each active test</string>
     
+    <string name="settings_active_test_disable_upload_title">Don\'t upload test results</string>
+    <string name="settings_active_test_disable_upload_summary">Evaluate active test results on the phone only.</string>
+    
      <!-- List view row -->
      <string name="listview_sms_item_type">Type:</string>
      <string name="listview_sms_item_Time">Time:</string>
@@ -205,4 +208,6 @@ If SnoopSnitch\'s way of functioning concerns you, press Cancel now!
      <string name="error_notification_text">Please submit an error report!</string>
      <string name="common_null_paging">Null Paging</string>
 
+     <!-- Active test -->
+     <string name="test_and_upload">Test and Upload</string>
 </resources>

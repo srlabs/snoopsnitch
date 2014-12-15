@@ -89,11 +89,9 @@ public class ActiveTestAdvanced extends BaseActivity{
 						// Start over: Clear test results and start again
 						activeTestHelper.clearResults();
 					}
-					//activeTestHelper.startActiveTest("+4915784571666"); // TODO: Query for number, cache results based on IMSI
-					activeTestHelper.queryPhoneNumberAndStart();
+					activeTestHelper.showConfirmDialogAndStart(false);
 				} else{ // STOP
 					activeTestHelper.stopActiveTest();
-
 				}
 				updateButtons();
 			}
