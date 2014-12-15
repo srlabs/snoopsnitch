@@ -222,10 +222,19 @@ public class ActiveTestHelper{
 
 	public void showConfirmDialogAndStart(final boolean clearResults){
 		final boolean uploadDisabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("settings_active_test_disable_upload", false);
-		String positiveButtonText = context.getString(R.string.test_and_upload);
-		if(uploadDisabled)
+		String positiveButtonText;
+		String networkTestMessage;
+		if(uploadDisabled) {
 			positiveButtonText = context.getResources().getString(R.string.alert_button_ok);
-		MsdDialog.makeConfirmationDialog(context, context.getResources().getString(R.string.alert_networktest_message), new OnClickListener() 
+			networkTestMessage =
+				context.getResources().getString(R.string.alert_networktest_message);
+		} else {
+			positiveButtonText = context.getString(R.string.test_and_upload);
+			networkTestMessage =
+				context.getResources().getString(R.string.alert_networktest_message) + "\n" +
+				context.getResources().getString(R.string.alert_networktest_privacy_disclaimer);
+		}
+		MsdDialog.makeConfirmationDialog(context, networkTestMessage, new OnClickListener() 
 		{
 			@Override
 			public void onClick(DialogInterface dialog, int which) 
