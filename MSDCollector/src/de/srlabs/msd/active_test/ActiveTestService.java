@@ -16,6 +16,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,7 +47,7 @@ public class ActiveTestService extends Service{
 	private static final String TAG = "msd-active-test-service";
 	private boolean uploadDisabled = false;
 	private final MyActiveTestServiceStub mBinder = new MyActiveTestServiceStub();
-	private ActiveTestResults results = new ActiveTestResults();;
+	private ActiveTestResults results = new ActiveTestResults();
 	private ProgressTickRunnable progressTickRunnable = new ProgressTickRunnable();
 	private Handler handler = new Handler();
 	private Vector<IActiveTestCallback> callbacks = new Vector<IActiveTestCallback>();
@@ -56,7 +58,6 @@ public class ActiveTestService extends Service{
 	private StateMachine stateMachine;
 	private MyPhoneStateListener phoneStateListener = new MyPhoneStateListener() ;
 	private MySmsReceiver smsReceiver = new MySmsReceiver();
-	public boolean onlineMode = true;
 	private String currentExtraRecordingFilename;
 	private boolean testRunning;
 	boolean previousCheckAlreadyInForeground = true;
@@ -138,6 +139,16 @@ public class ActiveTestService extends Service{
 		public void setUploadDisabled(boolean uploadDisabled)
 				throws RemoteException {
 			ActiveTestService.this.uploadDisabled  = uploadDisabled;
+		}
+
+		/**
+		 * Called by the UI in onResume so that the displayed settings (online/offline, number of iterations) are applied
+		 * @throws RemoteException
+		 */
+		@Override
+		public void applySettings() throws RemoteException {
+			// Only switch to online again if no test is running
+			ActiveTestService.this.applySettings(!isTestRunning());
 		}
 	}
 	class ProgressTickRunnable implements Runnable{
@@ -296,20 +307,20 @@ public class ActiveTestService extends Service{
 					nextState = State.CALL_MO;
 				}
 				// Offline mode can only trigger CALL_MO, the tests SMS_MT and CALL_MT are automatically done after CALL_MO
-				if(onlineMode && numSmsMt < minRunCount){
+				if(results.isOnlineMode() && numSmsMt < minRunCount){
 					minRunCount = numSmsMt;
 					nextState = State.SMS_MT_API;
 				}
-				if(onlineMode && numCallMt < minRunCount){
+				if(results.isOnlineMode() && numCallMt < minRunCount){
 					minRunCount = numCallMt;
 					nextState = State.CALL_MT_API;
 				}
-				if(!onlineMode && numCallMt < minRunCount){
+				if(!results.isOnlineMode() && numCallMt < minRunCount){
 					// We have to trigger CALL_MO to get to  CALL_MT in offline mode
 					minRunCount = numCallMt;
 					nextState = State.CALL_MO;
 				}
-				if(!onlineMode && numSmsMt < minRunCount){
+				if(!results.isOnlineMode() && numSmsMt < minRunCount){
 					// We have to trigger CALL_MO to get to  SMS_MT in offline mode
 					minRunCount = numSmsMt;
 					nextState = State.CALL_MO;
@@ -330,9 +341,9 @@ public class ActiveTestService extends Service{
 					updateNetworkOperatorAndRat();
 					results.startTest(TestType.CALL_MO,Constants.CALL_MO_TIMEOUT + Constants.CALL_MO_ACTIVE_TIMEOUT);
 					results.getCurrentTest().stateWaiting();
-					previousCallMoOnline = onlineMode;
+					previousCallMoOnline = results.isOnlineMode();
 					startExtraFileRecording(TestType.CALL_MO);
-					triggerCallMo(onlineMode);
+					triggerCallMo(results.isOnlineMode());
 				} else if(nextState == State.SMS_MT_API){
 					setState(State.SMS_MT_API, "iterate()",Constants.API_TIMEOUT);
 					updateNetworkOperatorAndRat();
@@ -391,8 +402,7 @@ public class ActiveTestService extends Service{
 			} else if(state == State.CALL_MT_API){
 				results.getCurrentTest().failApiTimeout();
 				endExtraFileRecording(false);
-				onlineMode = false;
-				results.setOnlineMode(onlineMode);
+				results.setOnlineMode(false);
 				iterate();
 			} else if(state == State.CALL_MT_WAITING){
 				endExtraFileRecording(false);
@@ -413,8 +423,7 @@ public class ActiveTestService extends Service{
 			} else if(state == State.SMS_MT_API){
 				results.getCurrentTest().failApiTimeout();
 				endExtraFileRecording(false);
-				onlineMode = false;
-				results.setOnlineMode(onlineMode);
+				results.setOnlineMode(false);
 				iterate();
 			} else if(state == State.SMS_MT_WAITING){
 				results.getCurrentTest().failTimeout();
@@ -439,15 +448,13 @@ public class ActiveTestService extends Service{
 				stateInfo("Call API failed, switching to offline mode: " + errorStr);
 				results.getCurrentTest().failApiError(apiId, errorStr);
 				endExtraFileRecording(false);
-				onlineMode = false;
-				results.setOnlineMode(onlineMode);
+				results.setOnlineMode(false);
 				iterate();
 			} else if(state == State.SMS_MT_API){
 				stateInfo("SMS API failed, switching to offline mode: " + errorStr);
 				results.getCurrentTest().failApiError(apiId, errorStr);
 				endExtraFileRecording(false);
-				onlineMode = false;
-				results.setOnlineMode(onlineMode);
+				results.setOnlineMode(false);
 				iterate();
 			} else{
 				handleFatalError("handleApiFail in unexpected state " + state.name());
@@ -533,8 +540,16 @@ public class ActiveTestService extends Service{
 			this.api.start();
 		}
 	}
-	private void applySettings(){
-		results.setOnlineMode(true);
+	// http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
+	private boolean isNetworkAvailable() {
+	    ConnectivityManager connectivityManager 
+	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	}
+	private void applySettings(boolean switchToOnline){
+		if(switchToOnline && isNetworkAvailable())
+			results.setOnlineMode(true);
 		if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("settings_active_test_force_offline", false)){
 			results.setOnlineMode(false);
 		}
@@ -555,7 +570,7 @@ public class ActiveTestService extends Service{
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		msdServiceHelper = MSDServiceHelperCreator.getInstance(this, true).getMsdServiceHelper();
 		updateNetworkOperatorAndRat();
-		applySettings();
+		applySettings(true);
 		broadcastTestResults();
 		handler.postDelayed(progressTickRunnable, 1000);
 		return mBinder;
@@ -592,15 +607,6 @@ public class ActiveTestService extends Service{
 	private boolean startTest(String ownNumber){
 		this.ownNumber = ownNumber;
 		this.msdServiceHelper.startActiveTest();
-		this.onlineMode = true;
-		// TODO: Detect internet connectivity to automatically select online/offline mode
-		if(ownNumber == null || ownNumber.trim().length() == 0){
-			debugInfo("Using offline mode since ownNumer is not known");
-			onlineMode = false;
-		}
-		if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("settings_active_test_force_offline", false)){
-			onlineMode = false;
-		}
 		// http://stackoverflow.com/questions/599443/how-to-hang-up-outgoing-call-in-android
 		try {
 			// Java reflection to gain access to TelephonyManager's
@@ -614,8 +620,9 @@ public class ActiveTestService extends Service{
 			handleFatalError("Could not get telephonyService",e);
 		}
 		stateMachine = new StateMachine();
-		// onlineMode = false;
-		results.setOnlineMode(onlineMode);
+		results.setOnlineMode(true);
+		applySettings(true);
+		results.isOnlineMode();
 		this.testRunning = true;
 		telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 		final IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");

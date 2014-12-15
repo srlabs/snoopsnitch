@@ -523,4 +523,7 @@ public class ActiveTestResults implements Serializable {
 	public void setBlacklisted(boolean b) {
 		this.blacklisted = b;
 	}
+	public boolean isOnlineMode() {
+		return onlineMode;
+	}
 }

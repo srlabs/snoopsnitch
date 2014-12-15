@@ -235,11 +235,20 @@ public class ActiveTestHelper{
 				try {
 					mIActiveTestService.setUploadDisabled(uploadDisabled);
 				} catch (Exception e) {
-					handleFatalError("Exception in ActiveTestHelper.clearCurrentResults()",e);
+					handleFatalError("Exception in ActiveTestHelper.showConfirmDialogAndStart()",e);
 				}
 				queryPhoneNumberAndStart();
 			}
 		}, null,null,
 		positiveButtonText, context.getString(R.string.alert_button_cancel)).show();
+	}
+
+	public void applySettings() {
+		try {
+			if(mIActiveTestService != null)
+				mIActiveTestService.applySettings();
+		} catch (Exception e) {
+			handleFatalError("Exception in ActiveTestHelper.applySettings()",e);
+		}
 	}
 }

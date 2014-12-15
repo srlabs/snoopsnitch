@@ -111,7 +111,11 @@ public class ActiveTestAdvanced extends BaseActivity{
 		updateButtons();
 		getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 	}
-
+	@Override
+	protected void onResume() {
+		super.onResume();
+		activeTestHelper.applySettings();
+	}
 	protected void updateButtons() {
 		Log.i("ActiveTestAdvanced", "updateButtons()");
 		boolean testRunning = activeTestHelper.isActiveTestRunning();
