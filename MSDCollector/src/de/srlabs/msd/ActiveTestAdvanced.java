@@ -50,35 +50,22 @@ public class ActiveTestAdvanced extends BaseActivity{
 
 		@Override
 		public void internalError(String msg) {
-			// TODO Auto-generated method stub
-
+			showErrorMsg(msg);
 		}
-
 	}
-
-	private void appendLogMsg(String newMsg){
-		//		newMsg = newMsg.trim();
-		//		activeTestLogView.append(newMsg + "\n");
-		//		// find the amount we need to scroll.  This works by
-		//		// asking the TextView's internal layout for the position
-		//		// of the final line and then subtracting the TextView's height
-		//		// http://stackoverflow.com/questions/3506696/auto-scrolling-textview-in-android-to-bring-text-into-view
-		//		try{
-		//			final int scrollAmount = activeTestLogView.getLayout().getLineTop(activeTestLogView.getLineCount()) - activeTestLogView.getHeight();
-		//			// if there is no need to scroll, scrollAmount will be <=0
-		//			if (scrollAmount > 0)
-		//				activeTestLogView.scrollTo(0, scrollAmount);
-		//			else
-		//				activeTestLogView.scrollTo(0, 0);
-		//		} catch(NullPointerException e){}
+	private void showErrorMsg(String msg) {
+		String errorJs = "setErrorLog(" + escape(msg) + ";\n";
+		activeTestWebView.loadUrl("javascript:" + errorJs);
 	}
-
+	private String escape(String input) {
+		if(input == null)
+			return "undefined";
+		return "\"" + input.replace("\\","\\\\").replace("\"", "\\\"").replace("\n","\\n") + "\"";
+	}
 	public void updateWebView() {
 		if(lastResults == null)
 			return; // updateWebView() will be called again when results are available
-		Log.i("ActiveTestAdvanced", "JS:" + lastResults.getUpdateJavascript());
 		activeTestWebView.loadUrl("javascript:" + lastResults.getUpdateJavascript());
-		Log.i("ActiveTestAdvanced", "TEXT:" + lastResults.formatTextTable());
 	}
 
 	@Override
@@ -174,10 +161,4 @@ public class ActiveTestAdvanced extends BaseActivity{
 		});
 		activeTestWebView.loadUrl("file:///android_asset/active_test_advanced.html");
 	}
-
-	@Override
-	public void internalError(String msg) {
-		appendLogMsg("internalError(" + msg + ")");
-	}
-
 }

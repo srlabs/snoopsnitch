@@ -483,6 +483,7 @@ public class ActiveTestResults implements Serializable {
 		Date date = new Date(System.currentTimeMillis());
 		String timestampStr = dateFormat.format(date);
 		Utils.formatTimestamp(0);
+		MsdLog.i("msd-active-test-service","STATE_INFO: " + logMsg);
 		errorLog += timestampStr + "  " + logMsg + "\n";
 	}
 	void clearCurrentResults(){

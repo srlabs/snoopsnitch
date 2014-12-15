@@ -423,6 +423,7 @@ public class ActiveTestService extends Service{
 				results.getCurrentTest().failApiError(apiId, errorStr);
 				endExtraFileRecording(false);
 				setState(State.END, "Phone is blacklisted", 0);
+				stateInfo("Phone is blacklisted, aborting test");
 				results.setBlacklisted(true);
 				ActiveTestService.this.stopTest();
 				return;
