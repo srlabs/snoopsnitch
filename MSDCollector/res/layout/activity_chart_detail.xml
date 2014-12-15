@@ -117,32 +117,12 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtDetailChartThreatTypeSeparator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center_vertical"
-                    android:paddingLeft="5dp"
-                    android:text="|"
-                    android:textSize="@dimen/text_large"
-                    android:textStyle="bold" />
-
-                <TextView
                     android:id="@+id/txtDetailChartThreatTypeBinarySmsCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical"
                     android:paddingLeft="5dp"
                     android:textColor="@color/common_chartYellow"
-                    android:textSize="@dimen/text_large"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtDetailChartThreatTypeBinarySms"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center_vertical"
-                    android:paddingLeft="5dp"
-                    android:text="@string/common_binary_sms"
                     android:textSize="@dimen/text_large"
                     android:textStyle="bold" />
             </LinearLayout>

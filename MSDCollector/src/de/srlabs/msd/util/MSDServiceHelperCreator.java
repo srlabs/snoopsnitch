@@ -5,7 +5,7 @@ import java.util.Vector;
 import android.app.Activity;
 import android.content.Context;
 import de.srlabs.msd.BaseActivity;
-import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.analysis.Event;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.MsdServiceHelper;
 import de.srlabs.msd.qdmon.StateChangedReason;
@@ -56,7 +56,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	
 	public int getThreatsSmsMonthSum ()
 	{
-		return msdServiceHelper.getData().getSMS(TimeSpace.getTimeSpaceMonth().getStartTime(), 
+		return msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceMonth().getStartTime(), 
 				TimeSpace.getTimeSpaceMonth().getEndTime()).size();
 	}
 	
@@ -70,7 +70,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 		
 		for (int i=0; i<smsMonth.length; i++)
 		{
-			smsMonth[i] = msdServiceHelper.getData().getSMS(calEnd - timeSpan,  calEnd).size();
+			smsMonth[i] = msdServiceHelper.getData().getEvent(calEnd - timeSpan,  calEnd).size();
 			calEnd -= timeSpan;
 		}
 		
@@ -79,7 +79,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	
 	public int getThreatsSmsWeekSum ()
 	{
-		return msdServiceHelper.getData().getSMS(TimeSpace.getTimeSpaceWeek().getStartTime(), 
+		return msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceWeek().getStartTime(), 
 				TimeSpace.getTimeSpaceWeek().getEndTime()).size();
 	}
 	
@@ -92,7 +92,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 		
 		for (int i=0; i<smsWeek.length; i++)
 		{
-			smsWeek[i] = msdServiceHelper.getData().getSMS(calEnd - timeSpan, calEnd).size();
+			smsWeek[i] = msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd).size();
 			calEnd = (calEnd - timeSpan);
 		}
 		
@@ -108,7 +108,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 		
 		for (int i=0; i<smsDay.length; i++)
 		{
-			smsDay[i] = msdServiceHelper.getData().getSMS(calEnd - timeSpan, calEnd).size();
+			smsDay[i] = msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd).size();
 			calEnd = (calEnd - timeSpan);
 		}
 		
@@ -117,7 +117,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	
 	public int getThreatsSmsDaySum ()
 	{	
-		return msdServiceHelper.getData().getSMS(TimeSpace.getTimeSpaceDay().getStartTime(), 
+		return msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceDay().getStartTime(), 
 				TimeSpace.getTimeSpaceDay().getEndTime()).size();
 	}
 	
@@ -130,7 +130,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 		
 		for (int i=0; i<smsHour.length; i++)
 		{
-			smsHour[i] = msdServiceHelper.getData().getSMS(calEnd - timeSpan, calEnd).size();
+			smsHour[i] = msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd).size();
 			calEnd -= timeSpan;
 		}
 		
@@ -139,7 +139,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	
 	public int getThreatsSmsHourSum ()
 	{
-		return msdServiceHelper.getData().getSMS(TimeSpace.getTimeSpaceHour().getStartTime(), 
+		return msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceHour().getStartTime(), 
 				TimeSpace.getTimeSpaceHour().getEndTime()).size();
 	}
 	
@@ -231,19 +231,19 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 				TimeSpace.getTimeSpaceHour().getEndTime()).size();
 	}
 	
-	public Vector<SMS> getSmsOfType (SMS.Type type, long startTime, long endTime)
+	public Vector<Event> getEventOfType (Event.Type type, long startTime, long endTime)
 	{
-		Vector<SMS> sms = msdServiceHelper.getData().getSMS(startTime, endTime);
+		Vector<Event> event = msdServiceHelper.getData().getEvent(startTime, endTime);
 		
-		for (SMS s : msdServiceHelper.getData().getSMS(startTime, endTime)) 
+		for (Event s : msdServiceHelper.getData().getEvent(startTime, endTime)) 
 		{
-			if (!s.getType().equals(type))
+			if (type != Event.Type.INVALID_EVENT && !s.getType().equals(type))
 			{
-				sms.remove(s);
+				event.remove(s);
 			}
 		}
 		
-		return sms;
+		return event;
 	}
 	
 	public void setRectWidth (int rectWidth)

@@ -895,7 +895,7 @@ public class MsdService extends Service{
 							if (MsdServiceAnalysis.runCatcherAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.CATCHER_DETECTED);
 							};
-							if (MsdServiceAnalysis.runSMSAnalysis(MsdService.this, db)) {
+							if (MsdServiceAnalysis.runEventAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.SMS_DETECTED);
 							};
 							if (MsdServiceAnalysis.runSecurityAnalysis(MsdService.this, db)) {

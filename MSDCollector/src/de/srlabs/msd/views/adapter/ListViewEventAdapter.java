@@ -17,23 +17,23 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import de.srlabs.msd.DetailChartActivity;
 import de.srlabs.msd.R;
-import de.srlabs.msd.analysis.SMS;
-import de.srlabs.msd.analysis.SMS.Type;
+import de.srlabs.msd.analysis.Event;
+import de.srlabs.msd.analysis.Event.Type;
 import de.srlabs.msd.util.MsdDialog;
 
-public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
+public class ListViewEventAdapter extends ArrayAdapter<Event> implements Filterable
 {
 	// Attributes
 	private final Context context;
-	private final Vector<SMS> allSms;
-	private Vector<SMS> values;
+	private final Vector<Event> allEvents;
+	private Vector<Event> values;
 	private DetailChartActivity host;
 	
-	public ListViewSmsAdapter (Context context, Vector<SMS> values) 
+	public ListViewEventAdapter (Context context, Vector<Event> values) 
 	{
 		super(context, R.layout.custom_row_layout_sms, values);
 	    this.context = context;
-	    this.allSms = values;
+	    this.allEvents = values;
 	    this.values = values;
 	    this.host = (DetailChartActivity) context;
 	}
@@ -49,10 +49,13 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 		if (values.get(position).getType().name().equals(Type.BINARY_SMS.name()))
 		{
 			((TextView) rowView.findViewById(R.id.txtSmsRowTypeValue)).setText(context.getResources().getString(R.string.common_binary_sms));			
-		}
-		else
+		} else if (values.get(position).getType().name().equals(Type.SILENT_SMS.name()))
 		{
-			((TextView) rowView.findViewById(R.id.txtSmsRowTypeValue)).setText(context.getResources().getString(R.string.common_silent_sms));					
+			((TextView) rowView.findViewById(R.id.txtSmsRowTypeValue)).setText(context.getResources().getString(R.string.common_silent_sms));			
+		}
+		else if (values.get(position).getType().name().equals(Type.NULL_PAGING.name()))
+		{
+			((TextView) rowView.findViewById(R.id.txtSmsRowTypeValue)).setText(context.getResources().getString(R.string.common_null_paging));					
 		}
 		
 		// Set date/time
@@ -141,12 +144,12 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 				if (results.count == 0)
 				{
 					//notifyDataSetInvalidated();
-					values = (Vector<SMS>) results.values;
+					values = (Vector<Event>) results.values;
 					notifyDataSetChanged();
 				}
 				else
 				{
-					values = (Vector<SMS>) results.values;
+					values = (Vector<Event>) results.values;
 					notifyDataSetChanged();
 				}
 			}
@@ -155,25 +158,25 @@ public class ListViewSmsAdapter extends ArrayAdapter<SMS> implements Filterable
 			protected FilterResults performFiltering(CharSequence smsType) 
 			{
 				FilterResults results = new FilterResults();
-				Vector<SMS> smsList = new Vector<SMS>();
+				Vector<Event> eventList = new Vector<Event>();
 				
 				if (smsType.equals("ALL"))
 				{
-					results.values = allSms;
-					results.count = allSms.size();
+					results.values = allEvents;
+					results.count = allEvents.size();
 					return results;
 				}
 				
-				for (SMS sms : allSms) 
+				for (Event event : allEvents) 
 				{
-					if (sms.getType().toString().equals(smsType))
+					if (event.getType().toString().equals(smsType))
 					{
-						smsList.add(sms);
+						eventList.add(event);
 					}
 				}
 				
-				results.values = smsList;
-				results.count = smsList.size();
+				results.values = eventList;
+				results.count = eventList.size();
 				
 				return results;
 			}

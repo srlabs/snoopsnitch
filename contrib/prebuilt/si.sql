@@ -55,6 +55,7 @@ CREATE TABLE session_info (
   lu_mcc smallint DEFAULT NULL,		-- MCC of previous user location
   lu_mnc smallint DEFAULT NULL,		-- MNC of previous user location
   lu_lac int DEFAULT NULL,		-- LAC of previous user location
+  t_abort tinyint DEFAULT NULL,		-- Transaction aborted
   t_raupd tinyint DEFAULT NULL,		-- Transaction contains a routing area update
   t_attach tinyint DEFAULT NULL,	-- Transaction contains a GPRS attach
   att_acc tinyint DEFAULT NULL,		-- GPRS attach was accepted

@@ -1,19 +1,17 @@
 package de.srlabs.msd.qdmon;
 
-import java.io.FileNotFoundException;
 import java.util.Vector;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import de.srlabs.msd.analysis.GSMmap;
 import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.RAT;
 import de.srlabs.msd.analysis.Risk;
-import de.srlabs.msd.analysis.SMS;
-import de.srlabs.msd.analysis.SMS.Type;
+import de.srlabs.msd.analysis.Event;
+import de.srlabs.msd.analysis.Event.Type;
 import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.Utils;
 
@@ -39,39 +37,31 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		}
 	}
 
-	private static String[] sms_cols =
-			new String[] {"strftime('%s',timestamp)", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "valid", "msisdn", "smsc", "sms_type"};
+	private static String[] events_cols =
+			new String[] {"strftime('%s',timestamp)", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "valid", "msisdn", "smsc", "event_type"};
 
-	static private void logCatcher(ImsiCatcher c) {
-
-			Log.i("CATCHER","Catcher: " + c.getStartTime() +
-					", ID="  + c.getId() +
-					", MCC=" + c.getMcc() +
-					", MNC=" + c.getMnc() +
-					", LAC=" + c.getLac() +
-					", CID=" + c.getCid() +
-					", Score=" + c.getScore()
-					);
-	}
-
-	static private SMS smsFromCursor(Cursor c) {
-		Type sms_type;
+	static private Event eventFromCursor(Cursor c) {
+		Type event_type;
 
 		switch (c.getInt(10))
 		{
 			// Binary SMS
-			case 0:	sms_type = Type.BINARY_SMS;
+			case 1:	event_type = Type.BINARY_SMS;
 					break;
 
 			// Silent SMS
-			case 1:	sms_type = Type.SILENT_SMS;
+			case 2:	event_type = Type.SILENT_SMS;
+					break;
+
+			// Null paging
+			case 3:	event_type = Type.NULL_PAGING;
 					break;
 
 			// Invalid type from database
-			default: sms_type = Type.INVALID_SMS;
+			default: event_type = Type.INVALID_EVENT;
 		}
 
-		return new SMS
+		return new Event
 				(c.getLong(0) * 1000L,	// timestamp
 				 c.getLong(1),			// id
 				 c.getInt(2),			// mcc
@@ -83,32 +73,32 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 				 c.getShort(8) > 0,		// valid
 				 c.getString(9),		// msisdn
 				 c.getString(10),		// smsc
-				 sms_type				// SMS type
+				 event_type				// event type
 				);
 	}
 
 	@Override
-	public SMS getSMS(long id) {
-		Cursor c = db.query("sms", sms_cols, "id = ?", new String[] {Long.toString(id)}, null, null, null);
+	public Event getEvent(long id) {
+		Cursor c = db.query("events", events_cols, "id = ?", new String[] {Long.toString(id)}, null, null, null);
 		if(!c.moveToFirst()) {
-			throw new IllegalStateException("Requesting non-existing SMS " + Long.toString(id));
+			throw new IllegalStateException("Requesting non-existing event" + Long.toString(id));
 		}
-		SMS result = smsFromCursor (c);
+		Event result = eventFromCursor (c);
 		c.close();
 		return result;
 	}
 
 	@Override
-	public Vector<SMS> getSMS(long startTime, long endTime) {
+	public Vector<Event> getEvent(long startTime, long endTime) {
 
-		Vector<SMS> result = new Vector<SMS>();
+		Vector<Event> result = new Vector<Event>();
 
-		Cursor c = db.query("sms", sms_cols, "strftime('%s',timestamp) >= ? AND strftime('%s',timestamp) <= ?",
+		Cursor c = db.query("events", events_cols, "strftime('%s',timestamp) >= ? AND strftime('%s',timestamp) <= ?",
 				new String[] {Long.toString(startTime/1000), Long.toString(endTime/1000)}, null, null, null);
 
 		if(c.moveToFirst()) {
 			do {
-				result.add(smsFromCursor(c));
+				result.add(eventFromCursor(c));
 			} while (c.moveToNext());
 		}
 		c.close();

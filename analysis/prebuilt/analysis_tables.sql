@@ -30,8 +30,8 @@ CREATE TABLE catcher
 	score FLOAT
 );
 
-DROP TABLE IF EXISTS sms;
-CREATE TABLE sms 
+DROP TABLE IF EXISTS events;
+CREATE TABLE events 
 (
 	id integer PRIMARY KEY,
 	timestamp datetime NOT NULL,
@@ -44,5 +44,5 @@ CREATE TABLE sms
 	valid SMALLINT,
 	smsc CHAR(32) NOT NULL,
 	msisdn CHAR(32) NOT NULL,
-	sms_type integer 			-- type of SMS (0 - OTA, 1 - silent)
+	event_type integer 			-- type of event (0 - OTA/binary SMS, 1 - silent SMS, 2 - null paging)
 );

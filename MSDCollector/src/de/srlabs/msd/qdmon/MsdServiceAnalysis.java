@@ -50,38 +50,33 @@ public class MsdServiceAnalysis {
 		return false;
 	}
 
-	public static boolean runSMSAnalysis(Context context, SQLiteDatabase db) throws Exception{
+	public static boolean runEventAnalysis(Context context, SQLiteDatabase db) throws Exception{
 		int before, after;
 
-		String[] sms_cols = new String[]
-				{"sum(CASE WHEN sms_type = 0 THEN 1 ELSE 0 END)",
-				 "sum(CASE WHEN sms_type = 1 THEN 1 ELSE 0 END)"};
+		String[] event_cols = new String[]
+				{"sum(CASE WHEN event_type > 0 THEN 1 ELSE 0 END)"};
 
-		before = getLast(db, "sms", "id");
-		MsdSQLiteOpenHelper.readSQLAsset(context, db, "sms_analysis.sql", false);
-		after = getLast(db, "sms", "id");
+		before = getLast(db, "events", "id");
+		MsdSQLiteOpenHelper.readSQLAsset(context, db, "event_analysis.sql", false);
+		after = getLast(db, "events", "id");
 
 		if (after > before)
 		{
-			int numResults = after - before;
-			int silent, binary;
-
 			Cursor c = db.query
-					("sms",
-					 sms_cols,
+					("events",
+					 event_cols,
 					 "id > ? AND id <= ?",
 					 new String[] {String.valueOf(before), String.valueOf(after)},
 					 null, null, null);
 
 			if (!c.moveToFirst()){
-				throw new IllegalStateException("Invalid SQL result");
+				throw new IllegalStateException("Invalid event result");
 			}
-			silent = c.getInt(1);
-			binary = c.getInt(0);
+			int numResults = c.getInt(0);
 			c.close();
-			Log.i(TAG,"SMSAnalysis: " + numResults + " new result(s), " + silent + " silent and " + binary + " binary");
+			Log.i(TAG,"EventAnalysis: " + numResults + " new result(s)");
 
-			if (silent > 0 || binary > 0)
+			if (numResults > 0)
 			{
 				return true;
 			}

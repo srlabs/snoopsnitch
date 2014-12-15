@@ -8,14 +8,14 @@ import android.database.sqlite.SQLiteDatabase;
 import de.srlabs.msd.analysis.ImsiCatcher;
 import de.srlabs.msd.analysis.RAT;
 import de.srlabs.msd.analysis.Risk;
-import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.analysis.Event;
 import de.srlabs.msd.analysis.GSMmap;
 import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.Utils;
 
 public class DummyAnalysisEventData implements AnalysisEventDataInterface {
-	private Vector<SMS> existingSms = new Vector<SMS>();
-	private Vector<SMS> dynamicSms = new Vector<SMS>();
+	private Vector<Event> existingSms = new Vector<Event>();
+	private Vector<Event> dynamicSms = new Vector<Event>();
 	private long nextSmsId = 1;
 	private long nextImsiId = 1;
 	private Vector<ImsiCatcher> existingImsiCatchers = new Vector<ImsiCatcher>();
@@ -39,45 +39,45 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 
 		Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -3);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", Event.Type.SILENT_SMS));
        
         cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -5);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, false, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, false, "012345678", "+4912345678", Event.Type.SILENT_SMS));
        
         cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -8);
         cal.add(Calendar.HOUR, -4);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", Event.Type.SILENT_SMS));
        
         cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -8);
         cal.add(Calendar.HOUR, 4);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", Event.Type.SILENT_SMS));
        
         cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -12);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", Event.Type.SILENT_SMS));
        
         cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -14);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", Event.Type.SILENT_SMS));
        
         cal = Calendar.getInstance();
         cal.add(Calendar.HOUR, -2);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, false, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, false, "012345678", "+4912345678", Event.Type.SILENT_SMS));
 
         cal = Calendar.getInstance();
         cal.add(Calendar.HOUR, -24);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, false, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, false, "012345678", "+4912345678", Event.Type.SILENT_SMS));
        
         cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, -50);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", Event.Type.SILENT_SMS));
 
         cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, -60);
-        existingSms.add(new SMS(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+        existingSms.add(new Event(cal.getTimeInMillis(), nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", Event.Type.SILENT_SMS));
 		
 		
 		// A few dummy binary/silent SMS in the past
@@ -96,8 +96,8 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	}
 	public void addDynamicDummyEvents(long startRecordingTime){
 		// One binary SMS 5 seconds after starting to record
-		dynamicSms.add(new SMS(startRecordingTime + 5000, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", SMS.Type.BINARY_SMS));
-		dynamicSms.add(new SMS(startRecordingTime + 8000, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, false, "012345678", "+4912345678", SMS.Type.SILENT_SMS));
+		dynamicSms.add(new Event(startRecordingTime + 5000, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, true, "012345678", "+4912345678", Event.Type.BINARY_SMS));
+		dynamicSms.add(new Event(startRecordingTime + 8000, nextSmsId++, 262, 1, 3, 2, 52.52437, 13.41053, false, "012345678", "+4912345678", Event.Type.SILENT_SMS));
 		
 		// One IMSI Catcher 15 seconds after starting to record
 		dynamicImsiCatchers.add(new ImsiCatcher(startRecordingTime + 15000, startRecordingTime + 16000, nextImsiId++, 262, 1, 2, 3, 52.52437, 13.41053, true, 4.2));
@@ -105,12 +105,12 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 
 
 	@Override
-	public SMS getSMS(long id){
-		for(SMS sms:existingSms){
+	public Event getEvent(long id){
+		for(Event sms:existingSms){
 			if(sms.getId() == id)
 				return sms;
 		}
-		for(SMS sms:dynamicSms){
+		for(Event sms:dynamicSms){
 			if(sms.getTimestamp() > System.currentTimeMillis())
 				continue; // Ignore dummy events which have not yet been recorded
 			if(sms.getId() == id)
@@ -120,13 +120,13 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	}
 
 	@Override
-	public Vector<SMS> getSMS(long startTime, long endTime){
-		Vector<SMS> result = new Vector<SMS>();
-		for(SMS sms:existingSms){
+	public Vector<Event> getEvent(long startTime, long endTime){
+		Vector<Event> result = new Vector<Event>();
+		for(Event sms:existingSms){
 			if(sms.getTimestamp() >= startTime && sms.getTimestamp() <= endTime)
 				result.add(sms);
 		}
-		for(SMS sms:dynamicSms){
+		for(Event sms:dynamicSms){
 			if(sms.getTimestamp() > System.currentTimeMillis())
 				continue; // Ignore dummy events which have not yet been recorded
 			if(sms.getTimestamp() >= startTime && sms.getTimestamp() <= endTime)
@@ -165,14 +165,14 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 		}
 		return result;
 	}
-	public Vector<SMS> getDynamicSms() {
+	public Vector<Event> getDynamicSms() {
 		return dynamicSms;
 	}
 	public Vector<ImsiCatcher> getPendingImsiCatchers() {
 		return dynamicImsiCatchers;
 	}
 	public void clearDynamicEvents() {
-		dynamicSms = new Vector<SMS>();
+		dynamicSms = new Vector<Event>();
 		dynamicImsiCatchers = new Vector<ImsiCatcher>();
 	}
 	@Override

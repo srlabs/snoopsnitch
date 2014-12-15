@@ -17,7 +17,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import de.srlabs.msd.analysis.ImsiCatcher;
-import de.srlabs.msd.analysis.SMS;
+import de.srlabs.msd.analysis.Event;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.MsdDatabaseManager;
@@ -162,13 +162,13 @@ public class DummyMsdService extends Service{
 		long lastSmsId = 0;
 
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
-		for(SMS sms:dummyData.getDynamicSms()){
+		for(Event sms:dummyData.getDynamicSms()){
 			if(sms.getTimestamp() > timeCallbacksDone && sms.getTimestamp() <= currentTime){
 				dummyLogPrintStream.println("doPendingCallbacks(): Simulating sms at " + currentTime);
 				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 				df.updateSms(db,true);
 				MsdDatabaseManager.getInstance().closeDatabase();
-				if(sms.getType() == SMS.Type.BINARY_SMS)
+				if(sms.getType() == Event.Type.BINARY_SMS)
 					numBinarySms++;
 				else
 					numSilentSms++;

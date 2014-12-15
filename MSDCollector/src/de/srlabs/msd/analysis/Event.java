@@ -3,13 +3,12 @@ package de.srlabs.msd.analysis;
 import java.util.Vector;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.upload.FileState;
 import de.srlabs.msd.util.MsdDatabaseManager;
 
 
-public class SMS implements AnalysisEvent{
+public class Event implements AnalysisEvent{
 	private long timestamp;
 	private long id;
 	private int mcc;
@@ -24,12 +23,13 @@ public class SMS implements AnalysisEvent{
 	public enum Type {
 		SILENT_SMS,
 		BINARY_SMS,
-		INVALID_SMS
+		NULL_PAGING,
+		INVALID_EVENT
 	}
 	private Type type;
 	SQLiteDatabase db;
 
-	public SMS(long timestamp, long id, int mcc, int mnc, int lac, int cid,
+	public Event(long timestamp, long id, int mcc, int mnc, int lac, int cid,
 			double latitude, double longitude, boolean valid, String sender, String smsc, Type type) {
 		super();
 		this.timestamp = timestamp;
@@ -48,14 +48,14 @@ public class SMS implements AnalysisEvent{
 	}
 
 	/**
-	 * Mark raw data related to this SMS for upload
+	 * Mark raw data related to this event for upload
 	 */
 	public void upload() {
 		DumpFile.markForUpload(db, DumpFile.TYPE_ENCRYPTED_QDMON, timestamp, null, 0);
 	}
 
 	/**
-	 * Return upload state of SMS object
+	 * Return upload state of Event object
 	 * @return
 	 */
 	public FileState getUploadState() {
@@ -63,28 +63,28 @@ public class SMS implements AnalysisEvent{
 	}
 
 	/**
-	 * Timestamp when the silent SMS was received, in millis since 1970
+	 * Timestamp when the event was received, in millis since 1970
 	 * @return
 	 */
 	public long getTimestamp() {
 		return timestamp;
 	}
 	/**
-	 * id column of the silent sms in table session_info, can be used to retrieve the SMS again using get(long id)
+	 * id column of the event in table session_info, can be used to retrieve the event again using get(long id)
 	 * @return
 	 */
 	public long getId() {
 		return id;
 	}
 	/**
-	 * MCC when the SMS was received
+	 * MCC when the event was received
 	 * @return
 	 */
 	public int getMcc() {
 		return mcc;
 	}
 	/**
-	 * MNC when the SMS was received
+	 * MNC when the event was received
 	 * @return
 	 */
 	public int getMnc() {
@@ -94,7 +94,7 @@ public class SMS implements AnalysisEvent{
 		return sender;
 	}
 	/**
-	 * Gets the type of this silent/binary SMS
+	 * Gets the type of this event
 	 * @return
 	 */
 	public Type getType() {
@@ -108,7 +108,7 @@ public class SMS implements AnalysisEvent{
 	}
 	@Override
 	public String toString() {
-		StringBuffer result = new StringBuffer("SilentSms: ID=" + id + " TYPE=" + type.name());
+		StringBuffer result = new StringBuffer("Event: ID=" + id + " TYPE=" + type.name());
 		// TODO: Add more fields
 		return result.toString();
 	}
@@ -132,9 +132,7 @@ public class SMS implements AnalysisEvent{
 	}
 	@Override
 	public void markForUpload(SQLiteDatabase db){
-		Log.e("msd","markForUpload()");
 		for(DumpFile file:getFiles(db)){
-			Log.e("msd","markForUpload(): Doing file " + file);
 			file.markForUpload(db);
 		}
 	}

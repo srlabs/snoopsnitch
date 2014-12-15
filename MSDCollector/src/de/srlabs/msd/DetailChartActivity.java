@@ -13,13 +13,13 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.srlabs.msd.analysis.SMS;
-import de.srlabs.msd.analysis.SMS.Type;
+import de.srlabs.msd.analysis.Event;
+import de.srlabs.msd.analysis.Event.Type;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.util.TimeSpace;
 import de.srlabs.msd.views.adapter.DetailChartGalleryAdapter;
 import de.srlabs.msd.views.adapter.ListViewImsiCatcherAdapter;
-import de.srlabs.msd.views.adapter.ListViewSmsAdapter;
+import de.srlabs.msd.views.adapter.ListViewEventAdapter;
 
 public class DetailChartActivity extends BaseActivity
 {
@@ -30,7 +30,6 @@ public class DetailChartActivity extends BaseActivity
 	private TextView _txtThreatTypeImsiCatcher;
 	private TextView _txtThreatTypeImsiCatcherCount;
 	private TextView _txtThreatTypeSilentSmsCount;
-	private TextView _txtThreatTypeBinarySmsCount;
 	private LinearLayout _llThreatTypeImsiCatcher;
 	private LinearLayout _llThreatTypeSms;
 	private LinearLayout _llSpinnerDetailChart;
@@ -49,7 +48,6 @@ public class DetailChartActivity extends BaseActivity
 		_txtThreatTypeImsiCatcher = (TextView) findViewById(R.id.txtDetailChartThreatTypeImsiCatcher);
 		_txtThreatTypeImsiCatcherCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeImsiCatcherCount);
 		_txtThreatTypeSilentSmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeSilentSmsCount);
-		_txtThreatTypeBinarySmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeBinarySmsCount);
 		_llThreatTypeImsiCatcher = (LinearLayout) findViewById(R.id.llThreatTypeImsiCatcher);
 		_llThreatTypeSms = (LinearLayout) findViewById(R.id.llThreatTypeSms);
 		_llSpinnerDetailChart = (LinearLayout) findViewById(R.id.llSpinnerDetailChart);
@@ -103,13 +101,16 @@ public class DetailChartActivity extends BaseActivity
 				{
 					switch (position) {
 					case 0:
-						((ListViewSmsAdapter) listView.getAdapter()).getFilter().filter("ALL");
+						((ListViewEventAdapter) listView.getAdapter()).getFilter().filter("ALL");
 						break;
 					case 1:
-						((ListViewSmsAdapter) listView.getAdapter()).getFilter().filter(SMS.Type.BINARY_SMS.toString());
+						((ListViewEventAdapter) listView.getAdapter()).getFilter().filter(Event.Type.BINARY_SMS.toString());
 						break;
 					case 2:
-						((ListViewSmsAdapter) listView.getAdapter()).getFilter().filter(SMS.Type.SILENT_SMS.toString());
+						((ListViewEventAdapter) listView.getAdapter()).getFilter().filter(Event.Type.SILENT_SMS.toString());
+						break;
+					case 3:
+						((ListViewEventAdapter) listView.getAdapter()).getFilter().filter(Event.Type.NULL_PAGING.toString());
 						break;
 					default:
 						break;
@@ -152,7 +153,7 @@ public class DetailChartActivity extends BaseActivity
 		else if (id == R.id.SilentSMSCharts)
 		{			
 			ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, 
-					android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.sms_types));
+					android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.event_types));
 			    spinner.setAdapter(spinnerAdapter);
 		}
 	}
@@ -187,17 +188,14 @@ public class DetailChartActivity extends BaseActivity
 		
 		if (id == R.id.SilentSMSCharts)
 		{			
-			ListViewSmsAdapter listViewAdapter = new ListViewSmsAdapter(this, 
-					getMsdServiceHelperCreator().getMsdServiceHelper().getData().getSMS(_startTime, _endTime));
+			ListViewEventAdapter listViewAdapter = new ListViewEventAdapter(this, 
+					getMsdServiceHelperCreator().getMsdServiceHelper().getData().getEvent(_startTime, _endTime));
 			listView.setAdapter(listViewAdapter);
 			
-			if (_txtThreatTypeSilentSmsCount != null && _txtThreatTypeBinarySmsCount != null)
+			if (_txtThreatTypeSilentSmsCount != null)
 			{
 				_txtThreatTypeSilentSmsCount.setText(String.valueOf(getMsdServiceHelperCreator().
-						getSmsOfType(Type.SILENT_SMS, _startTime, _endTime).size()));
-
-				_txtThreatTypeBinarySmsCount.setText(String.valueOf(getMsdServiceHelperCreator().
-						getSmsOfType(Type.BINARY_SMS, _startTime, _endTime).size()));
+						getEventOfType(Type.INVALID_EVENT, _startTime, _endTime).size()));
 			}
 		}
 		else

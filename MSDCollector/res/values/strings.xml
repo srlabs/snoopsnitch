@@ -4,7 +4,7 @@
     <!-- General -->
 	<string name="app_name">SnoopSnitch</string>
     <string name="website">srlabs.de</string>
-    <string name="common_silent_sms">Silent SMS</string>
+    <string name="common_silent_sms">Events</string>
     <string name="common_binary_sms">Binary SMS</string>
     <string name="common_imsi_catcher">IMSI-Catcher</string>
     <string name="common_3g_title">3G</string>
@@ -38,7 +38,7 @@
     <string name="message_recordingStopped">Recording stopped&#8230;</string>
     
     <!-- Alerts -->
-    <string name="alert_button_ok">Ok</string>
+    <string name="alert_button_ok">OK</string>
     <string name="alert_button_cancel">Cancel</string>
     <string name="alert_button_quit">Quit</string>
     <string name="alert_confirmation_title">Confirmation</string>
@@ -120,8 +120,8 @@ If SnoopSnitch\'s way of functioning concerns you, press Cancel now!
     <string name="dashboard_upload_description"> scans are ready to upload</string>
     <string name="dashboard_lastanalysis">Last analysis: </string>
     <string name="dashboard_lastanalysis_time"></string>
-    <string name="dashboard_sms_description">Silent &amp; Binary SMS</string>
-    <string name="dashboard_imsi_description">IMSI-Catcher</string>
+    <string name="dashboard_sms_description">SMS &amp; SS7 attacks</string>
+    <string name="dashboard_imsi_description">IMSI catcher</string>
     <string name="dashboard_timeline_month">m</string>
     <string name="dashboard_timeline_week">w</string>
     <string name="dashboard_timeline_lasthour">last hour</string>
@@ -203,5 +203,6 @@ If SnoopSnitch\'s way of functioning concerns you, press Cancel now!
      <string name="error_notification_title">has crashed</string>
      <string name="error_notification_ticker">encountered an internal error</string>
      <string name="error_notification_text">Please submit an error report!</string>
+     <string name="common_null_paging">Null Paging</string>
 
 </resources>
