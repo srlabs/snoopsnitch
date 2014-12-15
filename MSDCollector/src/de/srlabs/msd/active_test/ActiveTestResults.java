@@ -284,7 +284,7 @@ public class ActiveTestResults implements Serializable {
 	}
 	public void setNetworkOperatorAndRat(TelephonyManager tm, int fallbackNetworkGeneration) throws IllegalArgumentException{
 		this.currentMccMnc = tm.getNetworkOperator();
-		MsdLog.i("active-test-results",currentMccMnc);
+		// MsdLog.i("active-test-results",currentMccMnc);
 		NetworkOperatorTestResults networkOperator;
 		if(networkOperators.containsKey(currentMccMnc)){
 			networkOperator = networkOperators.get(currentMccMnc);

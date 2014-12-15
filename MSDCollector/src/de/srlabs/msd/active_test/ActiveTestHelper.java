@@ -67,7 +67,7 @@ public class ActiveTestHelper{
 		public void testResultsChanged(Bundle b) throws RemoteException {
 			try{
 				ActiveTestResults results = (ActiveTestResults) b.getSerializable("results");
-				MsdLog.i(TAG,"testResultsChanged:" + results.formatTextTable());
+				// MsdLog.i(TAG,"testResultsChanged:" + results.formatTextTable());
 				callback.handleTestResults(results);
 			} catch(Exception e){
 				MsdLog.e(TAG,"Exception in ActiveTestHelper.MyActiveTestCallback.testResultsChanged()",e);
