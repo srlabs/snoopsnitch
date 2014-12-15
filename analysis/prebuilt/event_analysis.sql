@@ -10,8 +10,10 @@ SELECT
 	sl.longitude,
 	sl.latitude,
 	sl.valid,
-	sm.smsc,
-	sm.msisdn,
+	--  FIXME: Handle SMSC/MSISDN null values in UI properly
+	--  by destinguishing different event types
+	ifnull(sm.smsc, "-"),
+	ifnull(sm.msisdn, "-"),
 	CASE
 		-- OTA/binary SMS
 		WHEN ota AND from_network
