@@ -1,5 +1,6 @@
 package de.srlabs.msd.views;
 
+import java.util.Collections;
 import java.util.Vector;
 
 import android.content.Context;
@@ -74,6 +75,8 @@ public class DashboardProviderChart extends View
 		super.onDraw(canvas);
 		
 		providerData = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores().getServerData();
+		
+		sortProviderData ();
 		
 		this.canvas = canvas;
 		
@@ -362,6 +365,19 @@ public class DashboardProviderChart extends View
 						minScore = r.getImper3G().lastElement().getScore();
 					}
 				}
+			}
+		}
+	}
+	
+	private void sortProviderData ()
+	{
+		Risk risk = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores();
+		
+		for (Risk r : providerData) 
+		{
+			if (providerData.elementAt(providerData.indexOf(r)).getOperatorName().equals(risk.getOperatorName()))
+			{
+				Collections.swap(providerData, providerData.size()-1, providerData.indexOf(r));
 			}
 		}
 	}
