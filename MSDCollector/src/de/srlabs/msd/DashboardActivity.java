@@ -4,11 +4,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Vector;
 
-import android.R.bool;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -23,8 +19,6 @@ import de.srlabs.msd.active_test.ActiveTestHelper;
 import de.srlabs.msd.active_test.ActiveTestResults;
 import de.srlabs.msd.analysis.Risk;
 import de.srlabs.msd.qdmon.StateChangedReason;
-import de.srlabs.msd.util.DeviceCompatibilityChecker;
-import de.srlabs.msd.util.MsdDialog;
 import de.srlabs.msd.views.DashboardProviderChart;
 import de.srlabs.msd.views.DashboardThreatChart;
 import de.srlabs.msd.views.adapter.ListViewProviderAdapter;
@@ -103,7 +97,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		
 		txtDashboardInterception3g = (TextView) findViewById(R.id.txtDashboardInterception3g);
 		txtDashboardInterception2g = (TextView) findViewById(R.id.txtDashboardInterception2g);
-		txtDashboardImpersonation3g = (TextView) findViewById(R.id.txtDashboardImpersonation3g);
+		//txtDashboardImpersonation3g = (TextView) findViewById(R.id.txtDashboardImpersonation3g);
 		txtDashboardImpersonation2g = (TextView) findViewById(R.id.txtDashboardImpersonation2g);
 		
 		btnDashboardNetworkTest = (Button) findViewById(R.id.btnDashboardTestNetwork);
@@ -245,31 +239,31 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 			case RAT_2G:
 				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT);
 				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT_BOLD);
-				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
+				//txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
 				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT_BOLD);
 				break;
 			case RAT_3G:
 				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT_BOLD);
 				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT);
-				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT_BOLD);
+				//txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT_BOLD);
 				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT);
 				break;
 			case RAT_LTE:
 				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT);
 				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT);
-				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
+				//txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
 				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT);
 				break;	
 			case RAT_UNKNOWN:
 				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT);
 				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT);
-				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
+				//txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
 				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT);
 				break;
 			default:
 				txtDashboardInterception3g.setTypeface(Typeface.DEFAULT);
 				txtDashboardInterception2g.setTypeface(Typeface.DEFAULT);
-				txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
+				//txtDashboardImpersonation3g.setTypeface(Typeface.DEFAULT);
 				txtDashboardImpersonation2g.setTypeface(Typeface.DEFAULT);
 				break;
 		}

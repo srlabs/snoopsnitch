@@ -951,7 +951,7 @@
                     android:layout_marginBottom="3dp"
                     android:layout_marginTop="3dp"
                     android:background="@color/common_applicationSeparator" />
-
+				
                 <TextView
                     android:id="@+id/txtDashboardInterception2g"
                     android:layout_width="0dp"
@@ -968,6 +968,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/common_applicationSeparator" />
 
+                <!--
                 <TextView
                     android:id="@+id/txtDashboardImpersonation3g"
                     android:layout_width="0dp"
@@ -992,6 +993,17 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/common_2g_title"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/common_text" />
+              	-->
+              	
+            	<TextView
+                    android:id="@+id/txtDashboardImpersonation2g"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/common_2g_title"
                     android:textSize="@dimen/text_medium"
