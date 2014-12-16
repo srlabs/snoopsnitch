@@ -106,7 +106,7 @@ public class ListViewEventAdapter extends ArrayAdapter<Event> implements Filtera
 							values.get(position).upload();
 							host.refreshView();
 						}
-					}, null).show();
+					}, null, false).show();
 				}
 			});
 			break;

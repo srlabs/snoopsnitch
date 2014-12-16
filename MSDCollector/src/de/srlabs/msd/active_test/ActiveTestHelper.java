@@ -249,7 +249,7 @@ public class ActiveTestHelper{
 				queryPhoneNumberAndStart();
 			}
 		}, null,null,
-		positiveButtonText, context.getString(R.string.alert_button_cancel)).show();
+		positiveButtonText, context.getString(R.string.alert_button_cancel), false).show();
 	}
 
 	public void applySettings() {

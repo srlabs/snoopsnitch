@@ -84,7 +84,7 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 							values.get(position).upload();
 							host.refreshView();
 						}
-					}, null).show();
+					}, null, false).show();
 				}
 			});
 			break;

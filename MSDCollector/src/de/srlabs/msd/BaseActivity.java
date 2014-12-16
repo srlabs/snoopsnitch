@@ -259,7 +259,7 @@ public class BaseActivity extends FragmentActivity
 			{
 				quitApplication();
 			}
-		}, errorMsg).show();
+		}, errorMsg, false).show();
 	}
 
 	public void stateChanged(StateChangedReason reason) 

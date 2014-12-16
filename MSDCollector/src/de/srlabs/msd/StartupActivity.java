@@ -50,7 +50,7 @@ public class StartupActivity extends Activity{
 			public void onCancel(DialogInterface dialog) {
 				quitApplication();
 			}
-		}
+		}, false
 		).show();
     }
 	private void showFirstRunDialog() {
@@ -79,7 +79,7 @@ public class StartupActivity extends Activity{
 					public void onCancel(DialogInterface dialog) {
 						quitApplication();
 					}
-				}
+				}, false
 				).show();
 	}
 	protected void quitApplication ()
