@@ -50,6 +50,9 @@ public class DashboardProviderList extends View
 		}
 		else if (isResult)
 		{
+			p.setStyle(Paint.Style.FILL);
+			p.setColor(getResources().getColor(R.color.provider_circle_result_fill));
+			canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2, p);
 			p.setStyle(Paint.Style.STROKE);
 			p.setStrokeWidth(2);
 			p.setColor(getResources().getColor(R.color.common_text));

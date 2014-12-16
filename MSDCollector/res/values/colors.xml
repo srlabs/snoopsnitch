@@ -15,6 +15,7 @@
     <item name="common_custom_toast_message_foreground" type="color">#ffffff</item>
     <item name="common_button_state_pressed" type="color">#58585B</item>
     <item name="common_button_state_default" type="color">#CBCBCB</item>
+    <item name="provider_circle_result_fill" type="color">#ffffff</item>
      
     <integer-array name="SrLabsColors">
         <item>@color/common_chartRed</item>
@@ -31,5 +32,6 @@
         <item>@color/common_custom_toast_message_foreground</item>
         <item>@color/common_button_state_default</item>
         <item>@color/common_button_state_pressed</item>
+        <item>@color/provider_circle_result_fill</item>
     </integer-array>
 </resources>

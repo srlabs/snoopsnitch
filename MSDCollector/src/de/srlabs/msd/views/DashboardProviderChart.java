@@ -2,8 +2,6 @@ package de.srlabs.msd.views;
 
 import java.util.Vector;
 
-import javax.xml.datatype.Duration;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -17,7 +15,6 @@ import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.Toast;
 import de.srlabs.msd.DashboardActivity;
 import de.srlabs.msd.R;
 import de.srlabs.msd.analysis.Risk;
@@ -240,11 +237,13 @@ public class DashboardProviderChart extends View
 	     * Draw the circle
 	     */
 	    if (isResult)
-	    {
-	    	paint.setStyle(Paint.Style.STROKE);
-	    	paint.setColor(getResources().getColor(R.color.common_text));
+	    {			
+			paint.setStyle(Paint.Style.FILL);
+			paint.setColor(getResources().getColor(R.color.provider_circle_result_fill));
+			drawProviderCircle(top, bottom, circleRadius, paint, is2G, offset, isResult, isOwnProvider);
+			paint.setStyle(Paint.Style.STROKE);
 			paint.setStrokeWidth(2);
-			
+			paint.setColor(getResources().getColor(R.color.common_text));
 			drawProviderCircle(top, bottom, circleRadius - paint.getStrokeWidth() / 2, paint, is2G, offset, isResult, isOwnProvider);
 	    }
 	    else if (isOwnProvider)
