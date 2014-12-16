@@ -295,10 +295,13 @@ public class DashboardProviderChart extends View
 	    p.setColor(c);
 	    
 		// Draw max space
-	    canvas.drawRect(new Rect(0,0,getWidth(),(int) ((getHeight() - chartOffsetTopBottom) - ((getHeight() - (chartOffsetTopBottom * 2)) * maxScore) + itemHeight / 2)), p);
+	    canvas.drawRect(new Rect((int) (getWidth()/2-chartWidth),(int) chartOffsetTopBottom,(int) (getWidth()/2+chartWidth),
+	    		(int) ((getHeight() - chartOffsetTopBottom) - ((getHeight() - (chartOffsetTopBottom * 2)) * maxScore) + itemHeight / 2)), p);
 	    
 	    // Draw min space
-	    canvas.drawRect(new Rect(0,(int) ((getHeight() - chartOffsetTopBottom) - ((getHeight() - (chartOffsetTopBottom * 2)) * minScore) + itemHeight / 2),getWidth(),getHeight()), p); 
+	    canvas.drawRect(new Rect((int) (getWidth()/2-chartWidth),
+	    		(int) ((getHeight() - chartOffsetTopBottom) - ((getHeight() - (chartOffsetTopBottom * 2)) * minScore) + itemHeight / 2),
+	    		(int) (getWidth()/2+chartWidth),(int) (getHeight() - chartOffsetTopBottom)), p); 
 	}
 	
 	private void setMinMaxScore ()
