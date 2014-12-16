@@ -200,6 +200,7 @@ public class MsdService extends Service{
 	private BlockingQueue<DiagMsgWrapper> toParserMsgQueue = new LinkedBlockingQueue<DiagMsgWrapper>();
 	private BlockingQueue<QueueElementWrapper<byte[]>> toDiagMsgQueue = new LinkedBlockingQueue<MsdService.QueueElementWrapper<byte[]>>();
 	private BlockingQueue<PendingSqliteStatement> pendingSqlStatements = new LinkedBlockingQueue<PendingSqliteStatement>();
+	private long pendingSqlStatementsEmptyTimestamp = 0;
 
 	private BufferedReader parserStdout;
 	private DataOutputStream parserStdin;
@@ -865,6 +866,8 @@ public class MsdService extends Service{
 						info("SqliteThread shutting down due to shuttingDown && pendingSqlStatements.isEmpty()");
 						return;
 					}
+					if(pendingSqlStatements.isEmpty())
+						pendingSqlStatementsEmptyTimestamp = System.currentTimeMillis();
 					PendingSqliteStatement sql = pendingSqlStatements.take();
 					if(sql.isShutdownMarker()){
 						if(shuttingDown)
@@ -1452,6 +1455,12 @@ public class MsdService extends Service{
 			warn("DEBUG: SQL queue high mark: " + sqlQueueWatermark);
 		}
 
+		if(pendingSqlStatements.isEmpty())
+			pendingSqlStatementsEmptyTimestamp = System.currentTimeMillis();
+		
+		if( System.currentTimeMillis() > pendingSqlStatementsEmptyTimestamp + 60*1000){
+			handleFatalError("SQL Statements are waiting for more than one minute, current queue size: " + pendingSqlStatements.size());
+		}
 		// Terminate extra file recording if the ActiveTestService doesn't terminate it (e.g. because it disappears)		
 		if(extraRecordingRawFileWriter != null){
 			if(System.currentTimeMillis() > extraRecordingStartTime + 10*60*1000)
