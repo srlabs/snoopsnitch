@@ -444,6 +444,24 @@ public class ActiveTestService extends Service{
 				ActiveTestService.this.stopTest();
 				return;
 			}
+			if(errorStr != null && errorStr.equals("INVALID_NUMBER")){
+				results.getCurrentTest().failApiError(apiId, errorStr);
+				endExtraFileRecording(false);
+				setState(State.END, "Invalid number", 0);
+				stateInfo("Received INVALID_NUMBER in " + state.name() + ", aborting test");
+				results.setInvalidNumber(true);
+				ActiveTestService.this.stopTest();
+				return;
+			}
+			if(errorStr != null && errorStr.equals("INVALID_REQUEST")){
+				results.getCurrentTest().failApiError(apiId, errorStr);
+				endExtraFileRecording(false);
+				setState(State.END, "Please update SnoopSnitch", 0);
+				stateInfo("Received INVALID_REQUEST in " + state.name() + ", aborting test");
+				results.setInvalidRequest(true);
+				ActiveTestService.this.stopTest();
+				return;
+			}
 			if(state == State.CALL_MT_API){
 				stateInfo("Call API failed, switching to offline mode: " + errorStr);
 				results.getCurrentTest().failApiError(apiId, errorStr);
@@ -638,7 +656,9 @@ public class ActiveTestService extends Service{
 		return true;
 	}
 	private void stopTest(){
-		unregisterReceiver(smsReceiver);
+		try{
+			unregisterReceiver(smsReceiver);
+		} catch(Exception e){} // unregisterReceiver throws an Exception if it isn't registered, so let's just ignore it.
 		if(stateMachine != null){
 			stateMachine.stopTest();
 			stateMachine = null;

@@ -44,7 +44,6 @@ public abstract class ApiCall extends Thread {
 		HttpURLConnection connection = null;
 
 		try {
-
 			final URL url = new URL(Constants.API_URL + "&client_MSISDN="
 					+ URLEncoder.encode(number)
 					+ "&requested_action="
@@ -108,7 +107,7 @@ public abstract class ApiCall extends Thread {
 					postOnSuccess(requestId);
 				} else{
 					MsdLog.i(TAG, "API returned status " + apiStatus);
-					postOnFail(null,apiStatus);
+					postOnFail(requestId,apiStatus);
 				}
 				MsdLog.i(TAG,"REQUEST_ID: " + requestId + "  STATUS: " + apiStatus);
 			} else {

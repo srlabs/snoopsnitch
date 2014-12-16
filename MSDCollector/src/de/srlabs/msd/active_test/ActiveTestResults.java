@@ -24,6 +24,8 @@ public class ActiveTestResults implements Serializable {
 	private String errorLog = "";
 	private boolean onlineMode = true;
 	private boolean blacklisted = false;
+	private boolean invalidNumber;
+	private boolean invalidRequest;
 
 	class NetworkOperatorTestResults implements Serializable{
 		private static final long serialVersionUID = 1L;
@@ -212,9 +214,18 @@ public class ActiveTestResults implements Serializable {
 			state = State.FAILED_API_ERROR;
 			this.errorStr = errorStr;
 			this.requestId = requestId;
-			String logMsg = "API failed in " + type.name() + "  id=" + requestId;
-			if(errorStr != null && errorStr.trim().length()>0)
-				logMsg += "  MSG: " + errorStr;
+			String logMsg;
+			if(errorStr != null && errorStr.equals("INVALID_REQUEST")){
+				logMsg = "Please update SnoopSnitch, id=" + requestId;
+			} else if(errorStr != null && errorStr.equals("INVALID_NUMBER")){
+				logMsg = "Invalid number, id=" + requestId;
+			} else if(errorStr != null && errorStr.equals("BLACKLISTED")){
+				logMsg = "Your phone number is blacklisted, id=" + requestId;
+			} else{
+				logMsg = "API failed in " + type.name() + "  id=" + requestId;
+				if(errorStr != null && errorStr.trim().length()>0)
+					logMsg += "  MSG: " + errorStr;
+			}
 			appendErrorLog(logMsg);
 		}
 		public void fail(String errorStr){
@@ -415,7 +426,11 @@ public class ActiveTestResults implements Serializable {
 	public String getCurrentActionString(){
 		if(blacklisted){
 			return "BANNED. Mail to snoopsnitch@srlabs.de.";
-		} if(testRoundComplete){
+		} else if(invalidNumber){
+			return "Invalid number.";
+		} else if(invalidRequest){
+			return "Please update SnoopSnitch.";
+		} else if(testRoundComplete){
 			return "Test round complete. Please also test other network technologies.";
 		} else if(getCurrentTest() != null && getCurrentTest().isRunning()){
 			return getCurrentTest().getStateDisplayText();
@@ -522,6 +537,12 @@ public class ActiveTestResults implements Serializable {
 	}
 	public void setBlacklisted(boolean b) {
 		this.blacklisted = b;
+	}
+	public void setInvalidNumber(boolean b) {
+		this.invalidNumber = b;
+	}
+	public void setInvalidRequest(boolean b) {
+		this.invalidRequest = b;
 	}
 	public boolean isOnlineMode() {
 		return onlineMode;

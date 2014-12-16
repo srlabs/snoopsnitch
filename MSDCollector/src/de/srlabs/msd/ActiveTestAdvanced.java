@@ -39,7 +39,12 @@ public class ActiveTestAdvanced extends BaseActivity{
 		@Override
 		public void handleTestResults(ActiveTestResults results) {
 			lastResults = results;
-			updateWebView();
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					updateWebView();
+				}
+			});
 		}
 
 		@Override
