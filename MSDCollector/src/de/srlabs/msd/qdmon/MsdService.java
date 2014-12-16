@@ -341,7 +341,7 @@ public class MsdService extends Service{
 		@Override
 		public void run() {
 			checkRecordingState();
-			mainThreadHandler.postDelayed(periodicCheckRecordingStateRunnableWrapper, 1000);
+			mainThreadHandler.postDelayed(periodicCheckRecordingStateRunnableWrapper, 5000);
 		}
 	}
 
@@ -351,7 +351,7 @@ public class MsdService extends Service{
 			if(shuttingDown.get())
 				return;
 			debugLogWriter.flushIfUnflushedDataSince(10000);
-			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(this), 1000);
+			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(this), 5000);
 		}
 	}
 
