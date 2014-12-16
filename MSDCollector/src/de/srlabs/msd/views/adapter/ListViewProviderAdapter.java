@@ -1,5 +1,6 @@
 package de.srlabs.msd.views.adapter;
 
+import java.util.Collections;
 import java.util.Vector;
 
 import android.content.Context;
@@ -28,6 +29,8 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk>
 		this.values = values;
 		
 		this.risk = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores();
+		
+		sortOwnProvider ();
 		
 		// Add result data to values list
 		values.insertElementAt(risk, 0);
@@ -87,5 +90,16 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk>
 	public int getCount() 
 	{
 		return values.size();
+	}
+	
+	private void sortOwnProvider ()
+	{
+		for (Risk r : values) 
+		{
+			if (values.elementAt(values.indexOf(r)).getOperatorName().equals(risk.getOperatorName()))
+			{
+				Collections.swap(values, 0, values.indexOf(r));
+			}
+		}
 	}
 }
