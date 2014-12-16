@@ -16,6 +16,9 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	}
 
 	public static void readSQLAsset(Context context, SQLiteDatabase db, String file, Boolean verbose) throws Exception {
+
+		Long tmp = System.currentTimeMillis();
+
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") called");
 		db.execSQL("BEGIN TRANSACTION;");
 		try {
@@ -36,7 +39,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 			throw e;
 		}
 		db.execSQL("COMMIT;");
-		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") done");
+		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") done, took " + (System.currentTimeMillis() - tmp) + "ms");
 	}
 
 	@Override
