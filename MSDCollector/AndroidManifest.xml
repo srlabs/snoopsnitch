@@ -51,9 +51,17 @@
              android:screenOrientation="portrait"
              android:parentActivityName="de.srlabs.msd.DashboardActivity">     
         </activity>
+        
         <!-- Map Activity -->
         <activity
              android:name="de.srlabs.msd.MapActivity"
+             android:screenOrientation="portrait"
+             android:parentActivityName="de.srlabs.msd.DashboardActivity">     
+        </activity>
+        
+        <!-- Local Map Activity -->
+        <activity
+             android:name="de.srlabs.msd.LocalMapActivity"
              android:screenOrientation="portrait"
              android:parentActivityName="de.srlabs.msd.DashboardActivity">     
         </activity>

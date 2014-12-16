@@ -858,10 +858,11 @@
 
                     <de.srlabs.msd.views.DashboardProviderChart
                         android:id="@+id/pvcDashboardInterception"
-                        custom:type="interception"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:onClick="openLocalMapView"
+                        custom:type="interception" />
 
                     <View
                         android:id="@+id/View39"
@@ -871,10 +872,12 @@
 
                     <de.srlabs.msd.views.DashboardProviderChart
                         android:id="@+id/pvcDashboardImpersonation"
-                        custom:type="impersonation"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:onClick="openLocalMapView"
+                        custom:type="impersonation" />
+
                 </LinearLayout>
 
                 <View

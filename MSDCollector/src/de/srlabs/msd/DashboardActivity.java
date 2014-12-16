@@ -151,6 +151,16 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		}
 	}
 	
+	public void openLocalMapView (View view)
+	{
+		if (view.equals(findViewById(R.id.pvcDashboardInterception)) || 
+				view.equals(findViewById(R.id.pvcDashboardImpersonation)))
+		{
+			Intent myIntent = new Intent(this, LocalMapActivity.class);
+			startActivity(myIntent);
+		}
+	}
+	
 	@Override
 	public void stateChanged(StateChangedReason reason) 
 	{
