@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="wrap_content"
     android:background="@color/common_sectionBackground"
     android:orientation="horizontal"
     android:paddingBottom="4dp"
@@ -22,7 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"
         android:layout_weight="7"
-        android:gravity="left|fill_vertical"
+        android:gravity="left|center_vertical"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:text="@string/listview_provider_item_testresult"
         android:textSize="@dimen/text_medium"
         android:textStyle="bold" />

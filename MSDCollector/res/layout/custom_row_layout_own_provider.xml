@@ -29,7 +29,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_provider_item_ownprovider_text"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:ellipsize="end"
+        	android:singleLine="true" />
 
         <TextView
             android:id="@+id/txtProviderName"
@@ -37,7 +39,9 @@
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:ellipsize="end"
+        	android:singleLine="true" />
 
     </LinearLayout>
 
