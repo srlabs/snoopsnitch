@@ -8,6 +8,7 @@
     <item name="common_applicationBackground" type="color">#eeeeee</item>
     <item name="common_sectionBackground" type="color">#fcfcfc</item>
     <item name="common_text" type="color">#58585b</item>
+    <item name="common_text_light" type="color">#eeeeee</item>
     <item name="common_applicationSeparator" type="color">#eeeeee</item>
     <item name="common_sectionSeparator" type="color">#cbcbcb</item>
     <item name="common_custom_row_background_disabled" type="color">#e2e2e2</item>
@@ -25,6 +26,7 @@
         <item>@color/common_applicationBackground</item>
         <item>@color/common_sectionBackground</item>
         <item>@color/common_text</item>
+        <item>@color/common_text_light</item>
         <item>@color/common_applicationSeparator</item>
         <item>@color/common_sectionSeparator</item>
         <item>@color/common_custom_row_background_disabled</item>

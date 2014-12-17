@@ -74,7 +74,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="2dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="3"
                 android:orientation="horizontal"
@@ -245,7 +245,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="2dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="3"
                 android:orientation="horizontal"
@@ -665,14 +665,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="6"
+        android:background="@color/common_sectionBackground"
         android:orientation="horizontal"
-        android:weightSum="3"
-        android:background="@color/common_sectionBackground" >
+        android:weightSum="10" >
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:orientation="vertical"
             android:weightSum="17" >
 
@@ -687,8 +687,9 @@
                     android:id="@+id/ImageView04"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
                     android:scaleType="fitStart"
                     android:src="@drawable/ic_content_network" />
 
@@ -696,8 +697,7 @@
                     android:id="@+id/TextView08"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="5dp"
+                    android:layout_gravity="left|center_vertical"
                     android:gravity="left|center_vertical"
                     android:paddingTop="4dp"
                     android:text="@string/dashboard_network_security_title"
@@ -765,7 +765,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="7"
             android:orientation="vertical"
             android:weightSum="17" >
 
@@ -906,7 +906,7 @@
                     android:paddingBottom="2dp"
                     android:paddingTop="2dp"
                     android:text="@string/dashboard_network_security_protectionLevel_high"
-                    android:textColor="@color/common_text"
+                    android:textColor="@color/common_text_light"
                     android:textSize="@dimen/text_medium" />
 
                 <TextView
@@ -919,7 +919,7 @@
                     android:paddingBottom="2dp"
                     android:paddingTop="2dp"
                     android:text="@string/dashboard_network_security_protectionLevel_low"
-                    android:textColor="@color/common_text"
+                    android:textColor="@color/common_text_light"
                     android:textSize="@dimen/text_medium" />
 
             </FrameLayout>
