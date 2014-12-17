@@ -14,10 +14,14 @@ public class Risk {
 	private Vector<Score> imper3G = null;
 	private String operatorName = null;
 	private String operatorColor = null;
+	private int mcc;
 
 	private Vector<Risk> serverData = null;
 
 	public Risk(SQLiteDatabase db, int currentMCC, int currentMNC) {
+
+		// Set MCC
+		mcc = currentMCC;
 
 		//  Set inter, imper and track values
 		this.inter = query2GScores(db, currentMCC, currentMNC, "intercept");
@@ -39,15 +43,16 @@ public class Risk {
 
 		if (c.moveToFirst()){
 			do {
-				serverData.add(new Risk(db, c.getLong(0), c.getString(1), c.getString(2)));
+				serverData.add(new Risk(db, c.getLong(0), c.getString(1), c.getString(2), currentMCC));
 			} while (c.moveToNext());
 		}
 		c.close();
 
 	}
 
-	public Risk(SQLiteDatabase db, long id, String operatorName, String operatorColor) {
+	public Risk(SQLiteDatabase db, long id, String operatorName, String operatorColor, int mcc) {
 
+		this.mcc = mcc;
 		this.operatorName = operatorName;
 		this.operatorColor = operatorColor;
 
@@ -155,6 +160,10 @@ public class Risk {
 
 	public Vector<Risk> getServerData() {
 		return serverData;
+	}
+
+	public int getMcc() {
+		return mcc;
 	}
 
 	public boolean changed(Risk previous) {
