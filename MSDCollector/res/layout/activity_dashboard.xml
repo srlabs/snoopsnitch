@@ -120,7 +120,7 @@
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="1"
-                    android:textColor="@color/common_chartYellow"
+                    android:textColor="@color/common_chartGreen"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
@@ -151,7 +151,7 @@
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="1"
-                    android:textColor="@color/common_chartYellow"
+                    android:textColor="@color/common_chartGreen"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
@@ -182,7 +182,7 @@
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="1"
-                    android:textColor="@color/common_chartYellow"
+                    android:textColor="@color/common_chartGreen"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
@@ -212,8 +212,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
+                    android:tag="threatCount"
                     android:text="1"
-                    android:textColor="@color/common_chartYellow"
+                    android:textColor="@color/common_chartGreen"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
@@ -291,7 +292,7 @@
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="1"
-                    android:textColor="@color/common_chartRed"
+                    android:textColor="@color/common_chartGreen"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
@@ -321,7 +322,7 @@
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="1"
-                    android:textColor="@color/common_chartRed"
+                    android:textColor="@color/common_chartGreen"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
@@ -351,7 +352,7 @@
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="1"
-                    android:textColor="@color/common_chartRed"
+                    android:textColor="@color/common_chartGreen"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
@@ -381,7 +382,7 @@
                     android:layout_height="25dp"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="1"
-                    android:textColor="@color/common_chartRed"
+                    android:textColor="@color/common_chartGreen"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 

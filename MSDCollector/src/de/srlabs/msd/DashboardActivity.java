@@ -57,6 +57,8 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	private ListView lstDashboardProviderList;
 	private Button btnDashboardNetworkTest;
 	private Vector<Risk> providerList;
+	Vector<TextView> threatSmsCounts;
+	Vector<TextView> threatImsiCounts;
 	private ActiveTestHelper activeTestHelper;
 
 	// Methods
@@ -101,6 +103,18 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		txtDashboardImpersonation2g = (TextView) findViewById(R.id.txtDashboardImpersonation2g);
 		
 		btnDashboardNetworkTest = (Button) findViewById(R.id.btnDashboardTestNetwork);
+		
+		threatSmsCounts = new Vector<TextView>();
+		threatSmsCounts.add(txtSmsHourCount);
+		threatSmsCounts.add(txtSmsDayCount);
+		threatSmsCounts.add(txtSmsWeekCount);
+		threatSmsCounts.add(txtSmsMonthCount);
+		
+		threatImsiCounts = new Vector<TextView>();
+		threatImsiCounts.add(txtImsiHourCount);
+		threatImsiCounts.add(txtImsiDayCount);
+		threatImsiCounts.add(txtImsiWeekCount);
+		threatImsiCounts.add(txtImsiMonthCount);
 	}
 	
 	@Override
@@ -196,7 +210,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	}
 	
 	private void resetThreatCounts ()
-	{
+	{	
 		txtSmsMonthCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsMonthSum()));
 		txtSmsWeekCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsWeekSum()));
 		txtSmsDayCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsSmsDaySum()));
@@ -205,6 +219,31 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		txtImsiWeekCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiWeekSum()));
 		txtImsiDayCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiDaySum()));
 		txtImsiHourCount.setText(String.valueOf(msdServiceHelperCreator.getThreatsImsiHourSum()));
+		
+		// Set text color of threat counts
+		for (TextView tv : threatSmsCounts) 
+		{
+			if (Integer.valueOf(tv.getText().toString()) > 0)
+			{
+				tv.setTextColor(getResources().getColor(R.color.common_chartYellow));
+			}
+			else
+			{
+				tv.setTextColor(getResources().getColor(R.color.common_chartGreen));
+			}
+		}
+		
+		for (TextView tv : threatImsiCounts) 
+		{
+			if (Integer.valueOf(tv.getText().toString()) > 0)
+			{
+				tv.setTextColor(getResources().getColor(R.color.common_chartRed));
+			}
+			else
+			{
+				tv.setTextColor(getResources().getColor(R.color.common_chartGreen));
+			}
+		}
 	}
 	
 	private void resetCharts ()
