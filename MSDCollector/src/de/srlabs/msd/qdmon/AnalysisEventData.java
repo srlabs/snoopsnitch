@@ -43,7 +43,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	static private Event eventFromCursor(Cursor c) {
 		Type event_type;
 
-		switch (c.getInt(10))
+		switch (c.getInt(11))
 		{
 			// Binary SMS
 			case 1:	event_type = Type.BINARY_SMS;
