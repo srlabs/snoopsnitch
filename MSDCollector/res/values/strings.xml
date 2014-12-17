@@ -56,8 +56,8 @@ Your device is not compatible with SnoopSnitch.\n
 You need a rooted device with a Qualcomm chipset running stock Android 4.1 or higher.
 Unfortunately, custom ROMs are unsupported as they lack necessary proprietary drivers.\n
 \n
-For details visit the project website (http://opensource.srlabs.de/projects/snoopsnitch).
-If you believe your device is compatible and this is an error, please send mail to our
+For details, visit the project website (http://opensource.srlabs.de/projects/snoopsnitch).
+If you believe your device is compatible and this is an error, please send an email to our
 list gsmmap@lists.srlabs.de.
 </string>
 
@@ -68,7 +68,7 @@ and supporting SnoopSnitch research and development!\n
 Please send details about this incident to snoopsnitch@srlabs.de. Do not
 forget your App-ID and the time the event happened. Thank you!\n
 \n
-This upload is encrypted. Keep in mind, that radio traces may contain
+This upload is encrypted. Keep in mind that radio traces may contain
 private data and location information. Have a look at the
 privacy policy on our project website on how we protect your data
 (http://opensource.srlabs.de/projects/snoopsnitch).
@@ -80,12 +80,12 @@ mobile network by sending and receiving a number of SMS and by placing and
 receiving a number of automatic calls.\n
 \n
 This should be free of charge. HOWEVER, YOUR OPERATOR MAY CHARGE YOU FOR
-OUTGOING SMS, EVEN IF SENT TO AN INVALID DESTINATION!\n
+OUTGOING SMS EVEN IF SENT TO AN INVALID DESTINATION!\n
 
 \n
 YOU MUST ONLY ENTER YOUR OWN PHONE NUMBER IN THE NEXT DIALOG. DO NOT PICK
-UP THE PHONE WHEN THE SERVER CALLS. IF YOU DO SO, YOU WILL GET BLACKLISTED
-AND BANNED FROM OUR SERVICE.\n
+UP THE PHONE WHEN THE SERVER CALLS. IF YOU DO SO, YOUR NUMBER WILL GET
+BLACKLISTED AND BANNED FROM OUR SERVICE.\n
 </string>
 
 <string name="alert_networktest_privacy_disclaimer">
@@ -93,13 +93,13 @@ Following the test, the resulting radio data is uploaded to our servers
 automatically. If you do not agree with this, press Cancel now and disable
 recording for active tests in the settings menu.\n
 \n
-Note, that radio traces may contain private data and location information as a
+Note that radio traces may contain private data and location information as a
 side effect. Have a look at the privacy policy on our project website on how we
 protect your data (http://opensource.srlabs.de/projects/snoopsnitch).\n
 </string>
 
 <string name="alert_first_app_start_message">
-Welcome! This is the first time your run SnoopSnitch.\n
+Welcome! This is your first time running SnoopSnitch.\n
 \n
 READ THIS MESSAGE CAREFULLY BEFORE PROCEEDING!\n
 \n
@@ -112,12 +112,12 @@ measurement results or security events, you can help improve this data base and
 support future research.\n
 \n
 SnoopSnitch will ask for confirmation whenever any of your information is uploaded to
-our servers. All uploads are encrypted. Note, that uploaded radio traces may contain
-private information as a by-product. See our privacy policy on the project website\n
+our servers. All uploads are encrypted. Note that uploaded radio traces may contain
+private information as a side-effect. See our privacy policy on the project website\n
 for further information (http://opensource.srlabs.de/projects/snoopsnitch).\n
 \n
 Raw radio data is stored encrypted on your phone. However, for the continuous security
-analysis SnoopSnitch needs to maintain data that may be used to reproduce your movements
+analysis, SnoopSnitch needs to maintain data that may be used to reconstruct your movements
 and possibly message contents. This information is cleaned regularly - make sure to
 configure a cleanup interval that suits your needs.\n
 \n
@@ -127,21 +127,21 @@ If SnoopSnitch\'s way of functioning concerns you, press Cancel now!
 <string name="about_text">
 SnoopSnitch collects and analyzes mobile radio data to make you aware
 of your mobile network security and to warn you about threats like fake base
-stations, user tracking and over-the-air updates.\n
+stations, user tracking, and over-the-air updates.\n
 \n
 This application uses data contributed by other users. By choosing to upload your
 measurement results or security events, you can help improve this data base and
 support future research.\n
 \n
 SnoopSnitch will ask for confirmation whenever any of your information is uploaded to
-our servers. All uploads are encrypted. Note, that uploaded radio traces may contain
-private information as a by-product.\n
+our servers. All uploads are encrypted. Note that uploaded radio traces may contain
+private information as a side-effect.\n
 \n
-If you have questions or want to contribute to SnoopSnitch, please send mail to
-our mailing list gsmmap@lists.srlabs.de. For private conversion with the SnoopSnitch
-team, please mail to snoopsnitch@srlabs.de.\n
+If you have questions or want to contribute to SnoopSnitch, please send an email to
+our mailing list gsmmap@lists.srlabs.de. For a private conversion with the SnoopSnitch
+team, please contact snoopsnitch@srlabs.de.\n
 \n
-SnoopSnitch is open source software released under the GPL licens version 3.
+SnoopSnitch is open-source software released under the GPL license version 3.
 Visit our  project website for source code and further information:\n
 \n
 http://opensource.srlabs.de/projects/snoopsnitch\n
