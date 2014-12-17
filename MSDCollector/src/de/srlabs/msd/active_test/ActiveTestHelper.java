@@ -2,6 +2,7 @@ package de.srlabs.msd.active_test;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,6 +35,7 @@ public class ActiveTestHelper{
 	public boolean connected;
 	private MyActiveTestCallback myActiveTestCallback = new MyActiveTestCallback();
 	private boolean activeTestRunning;
+	private Dialog confirmDialog = null;
 
 	class MyServiceConnection implements ServiceConnection {
 
@@ -221,6 +223,8 @@ public class ActiveTestHelper{
 	}
 
 	public void showConfirmDialogAndStart(final boolean clearResults){
+		if(confirmDialog != null && confirmDialog.isShowing())
+			return;
 		final boolean uploadDisabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("settings_active_test_disable_upload", false);
 		String positiveButtonText;
 		String networkTestMessage;
@@ -234,11 +238,15 @@ public class ActiveTestHelper{
 				context.getResources().getString(R.string.alert_networktest_message) + "\n" +
 				context.getResources().getString(R.string.alert_networktest_privacy_disclaimer);
 		}
-		MsdDialog.makeConfirmationDialog(context, networkTestMessage, new OnClickListener() 
+		confirmDialog = MsdDialog.makeConfirmationDialog(context, networkTestMessage, new OnClickListener() 
 		{
+			private boolean alreadyClicked = false;
 			@Override
 			public void onClick(DialogInterface dialog, int which) 
 			{
+				if(alreadyClicked)
+					return;
+				alreadyClicked = true;
 				if(clearResults)
 					clearResults();
 				try {
@@ -249,7 +257,8 @@ public class ActiveTestHelper{
 				queryPhoneNumberAndStart();
 			}
 		}, null,null,
-		positiveButtonText, context.getString(R.string.alert_button_cancel), false).show();
+		positiveButtonText, context.getString(R.string.alert_button_cancel), false);
+		confirmDialog.show();
 	}
 
 	public void applySettings() {
