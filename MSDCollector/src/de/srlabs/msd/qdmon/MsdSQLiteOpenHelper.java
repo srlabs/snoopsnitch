@@ -35,7 +35,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 					db.execSQL(statement);
 					if(verbose){
 						long durationMs = System.currentTimeMillis() - startTime;
-						MsdLog.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement took " + durationMs);
+						Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement took " + durationMs);
 					}
 				}
 			}
