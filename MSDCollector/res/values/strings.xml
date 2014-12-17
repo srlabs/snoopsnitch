@@ -6,7 +6,7 @@
     <string name="website">srlabs.de</string>
     <string name="common_silent_sms">Events</string>
     <string name="common_binary_sms">Binary SMS</string>
-    <string name="common_imsi_catcher">IMSI-Catcher</string>
+    <string name="common_imsi_catcher">IMSI Catcher</string>
     <string name="common_3g_title">3G</string>
     <string name="common_2g_title">2G</string>
     
@@ -77,7 +77,9 @@ The active network test collects security information about your current
 mobile network by sending and receiving a number of SMS and by placing and
 receiving a number of automatic calls.\n
 \n
-YOUR OPERATOR MAY CHARGE YOU FOR OUTGOING SMS SENT TO AN INVALID DESTINATION!\n
+This should be free of charge. HOWEVER, YOUR OPERATOR MAY CHARGE YOU FOR
+OUTGOING SMS, EVEN IF SENT TO AN INVALID DESTINATION!\n
+
 \n
 YOU MUST ONLY ENTER YOUR OWN PHONE NUMBER IN THE NEXT DIALOG. DO NOT PICK
 UP THE PHONE WHEN THE SERVER CALLS. IF YOU DO SO, YOU WILL GET BLACKLISTED
@@ -109,7 +111,7 @@ support future research.\n
 \n
 SnoopSnitch will ask for confirmation whenever any of your information is uploaded to
 our servers. All uploads are encrypted. Note, that uploaded radio traces may contain
-private information as a by product. See our privacy policy on the project website\n
+private information as a by-product. See our privacy policy on the project website\n
 for further information (http://opensource.srlabs.de/projects/snoopsnitch).\n
 \n
 Raw radio data is stored encrypted on your phone. However, for the continuous security
@@ -119,6 +121,31 @@ configure a cleanup interval that suits your needs.\n
 \n
 If SnoopSnitch\'s way of functioning concerns you, press Cancel now!
 </string>
+
+<string name="about_text">
+SnoopSnitch collects and analyzes mobile radio data to make you aware
+of your mobile network security and to warn you about threats like fake base
+stations, user tracking and over-the-air updates.\n
+\n
+This application uses data contributed by other users. By choosing to upload your
+measurement results or security events, you can help improve this data base and
+support future research.\n
+\n
+SnoopSnitch will ask for confirmation whenever any of your information is uploaded to
+our servers. All uploads are encrypted. Note, that uploaded radio traces may contain
+private information as a by-product.\n
+\n
+If you have questions or want to contribute to SnoopSnitch, please send mail to
+our mailing list gsmmap@lists.srlabs.de. For private conversion with the SnoopSnitch
+team, please mail to snoopsnitch@srlabs.de.\n
+\n
+SnoopSnitch is open source software released under the GPL licens version 3.
+Visit our  project website for source code and further information:\n
+\n
+http://opensource.srlabs.de/projects/snoopsnitch\n
+
+</string>
+
     
     <!-- Dashboard Screen -->
     <string name="dashboard_upload_description"> scans are ready to upload</string>
