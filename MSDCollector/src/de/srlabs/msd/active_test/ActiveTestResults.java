@@ -8,7 +8,9 @@ import java.util.Locale;
 import java.util.Vector;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.telephony.TelephonyManager;
+import de.srlabs.msd.R;
 import de.srlabs.msd.util.MsdLog;
 import de.srlabs.msd.util.Utils;
 
@@ -56,6 +58,11 @@ public class ActiveTestResults implements Serializable {
 			result.append("\n");
 		}
 	}
+
+	private String getRes(Context context, Integer ID) {
+		return context.getResources().getString(ID);
+	}
+
 	class NetworkOperatorRatTestResults  implements Serializable{
 		private static final long serialVersionUID = 1L;
 		int generation;
@@ -236,39 +243,43 @@ public class ActiveTestResults implements Serializable {
 		public void setRequestId(String requestId) {
 			this.requestId = requestId;
 		}
+
 		/**
 		 * Retrieves the text to be displayed for the currently running test, only valid when isRunning() == true
+		 * @param context 
 		 * @return
 		 */
-		public String getStateDisplayText(){
+
+		public String getStateDisplayText(Context context){
+
 			if(state == State.API_RUNNING){
-				return "Test running";
+				return getRes(context, R.string.at_running);
 			} else if(state == State.WAITING){
 				if(type == TestType.SMS_MO){
-					return "INVALID:" + type.name() + " : " + state.name();
+					return getRes(context, R.string.at_invalid) + ":" + type.name() + " : " + state.name();
 				} else if(type == TestType.CALL_MO){
-					return "Dialing";
+					return getRes(context, R.string.at_dialing);
 				} else if(type == TestType.SMS_MT){
-					return "Waiting for incoming SMS";
+					return getRes(context, R.string.at_wait_incoming_sms);
 				} else if(type == TestType.CALL_MT){
-					return "Waiting for incoming CALL";
+					return getRes(context, R.string.at_wait_incoming_call);
 				} else{
-					return "INVALID:" + type.name() + " : " + state.name();					
+					return getRes(context, R.string.at_invalid) + ":" + type.name() + " : " + state.name();					
 				}
 			} else if(state == State.TEST_RUNNING){
 				if(type == TestType.SMS_MO){
-					return "Sending SMS to invalid destination";
+					return getRes(context, R.string.at_send_sms);
 				} else if(type == TestType.CALL_MO){
-					return "Outgoing call ringing";
+					return getRes(context, R.string.at_outgoing_call_ringing);
 				} else if(type == TestType.SMS_MT){
-					return "INVALID:" + type.name() + " : " + state.name();	
+					return getRes(context, R.string.at_invalid) + ":" + type.name() + " : " + state.name();	
 				} else if(type == TestType.CALL_MT){
 					return "Incoming call ringing";
 				} else{
-					return "INVALID:" + type.name() + " : " + state.name();					
+					return getRes(context, R.string.at_invalid) + ":" + type.name() + " : " + state.name();					
 				}
 			}
-			return "INVALID:" + type.name() + " : " + state.name();
+			return getRes(context, R.string.at_invalid) + ":" + type.name() + " : " + state.name();
 		}
 
 		/**
@@ -354,7 +365,7 @@ public class ActiveTestResults implements Serializable {
 		return "\"" + input.replace("\\","\\\\").replace("\"", "\\\"").replace("\n","\\n") + "\"";
 	}
 	@SuppressLint("DefaultLocale")
-	public String getUpdateJavascript(){
+	public String getUpdateJavascript(Context context){
 		StringBuffer result = new StringBuffer();
 		NetworkOperatorTestResults currentNetworkOperator = getCurrentNetworkOperator();
 		String currentOperatorName = "Not connected";
@@ -393,14 +404,14 @@ public class ActiveTestResults implements Serializable {
 		}
 		String stateMsg;
 		if(fatalError != null)
-			stateMsg = "Test terminated with fatal error: " + fatalError;
+			stateMsg = getRes(context, R.string.at_fatal) + fatalError;
 		else
-			stateMsg = getCurrentActionString();
+			stateMsg = getCurrentActionString(context);
 		result.append("setStateView(" + escape(stateMsg) + ");\n");
 		result.append("setErrorLog(" + escape(getErrorLog()) + ");\n");
 		return result.toString();
 	}
-	public String formatTextTable(){
+	public String formatTextTable(Context context){
 		StringBuffer result = new StringBuffer();
 		NetworkOperatorTestResults currentProvider = getCurrentNetworkOperator();
 		if(currentProvider != null){
@@ -414,28 +425,28 @@ public class ActiveTestResults implements Serializable {
 			}
 		}
 		if(isTestRunning()){
-			result.append("Progress: " + getCurrentTest().getProgressPercent() + "%  ");
+			result.append(getRes(context, R.string.at_progress) + ": " + getCurrentTest().getProgressPercent() + "%  ");
 		}
 		if(fatalError != null)
-			result.append("Test terminated with fatal error: " + fatalError + "\n");
+			result.append(getRes(context, R.string.at_fatal) + ": " + fatalError + "\n");
 		else
-			result.append(getCurrentActionString() + "\n");
+			result.append(getCurrentActionString(context) + "\n");
 		result.append(errorLog);
 		return result.toString();
 	}
-	public String getCurrentActionString(){
+	public String getCurrentActionString(Context context){
 		if(blacklisted){
-			return "BANNED. Mail to snoopsnitch@srlabs.de.";
+			return getRes(context, R.string.at_banned);
 		} else if(invalidNumber){
-			return "Invalid number.";
+			return getRes(context, R.string.at_invalid_number);
 		} else if(invalidRequest){
-			return "Please update SnoopSnitch.";
+			return getRes(context, R.string.at_update);
 		} else if(testRoundComplete){
-			return "Test round complete. Please also test other network technologies.";
+			return getRes(context, R.string.at_done);
 		} else if(getCurrentTest() != null && getCurrentTest().isRunning()){
-			return getCurrentTest().getStateDisplayText();
+			return getCurrentTest().getStateDisplayText(context);
 		} else{
-			return ""; // No action running
+			return getRes(context, R.string.at_idle); // No action running
 		}
 	}
 	public boolean isTestRunning(){

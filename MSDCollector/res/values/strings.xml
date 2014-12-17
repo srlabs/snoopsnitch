@@ -241,4 +241,20 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
 
      <!-- Active test -->
      <string name="test_and_upload">Test and Upload</string>
+     <string name="at_invalid">INVALID</string>
+     <string name="at_running">Test running</string>
+     <string name="at_dialing">Dialing</string>
+     <string name="at_wait_incoming_sms">Waiting for incoming SMS</string>
+     <string name="at_wait_incoming_call">Waiting for incoming call</string>
+     <string name="at_send_sms">Sending SMS to invalid destination</string>
+     <string name="at_outgoing_call_ringing">Outgoing call ringing</string>
+     <string name="at_incoming_call_ringing">Incoming call ringing</string>
+     <string name="at_banned">BANNED. Mail to snoopsnitch@srlabs.de</string>
+     <string name="at_invalid_number">Invalid number</string>
+     <string name="at_update">Please update SnoopSnitch</string>
+     <string name="at_done">Done - please also test other network technologies</string>
+     <string name="at_idle"></string>
+     <string name="at_progress">Progress</string>
+     <string name="at_fatal">Test terminated with fatal error</string>
+
 </resources>

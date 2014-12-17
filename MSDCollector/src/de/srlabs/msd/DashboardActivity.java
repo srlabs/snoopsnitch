@@ -321,7 +321,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	@Override
 	public void handleTestResults(ActiveTestResults results) 
 	{
-		((TextView) findViewById(R.id.txtDashboardNetworkTest)).setText(results.getCurrentActionString());
+		((TextView) findViewById(R.id.txtDashboardNetworkTest)).setText(results.getCurrentActionString(this.getApplicationContext()));
 	}
 
 	@Override
