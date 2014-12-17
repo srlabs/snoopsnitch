@@ -136,13 +136,13 @@ public class DashboardProviderChart extends View
             		if (!op.getInter3G().isEmpty())
             		{
             			drawProviderScore(op.getInter3G().lastElement().getScore(), color,
-                				false, 0, true, op.getOperatorName().equals(risk.getOperatorName()));
+                				false, getOffset(op, true, true), true, op.getOperatorName().equals(risk.getOperatorName()));
             		}
             		
             		if (!op.getInter().isEmpty())
             		{
             			drawProviderScore(op.getInter().lastElement().getScore(), color,
-            					true, 0, true, op.getOperatorName().equals(risk.getOperatorName()));
+            					true, getOffset(op, true, false), true, op.getOperatorName().equals(risk.getOperatorName()));
             		}
             	}
             	else
@@ -150,13 +150,13 @@ public class DashboardProviderChart extends View
             		if (!op.getImper3G().isEmpty())
             		{
             			drawProviderScore(op.getImper3G().lastElement().getScore(), color,
-            					false, 0,  true, op.getOperatorName().equals(risk.getOperatorName()));	
+            					false, getOffset(op, false, true),  true, op.getOperatorName().equals(risk.getOperatorName()));	
             		}
             		
             		if (!op.getImper().isEmpty())
             		{
             			drawProviderScore(op.getImper().lastElement().getScore(), color,
-            					 true, 0,  true, op.getOperatorName().equals(risk.getOperatorName()));
+            					 true, getOffset(op, false, false),  true, op.getOperatorName().equals(risk.getOperatorName()));
             		}
             	}
         	}
@@ -167,13 +167,13 @@ public class DashboardProviderChart extends View
             		if (!op.getInter3G().isEmpty())
             		{
             			drawProviderScore(op.getInter3G().lastElement().getScore(), color,
-                				false, 0, false, op.getOperatorName().equals(risk.getOperatorName()));
+                				false, getOffset(op, true, true), false, op.getOperatorName().equals(risk.getOperatorName()));
             		}
             		
             		if (!op.getInter().isEmpty())
             		{
             			drawProviderScore(op.getInter().lastElement().getScore(), color,
-            					true, 0, false, op.getOperatorName().equals(risk.getOperatorName()));
+            					true, getOffset(op, true, false), false, op.getOperatorName().equals(risk.getOperatorName()));
             		}
             	}
             	else
@@ -181,13 +181,13 @@ public class DashboardProviderChart extends View
             		if (!op.getImper3G().isEmpty())
             		{
             			drawProviderScore(op.getImper3G().lastElement().getScore(), color,
-            					false, 0,  false, op.getOperatorName().equals(risk.getOperatorName()));	
+            					false, getOffset(op, false, true),  false, op.getOperatorName().equals(risk.getOperatorName()));	
             		}
             		
             		if (!op.getImper().isEmpty())
             		{
             			drawProviderScore(op.getImper().lastElement().getScore(), color,
-            					 true, 0,  false, op.getOperatorName().equals(risk.getOperatorName()));
+            					 true, getOffset(op, false, false),  false, op.getOperatorName().equals(risk.getOperatorName()));
             		}
             	}	
         	}
@@ -380,5 +380,50 @@ public class DashboardProviderChart extends View
 				Collections.swap(providerData, providerData.size()-1, providerData.indexOf(r));
 			}
 		}
+	}
+	
+	private float getOffset (Risk risk, Boolean interception, Boolean is3g)
+	{
+    	float offset = 0;
+    	
+    	for (int i=providerData.indexOf(risk)+1; i<providerData.size(); i++)
+    	{
+    		if (interception)
+    		{
+    			if (is3g)
+    			{
+    	    		if (providerData.get(i).getInter3G().equals(risk.getInter3G()))
+    	    		{
+    	    			offset += circleOffset;
+    	    		}
+    			}
+    			else
+    			{
+    	    		if (providerData.get(i).getInter().equals(risk.getInter()))
+    	    		{
+    	    			offset += circleOffset;
+    	    		}
+    			}
+    		}
+    		else
+    		{
+    			if  (is3g)
+    			{
+    	    		if (providerData.get(i).getImper3G().equals(risk.getImper3G()))
+    	    		{
+    	    			offset += circleOffset;
+    	    		}
+    			}
+    			else
+    			{
+    	    		if (providerData.get(i).getImper().equals(risk.getImper()))
+    	    		{
+    	    			offset += circleOffset;
+    	    		}
+    			}
+    		}
+    	}
+    	
+    	return offset;
 	}
 }
