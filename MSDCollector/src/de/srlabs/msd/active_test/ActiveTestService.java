@@ -596,8 +596,8 @@ public class ActiveTestService extends Service{
 
 	public void updateNetworkOperatorAndRat() {
 		try{
-			int fallbackGeneration = 0;
-			if(msdServiceHelper != null && msdServiceHelper.isConnected())
+			int fallbackGeneration = 3; // Default to 3G for now if we can't determine the network generation
+			if(msdServiceHelper != null && msdServiceHelper.isConnected() && msdServiceHelper.getParserNetworkGeneration()>0)
 				fallbackGeneration = msdServiceHelper.getParserNetworkGeneration();
 			results.setNetworkOperatorAndRat(telephonyManager, fallbackGeneration);
 		} catch(IllegalArgumentException e){

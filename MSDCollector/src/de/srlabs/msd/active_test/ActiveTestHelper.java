@@ -169,9 +169,6 @@ public class ActiveTestHelper{
 	private void queryPhoneNumberAndStart(String msg){
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		final String lastConfirmedOwnNumber = prefs.getString(Constants.PREFS_KEY_OWN_NUMBER, "");
-		TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-		final String ownNumber = telephonyManager.getLine1Number().trim();
-		MsdLog.i(TAG, "telephonyManager.getLine1Number(): " + ownNumber);
 		final EditText editText = new EditText(context);
 		editText.setHint("intl. notation, start with '+'");
 		editText.setInputType(InputType.TYPE_CLASS_PHONE);
