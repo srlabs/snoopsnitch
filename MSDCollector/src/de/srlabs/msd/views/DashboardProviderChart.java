@@ -325,7 +325,7 @@ public class DashboardProviderChart extends View
 					}
 				}
 				
-				if (!r.getImper3G().isEmpty())
+				if (!r.getInter3G().isEmpty())
 				{
 					if (r.getInter3G().lastElement().getScore() > maxScore)
 					{
