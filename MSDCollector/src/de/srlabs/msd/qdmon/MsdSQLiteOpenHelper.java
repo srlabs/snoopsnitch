@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import de.srlabs.msd.util.MsdLog;
 import de.srlabs.msd.util.Utils;
 
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
@@ -16,7 +17,6 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	}
 
 	public static void readSQLAsset(Context context, SQLiteDatabase db, String file, Boolean verbose) throws Exception {
-
 		Long tmp = System.currentTimeMillis();
 
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") called");
@@ -31,7 +31,12 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 					if (verbose){
 						Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement=" + statement);
 					}
+					long startTime = System.currentTimeMillis();
 					db.execSQL(statement);
+					if(verbose){
+						long durationMs = System.currentTimeMillis() - startTime;
+						MsdLog.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement took " + durationMs);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -47,6 +52,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
 		try{
 			readSQLAsset(context, db, "si.sql", true);
+			readSQLAsset(context, db, "si_loc.sql", true);
 			readSQLAsset(context, db, "sm.sql", true);
 			readSQLAsset(context, db, "cell_info.sql", true);
 			readSQLAsset(context, db, "sms.sql", true);

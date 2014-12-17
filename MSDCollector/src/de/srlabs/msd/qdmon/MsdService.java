@@ -70,6 +70,7 @@ import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdConfig;
 import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.MsdLog;
+import de.srlabs.msd.util.Utils;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";
@@ -884,16 +885,17 @@ public class MsdService extends Service{
 						return;
 					}
 					if(System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS){
+						info("Starting analysis");
 						try{
-
+							long analysisStartCpuTimeNanos = android.os.Debug.threadCpuTimeNanos();
 							Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 							String time = String.format(Locale.US, "%02d:%02d:%02d",
 									start.get(Calendar.HOUR_OF_DAY),
 									start.get(Calendar.MINUTE),
 									start.get(Calendar.SECOND));
-
+							updateLocationInfo(db,false);
+							info("updateLocationInfo done");
 							// Update location info
-							MsdSQLiteOpenHelper.readSQLAsset(MsdService.this, db, "location.sql", false);
 
 							if (MsdServiceAnalysis.runCatcherAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.CATCHER_DETECTED);
@@ -906,7 +908,8 @@ public class MsdService extends Service{
 							};
 							lastAnalysisTime = System.currentTimeMillis();
 
-							info(time + ": Analysis took " + (lastAnalysisTime - start.getTimeInMillis()) + "ms");
+							info(time + ": Analysis took " + (lastAnalysisTime - start.getTimeInMillis()) + "ms" + " CPU=" + (android.os.Debug.threadCpuTimeNanos()-analysisStartCpuTimeNanos)/1000000 + "ms");
+
 							sendStateChanged(StateChangedReason.ANALYSIS_DONE);
 
 							// TODO: This should be done somewhere else, when we really detect a change from
@@ -925,6 +928,71 @@ public class MsdService extends Service{
 					info("SqliteThread terminating due to InterruptedException");
 					return;
 				}
+			}
+		}
+		void updateLocationInfo(SQLiteDatabase db, boolean allTimes){
+			Cursor location_info = null, session_info = null;
+			try{
+				class LocationRow{
+					long timestamp;
+					double latitude;
+					double longitude;
+				}
+				LocationRow loc1 = null, loc2 = null;
+				String location_info_sql = "SELECT timestamp, latitude, longitude FROM location_info";
+				if(!allTimes)
+					location_info_sql += " WHERE timestamp > datetime('now','-30 minutes');";
+				location_info = db.rawQuery(location_info_sql, null);
+				if(!location_info.moveToFirst()){
+					return; // No location updates in past 15 minutes => Nothing to do
+				}
+				String session_info_sql = "SELECT id, timestamp FROM session_info";
+				if(!allTimes)
+					session_info_sql += " WHERE timestamp > datetime('now','-15 minutes');";
+				session_info = db.rawQuery(session_info_sql, null);
+				while(session_info.moveToNext()){
+					long session_id = session_info.getLong(session_info.getColumnIndexOrThrow("id"));
+					long session_timestamp_ms = session_info.getLong(session_info.getColumnIndexOrThrow("timestamp")) * 1000L;
+					if(session_info.getPosition() == 0){
+						db.delete("si_loc", "id >= " + session_id,null);
+					}
+					// loc1 should be before the current session and loc2 after the current session. Then we can just pick the nearest timestamp.
+					// If only one location update was found, it is stored in loc1
+					while((loc1 == null || loc2 == null || loc2.timestamp < session_timestamp_ms) && location_info.moveToNext()){
+						LocationRow new_loc = new LocationRow();
+						new_loc.timestamp = location_info.getLong(location_info.getColumnIndexOrThrow("timestamp")) * 1000L;
+						new_loc.latitude = location_info.getDouble(location_info.getColumnIndexOrThrow("latitude"));
+						new_loc.longitude = location_info.getDouble(location_info.getColumnIndexOrThrow("longitude"));
+						if(loc1 == null){
+							loc1 = new_loc;
+						} else if(loc2 == null){
+							loc2 = new_loc;
+						} else{
+							loc1 = loc2;
+							loc2 = new_loc;
+						}
+					}
+					// Find the best match
+					LocationRow loc = loc1;
+					if(loc2 != null && Math.abs(session_timestamp_ms - loc2.timestamp) < Math.abs(session_timestamp_ms - loc.timestamp)){
+						loc = loc2;
+					}
+					if(loc != null){
+						ContentValues values = new ContentValues();
+						values.put("id", session_id);
+						values.put("latitude",loc.latitude);
+						values.put("longitude", loc.longitude);
+						values.put("valid", (Math.abs(session_timestamp_ms - loc.timestamp) < 1000 * Constants.LOC_MAX_DELTA) ? 1:0);
+						db.insert("si_loc", null, values);
+					}
+				}
+			} catch(Exception e){
+				handleFatalError("Error in updateLocationInfo",e);
+			} finally{
+				if(location_info != null)
+					location_info.close();
+				if(session_info != null)
+					session_info.close();
 			}
 		}
 	}

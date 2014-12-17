@@ -16,6 +16,7 @@
     <copy file="../contrib/prebuilt/libsmime_crt.so"     todir="${jar.libs.dir}/armeabi" />
 
     <copy file="../contrib/prebuilt/si.sql"                todir="assets" />
+    <copy file="../contrib/prebuilt/si_loc.sql"                todir="assets" />
     <copy file="../contrib/prebuilt/cell_info.sql"         todir="assets" />
     <copy file="../contrib/prebuilt/sms.sql"               todir="assets" />
     <copy file="../contrib/prebuilt/sm_2g.sql"             todir="assets" />
