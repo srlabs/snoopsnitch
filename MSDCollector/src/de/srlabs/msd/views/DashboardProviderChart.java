@@ -33,8 +33,8 @@ public class DashboardProviderChart extends View
 	private float circleRadius;
 	private float circleLineSpace;
 	private float circleOffset;
-	private double minScore = 0.5;
-	private double maxScore = 0.5;
+	private double minScore = 1;
+	private double maxScore = 0;
 	private int interImper;
 	private Vector<Risk> providerData;
 	
