@@ -30,42 +30,48 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_sms_item_type"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowTimeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_sms_item_Time"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowPositionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_sms_item_position"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowCellIdTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_sms_item_cellid"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowSmsCTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_sms_item_smsc"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowSourceTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_sms_item_source"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
     </LinearLayout>
 
@@ -82,7 +88,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowTimeValue"
@@ -90,7 +97,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowPositionValue"
@@ -98,7 +106,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowCellIdValue"
@@ -106,7 +115,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowSmsCValue"
@@ -114,7 +124,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtSmsRowSourceValue"
@@ -122,7 +133,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
     </LinearLayout>
 

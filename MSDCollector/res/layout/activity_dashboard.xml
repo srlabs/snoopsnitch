@@ -34,7 +34,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
                     android:text="@string/dashboard_lastanalysis"
-                    android:textColor="@color/common_text" />
+                    android:textColor="@color/common_text"
+                    android:fontFamily="sans-serif-condensed" />
 
                 <TextView
                     android:id="@+id/txtDashboardLastAnalysisTime"
@@ -496,7 +497,8 @@
                     android:gravity="top|center_horizontal"
                     android:text="@string/dashboard_timeline_month"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium" />
+                    android:textSize="@dimen/text_medium"
+                    android:fontFamily="sans-serif-condensed" />
             </LinearLayout>
 
             <View
@@ -544,7 +546,8 @@
                     android:gravity="top|center_horizontal"
                     android:text="@string/dashboard_timeline_week"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium" />
+                    android:textSize="@dimen/text_medium"
+                    android:fontFamily="sans-serif-condensed" />
             </LinearLayout>
 
             <LinearLayout
@@ -587,7 +590,8 @@
                     android:gravity="top|center_horizontal"
                     android:text="@string/dashboard_timeline_today"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium" />
+                    android:textSize="@dimen/text_medium"
+                    android:fontFamily="sans-serif-condensed" />
 
             </LinearLayout>
 
@@ -636,7 +640,8 @@
                     android:gravity="top|center_horizontal"
                     android:text="@string/dashboard_timeline_lasthour"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium" />
+                    android:textSize="@dimen/text_medium"
+                    android:fontFamily="sans-serif-condensed" />
 
             </LinearLayout>
             
@@ -725,7 +730,8 @@
                 android:paddingRight="5dp"
                 android:text="@string/dashboard_network_security_provider_scrollview_header"
                 android:textColor="@color/common_text"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="@dimen/text_medium"
+                android:fontFamily="sans-serif-condensed" />
 
             <View
                 android:id="@+id/View30"
@@ -773,30 +779,32 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3" >
+                android:layout_weight="3"
+                android:weightSum="2" >
+
+                <TextView
+                    android:id="@+id/txtDashboardNetworkTest"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textSize="@dimen/text_medium" />
 
                 <Button
                     android:id="@+id/btnDashboardTestNetwork"
                     style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="right|center_vertical"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
                     android:background="@drawable/custom_upload_button_background"
                     android:gravity="center_vertical|center_horizontal"
                     android:onClick="toggleNetworkTest"
                     android:text="@string/common_button_networktest_start"
                     android:textColor="@drawable/custom_upload_button_color" />
-
-                <TextView
-                    android:id="@+id/txtDashboardNetworkTest"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_margin="5dp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text=""
-                    android:textSize="@dimen/text_medium" />
 
             </LinearLayout>
 
@@ -907,7 +915,7 @@
                     android:paddingBottom="2dp"
                     android:paddingTop="2dp"
                     android:text="@string/dashboard_network_security_protectionLevel_high"
-                    android:textColor="@color/common_text_light"
+					android:fontFamily="sans-serif-condensed"
                     android:textSize="@dimen/text_medium" />
 
                 <TextView
@@ -920,7 +928,7 @@
                     android:paddingBottom="2dp"
                     android:paddingTop="2dp"
                     android:text="@string/dashboard_network_security_protectionLevel_low"
-                    android:textColor="@color/common_text_light"
+					android:fontFamily="sans-serif-condensed"
                     android:textSize="@dimen/text_medium" />
 
             </FrameLayout>
@@ -946,7 +954,8 @@
                     android:text="@string/common_3g_title"
                     android:textColor="@color/common_text"
                     android:textSize="@dimen/text_medium"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed" />
 
                 <View
                     android:id="@+id/View37"
@@ -964,7 +973,8 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/common_2g_title"
                     android:textSize="@dimen/text_medium"
-                    android:textColor="@color/common_text" />
+                    android:textColor="@color/common_text"
+                    android:fontFamily="sans-serif-condensed" />
 
                 <View
                     android:id="@+id/View38"
@@ -982,7 +992,8 @@
                     android:text="@string/common_3g_title"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold"
-                    android:textColor="@color/common_text" />
+                    android:textColor="@color/common_text"
+                    android:fontFamily="sans-serif-condensed" />
 
                 <View
                     android:id="@+id/View36"
@@ -1000,7 +1011,8 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/common_2g_title"
                     android:textSize="@dimen/text_medium"
-                    android:textColor="@color/common_text" />
+                    android:textColor="@color/common_text"
+                    android:fontFamily="sans-serif-condensed" />
               	-->
               	
             	<TextView
@@ -1011,7 +1023,8 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/common_2g_title"
                     android:textSize="@dimen/text_medium"
-                    android:textColor="@color/common_text" />
+                    android:textColor="@color/common_text"
+                    android:fontFamily="sans-serif-condensed" />
 
             </LinearLayout>
 

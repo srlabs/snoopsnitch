@@ -31,28 +31,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_imsi_item_score"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtImsiRowTimeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_imsi_item_time"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtImsiRowPositionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_imsi_item_position"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtImsiRowCellIdTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listview_imsi_item_cellid"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
 
     </LinearLayout>
 
@@ -69,7 +73,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtImsiRowTimeValue"
@@ -77,7 +82,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtImsiRowPositionValue"
@@ -85,7 +91,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtImsiRowCellIdValue"
@@ -93,7 +100,8 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="@dimen/text_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
 
     </LinearLayout>
 
