@@ -95,7 +95,7 @@ public class MsdServiceAnalysis {
 	public static boolean runSecurityAnalysis(Context context, SQLiteDatabase db) throws Exception{
 
 		boolean result = false;
-		Operator op = new Operator(db);
+		Operator op = new Operator(context);
 
 		if (op.isValid()){
 			Log.i(TAG,"Security Analysis for mcc=" + op.getMcc() + ", mnc=" + op.getMnc());
