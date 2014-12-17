@@ -28,8 +28,8 @@ public class StartupActivity extends Activity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
-        boolean deviceCompatible = DeviceCompatibilityChecker.checkDeviceCompatibility() == null;
-        if(deviceCompatible){
+    	String incompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
+        if(incompatibilityReason == null){
     		final SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
         	if(sharedPreferences.getBoolean("app_first_run", true)){
         		showFirstRunDialog();
@@ -37,13 +37,18 @@ public class StartupActivity extends Activity{
         		startDashboard();
         	}
         } else{
-        	showDeviceIncompatibleDialog();
+        	showDeviceIncompatibleDialog(incompatibilityReason);
         }
     }
 
-    private void showDeviceIncompatibleDialog(){
-    	MsdDialog.makeFatalConditionDialog(this, getResources().getString(R.string.alert_deviceCompatibility_message), 
-				new OnClickListener() 
+    private void showDeviceIncompatibleDialog(String incompatibilityReason){
+    	
+    	String dialogMessage =
+    			getResources().getString(R.string.alert_deviceCompatibility_header) + "\n(" +
+    			incompatibilityReason + ")\n\n" +
+    			getResources().getString(R.string.alert_deviceCompatibility_message);
+
+    	MsdDialog.makeFatalConditionDialog(this, dialogMessage, new OnClickListener() 
 		{	
 			@Override
 			public void onClick(DialogInterface dialog, int which) 

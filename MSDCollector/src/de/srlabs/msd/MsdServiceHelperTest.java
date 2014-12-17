@@ -53,7 +53,7 @@ public class MsdServiceHelperTest extends Activity implements MsdServiceCallback
 					appendLogMsg("Already recording");
 					return;
 				}
-				String comptatibility = DeviceCompatibilityChecker.checkDeviceCompatibility();
+				String comptatibility = DeviceCompatibilityChecker.checkDeviceCompatibility(MsdServiceHelperTest.this);
 				if(comptatibility != null){
 					AlertDialog.Builder builder = new AlertDialog.Builder(MsdServiceHelperTest.this);
 					builder

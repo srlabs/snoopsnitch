@@ -5,6 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+
+import android.content.Context;
+
+import de.srlabs.msd.R;
 public class DeviceCompatibilityChecker {
 	private static String su_binary = null;
 
@@ -21,11 +25,17 @@ public class DeviceCompatibilityChecker {
 	 * @return Returns null if everything is OK or a textual description of the
 	 *         Error if the phone is not compatible.
 	 */
-	public static String checkDeviceCompatibility(){
-		if(getSuBinary() == null)
-			return "No working su binary found, please check whether you phone is rooted.";
-		if(! (new File("/dev/diag").exists()))
-			return "Device /dev/diag does not exist, probably your phone has no Qualcomm chip.";
+	public static String checkDeviceCompatibility(Context context){
+		File diagDevice = new File("/dev/diag");
+
+		if(!diagDevice.exists()) {
+			return context.getResources().getString(R.string.compat_no_qualcomm);
+		}
+
+		if(getSuBinary() == null) {
+			return context.getResources().getString(R.string.compat_no_root);
+		}
+
 		// Everything OK
 		return null;
 	}
