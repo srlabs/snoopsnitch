@@ -3,7 +3,7 @@
     
     <!-- General -->
 	<string name="app_name">SnoopSnitch</string>
-    <string name="website">srlabs.de</string>
+    <string name="website">http://opensource.srlabs.de/projects/snoopsnitch</string>
     <string name="common_silent_sms">Silent SMS</string>
     <string name="common_binary_sms">Binary SMS</string>
     <string name="common_imsi_catcher">IMSI Catcher</string>
@@ -191,16 +191,16 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
     <string name="settings_cellinfokeepduration_summary"></string>
     <string name="settings_cellinfokeepduration_dialogtitle">Select interval:</string>
     
-    <string name="settings_gpsrecording_title">GPS Recording</string>
+    <string name="settings_gpsrecording_title">Record GPS location</string>
     <string name="settings_gpsrecording_summary"></string>
     
-    <string name="settings_networklocationrecording_title">Network location recording</string>
+    <string name="settings_networklocationrecording_title">Record network location</string>
     <string name="settings_networklocationrecording_summary"></string>
     
-    <string name="settings_unencrypteddumpfilesrecording_title">Unencrypted files recording</string>
+    <string name="settings_unencrypteddumpfilesrecording_title">Unencrypted radio data (discouraged)</string>
     <string name="settings_unencrypteddumpfilesrecording_summary"></string>
     
-    <string name="settings_encrypteddumpfilesrecording_title">Encrypted files recording</string>
+    <string name="settings_encrypteddumpfilesrecording_title">Encrypted radio data</string>
     <string name="settings_encrypteddumpfilesrecording_summary"></string>
     
     <string name="settings_applicationid_title">Application ID</string>
@@ -218,15 +218,15 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
      <!-- List view row -->
      <string name="listview_sms_item_type">Type:</string>
      <string name="listview_sms_item_Time">Time:</string>
-     <string name="listview_sms_item_position">Position:</string>
-     <string name="listview_sms_item_cellid">Cell-ID:</string>
-     <string name="listview_sms_item_smsc">SMS-C:</string>
+     <string name="listview_sms_item_position">Location:</string>
+     <string name="listview_sms_item_cellid">Cell ID:</string>
+     <string name="listview_sms_item_smsc">SMSC:</string>
      <string name="listview_sms_item_source">Source:</string>
      <string name="listview_imsi_item_score">Score:</string>
      <string name="listview_imsi_item_time">Time:</string>   
-     <string name="listview_imsi_item_position">Position:</string>
-     <string name="listview_imsi_item_cellid">Cell-ID:</string>
-     <string name="listview_provider_item_ownprovider_text">Your provider</string>
+     <string name="listview_imsi_item_position">Location:</string>
+     <string name="listview_imsi_item_cellid">Cell ID:</string>
+     <string name="listview_provider_item_ownprovider_text">Your network</string>
      <string name="listview_provider_item_testresult">Your test result</string>
      
      <!-- Alert Dialog (to Refresh App ID) -->
