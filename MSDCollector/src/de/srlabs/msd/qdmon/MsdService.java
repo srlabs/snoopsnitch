@@ -886,6 +886,28 @@ public class MsdService extends Service{
 					}
 					if(System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS){
 						info("Starting analysis");
+						class AnalysisStackTraceLogRunnable implements Runnable{
+							Thread t = Thread.currentThread();
+							boolean stopped = false;
+							@Override
+							public void run() {
+								if(stopped)
+									return;
+								StackTraceElement stackTrace[] = t.getStackTrace();
+								info("Analysis Stack trace:");
+								for(StackTraceElement e:stackTrace){
+									info("  " + e);
+								}
+								mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(this),100);
+							}
+						}
+						AnalysisStackTraceLogRunnable analysisStackTraceLogRunnable = null;
+						// For debugging delays in the analysis, we can dump a Stack Trace of this Thread every 100 ms.
+						boolean dumpAnalysisStackTraces = true;
+						if(dumpAnalysisStackTraces){
+							analysisStackTraceLogRunnable = new AnalysisStackTraceLogRunnable();
+							mainThreadHandler.post(new ExceptionHandlingRunnable(analysisStackTraceLogRunnable));
+						}
 						try{
 							long analysisStartCpuTimeNanos = android.os.Debug.threadCpuTimeNanos();
 							Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -909,7 +931,9 @@ public class MsdService extends Service{
 							lastAnalysisTime = System.currentTimeMillis();
 
 							info(time + ": Analysis took " + (lastAnalysisTime - start.getTimeInMillis()) + "ms" + " CPU=" + (android.os.Debug.threadCpuTimeNanos()-analysisStartCpuTimeNanos)/1000000 + "ms");
-
+							if(dumpAnalysisStackTraces){
+								analysisStackTraceLogRunnable.stopped = true;
+							}
 							sendStateChanged(StateChangedReason.ANALYSIS_DONE);
 
 							// TODO: This should be done somewhere else, when we really detect a change from
@@ -1525,7 +1549,7 @@ public class MsdService extends Service{
 
 		if(pendingSqlStatements.isEmpty())
 			pendingSqlStatementsEmptyTimestamp = System.currentTimeMillis();
-		
+
 		if( System.currentTimeMillis() > pendingSqlStatementsEmptyTimestamp + 60*1000){
 			handleFatalError("SQL Statements are waiting for more than one minute, current queue size: " + pendingSqlStatements.size());
 		}
