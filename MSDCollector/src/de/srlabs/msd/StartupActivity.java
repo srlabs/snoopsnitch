@@ -1,6 +1,7 @@
 package de.srlabs.msd;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
@@ -8,11 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
-import de.srlabs.msd.qdmon.MsdServiceHelper;
 import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdDialog;
-import de.srlabs.msd.util.MsdLog;
 
 /**
  * This class is launched when starting the App. It will display a dialog if the
@@ -25,6 +25,7 @@ import de.srlabs.msd.util.MsdLog;
 public class StartupActivity extends Activity{
     private MsdSQLiteOpenHelper helper;
 	private boolean alreadyClicked = false;
+	private ProgressDialog progressDialog;
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
@@ -34,7 +35,7 @@ public class StartupActivity extends Activity{
         	if(sharedPreferences.getBoolean("app_first_run", true)){
         		showFirstRunDialog();
         	} else{
-        		startDashboard();
+        		createDatabaseAndStartDashboard();
         	}
         } else{
         	showDeviceIncompatibleDialog(incompatibilityReason);
@@ -77,7 +78,7 @@ public class StartupActivity extends Activity{
 						alreadyClicked = true;
 					    // record the fact that the app has been started at least once
 					    sharedPreferences.edit().putBoolean("app_first_run", false).commit(); 	
-					    startDashboard();
+						createDatabaseAndStartDashboard();
 					}
 				},
 				new OnClickListener() 
@@ -105,18 +106,33 @@ public class StartupActivity extends Activity{
 		finish();
 		System.exit(0);
 	}
-	private void startDashboard() {
-		// Initialize the database before starting DashboardActivity
-		// TODO: Maybe show some status indication (e.g. a Toast message) while creating the database
-		helper = new MsdSQLiteOpenHelper(this);
-		SQLiteDatabase db = helper.getReadableDatabase();
-		db.rawQuery("SELECT * FROM config", null).close();
-		db.close();
-		helper.close();
-        Intent i = new Intent(this, DashboardActivity.class);
+	private void createDatabaseAndStartDashboard() {
+		progressDialog = ProgressDialog.show(this, "Initializing database", "Please wait...", true);
+		progressDialog.show();
+		final Handler handler = new Handler();
+		Thread t = new Thread(){
+			@Override
+			public void run() {
+				helper = new MsdSQLiteOpenHelper(StartupActivity.this);
+				SQLiteDatabase db = helper.getReadableDatabase();
+				db.rawQuery("SELECT * FROM config", null).close();
+				db.close();
+				helper.close();
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						progressDialog.dismiss();
+						startDashboard();
+					}
+				});
+			}
+		};
+		t.start();
+	}
+	private void startDashboard(){
+        Intent i = new Intent(StartupActivity.this, DashboardActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        this.startActivity(i);
+        StartupActivity.this.startActivity(i);
         finish();
 	}
-
 }
