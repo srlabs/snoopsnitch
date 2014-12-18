@@ -3,6 +3,7 @@ package de.srlabs.msd;
 import java.io.File;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
@@ -14,6 +15,7 @@ import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.MsdServiceHelper;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.upload.DumpFile;
+import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.MsdDialog;
 
@@ -79,14 +81,16 @@ public class CrashUploadActivity extends Activity implements MsdServiceCallback
 					}, new OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
+							cancelNotification();
 							quitApplication();
 						}
 					}, new OnCancelListener() {
 						@Override
 						public void onCancel(DialogInterface dialog) {
+							// Don't delete notification when pressing the back button
 							quitApplication();
 						}
-					}, "Upload", "Cancel", false).show();
+					}, "Upload", "Cancel", true).show();
 				}
 			}
 		}
@@ -95,6 +99,7 @@ public class CrashUploadActivity extends Activity implements MsdServiceCallback
 			MsdDialog.makeNotificationDialog(this, msg, new OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					cancelNotification();
 					quitApplication();
 				}
 			}, false).show();
@@ -116,12 +121,17 @@ public class CrashUploadActivity extends Activity implements MsdServiceCallback
 		if(triggerUploadingPending && helper.isConnected()){
 			helper.triggerUploading();
 			triggerUploadingPending = false;
+			cancelNotification();
 			quitApplication();
 		}
 	}
 
 	@Override
 	public void internalError(String msg) {
+	}
+	private void cancelNotification(){
+		NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notificationManager.cancel(Constants.NOTIFICATION_ID_INTERNAL_ERROR);
 	}
 	protected void quitApplication ()
 	{
