@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" > 
     
-   	<ListPreference
+   	<PreferenceCategory android:title="@string/settings_cat_app_id"></PreferenceCategory><Preference android:key="settings_appId" android:title="@string/settings_applicationid_title" android:summary="@string/settings_applicationid_summary" /><PreferenceCategory android:title="@string/settings_cat_cleanup"></PreferenceCategory><ListPreference
         android:key="settings_basebandLogKeepDuration"
         android:title="@string/settings_basebandlogkeepduration_title"
         android:summary="%s"
@@ -40,39 +40,21 @@
         android:entryValues="@array/settings_durations_values"
         android:defaultValue="30" />
     
-	<CheckBoxPreference 
-	    android:key="settings_gpsRecording"
-        android:title="@string/settings_gpsrecording_title"
-        android:summary="@string/settings_gpsrecording_summary"
-        android:defaultValue="false"
- 	/>
 	
-	<CheckBoxPreference 
-	    android:key="settings_networkLocationRecording"
-        android:title="@string/settings_networklocationrecording_title"
-        android:summary="@string/settings_networklocationrecording_summary"
-        android:defaultValue="true"
- 	/>
 	
-	<CheckBoxPreference 
-	    android:key="settings_recordUnencryptedDumpfiles"
-        android:title="@string/settings_unencrypteddumpfilesrecording_title"
-        android:summary="@string/settings_unencrypteddumpfilesrecording_summary"
-        android:defaultValue="false"
- 	/>
+	
+	
+	<PreferenceCategory android:title="@string/settings_cat_log_encryption"></PreferenceCategory>
 	
 	<CheckBoxPreference 
 	    android:key="settings_recordEncryptedDumpfiles"
         android:title="@string/settings_encrypteddumpfilesrecording_title"
         android:summary="@string/settings_encrypteddumpfilesrecording_summary"
         android:defaultValue="true"
- 	/>
+ 	/><CheckBoxPreference android:key="settings_recordUnencryptedDumpfiles" android:title="@string/settings_unencrypteddumpfilesrecording_title" android:summary="@string/settings_unencrypteddumpfilesrecording_summary" android:defaultValue="false" /><PreferenceCategory android:title="@string/settings_cat_location">
+        </PreferenceCategory><CheckBoxPreference android:key="settings_gpsRecording" android:title="@string/settings_gpsrecording_title" android:summary="@string/settings_gpsrecording_summary" android:defaultValue="false" /><CheckBoxPreference android:key="settings_networkLocationRecording" android:title="@string/settings_networklocationrecording_title" android:summary="@string/settings_networklocationrecording_summary" android:defaultValue="true" /><PreferenceCategory android:title="@string/settings_cat_active_test"></PreferenceCategory>
 	
-	<Preference 
-	    android:key="settings_appId"
-	    android:title="@string/settings_applicationid_title"
-	    android:summary="@string/settings_applicationid_summary"
-	/>
+	
 	<CheckBoxPreference 
 	    android:key="settings_active_test_force_offline"
         android:title="@string/settings_active_test_force_offline_title"
@@ -93,5 +75,10 @@
         android:summary="@string/settings_active_test_disable_upload_summary"
         android:defaultValue="false"
  	/>
+	
+	
+	
+	
+	
     
 </PreferenceScreen>

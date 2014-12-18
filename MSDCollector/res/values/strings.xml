@@ -197,8 +197,8 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
     <string name="settings_networklocationrecording_title">Record network location</string>
     <string name="settings_networklocationrecording_summary"></string>
     
-    <string name="settings_unencrypteddumpfilesrecording_title">Unencrypted radio data (discouraged)</string>
-    <string name="settings_unencrypteddumpfilesrecording_summary"></string>
+    <string name="settings_unencrypteddumpfilesrecording_title">Unencrypted radio data</string>
+    <string name="settings_unencrypteddumpfilesrecording_summary">DISCOURAGED!</string>
     
     <string name="settings_encrypteddumpfilesrecording_title">Encrypted radio data</string>
     <string name="settings_encrypteddumpfilesrecording_summary"></string>
@@ -214,6 +214,13 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
     
     <string name="settings_active_test_disable_upload_title">Don\'t upload test results</string>
     <string name="settings_active_test_disable_upload_summary">Evaluate active test results on the phone only.</string>
+
+    <!-- Settings categories -->
+    <string name="settings_cat_location">Location Recording</string>
+    <string name="settings_cat_cleanup">Log file cleanup</string>
+    <string name="settings_cat_log_encryption">Log file encryption</string>
+    <string name="settings_cat_app_id">Application ID</string>
+    <string name="settings_cat_active_test">Active test parameters</string>
     
      <!-- List view row -->
      <string name="listview_sms_item_type">Type:</string>
