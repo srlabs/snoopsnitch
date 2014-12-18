@@ -51,6 +51,7 @@ import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.telephony.CellInfo;
@@ -858,6 +859,8 @@ public class MsdService extends Service{
 
 		@Override
 		public void run() {
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
 			lastAnalysisTime = System.currentTimeMillis();
 			MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
@@ -886,6 +889,7 @@ public class MsdService extends Service{
 					}
 					if(System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS){
 						info("Starting analysis");
+						wl.acquire();
 						class AnalysisStackTraceLogRunnable implements Runnable{
 							Thread t = Thread.currentThread();
 							boolean stopped = false;
@@ -944,6 +948,7 @@ public class MsdService extends Service{
 							// Terminate the service with a fatal error if there is a any uncaught Exception in the Analysis
 							handleFatalError("Exception during analysis",e);
 						}
+						wl.release();
 					}
 				} catch (InterruptedException e) {
 					if(!pendingSqlStatements.isEmpty()){
