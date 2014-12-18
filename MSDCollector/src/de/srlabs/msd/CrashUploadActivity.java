@@ -1,18 +1,21 @@
 package de.srlabs.msd;
 
+import java.io.File;
+
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
+import android.util.Log;
 import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.qdmon.MsdServiceCallback;
 import de.srlabs.msd.qdmon.MsdServiceHelper;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.MsdDatabaseManager;
+import de.srlabs.msd.util.MsdDialog;
 
 /**
  * This Activity can be opened from an Android Notification after a fatal error
@@ -25,12 +28,11 @@ import de.srlabs.msd.util.MsdDatabaseManager;
  */
 public class CrashUploadActivity extends Activity implements MsdServiceCallback
 {
+	private static String TAG = "CrashUploadActivity";
 	public static String EXTRA_ERROR_TEXT = "ERROR_TEXT";
 	public static String EXTRA_ERROR_ID = "ERROR_ID";
 	private String errorText;
 	private long fileId;
-	private TextView textView1;
-	private Button btnUpload;
 	private MsdServiceHelper helper;
 	private boolean triggerUploadingPending = false;
 
@@ -39,36 +41,70 @@ public class CrashUploadActivity extends Activity implements MsdServiceCallback
 	{
 		super.onCreate(savedInstanceState);
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(CrashUploadActivity.this));
-		setContentView(R.layout.activity_crash_upload);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		Bundle extras = getIntent().getExtras();
-		textView1 = (TextView) findViewById(R.id.textView1);
-		btnUpload = (Button) findViewById(R.id.btnUpload);
 		errorText = extras.getString(EXTRA_ERROR_TEXT);
 		fileId = extras.getLong(EXTRA_ERROR_ID);
+		boolean noLogsAvailable = false;
 		if(fileId == 0){
-			// Creating an error log failed, so we have to fall back to adb logcat.
-			// TODO: Add an email address for submitting adb logs
-			textView1.setText("Something went wrong with collecting a crash report. Please run 'adb logcat -v time > log.txt' and submit the resulting log to TODO\n" + errorText);
-			btnUpload.setEnabled(false);
+			noLogsAvailable = true;
 		} else{
 			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 			DumpFile df = DumpFile.get(db, fileId);
 			MsdDatabaseManager.getInstance().closeDatabase();
-			textView1.setText("Error file: " + df.getFilename() + "\nReport ID: " + df.getReportId() + "\n" + errorText);
-		}
-		btnUpload.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				upload();
+			if(df == null){
+				noLogsAvailable = true;
+				Log.i(TAG, "Row " + fileId + " not found");
+			} else if(df.getState() == DumpFile.STATE_UPLOADED){
+				String msg = "The debug log for this crash has already been uploaded.\n" + errorText;
+				MsdDialog.makeNotificationDialog(this, msg, new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						quitApplication();
+					}
+				}, false).show();
+			} else{
+				File f = new File(getFilesDir() + "/" + df.getFilename());
+				Log.i(TAG,"Full path: " + getFilesDir() + "/" + df.getFilename() + "  size=" + f.length());
+				if(!f.exists() || f.length() < 100){ // The debug log must contain an smime and a gzip header, so we can ignore files below 100 bytes.
+					noLogsAvailable = true;
+					Log.i(TAG, "File does not exist or size < 100 bytes");
+				} else{
+					String msg = "Error file: " + df.getFilename() + "\nReport ID: " + df.getReportId() + "\n" + errorText;
+					MsdDialog.makeConfirmationDialog(this, msg, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							upload();
+						}
+					}, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							quitApplication();
+						}
+					}, new OnCancelListener() {
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							quitApplication();
+						}
+					}, "Upload", "Cancel", false).show();
+				}
 			}
-		});
+		}
+		if(noLogsAvailable){
+			String msg = "Something went wrong with collecting a crash report. Please run 'adb logcat -v time > log.txt' and submit the resulting log to TODO\n" + errorText;
+			MsdDialog.makeNotificationDialog(this, msg, new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					quitApplication();
+				}
+			}, false).show();
+		}
 	}
 
 	private void upload() {
-		btnUpload.setEnabled(false);
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		DumpFile df = DumpFile.get(db, fileId);
+		Log.i(TAG, "calling markForUpload for file " + fileId + " name=" + df.getFilename() + " current state: " + df.getState());
 		df.markForUpload(db);
 		MsdDatabaseManager.getInstance().closeDatabase();
 		triggerUploadingPending  = true;
@@ -80,10 +116,16 @@ public class CrashUploadActivity extends Activity implements MsdServiceCallback
 		if(triggerUploadingPending && helper.isConnected()){
 			helper.triggerUploading();
 			triggerUploadingPending = false;
+			quitApplication();
 		}
 	}
 
 	@Override
 	public void internalError(String msg) {
+	}
+	protected void quitApplication ()
+	{
+		finish();
+		System.exit(0);
 	}
 }
