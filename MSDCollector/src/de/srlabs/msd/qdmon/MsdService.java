@@ -356,7 +356,8 @@ public class MsdService extends Service{
 		public void run() {
 			if(shuttingDown.get())
 				return;
-			debugLogWriter.flushIfUnflushedDataSince(10000);
+			if(debugLogWriter != null)
+				debugLogWriter.flushIfUnflushedDataSince(10000);
 			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(this), 5000);
 		}
 	}
