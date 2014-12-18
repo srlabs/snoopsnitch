@@ -9,23 +9,19 @@ import android.preference.PreferenceManager;
  */
 public class MsdConfig {
 	public static int getBasebandLogKeepDurationHours(Context context){
-		
-		return PreferenceManager.getDefaultSharedPreferences(context).getInt("settings_basebandLogKeepDuration", 30);
+		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_basebandLogKeepDuration", "30"));
 	}
 	public static int getDebugLogKeepDurationHours(Context context){
 		return 3; // TODO: Maybe add a configuration entry
 	}
 	public static int getLocationLogKeepDurationHours(Context context){
-		
-		return PreferenceManager.getDefaultSharedPreferences(context).getInt("settings_locationLogKeepDuration", 30);
+		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_locationLogKeepDuration", "30"));
 	}
 	public static int getSessionInfoKeepDurationHours(Context context){
-		
-		return PreferenceManager.getDefaultSharedPreferences(context).getInt("settings_sessionInfoKeepDuration", 30);
+		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_sessionInfoKeepDuration", "30"));
 	}
 	public static int getCellInfoKeepDurationHours(Context context){
-
-		return PreferenceManager.getDefaultSharedPreferences(context).getInt("settings_cellInfoKeepDuration", 30);
+		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_cellInfoKeepDuration", "30"));
 	}
 	public static boolean gpsRecordingEnabled(Context context){
 

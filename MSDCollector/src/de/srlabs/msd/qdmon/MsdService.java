@@ -1900,7 +1900,7 @@ public class MsdService extends Service{
 				boolean delete = false;
 				if(df == null)
 					delete = true; // No database entry => Delete file
-				if(df != null && !containsEvent && df.getEnd_time() < System.currentTimeMillis() - keepDurationHours * 3600 * 1000)
+				if(df != null && !containsEvent && keepDurationHours > 0 && df.getEnd_time() < System.currentTimeMillis() - keepDurationHours * 3600 * 1000)
 					delete = true; // File doesn't contain an event (crash, SMS, IMSI) and it is older than the configured keep duration => Delete it
 				if(df != null && df.getState() == DumpFile.STATE_PENDING)
 					delete = false; // Don't delete files pending for upload
@@ -1930,17 +1930,30 @@ public class MsdService extends Service{
 		}
 	}
 	private void cleanupDatabase(SQLiteDatabase db) throws SQLException{
-		String sql = "DELETE FROM session_info where timestamp < datetime('now','-" + MsdConfig.getSessionInfoKeepDurationHours(MsdService.this) + " hours');";
-		info("cleanup: " + sql);
-		db.execSQL(sql);
-		sql = "DELETE FROM location_info where timestamp < datetime('now','-" + MsdConfig.getLocationLogKeepDurationHours(MsdService.this) + " hours');";
-		info("cleanup: " + sql);
-		db.execSQL(sql);
-		sql = "DELETE FROM serving_cell_info where timestamp < datetime('now','-" + MsdConfig.getCellInfoKeepDurationHours(MsdService.this) + " hours');";
-		info("cleanup: " + sql);
-		db.execSQL(sql);
-		sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + MsdConfig.getCellInfoKeepDurationHours(MsdService.this) + " hours');";
-		info("cleanup: " + sql);
-		db.execSQL(sql);
+		String sql;
+		int keepDuration = MsdConfig.getSessionInfoKeepDurationHours(MsdService.this);
+		if(keepDuration > 0){
+			sql = "DELETE FROM session_info where timestamp < datetime('now','-" + keepDuration + " hours');";
+			info("cleanup: " + sql);
+			db.execSQL(sql);
+		}
+		keepDuration = MsdConfig.getLocationLogKeepDurationHours(MsdService.this);
+		if(keepDuration > 0){
+			sql = "DELETE FROM location_info where timestamp < datetime('now','-" + keepDuration + " hours');";
+			info("cleanup: " + sql);
+			db.execSQL(sql);
+		}
+		keepDuration = MsdConfig.getCellInfoKeepDurationHours(MsdService.this);
+		if(keepDuration > 0){
+			sql = "DELETE FROM serving_cell_info where timestamp < datetime('now','-" + keepDuration + " hours');";
+			info("cleanup: " + sql);
+			db.execSQL(sql);
+		}
+		keepDuration = MsdConfig.getCellInfoKeepDurationHours(MsdService.this);
+		if(keepDuration > 0){
+			sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + keepDuration + " hours');";
+			info("cleanup: " + sql);
+			db.execSQL(sql);
+		}
 	}
 }
