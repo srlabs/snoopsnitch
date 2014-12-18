@@ -176,44 +176,44 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
   	<string name="settings_actionBar_title">Settings</string>
     
     <string name="settings_basebandlogkeepduration_title">Baseband log clean interval</string>
-    <string name="settings_basebandlogkeepduration_summary"></string>
+    <string name="settings_basebandlogkeepduration_summary">Radio traces are stored on the phone for that long</string>
     <string name="settings_basebandlogkeepduration_dialogtitle">Select interval:</string>
     
     <string name="settings_locationlogkeepduration_title">Location log clean interval</string>
-    <string name="settings_locationlogkeepduration_summary"></string>
+    <string name="settings_locationlogkeepduration_summary">Information about your location is stored on the phone for that long</string>
     <string name="settings_locationlogkeepduration_dialogtitle">Select interval:</string>
     
-    <string name="settings_sessioninfokeepduration_title">Session info clean interval</string>
-    <string name="settings_sessioninfokeepduration_summary"></string>
-    <string name="settings_sessioninfokeepduration_dialogtitle">Select interval:</string>
+    <string name="settings_analysiskeepduration_title">Analysis data clean interval</string>
+    <string name="settings_analysiskeepduration_summary">Data from catcher and event analysis is stored on the phone for that long</string>
+    <string name="settings_analysiskeepduration_dialogtitle">Select interval:</string>
     
-    <string name="settings_cellinfokeepduration_title">Cell info clean interval</string>
-    <string name="settings_cellinfokeepduration_summary"></string>
-    <string name="settings_cellinfokeepduration_dialogtitle">Select interval:</string>
+    <string name="settings_debuglogkeepduration_title">Debug log clean interval</string>
+    <string name="settings_debuglogkeepduration_summary">Debug logs are stored on the phone for that long</string>
+    <string name="settings_debuglogkeepduration_dialogtitle">Select interval:</string>
     
     <string name="settings_gpsrecording_title">Record GPS location</string>
-    <string name="settings_gpsrecording_summary"></string>
+    <string name="settings_gpsrecording_summary">Use fine-grained GPS-based location recording to get location information for IMSI catcher and security events</string>
     
     <string name="settings_networklocationrecording_title">Record network location</string>
-    <string name="settings_networklocationrecording_summary"></string>
+    <string name="settings_networklocationrecording_summary">Use coarse-grained network-based location recording to get location information for IMSI catcher and security events</string>
     
     <string name="settings_unencrypteddumpfilesrecording_title">Unencrypted radio data</string>
-    <string name="settings_unencrypteddumpfilesrecording_summary">DISCOURAGED!</string>
+    <string name="settings_unencrypteddumpfilesrecording_summary">DO NOT ENABLE THIS! This is a development option and we will NOT remove sensitive information from the device for you!</string>
     
     <string name="settings_encrypteddumpfilesrecording_title">Encrypted radio data</string>
-    <string name="settings_encrypteddumpfilesrecording_summary"></string>
+    <string name="settings_encrypteddumpfilesrecording_summary">Store radio data encrypted with our public key.</string>
     
-    <string name="settings_applicationid_title">Application ID</string>
-    <string name="settings_applicationid_summary">Tap to reset the application ID.</string>
+    <string name="settings_applicationid_title">App ID</string>
+    <string name="settings_applicationid_summary">Your can use your app ID to hint us at the files you uploaded. Refresh it anytime by tapping here.</string>
     
     <string name="settings_active_test_force_offline_title">Force offline test</string>
-    <string name="settings_active_test_force_offline_summary">Force using offline mode in active test.</string>
+    <string name="settings_active_test_force_offline_summary">Force using offline mode in active test. No data connection is used in this case.</string>
     
     <string name="settings_active_test_num_iterations_title">Active test iterations</string>
-    <string name="settings_active_test_num_iterations_dialogtitle">Number of iterations for each active test</string>
+    <string name="settings_active_test_num_iterations_dialogtitle">Number of iterations for each active test.</string>
     
     <string name="settings_active_test_disable_upload_title">Don\'t upload test results</string>
-    <string name="settings_active_test_disable_upload_summary">Evaluate active test results on the phone only.</string>
+    <string name="settings_active_test_disable_upload_summary">Evaluate active test results on the phone only. No radio data is uploaded to our servers in this case.</string>
 
     <!-- Settings categories -->
     <string name="settings_cat_location">Location Recording</string>

@@ -7,44 +7,38 @@
    	<PreferenceCategory android:title="@string/settings_cat_app_id"></PreferenceCategory><Preference android:key="settings_appId" android:title="@string/settings_applicationid_title" android:summary="@string/settings_applicationid_summary" /><PreferenceCategory android:title="@string/settings_cat_cleanup"></PreferenceCategory><ListPreference
         android:key="settings_basebandLogKeepDuration"
         android:title="@string/settings_basebandlogkeepduration_title"
-        android:summary="%s"
+        android:summary="@string/settings_basebandlogkeepduration_summary"
         android:dialogTitle="@string/settings_basebandlogkeepduration_dialogtitle"
         android:entries="@array/settings_durations_entries"
         android:entryValues="@array/settings_durations_values"
-        android:defaultValue="30" />
+        android:defaultValue="1"/>
    	
   	<ListPreference
         android:key="settings_locationLogKeepDuration"
         android:title="@string/settings_locationlogkeepduration_title"
-        android:summary="%s"
+        android:summary="@string/settings_locationlogkeepduration_summary"
         android:dialogTitle="@string/settings_locationlogkeepduration_dialogtitle"
         android:entries="@array/settings_durations_entries"
         android:entryValues="@array/settings_durations_values"
-        android:defaultValue="30" />
+        android:defaultValue="1" />
   	
   	<ListPreference
-        android:key="settings_sessionInfoKeepDuration"
-        android:title="@string/settings_sessioninfokeepduration_title"
-        android:summary="%s"
-        android:dialogTitle="@string/settings_sessioninfokeepduration_dialogtitle"
+        android:key="settings_analysisInfoKeepDuration"
+        android:title="@string/settings_analysiskeepduration_title"
+        android:summary="@string/settings_analysiskeepduration_summary"
+        android:dialogTitle="@string/settings_analysiskeepduration_dialogtitle"
         android:entries="@array/settings_durations_entries"
         android:entryValues="@array/settings_durations_values"
-        android:defaultValue="30" />
+        android:defaultValue="1" />
   	
 	<ListPreference
-        android:key="settings_cellInfoKeepDuration"
-        android:title="@string/settings_cellinfokeepduration_title"
-        android:summary="%s"
-        android:dialogTitle="@string/settings_cellinfokeepduration_dialogtitle"
+        android:key="settings_debuglogKeepDuration"
+        android:title="@string/settings_debuglogkeepduration_title"
+        android:summary="@string/settings_debuglogkeepduration_summary"
+        android:dialogTitle="@string/settings_debuglogkeepduration_dialogtitle"
         android:entries="@array/settings_durations_entries"
         android:entryValues="@array/settings_durations_values"
-        android:defaultValue="30" />
-    
-	
-	
-	
-	
-	<PreferenceCategory android:title="@string/settings_cat_log_encryption"></PreferenceCategory>
+        android:defaultValue="1" /><PreferenceCategory android:title="@string/settings_cat_log_encryption"></PreferenceCategory>
 	
 	<CheckBoxPreference 
 	    android:key="settings_recordEncryptedDumpfiles"
