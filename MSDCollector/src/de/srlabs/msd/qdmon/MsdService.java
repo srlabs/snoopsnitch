@@ -1485,6 +1485,19 @@ public class MsdService extends Service{
 	}
 	private void shutdownDueToError(String msg, Throwable e){
 		shutdown(true);
+		MsdLog.e(TAG, "Sending internalError() to all callbacks");
+		Vector<IMsdServiceCallback> callbacksToRemove = new Vector<IMsdServiceCallback>();
+		for(IMsdServiceCallback callback:mBinder.callbacks){
+			try {
+				callback.internalError();
+			} catch (DeadObjectException e1) {
+				info("DeadObjectException in MsdService.sendStateChanged() => unregistering callback");
+				callbacksToRemove.add(callback);
+			} catch (RemoteException e1) {
+				warn("Exception in MsdService.sendStateChanged() => callback.recordingStateChanged();");
+			}
+		}
+		mBinder.callbacks.removeAll(callbacksToRemove);
 		sendFatalErrorMessage(msg, e);
 		MsdLog.e(TAG, "Terminating MsdService after shutting down due to an unexpected error");
 		System.exit(1);

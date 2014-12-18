@@ -27,6 +27,10 @@ public class MsdServiceHelper{
 			});
 		}
 
+		@Override
+		public void internalError() throws RemoteException {
+			System.exit(0);
+		}
 	}
 	MyMsdServiceCallbackStub msdCallback = new MyMsdServiceCallbackStub();
 	private boolean connected = false;
