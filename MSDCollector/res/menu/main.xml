@@ -15,7 +15,7 @@
         android:id="@+id/menu_action_info"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_info"/>
+        android:title="@string/action_info" android:visible="false" android:enabled="false"/>
   	<item
         android:id="@+id/menu_action_active_test_advanced"
         android:orderInCategory="100"
