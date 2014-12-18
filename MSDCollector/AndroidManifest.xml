@@ -107,9 +107,7 @@
             android:screenOrientation="portrait"
             android:parentActivityName="de.srlabs.msd.DashboardActivity" >
         </activity>
-        <service android:name="de.srlabs.msd.qdmon.MsdService" android:exported="false" android:process=".msd_service" />
-        <service android:name="de.srlabs.msd.qdmon.DummyMsdService" android:exported="false" android:process=".dummy_msd_service" />
+        <service android:name="de.srlabs.msd.qdmon.MsdService" android:exported="false" android:process=".snoopsnitch_service" />
     	<service android:name="de.srlabs.msd.active_test.ActiveTestService" android:exported="false" />
-    	<service android:name="de.srlabs.msd.active_test.DummyActiveTestService" android:exported="false" />
     </application>
 </manifest>
