@@ -200,6 +200,9 @@ public class DumpFile {
 		return imsi_catcher;
 	}
 
+	public boolean isCrash(){
+		return crash;
+	}
 	public void setImsi_catcher(boolean imsi_catcher) {
 		this.imsi_catcher = imsi_catcher;
 	}
@@ -364,6 +367,10 @@ public class DumpFile {
 		ContentValues values = new ContentValues();
 		values.put("imsi_catcher", b?1:0);
 		int numModified = db.update("files", values, "_id = " + id, null);
+		return numModified == 1;
+	}
+	public boolean delete(SQLiteDatabase db) {
+		int numModified = db.delete("files", "_id = " + id, null);
 		return numModified == 1;
 	}
 	

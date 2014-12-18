@@ -17,8 +17,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
@@ -71,7 +74,6 @@ import de.srlabs.msd.util.DeviceCompatibilityChecker;
 import de.srlabs.msd.util.MsdConfig;
 import de.srlabs.msd.util.MsdDatabaseManager;
 import de.srlabs.msd.util.MsdLog;
-import de.srlabs.msd.util.Utils;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";
@@ -251,6 +253,8 @@ public class MsdService extends Service{
 	private DownloadDataJsThread downloadDataJsThread = null;
 
 	public int parserRatGeneration = 0;
+
+	private long lastCleanupTime = 0;
 
 	class QueueElementWrapper<T>{
 		T obj;
@@ -1649,6 +1653,7 @@ public class MsdService extends Service{
 		if(ok){
 			openOrReopenRawWriter();
 			openOrReopenDebugLog(false, false);
+			cleanup();
 		}
 	}
 	private void openOrReopenRawWriter() {
@@ -1817,58 +1822,124 @@ public class MsdService extends Service{
 	 * created when MsdService crashes.
 	 */
 	private void cleanupIncompleteOldFiles(){
-		// TODO: Implement
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
+		try{
+			wl.acquire();
+			info("Starting cleanupIncompleteOldFiles");
+			long cleanupStartTime = System.currentTimeMillis();
+			long cleanupStartCpuTimeNanos = android.os.Debug.threadCpuTimeNanos();
+			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+			Vector<DumpFile> files = DumpFile.getFiles(db, " state = " + DumpFile.STATE_RECORDING + " OR state = " + DumpFile.STATE_RECORDING_PENDING);
+			for(DumpFile df:files){
+				info("Deleting old file " + df.getFilename());
+				deleteFile(df.getFilename());
+				df.delete(db);
+			}
+			info("cleanupIncompleteOldFiles took " + (System.currentTimeMillis() - cleanupStartTime) + "ms, CPU time: " + ((android.os.Debug.threadCpuTimeNanos()-cleanupStartCpuTimeNanos)/1000000) + "ms");
+		} catch(Exception e){
+			handleFatalError("Exception during cleanup",e);
+		} finally{
+			MsdDatabaseManager.getInstance().closeDatabase();
+			wl.release();
+		}
 	}
-	private void cleanupFiles(){
-		// TODO: Cleanup encrypted files after some time, excluding pending files
-		// TODO: Cleanup debug logs after a configurable delay (depending on whether it contains a crash)
-		// TODO: Cleanup raw dumps after a configurable delay (depending on whether it contains an IMSI/SMS)
-		// TODO: Cleanup untracked files (which don't have a db entry)
+	private void cleanup(){
+		if(System.currentTimeMillis() > lastCleanupTime + 3600 * 1000){
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
+			try{
+				wl.acquire();
+				info("Starting cleanup");
+				long cleanupStartTime = System.currentTimeMillis();
+				long cleanupStartCpuTimeNanos = android.os.Debug.threadCpuTimeNanos();
+				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+				info("Cleaning files");
+				cleanupFiles(db);
+				info("Cleaning files completed, cleaning database");
+				cleanupDatabase(db);
+				info("Cleanup took " + (System.currentTimeMillis() - cleanupStartTime) + "ms, CPU time: " + ((android.os.Debug.threadCpuTimeNanos()-cleanupStartCpuTimeNanos)/1000000) + "ms");
+			} catch(Exception e){
+				handleFatalError("Exception during cleanup",e);
+			} finally{
+				MsdDatabaseManager.getInstance().closeDatabase();
+				wl.release();
+			}
+			lastCleanupTime = System.currentTimeMillis();
+		}
+	}
+	private void cleanupFiles(SQLiteDatabase db){
+		// Read all files to a HashMap and then iterate over a directory listing, saves doing an SQL query for each file
+		Vector<DumpFile> dbFiles = DumpFile.getFiles(db, "");
+		HashMap<String,DumpFile> filesByName = new HashMap<String,DumpFile>();
+		for(DumpFile df:dbFiles){
+			filesByName.put(df.getFilename(), df);
+		}
+		HashSet<String> existingFiles = new HashSet<String>();
+		// Iterate over all files and delete if:
+		// * There is no database entry for the file
+		// * The file is older than the configured keep duration, doesn't contain an event and is not pending for upload
 		for(String filename:fileList()){
-			if(!filename.startsWith("qdmon_"))
-				continue;
-			if(!filename.endsWith("UTC.gz"))
-				continue;
-			String dateStr = filename.substring("qdmon_".length());
-			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			c.set(Calendar.YEAR, Integer.parseInt(dateStr.substring(0,4)));
-			c.set(Calendar.MONTH, Integer.parseInt(dateStr.substring(5,7))-1);
-			c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateStr.substring(8,10)));
-			c.set(Calendar.HOUR_OF_DAY,Integer.parseInt(dateStr.substring(11,13)));
-			c.set(Calendar.MINUTE,Integer.parseInt(dateStr.substring(14,16)));
-			info("FILENAME: " + filename + " Reconstructed date: " + c.toString());
-			long fileTimeMillis = c.getTimeInMillis();
-			long diff = System.currentTimeMillis() - fileTimeMillis;
-			info("FILENAME: " + filename + " DIFF: " + diff/1000 + " seconds");
-			if(diff > MsdConfig.getBasebandLogKeepDurationHours(MsdService.this) * 60 * 60 * 1000){
-				info("Deleting file: " + filename);
-				deleteFile(filename);
+			// Plaintext files are not deleted automatically.
+			boolean debug = filename.startsWith("debug") && filename.endsWith(".smime");
+			boolean qdmon = filename.startsWith("qdmon") && filename.endsWith(".smime");
+			if(debug || qdmon){
+				DumpFile df = filesByName.get(filename);
+				boolean containsEvent = false;
+				int keepDurationHours = 0;
+				if(debug){
+					keepDurationHours = MsdConfig.getDebugLogKeepDurationHours(this);
+					if(df != null && df.isCrash())
+						containsEvent = true;
+				} else if(qdmon){
+					keepDurationHours = MsdConfig.getBasebandLogKeepDurationHours(this);
+					if(df != null && (df.isSms() || df.isImsi_catcher()))
+						containsEvent = true;
+				}
+				boolean delete = false;
+				if(df == null)
+					delete = true; // No database entry => Delete file
+				if(df != null && !containsEvent && df.getEnd_time() < System.currentTimeMillis() - keepDurationHours * 3600 * 1000)
+					delete = true; // File doesn't contain an event (crash, SMS, IMSI) and it is older than the configured keep duration => Delete it
+				if(df != null && df.getState() == DumpFile.STATE_PENDING)
+					delete = false; // Don't delete files pending for upload
+				if(delete){
+					deleteFile(filename);
+					info("Deleted file " + filename + ((df != null) ? " and corresponding database entry" : ""));
+					if(df != null){
+						df.delete(db);
+						filesByName.remove(filename);
+					}
+				} else{
+					existingFiles.add(filename);
+				}
 			}
 		}
-	}
-	private void cleanupDatabase(){
-		try{
-			MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
-			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
-			String sql = "DELETE FROM session_info where timestamp < datetime('now','-" + MsdConfig.getSessionInfoKeepDurationHours(MsdService.this) + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
-			sql = "DELETE FROM location_info where timestamp < datetime('now','-" + MsdConfig.getLocationLogKeepDurationHours(MsdService.this) + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
-			sql = "DELETE FROM serving_cell_info where timestamp < datetime('now','-" + MsdConfig.getCellInfoKeepDurationHours(MsdService.this) + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
-			sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + MsdConfig.getCellInfoKeepDurationHours(MsdService.this) + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
-			// Delete everything for now, as we do not pass the next valid sequence number
-			// from the app to the parser at the moment
-			sql = "DELETE FROM cell_info;";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
-		} catch(SQLException e){
-			handleFatalError("SQL Exception during cleanup",e);
+		// Iterate over all database entries and delete it if the corresponding
+		// file doesn't exist any more and the state is not UPLOADED.
+		for(Entry<String,DumpFile> entry:filesByName.entrySet()){
+			DumpFile df = entry.getValue();
+			if(existingFiles.contains(entry.getKey()))
+				continue; // Don't delete entries as long as the file hasn't been deleted
+			if(df.getState() == DumpFile.STATE_UPLOADED)
+				continue; // Keep track of uploaded files so that we can still show that an event has been uploaded
+			// File doesn't exist and state is not UPLOADED => The database entry can be removed
+			info("Deleting database entry for file " + df.getFilename());
+			df.delete(db);
 		}
+	}
+	private void cleanupDatabase(SQLiteDatabase db) throws SQLException{
+		String sql = "DELETE FROM session_info where timestamp < datetime('now','-" + MsdConfig.getSessionInfoKeepDurationHours(MsdService.this) + " hours');";
+		info("cleanup: " + sql);
+		db.execSQL(sql);
+		sql = "DELETE FROM location_info where timestamp < datetime('now','-" + MsdConfig.getLocationLogKeepDurationHours(MsdService.this) + " hours');";
+		info("cleanup: " + sql);
+		db.execSQL(sql);
+		sql = "DELETE FROM serving_cell_info where timestamp < datetime('now','-" + MsdConfig.getCellInfoKeepDurationHours(MsdService.this) + " hours');";
+		info("cleanup: " + sql);
+		db.execSQL(sql);
+		sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + MsdConfig.getCellInfoKeepDurationHours(MsdService.this) + " hours');";
+		info("cleanup: " + sql);
+		db.execSQL(sql);
 	}
 }

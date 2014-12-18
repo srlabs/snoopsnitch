@@ -12,6 +12,9 @@ public class MsdConfig {
 		
 		return PreferenceManager.getDefaultSharedPreferences(context).getInt("settings_basebandLogKeepDuration", 30);
 	}
+	public static int getDebugLogKeepDurationHours(Context context){
+		return 3; // TODO: Maybe add a configuration entry
+	}
 	public static int getLocationLogKeepDurationHours(Context context){
 		
 		return PreferenceManager.getDefaultSharedPreferences(context).getInt("settings_locationLogKeepDuration", 30);
