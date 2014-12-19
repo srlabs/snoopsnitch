@@ -1,4 +1,4 @@
-var data = {
+{
 	"countries": [
 		{
 			"code": "AF",
@@ -218,6 +218,11 @@ var data = {
 		{
 			"code": "AU",
 			"name": "Australia",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Australia-2014-07.pdf",
+				"year": 2014,
+				"month": 7
+			},
 			"boundaries": {
 				"xMin": 113.1848,
 				"xMax": 153.6169,
@@ -368,9 +373,9 @@ var data = {
 			"code": "AT",
 			"name": "Austria",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Austria-2013-01.pdf",
-				"year": 2013,
-				"month": 1
+				"filename": "gsmmap.org-country_report-Austria-2014-12.pdf",
+				"year": 2014,
+				"month": 12
 			},
 			"boundaries": {
 				"xMin": 9.524,
@@ -405,16 +410,16 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.33,
-								"size": 0.044
+								"size": 0.043
 							},
 							{
 								"monthIndex": 11,
-								"value": 0.429,
+								"value": 0.43,
 								"size": 0.054
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.453,
+								"value": 0.454,
 								"size": 0.018
 							},
 							{
@@ -436,7 +441,7 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.257,
+								"value": 0.259,
 								"size": 0.021
 							},
 							{
@@ -504,22 +509,22 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.369,
-								"size": 0.114
+								"value": 0.368,
+								"size": 0.112
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.45,
+								"value": 0.451,
 								"size": 0.045
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.577,
-								"size": 0.063
+								"value": 0.543,
+								"size": 0.053
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.646,
+								"value": 0.642,
 								"size": 0.033
 							},
 							{
@@ -541,8 +546,8 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.493,
-								"size": 0.054
+								"value": 0.494,
+								"size": 0.052
 							},
 							{
 								"monthIndex": 17,
@@ -551,17 +556,17 @@ var data = {
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.503,
-								"size": 0.026
+								"value": 0.48,
+								"size": 0.02
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.49,
+								"value": 0.487,
 								"size": 0.017
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.822,
+								"value": 0.823,
 								"size": 0.108
 							},
 							{
@@ -578,18 +583,18 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.877,
-								"size": 0.075
+								"value": 0.876,
+								"size": 0.072
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.864,
+								"value": 0.863,
 								"size": 0.001
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.828,
-								"size": 0.002
+								"value": 0.829,
+								"size": 0.001
 							},
 							{
 								"monthIndex": 36,
@@ -607,18 +612,6 @@ var data = {
 								"monthIndex": 41,
 								"value": 1,
 								"size": 0.057
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 40,
-								"value": 0.949,
-								"size": 0.027
-							},
-							{
-								"monthIndex": 41,
-								"value": 0.86,
-								"size": 0.056
 							}
 						]
 					}
@@ -706,7 +699,7 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.644,
-								"size": 0.038
+								"size": 0.037
 							},
 							{
 								"monthIndex": 17,
@@ -740,18 +733,6 @@ var data = {
 								"value": 0.999,
 								"size": 0.313
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 41,
-								"value": 0.372,
-								"size": 0.404
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.394,
-								"size": 0.229
-							}
 						]
 					}
 				},
@@ -779,18 +760,6 @@ var data = {
 								"monthIndex": 45,
 								"value": 0.997,
 								"size": 0.008
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 41,
-								"value": 0.38,
-								"size": 0.53
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.373,
-								"size": 0.006
 							}
 						]
 					}
@@ -931,9 +900,9 @@ var data = {
 			"code": "BE",
 			"name": "Belgium",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Belgium-2013-03.pdf",
-				"year": 2013,
-				"month": 3
+				"filename": "gsmmap.org-country_report-Belgium-2014-12.pdf",
+				"year": 2014,
+				"month": 12
 			},
 			"boundaries": {
 				"xMin": 2.5249,
@@ -968,8 +937,8 @@ var data = {
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.588,
-								"size": 0.772
+								"value": 0.585,
+								"size": 0.708
 							}
 						],
 						"imper": [
@@ -985,8 +954,8 @@ var data = {
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.425,
-								"size": 0.354
+								"value": 0.423,
+								"size": 0.322
 							}
 						],
 						"track": [
@@ -997,8 +966,8 @@ var data = {
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.89,
-								"size": 0.752
+								"value": 0.889,
+								"size": 0.681
 							}
 						]
 					}
@@ -1084,12 +1053,12 @@ var data = {
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.355,
-								"size": 0.543
+								"value": 0.36,
+								"size": 0.489
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.346,
+								"value": 0.348,
 								"size": 0.083
 							}
 						],
@@ -1101,12 +1070,12 @@ var data = {
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.276,
-								"size": 0.236
+								"value": 0.278,
+								"size": 0.216
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.272,
+								"value": 0.273,
 								"size": 0.031
 							}
 						],
@@ -1222,15 +1191,15 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 26,
-								"value": 0.368,
-								"size": 0.023
+								"value": 0.362,
+								"size": 0.02
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 26,
-								"value": 0.248,
-								"size": 0.008
+								"value": 0.244,
+								"size": 0.007
 							}
 						]
 					}
@@ -1435,13 +1404,6 @@ var data = {
 								"value": 0.833,
 								"size": 0.006
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.083,
-								"size": 0.003
-							}
 						]
 					}
 				},
@@ -1467,18 +1429,6 @@ var data = {
 								"monthIndex": 28,
 								"value": 0.194,
 								"size": 0.004
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.139,
-								"size": 0.014
-							},
-							{
-								"monthIndex": 39,
-								"value": 0.117,
-								"size": 0.005
 							}
 						]
 					}
@@ -1593,13 +1543,6 @@ var data = {
 								"value": 0.947,
 								"size": 0.012
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 41,
-								"value": 0.053,
-								"size": 0.005
-							}
 						]
 					}
 				}
@@ -1694,13 +1637,6 @@ var data = {
 								"value": 1,
 								"size": 0.001
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 45,
-								"value": 0.167,
-								"size": 0.001
-							}
 						]
 					}
 				}
@@ -1709,6 +1645,11 @@ var data = {
 		{
 			"code": "CN",
 			"name": "China",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-China-2014-11.pdf",
+				"year": 2014,
+				"month": 11
+			},
 			"boundaries": {
 				"xMin": 73.6316,
 				"xMax": 134.7523,
@@ -1740,8 +1681,8 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 27,
-								"value": 0.132,
-								"size": 0.12
+								"value": 0.133,
+								"size": 0.108
 							},
 							{
 								"monthIndex": 34,
@@ -1750,29 +1691,29 @@ var data = {
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.158,
+								"value": 0.159,
 								"size": 0.015
 							},
 							{
 								"monthIndex": 42,
-								"value": 0.154,
+								"value": 0.155,
 								"size": 0.005
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 27,
-								"value": 0.389,
-								"size": 0.057
+								"value": 0.39,
+								"size": 0.05
 							},
 							{
 								"monthIndex": 34,
-								"value": 0.362,
+								"value": 0.36,
 								"size": 0.004
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.463,
+								"value": 0.465,
 								"size": 0.012
 							}
 						]
@@ -1796,20 +1737,20 @@ var data = {
 							},
 							{
 								"monthIndex": 27,
-								"value": 0.166,
-								"size": 0.067
+								"value": 0.167,
+								"size": 0.064
 							},
 							{
 								"monthIndex": 34,
-								"value": 0.142,
+								"value": 0.143,
 								"size": 0
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 27,
-								"value": 0.374,
-								"size": 0.034
+								"value": 0.38,
+								"size": 0.033
 							}
 						]
 					}
@@ -2135,6 +2076,11 @@ var data = {
 		{
 			"code": "CZ",
 			"name": "Czech Republic",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Czech_Republic-2014-11.pdf",
+				"year": 2014,
+				"month": 11
+			},
 			"boundaries": {
 				"xMin": 12.0897,
 				"xMax": 18.8322,
@@ -2257,28 +2203,6 @@ var data = {
 								"value": 0.99,
 								"size": 0.005
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 39,
-								"value": 0.985,
-								"size": 0.063
-							},
-							{
-								"monthIndex": 43,
-								"value": 0.892,
-								"size": 0.079
-							},
-							{
-								"monthIndex": 44,
-								"value": 0.858,
-								"size": 0.017
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.861,
-								"size": 0
-							}
 						]
 					}
 				},
@@ -2379,13 +2303,6 @@ var data = {
 								"value": 1,
 								"size": 0.023
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 39,
-								"value": 0.241,
-								"size": 0.018
-							}
 						]
 					}
 				},
@@ -2467,9 +2384,9 @@ var data = {
 			"code": "DK",
 			"name": "Denmark",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Denmark-2013-01.pdf",
-				"year": 2013,
-				"month": 1
+				"filename": "gsmmap.org-country_report-Denmark-2014-07.pdf",
+				"year": 2014,
+				"month": 7
 			},
 			"boundaries": {
 				"xMin": 8.1321,
@@ -2498,7 +2415,7 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 21,
-								"value": 0.658,
+								"value": 0.654,
 								"size": 0.01
 							},
 							{
@@ -2510,7 +2427,7 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 21,
-								"value": 0.81,
+								"value": 0.808,
 								"size": 0.004
 							},
 							{
@@ -2555,8 +2472,8 @@ var data = {
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.325,
-								"size": 0.002
+								"value": 0.312,
+								"size": 0.001
 							},
 							{
 								"monthIndex": 42,
@@ -2709,9 +2626,9 @@ var data = {
 			"code": "EG",
 			"name": "Egypt",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Egypt-2012-02.pdf",
+				"filename": "gsmmap.org-country_report-Egypt-2012-06.pdf",
 				"year": 2012,
-				"month": 2
+				"month": 6
 			},
 			"boundaries": {
 				"xMin": 24.7032,
@@ -2742,7 +2659,7 @@ var data = {
 							{
 								"monthIndex": 13,
 								"value": 0.344,
-								"size": 0.78
+								"size": 0.752
 							}
 						],
 						"imper": [
@@ -2753,15 +2670,15 @@ var data = {
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.291,
-								"size": 0.44
+								"value": 0.29,
+								"size": 0.427
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 13,
 								"value": 0.801,
-								"size": 0.236
+								"size": 0.227
 							}
 						]
 					}
@@ -2784,7 +2701,7 @@ var data = {
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.509,
+								"value": 0.58,
 								"size": 1
 							}
 						],
@@ -2796,15 +2713,15 @@ var data = {
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.298,
-								"size": 0.568
+								"value": 0.346,
+								"size": 0.548
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 13,
-								"value": 0.809,
-								"size": 0.067
+								"value": 0.813,
+								"size": 0.064
 							}
 						]
 					}
@@ -2822,27 +2739,27 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 13,
-								"value": 0.289,
-								"size": 0.262
+								"value": 0.291,
+								"size": 0.256
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.294,
+								"value": 0.296,
 								"size": 0
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 13,
-								"value": 0.193,
-								"size": 0.166
+								"value": 0.195,
+								"size": 0.161
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 13,
-								"value": 0.459,
-								"size": 0.477
+								"value": 0.46,
+								"size": 0.472
 							}
 						]
 					}
@@ -2895,9 +2812,9 @@ var data = {
 			"code": "EE",
 			"name": "Estonia",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Estonia-2013-03.pdf",
-				"year": 2013,
-				"month": 3
+				"filename": "gsmmap.org-country_report-Estonia-2014-12.pdf",
+				"year": 2014,
+				"month": 12
 			},
 			"boundaries": {
 				"xMin": 23.432,
@@ -2976,18 +2893,6 @@ var data = {
 								"value": 0.954,
 								"size": 0.012
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 44,
-								"value": 0.255,
-								"size": 0.057
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.244,
-								"size": 0.003
-							}
 						]
 					}
 				},
@@ -3053,7 +2958,7 @@ var data = {
 							{
 								"monthIndex": 21,
 								"value": 0.309,
-								"size": 0.262
+								"size": 0.257
 							},
 							{
 								"monthIndex": 26,
@@ -3064,12 +2969,12 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 21,
-								"value": 0.45,
-								"size": 0.128
+								"value": 0.452,
+								"size": 0.125
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.433,
+								"value": 0.434,
 								"size": 0.005
 							}
 						],
@@ -3077,12 +2982,12 @@ var data = {
 							{
 								"monthIndex": 21,
 								"value": 0.15,
-								"size": 0.065
+								"size": 0.064
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.147,
-								"size": 0.026
+								"value": 0.146,
+								"size": 0.025
 							}
 						]
 					}
@@ -3135,9 +3040,9 @@ var data = {
 			"code": "FI",
 			"name": "Finland",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Finland-2012-02.pdf",
-				"year": 2012,
-				"month": 2
+				"filename": "gsmmap.org-country_report-Finland-2014-12.pdf",
+				"year": 2014,
+				"month": 12
 			},
 			"boundaries": {
 				"xMin": 20.6222,
@@ -3174,7 +3079,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.12,
-								"size": 0.006
+								"size": 0.003
 							}
 						]
 					}
@@ -3196,11 +3101,6 @@ var data = {
 								"size": 0.001
 							},
 							{
-								"monthIndex": 13,
-								"value": 0.357,
-								"size": 0
-							},
-							{
 								"monthIndex": 38,
 								"value": 0.524,
 								"size": 0.045
@@ -3216,13 +3116,13 @@ var data = {
 						"track": [
 							{
 								"monthIndex": 11,
-								"value": 0.829,
-								"size": 0.004
+								"value": 0.827,
+								"size": 0.001
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.829,
-								"size": 0.007
+								"value": 0.83,
+								"size": 0.004
 							}
 						],
 						"inter3G": [
@@ -3230,13 +3130,6 @@ var data = {
 								"monthIndex": 38,
 								"value": 0.957,
 								"size": 0.034
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 38,
-								"value": 0.281,
-								"size": 0.031
 							}
 						]
 					}
@@ -3254,37 +3147,37 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 11,
-								"value": 0.255,
-								"size": 0.058
+								"value": 0.252,
+								"size": 0.056
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.263,
-								"size": 0.221
+								"value": 0.26,
+								"size": 0.165
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 11,
 								"value": 0.247,
-								"size": 0.026
+								"size": 0.024
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.237,
-								"size": 0.128
+								"value": 0.231,
+								"size": 0.095
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 11,
 								"value": 0.844,
-								"size": 0.033
+								"size": 0.027
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.844,
-								"size": 0.275
+								"value": 0.84,
+								"size": 0.154
 							}
 						]
 					}
@@ -3295,9 +3188,9 @@ var data = {
 			"code": "FR",
 			"name": "France",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-France-2013-11.pdf",
-				"year": 2013,
-				"month": 11
+				"filename": "gsmmap.org-country_report-France-2014-05.pdf",
+				"year": 2014,
+				"month": 5
 			},
 			"boundaries": {
 				"xMin": -4.7208,
@@ -3335,18 +3228,18 @@ var data = {
 							},
 							{
 								"monthIndex": 8,
-								"value": 0.348,
-								"size": 0.272
+								"value": 0.347,
+								"size": 0.255
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.334,
-								"size": 0.656
+								"value": 0.335,
+								"size": 0.62
 							},
 							{
 								"monthIndex": 10,
-								"value": 0.334,
-								"size": 0.102
+								"value": 0.335,
+								"size": 0.095
 							},
 							{
 								"monthIndex": 15,
@@ -3355,17 +3248,17 @@ var data = {
 							},
 							{
 								"monthIndex": 21,
-								"value": 0.357,
+								"value": 0.358,
 								"size": 0.003
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.329,
+								"value": 0.328,
 								"size": 0.025
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.316,
+								"value": 0.315,
 								"size": 0.007
 							},
 							{
@@ -3392,22 +3285,22 @@ var data = {
 							},
 							{
 								"monthIndex": 8,
-								"value": 0.449,
-								"size": 0.144
+								"value": 0.443,
+								"size": 0.136
 							},
 							{
 								"monthIndex": 9,
 								"value": 0.406,
-								"size": 0.311
+								"size": 0.295
 							},
 							{
 								"monthIndex": 10,
-								"value": 0.418,
-								"size": 0.042
+								"value": 0.417,
+								"size": 0.039
 							},
 							{
 								"monthIndex": 15,
-								"value": 0.454,
+								"value": 0.453,
 								"size": 0.148
 							},
 							{
@@ -3417,22 +3310,22 @@ var data = {
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.392,
+								"value": 0.39,
 								"size": 0.011
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.35,
+								"value": 0.348,
 								"size": 0.004
 							},
 							{
 								"monthIndex": 33,
-								"value": 0.323,
+								"value": 0.322,
 								"size": 0.002
 							},
 							{
 								"monthIndex": 34,
-								"value": 0.226,
+								"value": 0.225,
 								"size": 0.057
 							},
 							{
@@ -3450,12 +3343,12 @@ var data = {
 							{
 								"monthIndex": 8,
 								"value": 0.846,
-								"size": 0.374
+								"size": 0.36
 							},
 							{
 								"monthIndex": 9,
 								"value": 0.845,
-								"size": 0.018
+								"size": 0.017
 							},
 							{
 								"monthIndex": 15,
@@ -3516,13 +3409,13 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.431,
+								"value": 0.43,
 								"size": 1
 							},
 							{
 								"monthIndex": 10,
 								"value": 0.429,
-								"size": 0.053
+								"size": 0.052
 							},
 							{
 								"monthIndex": 15,
@@ -3531,22 +3424,22 @@ var data = {
 							},
 							{
 								"monthIndex": 18,
-								"value": 0.621,
-								"size": 0.034
+								"value": 0.62,
+								"size": 0.032
 							},
 							{
 								"monthIndex": 19,
 								"value": 0.599,
-								"size": 0.016
+								"size": 0.014
 							},
 							{
 								"monthIndex": 21,
 								"value": 0.578,
-								"size": 0.035
+								"size": 0.031
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.528,
+								"value": 0.527,
 								"size": 0.008
 							},
 							{
@@ -3556,7 +3449,7 @@ var data = {
 							},
 							{
 								"monthIndex": 34,
-								"value": 0.462,
+								"value": 0.461,
 								"size": 0.23
 							},
 							{
@@ -3584,7 +3477,7 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.643,
-								"size": 0.475
+								"size": 0.462
 							},
 							{
 								"monthIndex": 10,
@@ -3599,17 +3492,17 @@ var data = {
 							{
 								"monthIndex": 18,
 								"value": 0.728,
-								"size": 0.015
+								"size": 0.014
 							},
 							{
 								"monthIndex": 19,
 								"value": 0.718,
-								"size": 0.01
+								"size": 0.008
 							},
 							{
 								"monthIndex": 21,
 								"value": 0.712,
-								"size": 0.015
+								"size": 0.014
 							},
 							{
 								"monthIndex": 33,
@@ -3651,12 +3544,12 @@ var data = {
 							{
 								"monthIndex": 10,
 								"value": 0.925,
-								"size": 0.066
+								"size": 0.064
 							},
 							{
 								"monthIndex": 15,
 								"value": 0.924,
-								"size": 0.567
+								"size": 0.566
 							},
 							{
 								"monthIndex": 18,
@@ -3695,13 +3588,6 @@ var data = {
 								"value": 1,
 								"size": 0.086
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 35,
-								"value": 0.945,
-								"size": 0.075
-							}
 						]
 					}
 				},
@@ -3732,16 +3618,16 @@ var data = {
 							{
 								"monthIndex": 8,
 								"value": 0.388,
-								"size": 0.389
+								"size": 0.374
 							},
 							{
 								"monthIndex": 10,
 								"value": 0.387,
-								"size": 0.042
+								"size": 0.041
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.39,
+								"value": 0.389,
 								"size": 0
 							},
 							{
@@ -3766,7 +3652,7 @@ var data = {
 							},
 							{
 								"monthIndex": 34,
-								"value": 0.451,
+								"value": 0.452,
 								"size": 0.084
 							}
 						],
@@ -3779,12 +3665,12 @@ var data = {
 							{
 								"monthIndex": 8,
 								"value": 0.631,
-								"size": 0.138
+								"size": 0.135
 							},
 							{
 								"monthIndex": 10,
 								"value": 0.63,
-								"size": 0.017
+								"size": 0.016
 							},
 							{
 								"monthIndex": 15,
@@ -3793,7 +3679,7 @@ var data = {
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.545,
+								"value": 0.544,
 								"size": 0.002
 							},
 							{
@@ -3816,17 +3702,17 @@ var data = {
 							{
 								"monthIndex": 8,
 								"value": 0.854,
-								"size": 0.691
+								"size": 0.66
 							},
 							{
 								"monthIndex": 10,
 								"value": 0.856,
-								"size": 0.074
+								"size": 0.068
 							},
 							{
 								"monthIndex": 15,
 								"value": 0.84,
-								"size": 0.645
+								"size": 0.644
 							},
 							{
 								"monthIndex": 25,
@@ -3908,8 +3794,8 @@ var data = {
 			"code": "DE",
 			"name": "Germany",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Germany-2013-12.pdf",
-				"year": 2013,
+				"filename": "gsmmap.org-country_report-Germany-2014-12.pdf",
+				"year": 2014,
 				"month": 12
 			},
 			"boundaries": {
@@ -3975,11 +3861,11 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.546,
-								"size": 0.241
+								"size": 0.235
 							},
 							{
 								"monthIndex": 10,
-								"value": 0.551,
+								"value": 0.55,
 								"size": 0.004
 							},
 							{
@@ -3995,7 +3881,7 @@ var data = {
 							{
 								"monthIndex": 13,
 								"value": 0.557,
-								"size": 0.304
+								"size": 0.286
 							},
 							{
 								"monthIndex": 14,
@@ -4009,18 +3895,18 @@ var data = {
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.589,
-								"size": 0.384
+								"value": 0.59,
+								"size": 0.382
 							},
 							{
 								"monthIndex": 18,
 								"value": 0.595,
-								"size": 0.788
+								"size": 0.777
 							},
 							{
 								"monthIndex": 19,
-								"value": 0.596,
-								"size": 0.116
+								"value": 0.597,
+								"size": 0.115
 							},
 							{
 								"monthIndex": 20,
@@ -4030,7 +3916,7 @@ var data = {
 							{
 								"monthIndex": 21,
 								"value": 0.595,
-								"size": 0.273
+								"size": 0.272
 							},
 							{
 								"monthIndex": 22,
@@ -4050,16 +3936,16 @@ var data = {
 							{
 								"monthIndex": 28,
 								"value": 0.609,
-								"size": 0.14
+								"size": 0.139
 							},
 							{
 								"monthIndex": 29,
 								"value": 0.609,
-								"size": 0.004
+								"size": 0.003
 							},
 							{
 								"monthIndex": 30,
-								"value": 0.572,
+								"value": 0.571,
 								"size": 1
 							},
 							{
@@ -4084,12 +3970,12 @@ var data = {
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.576,
+								"value": 0.577,
 								"size": 1
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.647,
+								"value": 0.648,
 								"size": 1
 							},
 							{
@@ -4176,13 +4062,13 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.57,
-								"size": 0.096
+								"value": 0.571,
+								"size": 0.095
 							},
 							{
 								"monthIndex": 11,
 								"value": 0.576,
-								"size": 0.628
+								"size": 0.625
 							},
 							{
 								"monthIndex": 12,
@@ -4191,33 +4077,33 @@ var data = {
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.578,
-								"size": 0.151
+								"value": 0.579,
+								"size": 0.146
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.58,
+								"value": 0.581,
 								"size": 0
 							},
 							{
 								"monthIndex": 16,
 								"value": 0.587,
-								"size": 0.919
+								"size": 0.838
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.603,
-								"size": 0.165
+								"value": 0.604,
+								"size": 0.164
 							},
 							{
 								"monthIndex": 18,
 								"value": 0.613,
-								"size": 0.394
+								"size": 0.387
 							},
 							{
 								"monthIndex": 19,
-								"value": 0.616,
-								"size": 0.047
+								"value": 0.615,
+								"size": 0.046
 							},
 							{
 								"monthIndex": 20,
@@ -4251,8 +4137,8 @@ var data = {
 							},
 							{
 								"monthIndex": 29,
-								"value": 0.625,
-								"size": 0.001
+								"value": 0.626,
+								"size": 0
 							},
 							{
 								"monthIndex": 30,
@@ -4261,7 +4147,7 @@ var data = {
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.616,
+								"value": 0.617,
 								"size": 1
 							},
 							{
@@ -4286,12 +4172,12 @@ var data = {
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.651,
+								"value": 0.652,
 								"size": 1
 							},
 							{
 								"monthIndex": 37,
-								"value": 0.686,
+								"value": 0.687,
 								"size": 1
 							},
 							{
@@ -4374,7 +4260,7 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.895,
-								"size": 0.45
+								"size": 0.443
 							},
 							{
 								"monthIndex": 10,
@@ -4384,17 +4270,17 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.891,
-								"size": 0.834
+								"size": 0.831
 							},
 							{
 								"monthIndex": 12,
 								"value": 0.891,
-								"size": 0.215
+								"size": 0.212
 							},
 							{
 								"monthIndex": 13,
 								"value": 0.892,
-								"size": 0.711
+								"size": 0.676
 							},
 							{
 								"monthIndex": 14,
@@ -4414,7 +4300,7 @@ var data = {
 							{
 								"monthIndex": 18,
 								"value": 0.886,
-								"size": 0.546
+								"size": 0.538
 							},
 							{
 								"monthIndex": 19,
@@ -4423,7 +4309,7 @@ var data = {
 							},
 							{
 								"monthIndex": 21,
-								"value": 0.889,
+								"value": 0.89,
 								"size": 0.072
 							},
 							{
@@ -4568,58 +4454,6 @@ var data = {
 								"value": 0.996,
 								"size": 0.028
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 35,
-								"value": 0.425,
-								"size": 0.058
-							},
-							{
-								"monthIndex": 36,
-								"value": 0.655,
-								"size": 0.393
-							},
-							{
-								"monthIndex": 37,
-								"value": 0.666,
-								"size": 0.414
-							},
-							{
-								"monthIndex": 38,
-								"value": 0.669,
-								"size": 0.084
-							},
-							{
-								"monthIndex": 39,
-								"value": 0.671,
-								"size": 0.062
-							},
-							{
-								"monthIndex": 40,
-								"value": 0.665,
-								"size": 0.11
-							},
-							{
-								"monthIndex": 41,
-								"value": 0.668,
-								"size": 0.035
-							},
-							{
-								"monthIndex": 42,
-								"value": 0.658,
-								"size": 0.025
-							},
-							{
-								"monthIndex": 43,
-								"value": 0.664,
-								"size": 0.005
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.67,
-								"size": 0.014
-							}
 						]
 					}
 				},
@@ -4675,22 +4509,22 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.397,
-								"size": 0.761
+								"size": 0.749
 							},
 							{
 								"monthIndex": 10,
 								"value": 0.397,
-								"size": 0.155
+								"size": 0.154
 							},
 							{
 								"monthIndex": 11,
 								"value": 0.39,
-								"size": 0.747
+								"size": 0.742
 							},
 							{
 								"monthIndex": 12,
 								"value": 0.39,
-								"size": 0.278
+								"size": 0.272
 							},
 							{
 								"monthIndex": 13,
@@ -4709,23 +4543,23 @@ var data = {
 							},
 							{
 								"monthIndex": 16,
-								"value": 0.391,
+								"value": 0.392,
 								"size": 1
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.396,
-								"size": 0.413
+								"value": 0.397,
+								"size": 0.412
 							},
 							{
 								"monthIndex": 18,
-								"value": 0.407,
+								"value": 0.408,
 								"size": 1
 							},
 							{
 								"monthIndex": 19,
 								"value": 0.408,
-								"size": 0.584
+								"size": 0.583
 							},
 							{
 								"monthIndex": 20,
@@ -4734,48 +4568,48 @@ var data = {
 							},
 							{
 								"monthIndex": 21,
-								"value": 0.414,
+								"value": 0.415,
 								"size": 1
 							},
 							{
 								"monthIndex": 22,
-								"value": 0.415,
-								"size": 0.927
+								"value": 0.416,
+								"size": 0.912
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.415,
-								"size": 0.052
+								"value": 0.416,
+								"size": 0.05
 							},
 							{
 								"monthIndex": 24,
 								"value": 0.417,
-								"size": 0.378
+								"size": 0.376
 							},
 							{
 								"monthIndex": 25,
 								"value": 0.421,
-								"size": 0.887
+								"size": 0.877
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.425,
+								"value": 0.423,
 								"size": 1
 							},
 							{
 								"monthIndex": 27,
-								"value": 0.422,
-								"size": 0.475
+								"value": 0.42,
+								"size": 0.467
 							},
 							{
 								"monthIndex": 28,
-								"value": 0.425,
-								"size": 0.572
+								"value": 0.423,
+								"size": 0.565
 							},
 							{
 								"monthIndex": 29,
-								"value": 0.425,
-								"size": 0.214
+								"value": 0.423,
+								"size": 0.212
 							},
 							{
 								"monthIndex": 30,
@@ -4794,7 +4628,7 @@ var data = {
 							},
 							{
 								"monthIndex": 33,
-								"value": 0.41,
+								"value": 0.409,
 								"size": 1
 							},
 							{
@@ -4849,12 +4683,12 @@ var data = {
 							},
 							{
 								"monthIndex": 44,
-								"value": 0.537,
+								"value": 0.536,
 								"size": 1
 							},
 							{
 								"monthIndex": 45,
-								"value": 0.535,
+								"value": 0.534,
 								"size": 1
 							}
 						],
@@ -4892,7 +4726,7 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.452,
-								"size": 0.362
+								"size": 0.355
 							},
 							{
 								"monthIndex": 10,
@@ -4902,12 +4736,12 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.441,
-								"size": 0.355
+								"size": 0.353
 							},
 							{
 								"monthIndex": 12,
 								"value": 0.441,
-								"size": 0.158
+								"size": 0.155
 							},
 							{
 								"monthIndex": 13,
@@ -4926,7 +4760,7 @@ var data = {
 							},
 							{
 								"monthIndex": 16,
-								"value": 0.451,
+								"value": 0.452,
 								"size": 1
 							},
 							{
@@ -4937,12 +4771,12 @@ var data = {
 							{
 								"monthIndex": 18,
 								"value": 0.465,
-								"size": 0.446
+								"size": 0.444
 							},
 							{
 								"monthIndex": 19,
 								"value": 0.466,
-								"size": 0.266
+								"size": 0.265
 							},
 							{
 								"monthIndex": 20,
@@ -4951,43 +4785,43 @@ var data = {
 							},
 							{
 								"monthIndex": 21,
-								"value": 0.469,
+								"value": 0.47,
 								"size": 1
 							},
 							{
 								"monthIndex": 22,
 								"value": 0.468,
-								"size": 0.432
+								"size": 0.425
 							},
 							{
 								"monthIndex": 23,
 								"value": 0.463,
-								"size": 0.02
+								"size": 0.018
 							},
 							{
 								"monthIndex": 24,
-								"value": 0.462,
-								"size": 0.186
+								"value": 0.463,
+								"size": 0.184
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.463,
-								"size": 0.224
+								"value": 0.464,
+								"size": 0.221
 							},
 							{
 								"monthIndex": 26,
 								"value": 0.469,
-								"size": 0.97
+								"size": 0.863
 							},
 							{
 								"monthIndex": 27,
 								"value": 0.465,
-								"size": 0.224
+								"size": 0.219
 							},
 							{
 								"monthIndex": 28,
 								"value": 0.467,
-								"size": 0.265
+								"size": 0.26
 							},
 							{
 								"monthIndex": 29,
@@ -5007,7 +4841,7 @@ var data = {
 							{
 								"monthIndex": 32,
 								"value": 0.47,
-								"size": 1
+								"size": 0.973
 							},
 							{
 								"monthIndex": 33,
@@ -5026,7 +4860,7 @@ var data = {
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.495,
+								"value": 0.494,
 								"size": 1
 							},
 							{
@@ -5061,7 +4895,7 @@ var data = {
 							},
 							{
 								"monthIndex": 43,
-								"value": 0.493,
+								"value": 0.494,
 								"size": 1
 							},
 							{
@@ -5104,17 +4938,17 @@ var data = {
 							{
 								"monthIndex": 8,
 								"value": 0.898,
-								"size": 0.136
+								"size": 0.134
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.899,
+								"value": 0.898,
 								"size": 1
 							},
 							{
 								"monthIndex": 10,
 								"value": 0.897,
-								"size": 0.395
+								"size": 0.391
 							},
 							{
 								"monthIndex": 11,
@@ -5124,17 +4958,17 @@ var data = {
 							{
 								"monthIndex": 12,
 								"value": 0.899,
-								"size": 0.384
+								"size": 0.376
 							},
 							{
 								"monthIndex": 13,
 								"value": 0.9,
-								"size": 0.078
+								"size": 0.075
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.9,
-								"size": 0.11
+								"value": 0.899,
+								"size": 0.101
 							},
 							{
 								"monthIndex": 15,
@@ -5149,7 +4983,7 @@ var data = {
 							{
 								"monthIndex": 17,
 								"value": 0.895,
-								"size": 0.408
+								"size": 0.406
 							},
 							{
 								"monthIndex": 18,
@@ -5164,27 +4998,27 @@ var data = {
 							{
 								"monthIndex": 20,
 								"value": 0.89,
-								"size": 0.127
+								"size": 0.125
 							},
 							{
 								"monthIndex": 21,
 								"value": 0.89,
-								"size": 0.833
+								"size": 0.828
 							},
 							{
 								"monthIndex": 22,
 								"value": 0.889,
-								"size": 0.265
+								"size": 0.263
 							},
 							{
 								"monthIndex": 23,
 								"value": 0.893,
-								"size": 0.278
+								"size": 0.274
 							},
 							{
 								"monthIndex": 25,
 								"value": 0.894,
-								"size": 0.318
+								"size": 0.314
 							},
 							{
 								"monthIndex": 26,
@@ -5194,7 +5028,7 @@ var data = {
 							{
 								"monthIndex": 27,
 								"value": 0.894,
-								"size": 0.097
+								"size": 0.096
 							},
 							{
 								"monthIndex": 28,
@@ -5203,8 +5037,8 @@ var data = {
 							},
 							{
 								"monthIndex": 29,
-								"value": 0.878,
-								"size": 0.429
+								"value": 0.879,
+								"size": 0.425
 							},
 							{
 								"monthIndex": 30,
@@ -5219,7 +5053,7 @@ var data = {
 							{
 								"monthIndex": 32,
 								"value": 0.888,
-								"size": 0.008
+								"size": 0.004
 							},
 							{
 								"monthIndex": 33,
@@ -5338,53 +5172,6 @@ var data = {
 								"value": 0.982,
 								"size": 0.004
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 35,
-								"value": 0.749,
-								"size": 0.259
-							},
-							{
-								"monthIndex": 36,
-								"value": 0.77,
-								"size": 0.289
-							},
-							{
-								"monthIndex": 37,
-								"value": 0.75,
-								"size": 0.862
-							},
-							{
-								"monthIndex": 38,
-								"value": 0.727,
-								"size": 0.099
-							},
-							{
-								"monthIndex": 39,
-								"value": 0.728,
-								"size": 0.005
-							},
-							{
-								"monthIndex": 40,
-								"value": 0.673,
-								"size": 0.064
-							},
-							{
-								"monthIndex": 41,
-								"value": 0.669,
-								"size": 0.013
-							},
-							{
-								"monthIndex": 42,
-								"value": 0.63,
-								"size": 0.04
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.638,
-								"size": 0
-							}
 						]
 					}
 				},
@@ -5455,7 +5242,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.353,
-								"size": 0.166
+								"size": 0.161
 							},
 							{
 								"monthIndex": 13,
@@ -5490,32 +5277,32 @@ var data = {
 							{
 								"monthIndex": 19,
 								"value": 0.382,
-								"size": 0.524
+								"size": 0.522
 							},
 							{
 								"monthIndex": 20,
 								"value": 0.382,
-								"size": 0.292
+								"size": 0.219
 							},
 							{
 								"monthIndex": 21,
 								"value": 0.38,
-								"size": 0.686
+								"size": 0.674
 							},
 							{
 								"monthIndex": 22,
 								"value": 0.376,
-								"size": 0.095
+								"size": 0.094
 							},
 							{
 								"monthIndex": 28,
 								"value": 0.358,
-								"size": 0.242
+								"size": 0.239
 							},
 							{
 								"monthIndex": 29,
 								"value": 0.376,
-								"size": 0.101
+								"size": 0.099
 							},
 							{
 								"monthIndex": 30,
@@ -5539,7 +5326,7 @@ var data = {
 							},
 							{
 								"monthIndex": 34,
-								"value": 0.402,
+								"value": 0.401,
 								"size": 1
 							},
 							{
@@ -5631,8 +5418,8 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.516,
-								"size": 0.568
+								"value": 0.515,
+								"size": 0.561
 							},
 							{
 								"monthIndex": 10,
@@ -5642,7 +5429,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.517,
-								"size": 0.073
+								"size": 0.07
 							},
 							{
 								"monthIndex": 13,
@@ -5652,7 +5439,7 @@ var data = {
 							{
 								"monthIndex": 14,
 								"value": 0.51,
-								"size": 0.992
+								"size": 0.986
 							},
 							{
 								"monthIndex": 15,
@@ -5677,32 +5464,32 @@ var data = {
 							{
 								"monthIndex": 19,
 								"value": 0.526,
-								"size": 0.265
+								"size": 0.263
 							},
 							{
 								"monthIndex": 20,
 								"value": 0.527,
-								"size": 0.151
+								"size": 0.119
 							},
 							{
 								"monthIndex": 21,
 								"value": 0.527,
-								"size": 0.329
+								"size": 0.324
 							},
 							{
 								"monthIndex": 22,
 								"value": 0.525,
-								"size": 0.051
+								"size": 0.05
 							},
 							{
 								"monthIndex": 28,
 								"value": 0.524,
-								"size": 0.124
+								"size": 0.122
 							},
 							{
 								"monthIndex": 29,
 								"value": 0.531,
-								"size": 0.05
+								"size": 0.049
 							},
 							{
 								"monthIndex": 30,
@@ -5731,7 +5518,7 @@ var data = {
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.54,
+								"value": 0.539,
 								"size": 1
 							},
 							{
@@ -5823,7 +5610,7 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.529,
+								"value": 0.528,
 								"size": 1
 							},
 							{
@@ -5834,7 +5621,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.511,
-								"size": 0.238
+								"size": 0.229
 							},
 							{
 								"monthIndex": 14,
@@ -5864,12 +5651,12 @@ var data = {
 							{
 								"monthIndex": 19,
 								"value": 0.492,
-								"size": 0.75
+								"size": 0.749
 							},
 							{
 								"monthIndex": 20,
 								"value": 0.486,
-								"size": 0.895
+								"size": 0.697
 							},
 							{
 								"monthIndex": 21,
@@ -5894,12 +5681,12 @@ var data = {
 							{
 								"monthIndex": 28,
 								"value": 0.485,
-								"size": 0.823
+								"size": 0.82
 							},
 							{
 								"monthIndex": 29,
 								"value": 0.49,
-								"size": 0.343
+								"size": 0.34
 							},
 							{
 								"monthIndex": 30,
@@ -5928,7 +5715,7 @@ var data = {
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.544,
+								"value": 0.545,
 								"size": 0.129
 							},
 							{
@@ -5998,18 +5785,6 @@ var data = {
 								"value": 1,
 								"size": 0
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.697,
-								"size": 0.014
-							},
-							{
-								"monthIndex": 38,
-								"value": 0.829,
-								"size": 0.015
-							}
 						]
 					}
 				},
@@ -6070,7 +5845,7 @@ var data = {
 							{
 								"monthIndex": 8,
 								"value": 0.295,
-								"size": 0.261
+								"size": 0.256
 							},
 							{
 								"monthIndex": 9,
@@ -6079,53 +5854,53 @@ var data = {
 							},
 							{
 								"monthIndex": 11,
-								"value": 0.312,
-								"size": 0.409
+								"value": 0.31,
+								"size": 0.368
 							},
 							{
 								"monthIndex": 12,
-								"value": 0.311,
-								"size": 0.003
+								"value": 0.309,
+								"size": 0.002
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.309,
-								"size": 0.025
+								"value": 0.306,
+								"size": 0.024
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.315,
+								"value": 0.309,
 								"size": 0.439
 							},
 							{
 								"monthIndex": 15,
-								"value": 0.318,
+								"value": 0.313,
 								"size": 0.528
 							},
 							{
 								"monthIndex": 16,
-								"value": 0.318,
-								"size": 0.785
+								"value": 0.316,
+								"size": 0.784
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.317,
+								"value": 0.315,
 								"size": 0.233
 							},
 							{
 								"monthIndex": 18,
-								"value": 0.319,
+								"value": 0.317,
 								"size": 1
 							},
 							{
 								"monthIndex": 19,
-								"value": 0.318,
+								"value": 0.317,
 								"size": 0.534
 							},
 							{
 								"monthIndex": 20,
 								"value": 0.317,
-								"size": 0.076
+								"size": 0.075
 							},
 							{
 								"monthIndex": 21,
@@ -6135,7 +5910,7 @@ var data = {
 							{
 								"monthIndex": 22,
 								"value": 0.327,
-								"size": 0.295
+								"size": 0.292
 							},
 							{
 								"monthIndex": 23,
@@ -6145,32 +5920,32 @@ var data = {
 							{
 								"monthIndex": 24,
 								"value": 0.323,
-								"size": 0.226
+								"size": 0.222
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.324,
-								"size": 0.101
+								"value": 0.323,
+								"size": 0.099
 							},
 							{
 								"monthIndex": 26,
 								"value": 0.325,
-								"size": 0.174
+								"size": 0.173
 							},
 							{
 								"monthIndex": 27,
 								"value": 0.325,
-								"size": 0.039
+								"size": 0.038
 							},
 							{
 								"monthIndex": 28,
 								"value": 0.324,
-								"size": 0.128
+								"size": 0.127
 							},
 							{
 								"monthIndex": 29,
-								"value": 0.313,
-								"size": 0.068
+								"value": 0.312,
+								"size": 0.067
 							},
 							{
 								"monthIndex": 30,
@@ -6179,7 +5954,7 @@ var data = {
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.299,
+								"value": 0.298,
 								"size": 1
 							},
 							{
@@ -6189,12 +5964,12 @@ var data = {
 							},
 							{
 								"monthIndex": 33,
-								"value": 0.283,
+								"value": 0.282,
 								"size": 1
 							},
 							{
 								"monthIndex": 34,
-								"value": 0.29,
+								"value": 0.289,
 								"size": 1
 							},
 							{
@@ -6244,12 +6019,12 @@ var data = {
 							},
 							{
 								"monthIndex": 44,
-								"value": 0.325,
+								"value": 0.324,
 								"size": 1
 							},
 							{
 								"monthIndex": 45,
-								"value": 0.331,
+								"value": 0.33,
 								"size": 1
 							}
 						],
@@ -6292,31 +6067,31 @@ var data = {
 							{
 								"monthIndex": 8,
 								"value": 0.168,
-								"size": 0.124
+								"size": 0.123
 							},
 							{
 								"monthIndex": 9,
 								"value": 0.161,
-								"size": 0.599
+								"size": 0.597
 							},
 							{
 								"monthIndex": 11,
-								"value": 0.186,
-								"size": 0.214
+								"value": 0.183,
+								"size": 0.19
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.182,
-								"size": 0.006
+								"value": 0.178,
+								"size": 0.005
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.199,
+								"value": 0.196,
 								"size": 0.2
 							},
 							{
 								"monthIndex": 15,
-								"value": 0.22,
+								"value": 0.219,
 								"size": 0.235
 							},
 							{
@@ -6332,7 +6107,7 @@ var data = {
 							{
 								"monthIndex": 18,
 								"value": 0.239,
-								"size": 0.847
+								"size": 0.845
 							},
 							{
 								"monthIndex": 19,
@@ -6347,7 +6122,7 @@ var data = {
 							{
 								"monthIndex": 21,
 								"value": 0.251,
-								"size": 0.989
+								"size": 0.982
 							},
 							{
 								"monthIndex": 22,
@@ -6356,13 +6131,13 @@ var data = {
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.253,
+								"value": 0.254,
 								"size": 0.002
 							},
 							{
 								"monthIndex": 24,
-								"value": 0.254,
-								"size": 0.079
+								"value": 0.255,
+								"size": 0.076
 							},
 							{
 								"monthIndex": 25,
@@ -6377,12 +6152,12 @@ var data = {
 							{
 								"monthIndex": 27,
 								"value": 0.256,
-								"size": 0.009
+								"size": 0.008
 							},
 							{
 								"monthIndex": 28,
 								"value": 0.258,
-								"size": 0.072
+								"size": 0.071
 							},
 							{
 								"monthIndex": 29,
@@ -6396,12 +6171,12 @@ var data = {
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.249,
-								"size": 0.561
+								"value": 0.247,
+								"size": 0.484
 							},
 							{
 								"monthIndex": 32,
-								"value": 0.245,
+								"value": 0.244,
 								"size": 0.92
 							},
 							{
@@ -6411,17 +6186,17 @@ var data = {
 							},
 							{
 								"monthIndex": 34,
-								"value": 0.241,
+								"value": 0.24,
 								"size": 1
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.276,
+								"value": 0.275,
 								"size": 1
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.293,
+								"value": 0.292,
 								"size": 1
 							},
 							{
@@ -6436,7 +6211,7 @@ var data = {
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.283,
+								"value": 0.282,
 								"size": 1
 							},
 							{
@@ -6466,7 +6241,7 @@ var data = {
 							},
 							{
 								"monthIndex": 45,
-								"value": 0.273,
+								"value": 0.272,
 								"size": 1
 							}
 						],
@@ -6509,7 +6284,7 @@ var data = {
 							{
 								"monthIndex": 8,
 								"value": 0.499,
-								"size": 0.221
+								"size": 0.219
 							},
 							{
 								"monthIndex": 9,
@@ -6519,7 +6294,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.492,
-								"size": 0.388
+								"size": 0.338
 							},
 							{
 								"monthIndex": 13,
@@ -6528,22 +6303,22 @@ var data = {
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.491,
+								"value": 0.492,
 								"size": 0.394
 							},
 							{
 								"monthIndex": 15,
-								"value": 0.492,
+								"value": 0.493,
 								"size": 0.403
 							},
 							{
 								"monthIndex": 16,
-								"value": 0.491,
-								"size": 0.664
+								"value": 0.492,
+								"size": 0.662
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.49,
+								"value": 0.491,
 								"size": 0.101
 							},
 							{
@@ -6554,12 +6329,12 @@ var data = {
 							{
 								"monthIndex": 19,
 								"value": 0.489,
-								"size": 0.316
+								"size": 0.315
 							},
 							{
 								"monthIndex": 20,
 								"value": 0.495,
-								"size": 0.089
+								"size": 0.081
 							},
 							{
 								"monthIndex": 21,
@@ -6579,22 +6354,22 @@ var data = {
 							{
 								"monthIndex": 25,
 								"value": 0.493,
-								"size": 0.015
+								"size": 0.013
 							},
 							{
 								"monthIndex": 26,
 								"value": 0.494,
-								"size": 0.046
+								"size": 0.044
 							},
 							{
 								"monthIndex": 28,
-								"value": 0.494,
-								"size": 0.152
+								"value": 0.493,
+								"size": 0.148
 							},
 							{
 								"monthIndex": 29,
 								"value": 0.48,
-								"size": 0.165
+								"size": 0.163
 							},
 							{
 								"monthIndex": 30,
@@ -6603,8 +6378,8 @@ var data = {
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.485,
-								"size": 0.799
+								"value": 0.486,
+								"size": 0.798
 							},
 							{
 								"monthIndex": 32,
@@ -6703,28 +6478,6 @@ var data = {
 								"value": 0.995,
 								"size": 0.003
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 35,
-								"value": 0.195,
-								"size": 0.384
-							},
-							{
-								"monthIndex": 36,
-								"value": 0.184,
-								"size": 0.132
-							},
-							{
-								"monthIndex": 38,
-								"value": 0.185,
-								"size": 0.144
-							},
-							{
-								"monthIndex": 39,
-								"value": 0.182,
-								"size": 0.02
-							}
 						]
 					}
 				}
@@ -6748,9 +6501,9 @@ var data = {
 			"code": "GR",
 			"name": "Greece",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Greece-2012-03.pdf",
+				"filename": "gsmmap.org-country_report-Greece-2012-10.pdf",
 				"year": 2012,
-				"month": 3
+				"month": 10
 			},
 			"boundaries": {
 				"xMin": 20.0013,
@@ -7082,6 +6835,11 @@ var data = {
 		{
 			"code": "HK",
 			"name": "Hong Kong",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Hong_Kong-2014-09.pdf",
+				"year": 2014,
+				"month": 9
+			},
 			"boundaries": {
 				"xMin": 113.8965,
 				"xMax": 114.3353,
@@ -7105,32 +6863,32 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 16,
-								"value": 0.27,
-								"size": 0.004
+								"value": 0.275,
+								"size": 0.002
 							},
 							{
 								"monthIndex": 18,
-								"value": 0.284,
+								"value": 0.288,
 								"size": 0.001
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 16,
-								"value": 0.161,
-								"size": 0.001
+								"value": 0.163,
+								"size": 0
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 16,
 								"value": 0.16,
-								"size": 0.019
+								"size": 0.014
 							},
 							{
 								"monthIndex": 18,
 								"value": 0.16,
-								"size": 0.016
+								"size": 0.015
 							}
 						]
 					}
@@ -7157,12 +6915,12 @@ var data = {
 							{
 								"monthIndex": 16,
 								"value": 0.023,
-								"size": 0.027
+								"size": 0.024
 							},
 							{
 								"monthIndex": 27,
 								"value": 0.01,
-								"size": 0.001
+								"size": 0
 							},
 							{
 								"monthIndex": 44,
@@ -7173,8 +6931,8 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 16,
-								"value": 0.06,
-								"size": 0.01
+								"value": 0.061,
+								"size": 0.009
 							},
 							{
 								"monthIndex": 44,
@@ -7197,8 +6955,8 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 16,
-								"value": 0.371,
-								"size": 0.048
+								"value": 0.372,
+								"size": 0.039
 							},
 							{
 								"monthIndex": 44,
@@ -7209,8 +6967,8 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 16,
-								"value": 0.29,
-								"size": 0.016
+								"value": 0.297,
+								"size": 0.009
 							},
 							{
 								"monthIndex": 44,
@@ -7221,8 +6979,8 @@ var data = {
 						"track": [
 							{
 								"monthIndex": 16,
-								"value": 0.137,
-								"size": 0.002
+								"value": 0.14,
+								"size": 0.001
 							},
 							{
 								"monthIndex": 44,
@@ -7245,25 +7003,25 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 16,
-								"value": 0.339,
-								"size": 0.13
+								"value": 0.34,
+								"size": 0.125
 							},
 							{
 								"monthIndex": 18,
-								"value": 0.413,
-								"size": 0.084
+								"value": 0.414,
+								"size": 0.08
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 16,
 								"value": 0.218,
-								"size": 0.061
+								"size": 0.059
 							},
 							{
 								"monthIndex": 18,
 								"value": 0.283,
-								"size": 0.037
+								"size": 0.035
 							}
 						]
 					}
@@ -7297,13 +7055,13 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.26,
-								"size": 0.259
+								"size": 0.258
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 11,
-								"value": 0.182,
+								"value": 0.183,
 								"size": 0.122
 							}
 						],
@@ -7311,7 +7069,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.536,
-								"size": 0.275
+								"size": 0.27
 							}
 						]
 					}
@@ -7330,7 +7088,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.268,
-								"size": 0.162
+								"size": 0.16
 							},
 							{
 								"monthIndex": 41,
@@ -7351,8 +7109,8 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 11,
-								"value": 0.186,
-								"size": 0.069
+								"value": 0.187,
+								"size": 0.068
 							},
 							{
 								"monthIndex": 41,
@@ -7374,7 +7132,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.82,
-								"size": 0.095
+								"size": 0.094
 							},
 							{
 								"monthIndex": 41,
@@ -7403,28 +7161,6 @@ var data = {
 								"value": 0.996,
 								"size": 0.024
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 41,
-								"value": 0.528,
-								"size": 1
-							},
-							{
-								"monthIndex": 42,
-								"value": 0.439,
-								"size": 0.81
-							},
-							{
-								"monthIndex": 43,
-								"value": 0.436,
-								"size": 0
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.43,
-								"size": 0.024
-							}
 						]
 					}
 				},
@@ -7442,7 +7178,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.425,
-								"size": 0.197
+								"size": 0.193
 							},
 							{
 								"monthIndex": 43,
@@ -7454,7 +7190,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.392,
-								"size": 0.084
+								"size": 0.082
 							},
 							{
 								"monthIndex": 43,
@@ -7466,7 +7202,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.1,
-								"size": 0.751
+								"size": 0.743
 							}
 						],
 						"inter3G": [
@@ -7474,13 +7210,6 @@ var data = {
 								"monthIndex": 43,
 								"value": 1,
 								"size": 0.254
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 43,
-								"value": 0.131,
-								"size": 0.199
 							}
 						]
 					}
@@ -7504,6 +7233,11 @@ var data = {
 		{
 			"code": "IN",
 			"name": "India",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-India-2014-07.pdf",
+				"year": 2014,
+				"month": 7
+			},
 			"boundaries": {
 				"xMin": 68.165,
 				"xMax": 97.3436,
@@ -7611,23 +7345,18 @@ var data = {
 								"size": 0.027
 							},
 							{
-								"monthIndex": 21,
-								"value": 0.054,
-								"size": 0.011
-							},
-							{
 								"monthIndex": 22,
-								"value": 0.121,
-								"size": 0.153
+								"value": 0.127,
+								"size": 0.151
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.109,
-								"size": 0.016
+								"value": 0.115,
+								"size": 0.015
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.076,
+								"value": 0.077,
 								"size": 0.632
 							},
 							{
@@ -7638,7 +7367,7 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.077,
-								"size": 0.183
+								"size": 0.172
 							}
 						],
 						"imper": [
@@ -7649,8 +7378,8 @@ var data = {
 							},
 							{
 								"monthIndex": 22,
-								"value": 0.374,
-								"size": 0.084
+								"value": 0.378,
+								"size": 0.083
 							},
 							{
 								"monthIndex": 39,
@@ -7665,15 +7394,10 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.105,
-								"size": 0.089
+								"size": 0.083
 							}
 						],
 						"track": [
-							{
-								"monthIndex": 21,
-								"value": 0.7,
-								"size": 0.007
-							},
 							{
 								"monthIndex": 39,
 								"value": 0.7,
@@ -7687,7 +7411,7 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.7,
-								"size": 0.275
+								"size": 0.261
 							}
 						],
 						"inter3G": [
@@ -7695,13 +7419,6 @@ var data = {
 								"monthIndex": 44,
 								"value": 1,
 								"size": 0.006
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 44,
-								"value": 1,
-								"size": 0.001
 							}
 						]
 					}
@@ -7775,50 +7492,50 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 21,
-								"value": 0.603,
-								"size": 0.066
+								"value": 0.589,
+								"size": 0.023
 							},
 							{
 								"monthIndex": 22,
-								"value": 0.655,
-								"size": 0.311
+								"value": 0.661,
+								"size": 0.281
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.648,
-								"size": 0.103
+								"value": 0.654,
+								"size": 0.091
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.649,
+								"value": 0.65,
 								"size": 1
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.646,
+								"value": 0.647,
 								"size": 0.006
 							},
 							{
 								"monthIndex": 42,
-								"value": 0.624,
-								"size": 0.241
+								"value": 0.623,
+								"size": 0.235
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 21,
-								"value": 0.386,
-								"size": 0.031
+								"value": 0.354,
+								"size": 0.004
 							},
 							{
 								"monthIndex": 22,
-								"value": 0.531,
-								"size": 0.148
+								"value": 0.547,
+								"size": 0.132
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.544,
-								"size": 0.042
+								"value": 0.557,
+								"size": 0.037
 							},
 							{
 								"monthIndex": 39,
@@ -7827,40 +7544,35 @@ var data = {
 							},
 							{
 								"monthIndex": 42,
-								"value": 0.418,
-								"size": 0.09
+								"value": 0.419,
+								"size": 0.088
 							}
 						],
 						"track": [
 							{
-								"monthIndex": 21,
-								"value": 0.805,
-								"size": 0.007
-							},
-							{
 								"monthIndex": 22,
-								"value": 0.864,
-								"size": 0.164
+								"value": 0.867,
+								"size": 0.156
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.863,
-								"size": 0.028
+								"value": 0.866,
+								"size": 0.022
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.898,
+								"value": 0.899,
 								"size": 1
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.9,
+								"value": 0.901,
 								"size": 0
 							},
 							{
 								"monthIndex": 42,
 								"value": 0.916,
-								"size": 0.248
+								"size": 0.241
 							}
 						]
 					}
@@ -7933,19 +7645,14 @@ var data = {
 					"values": {
 						"inter": [
 							{
-								"monthIndex": 21,
-								"value": 0.033,
-								"size": 0.01
-							},
-							{
 								"monthIndex": 22,
-								"value": 0.078,
-								"size": 0.192
+								"value": 0.082,
+								"size": 0.181
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.076,
-								"size": 0.072
+								"value": 0.079,
+								"size": 0.069
 							},
 							{
 								"monthIndex": 39,
@@ -7960,7 +7667,7 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.223,
-								"size": 0.253
+								"size": 0.235
 							}
 						],
 						"imper": [
@@ -7977,14 +7684,7 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.5,
-								"size": 0.137
-							}
-						],
-						"track": [
-							{
-								"monthIndex": 21,
-								"value": 0.35,
-								"size": 0.025
+								"size": 0.128
 							}
 						]
 					}
@@ -8139,7 +7839,7 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.081,
-								"size": 0.442
+								"size": 0.418
 							}
 						],
 						"imper": [
@@ -8155,8 +7855,8 @@ var data = {
 							},
 							{
 								"monthIndex": 42,
-								"value": 0.054,
-								"size": 0.238
+								"value": 0.056,
+								"size": 0.23
 							}
 						],
 						"track": [
@@ -8173,7 +7873,7 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.7,
-								"size": 0.628
+								"size": 0.597
 							}
 						]
 					}
@@ -8254,22 +7954,22 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 23,
-								"value": 0.089,
-								"size": 0.019
+								"value": 0.108,
+								"size": 0.015
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 23,
 								"value": 0.085,
-								"size": 0.008
+								"size": 0.004
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 23,
 								"value": 0.7,
-								"size": 0.014
+								"size": 0.013
 							}
 						]
 					}
@@ -8290,8 +7990,8 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 22,
-								"value": 0.274,
-								"size": 0.051
+								"value": 0.277,
+								"size": 0.048
 							},
 							{
 								"monthIndex": 39,
@@ -8306,18 +8006,18 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.058,
-								"size": 0.302
+								"size": 0.289
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 22,
-								"value": 0.174,
-								"size": 0.026
+								"value": 0.181,
+								"size": 0.023
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.019,
+								"value": 0.018,
 								"size": 0.017
 							},
 							{
@@ -8328,7 +8028,7 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.008,
-								"size": 0.221
+								"size": 0.211
 							}
 						],
 						"track": [
@@ -8345,7 +8045,7 @@ var data = {
 							{
 								"monthIndex": 42,
 								"value": 0.701,
-								"size": 0.291
+								"size": 0.288
 							}
 						]
 					}
@@ -8442,28 +8142,23 @@ var data = {
 					"values": {
 						"inter": [
 							{
-								"monthIndex": 21,
-								"value": 0.175,
-								"size": 0.013
-							},
-							{
 								"monthIndex": 22,
-								"value": 0.181,
-								"size": 0.037
+								"value": 0.178,
+								"size": 0.035
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.174,
-								"size": 0.004
+								"value": 0.168,
+								"size": 0.003
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.664,
+								"value": 0.666,
 								"size": 0.204
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.662,
+								"value": 0.663,
 								"size": 0.005
 							},
 							{
@@ -8475,17 +8170,12 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 22,
-								"value": 0.447,
+								"value": 0.45,
 								"size": 0.019
 							},
 							{
-								"monthIndex": 23,
-								"value": 0.443,
-								"size": 0
-							},
-							{
 								"monthIndex": 39,
-								"value": 0.56,
+								"value": 0.561,
 								"size": 0.095
 							},
 							{
@@ -8500,11 +8190,6 @@ var data = {
 							}
 						],
 						"track": [
-							{
-								"monthIndex": 21,
-								"value": 0.7,
-								"size": 0
-							},
 							{
 								"monthIndex": 22,
 								"value": 0.7,
@@ -8572,13 +8257,6 @@ var data = {
 								"monthIndex": 39,
 								"value": 1,
 								"size": 0.006
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 39,
-								"value": 0.083,
-								"size": 0.003
 							}
 						]
 					}
@@ -8758,18 +8436,6 @@ var data = {
 								"value": 1,
 								"size": 0.003
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 40,
-								"value": 1,
-								"size": 0.011
-							},
-							{
-								"monthIndex": 41,
-								"value": 0.658,
-								"size": 0.003
-							}
 						]
 					}
 				},
@@ -8808,13 +8474,6 @@ var data = {
 								"value": 1,
 								"size": 0.029
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 40,
-								"value": 1,
-								"size": 0.015
-							}
 						]
 					}
 				},
@@ -8833,13 +8492,6 @@ var data = {
 								"monthIndex": 40,
 								"value": 1,
 								"size": 0.025
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 40,
-								"value": 0.156,
-								"size": 0.019
 							}
 						]
 					}
@@ -8919,7 +8571,7 @@ var data = {
 							{
 								"monthIndex": 26,
 								"value": 0.291,
-								"size": 0.483
+								"size": 0.482
 							},
 							{
 								"monthIndex": 37,
@@ -8941,7 +8593,7 @@ var data = {
 							{
 								"monthIndex": 26,
 								"value": 0.175,
-								"size": 0.279
+								"size": 0.278
 							},
 							{
 								"monthIndex": 37,
@@ -8958,7 +8610,7 @@ var data = {
 							{
 								"monthIndex": 25,
 								"value": 0.115,
-								"size": 0.456
+								"size": 0.455
 							},
 							{
 								"monthIndex": 26,
@@ -9043,9 +8695,9 @@ var data = {
 			"code": "IT",
 			"name": "Italy",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Italy-2013-12.pdf",
-				"year": 2013,
-				"month": 12
+				"filename": "gsmmap.org-country_report-Italy-2014-10.pdf",
+				"year": 2014,
+				"month": 10
 			},
 			"boundaries": {
 				"xMin": 6.6277,
@@ -9105,13 +8757,13 @@ var data = {
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.458,
+								"value": 0.457,
 								"size": 1
 							},
 							{
 								"monthIndex": 19,
 								"value": 0.451,
-								"size": 0.95
+								"size": 0.873
 							},
 							{
 								"monthIndex": 23,
@@ -9120,28 +8772,28 @@ var data = {
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.588,
+								"value": 0.591,
 								"size": 0.526
 							},
 							{
 								"monthIndex": 38,
-								"value": 0.568,
+								"value": 0.57,
 								"size": 0.046
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.59,
+								"value": 0.592,
 								"size": 0.066
 							},
 							{
 								"monthIndex": 44,
-								"value": 0.539,
+								"value": 0.54,
 								"size": 0.183
 							},
 							{
 								"monthIndex": 45,
 								"value": 0.55,
-								"size": 0.152
+								"size": 0.151
 							}
 						],
 						"imper": [
@@ -9172,18 +8824,18 @@ var data = {
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.65,
+								"value": 0.649,
 								"size": 1
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.658,
+								"value": 0.657,
 								"size": 1
 							},
 							{
 								"monthIndex": 19,
 								"value": 0.658,
-								"size": 0.585
+								"size": 0.544
 							},
 							{
 								"monthIndex": 23,
@@ -9192,17 +8844,17 @@ var data = {
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.745,
+								"value": 0.747,
 								"size": 0.391
 							},
 							{
 								"monthIndex": 38,
-								"value": 0.748,
+								"value": 0.75,
 								"size": 0.034
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.76,
+								"value": 0.761,
 								"size": 0.037
 							},
 							{
@@ -9213,7 +8865,7 @@ var data = {
 							{
 								"monthIndex": 45,
 								"value": 0.735,
-								"size": 0.086
+								"size": 0.085
 							}
 						],
 						"track": [
@@ -9240,12 +8892,12 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.095,
-								"size": 0.045
+								"size": 0.044
 							},
 							{
 								"monthIndex": 12,
 								"value": 0.092,
-								"size": 0.776
+								"size": 0.769
 							},
 							{
 								"monthIndex": 14,
@@ -9260,7 +8912,7 @@ var data = {
 							{
 								"monthIndex": 19,
 								"value": 0.094,
-								"size": 0.362
+								"size": 0.295
 							},
 							{
 								"monthIndex": 23,
@@ -9294,13 +8946,6 @@ var data = {
 								"value": 1,
 								"size": 0.015
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 38,
-								"value": 1,
-								"size": 0.005
-							}
 						]
 					}
 				},
@@ -9332,8 +8977,8 @@ var data = {
 							},
 							{
 								"monthIndex": 10,
-								"value": 0.376,
-								"size": 0.129
+								"value": 0.372,
+								"size": 0.116
 							},
 							{
 								"monthIndex": 11,
@@ -9342,12 +8987,12 @@ var data = {
 							},
 							{
 								"monthIndex": 12,
-								"value": 0.394,
-								"size": 0.132
+								"value": 0.395,
+								"size": 0.129
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.322,
+								"value": 0.32,
 								"size": 1
 							},
 							{
@@ -9362,17 +9007,17 @@ var data = {
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.391,
+								"value": 0.392,
 								"size": 1
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.446,
+								"value": 0.45,
 								"size": 1
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.386,
+								"value": 0.387,
 								"size": 0.868
 							},
 							{
@@ -9409,47 +9054,47 @@ var data = {
 							},
 							{
 								"monthIndex": 10,
-								"value": 0.381,
-								"size": 0.067
+								"value": 0.377,
+								"size": 0.06
 							},
 							{
 								"monthIndex": 11,
-								"value": 0.39,
-								"size": 0.567
+								"value": 0.389,
+								"size": 0.56
 							},
 							{
 								"monthIndex": 12,
 								"value": 0.4,
-								"size": 0.073
+								"size": 0.071
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.358,
+								"value": 0.356,
 								"size": 1
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.375,
+								"value": 0.376,
 								"size": 1
 							},
 							{
 								"monthIndex": 19,
-								"value": 0.406,
+								"value": 0.407,
 								"size": 1
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.424,
+								"value": 0.426,
 								"size": 1
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.429,
+								"value": 0.43,
 								"size": 0.507
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.397,
+								"value": 0.398,
 								"size": 0.457
 							},
 							{
@@ -9465,7 +9110,7 @@ var data = {
 							{
 								"monthIndex": 45,
 								"value": 0.381,
-								"size": 0.744
+								"size": 0.741
 							}
 						],
 						"track": [
@@ -9487,17 +9132,17 @@ var data = {
 							{
 								"monthIndex": 10,
 								"value": 0.908,
-								"size": 0.017
+								"size": 0.016
 							},
 							{
 								"monthIndex": 11,
 								"value": 0.869,
-								"size": 0.534
+								"size": 0.526
 							},
 							{
 								"monthIndex": 12,
 								"value": 0.87,
-								"size": 0.068
+								"size": 0.067
 							},
 							{
 								"monthIndex": 14,
@@ -9506,12 +9151,12 @@ var data = {
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.9,
+								"value": 0.899,
 								"size": 1
 							},
 							{
 								"monthIndex": 19,
-								"value": 0.897,
+								"value": 0.896,
 								"size": 1
 							},
 							{
@@ -9526,7 +9171,7 @@ var data = {
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.895,
+								"value": 0.894,
 								"size": 0.701
 							},
 							{
@@ -9541,7 +9186,7 @@ var data = {
 							},
 							{
 								"monthIndex": 45,
-								"value": 0.892,
+								"value": 0.893,
 								"size": 1
 							}
 						]
@@ -9575,58 +9220,58 @@ var data = {
 							},
 							{
 								"monthIndex": 11,
-								"value": 0.32,
-								"size": 0.942
+								"value": 0.323,
+								"size": 0.926
 							},
 							{
 								"monthIndex": 12,
-								"value": 0.323,
-								"size": 0.164
+								"value": 0.326,
+								"size": 0.163
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.317,
-								"size": 0.747
+								"value": 0.314,
+								"size": 0.361
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.329,
-								"size": 0.959
+								"value": 0.331,
+								"size": 0.883
 							},
 							{
 								"monthIndex": 19,
-								"value": 0.363,
+								"value": 0.373,
 								"size": 1
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.369,
-								"size": 0.385
+								"value": 0.38,
+								"size": 0.234
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.378,
+								"value": 0.379,
 								"size": 0.544
 							},
 							{
 								"monthIndex": 38,
-								"value": 0.409,
+								"value": 0.41,
 								"size": 0.058
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.398,
+								"value": 0.399,
 								"size": 0.013
 							},
 							{
 								"monthIndex": 44,
 								"value": 0.395,
-								"size": 0.588
+								"size": 0.583
 							},
 							{
 								"monthIndex": 45,
 								"value": 0.412,
-								"size": 0.4
+								"size": 0.399
 							}
 						],
 						"imper": [
@@ -9648,7 +9293,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.217,
-								"size": 0.467
+								"size": 0.46
 							},
 							{
 								"monthIndex": 12,
@@ -9657,47 +9302,47 @@ var data = {
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.22,
-								"size": 0.391
+								"value": 0.224,
+								"size": 0.196
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.226,
-								"size": 0.493
+								"value": 0.23,
+								"size": 0.458
 							},
 							{
 								"monthIndex": 19,
-								"value": 0.246,
+								"value": 0.252,
 								"size": 0.63
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.252,
-								"size": 0.169
+								"value": 0.26,
+								"size": 0.107
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.244,
+								"value": 0.245,
 								"size": 0.28
 							},
 							{
 								"monthIndex": 38,
-								"value": 0.361,
+								"value": 0.363,
 								"size": 0.044
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.351,
+								"value": 0.353,
 								"size": 0.001
 							},
 							{
 								"monthIndex": 44,
 								"value": 0.313,
-								"size": 0.313
+								"size": 0.311
 							},
 							{
 								"monthIndex": 45,
-								"value": 0.323,
+								"value": 0.324,
 								"size": 0.219
 							}
 						],
@@ -9720,51 +9365,51 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.796,
-								"size": 0.316
+								"size": 0.314
 							},
 							{
 								"monthIndex": 12,
 								"value": 0.796,
-								"size": 0.028
+								"size": 0.027
 							},
 							{
 								"monthIndex": 14,
-								"value": 0.8,
-								"size": 1
+								"value": 0.799,
+								"size": 0.785
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.799,
-								"size": 0.512
+								"value": 0.798,
+								"size": 0.494
 							},
 							{
 								"monthIndex": 19,
-								"value": 0.799,
+								"value": 0.798,
 								"size": 0.301
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.799,
-								"size": 0.108
+								"value": 0.798,
+								"size": 0.052
 							},
 							{
 								"monthIndex": 35,
-								"value": 0.824,
+								"value": 0.825,
 								"size": 0.616
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.832,
+								"value": 0.833,
 								"size": 0.022
 							},
 							{
 								"monthIndex": 44,
 								"value": 0.845,
-								"size": 0.563
+								"size": 0.56
 							},
 							{
 								"monthIndex": 45,
-								"value": 0.844,
+								"value": 0.845,
 								"size": 0.293
 							}
 						],
@@ -9773,13 +9418,6 @@ var data = {
 								"monthIndex": 38,
 								"value": 0.979,
 								"size": 0.037
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 38,
-								"value": 0.979,
-								"size": 0.016
 							}
 						]
 					}
@@ -9933,15 +9571,15 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 21,
-								"value": 0.398,
-								"size": 0.318
+								"value": 0.396,
+								"size": 0.296
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 21,
-								"value": 0.208,
-								"size": 0.171
+								"value": 0.207,
+								"size": 0.159
 							}
 						]
 					}
@@ -9959,15 +9597,15 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 21,
-								"value": 0.338,
-								"size": 0.424
+								"value": 0.328,
+								"size": 0.395
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 21,
-								"value": 0.201,
-								"size": 0.213
+								"value": 0.195,
+								"size": 0.193
 							}
 						]
 					}
@@ -9984,15 +9622,15 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 21,
-								"value": 0.479,
-								"size": 0.173
+								"value": 0.475,
+								"size": 0.157
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 21,
-								"value": 0.243,
-								"size": 0.091
+								"value": 0.242,
+								"size": 0.081
 							}
 						]
 					}
@@ -10003,9 +9641,9 @@ var data = {
 			"code": "KE",
 			"name": "Kenya",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Kenya-2013-06.pdf",
-				"year": 2013,
-				"month": 6
+				"filename": "gsmmap.org-country_report-Kenya-2014-08.pdf",
+				"year": 2014,
+				"month": 8
 			},
 			"boundaries": {
 				"xMin": 33.9032,
@@ -10133,13 +9771,6 @@ var data = {
 								"value": 0.989,
 								"size": 0.015
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 42,
-								"value": 0.045,
-								"size": 0.03
-							}
 						]
 					}
 				},
@@ -10239,18 +9870,6 @@ var data = {
 								"monthIndex": 43,
 								"value": 0.986,
 								"size": 0.07
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 42,
-								"value": 0.81,
-								"size": 0.131
-							},
-							{
-								"monthIndex": 43,
-								"value": 0.577,
-								"size": 0.042
 							}
 						]
 					}
@@ -10454,18 +10073,6 @@ var data = {
 								"value": 1,
 								"size": 0.004
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 42,
-								"value": 0.378,
-								"size": 0.036
-							},
-							{
-								"monthIndex": 43,
-								"value": 0.391,
-								"size": 0.002
-							}
 						]
 					}
 				}
@@ -10544,6 +10151,11 @@ var data = {
 		{
 			"code": "KG",
 			"name": "Kyrgyz Republic",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Kyrgyz_Republic-2012-10.pdf",
+				"year": 2012,
+				"month": 10
+			},
 			"boundaries": {
 				"xMin": 69.2291,
 				"xMax": 80.2162,
@@ -10722,6 +10334,11 @@ var data = {
 		{
 			"code": "LV",
 			"name": "Latvia",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Latvia-2014-05.pdf",
+				"year": 2014,
+				"month": 5
+			},
 			"boundaries": {
 				"xMin": 21.0461,
 				"xMax": 28.2021,
@@ -10860,11 +10477,11 @@ var data = {
 							{
 								"monthIndex": 17,
 								"value": 0.631,
-								"size": 0.166
+								"size": 0.165
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.671,
+								"value": 0.672,
 								"size": 0.013
 							},
 							{
@@ -10874,7 +10491,7 @@ var data = {
 							},
 							{
 								"monthIndex": 32,
-								"value": 0.47,
+								"value": 0.469,
 								"size": 0.005
 							}
 						],
@@ -10886,7 +10503,7 @@ var data = {
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.736,
+								"value": 0.737,
 								"size": 0
 							},
 							{
@@ -10915,7 +10532,7 @@ var data = {
 							{
 								"monthIndex": 17,
 								"value": 0.223,
-								"size": 0.345
+								"size": 0.342
 							},
 							{
 								"monthIndex": 26,
@@ -10926,8 +10543,8 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 17,
-								"value": 0.161,
-								"size": 0.193
+								"value": 0.162,
+								"size": 0.191
 							},
 							{
 								"monthIndex": 26,
@@ -11092,18 +10709,13 @@ var data = {
 					"values": {
 						"inter": [
 							{
-								"monthIndex": 19,
-								"value": 0.209,
-								"size": 0.011
-							},
-							{
 								"monthIndex": 30,
 								"value": 0.218,
 								"size": 0.026
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.388,
+								"value": 0.39,
 								"size": 0.012
 							}
 						],
@@ -11127,9 +10739,9 @@ var data = {
 			"code": "LU",
 			"name": "Luxembourg",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Luxembourg-2013-12.pdf",
-				"year": 2013,
-				"month": 12
+				"filename": "gsmmap.org-country_report-Luxembourg-2014-08.pdf",
+				"year": 2014,
+				"month": 8
 			},
 			"boundaries": {
 				"xMin": 5.744,
@@ -11338,13 +10950,6 @@ var data = {
 								"value": 0.898,
 								"size": 0.023
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.863,
-								"size": 0.02
-							}
 						]
 					}
 				},
@@ -11367,13 +10972,6 @@ var data = {
 								"monthIndex": 36,
 								"value": 1,
 								"size": 0.081
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.41,
-								"size": 0.064
 							}
 						]
 					}
@@ -11407,13 +11005,6 @@ var data = {
 								"monthIndex": 36,
 								"value": 1,
 								"size": 0.123
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.123,
-								"size": 0.112
 							}
 						]
 					}
@@ -11792,11 +11383,6 @@ var data = {
 		{
 			"code": "MM",
 			"name": "Myanmar",
-			"pdf": {
-				"filename": "gsmmap.org-country_report-Myanmar-2012-12.pdf",
-				"year": 2012,
-				"month": 12
-			},
 			"boundaries": {
 				"xMin": 92.1796,
 				"xMax": 101.1473,
@@ -11825,7 +11411,7 @@ var data = {
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.131,
+								"value": 0.132,
 								"size": 1
 							}
 						],
@@ -11838,7 +11424,7 @@ var data = {
 							{
 								"monthIndex": 23,
 								"value": 0.054,
-								"size": 0.677
+								"size": 0.639
 							}
 						],
 						"track": [
@@ -11898,9 +11484,9 @@ var data = {
 			"code": "NL",
 			"name": "Netherlands",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Netherlands-2013-08.pdf",
-				"year": 2013,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Netherlands-2014-07.pdf",
+				"year": 2014,
+				"month": 7
 			},
 			"boundaries": {
 				"xMin": 3.4489,
@@ -11951,7 +11537,7 @@ var data = {
 							{
 								"monthIndex": 12,
 								"value": 0.425,
-								"size": 0.56
+								"size": 0.553
 							},
 							{
 								"monthIndex": 13,
@@ -11966,7 +11552,7 @@ var data = {
 							{
 								"monthIndex": 23,
 								"value": 0.457,
-								"size": 0.331
+								"size": 0.322
 							},
 							{
 								"monthIndex": 25,
@@ -11975,7 +11561,7 @@ var data = {
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.488,
+								"value": 0.487,
 								"size": 0.005
 							},
 							{
@@ -12013,7 +11599,7 @@ var data = {
 							{
 								"monthIndex": 12,
 								"value": 0.539,
-								"size": 0.255
+								"size": 0.251
 							},
 							{
 								"monthIndex": 13,
@@ -12027,17 +11613,17 @@ var data = {
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.549,
-								"size": 0.157
+								"value": 0.548,
+								"size": 0.155
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.561,
+								"value": 0.56,
 								"size": 0
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.58,
+								"value": 0.579,
 								"size": 0.001
 							},
 							{
@@ -12065,12 +11651,12 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.827,
-								"size": 0.021
+								"size": 0.02
 							},
 							{
 								"monthIndex": 23,
 								"value": 0.815,
-								"size": 0.198
+								"size": 0.183
 							},
 							{
 								"monthIndex": 42,
@@ -12083,13 +11669,6 @@ var data = {
 								"monthIndex": 42,
 								"value": 1,
 								"size": 0.014
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 42,
-								"value": 1,
-								"size": 0.005
 							}
 						]
 					}
@@ -12127,21 +11706,21 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.413,
-								"size": 0.298
+								"size": 0.293
 							},
 							{
 								"monthIndex": 11,
-								"value": 0.359,
-								"size": 0.358
+								"value": 0.36,
+								"size": 0.353
 							},
 							{
 								"monthIndex": 12,
-								"value": 0.31,
-								"size": 0.264
+								"value": 0.311,
+								"size": 0.259
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.319,
+								"value": 0.321,
 								"size": 0.073
 							},
 							{
@@ -12151,12 +11730,12 @@ var data = {
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.356,
-								"size": 0.06
+								"value": 0.357,
+								"size": 0.057
 							},
 							{
 								"monthIndex": 24,
-								"value": 0.362,
+								"value": 0.363,
 								"size": 0.064
 							},
 							{
@@ -12166,17 +11745,17 @@ var data = {
 							},
 							{
 								"monthIndex": 29,
-								"value": 0.414,
+								"value": 0.415,
 								"size": 0.002
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.497,
+								"value": 0.498,
 								"size": 0.022
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.675,
+								"value": 0.676,
 								"size": 0.267
 							},
 							{
@@ -12213,33 +11792,33 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.345,
-								"size": 0.18
+								"value": 0.346,
+								"size": 0.175
 							},
 							{
 								"monthIndex": 11,
 								"value": 0.308,
-								"size": 0.201
+								"size": 0.199
 							},
 							{
 								"monthIndex": 12,
-								"value": 0.278,
-								"size": 0.148
+								"value": 0.279,
+								"size": 0.145
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.305,
+								"value": 0.306,
 								"size": 0.039
 							},
 							{
 								"monthIndex": 22,
-								"value": 0.483,
+								"value": 0.484,
 								"size": 0.079
 							},
 							{
 								"monthIndex": 23,
 								"value": 0.516,
-								"size": 0.032
+								"size": 0.03
 							},
 							{
 								"monthIndex": 24,
@@ -12253,7 +11832,7 @@ var data = {
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.611,
+								"value": 0.612,
 								"size": 0.007
 							},
 							{
@@ -12263,7 +11842,7 @@ var data = {
 							},
 							{
 								"monthIndex": 37,
-								"value": 0.897,
+								"value": 0.898,
 								"size": 0.774
 							},
 							{
@@ -12286,12 +11865,12 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.45,
-								"size": 0.124
+								"size": 0.123
 							},
 							{
 								"monthIndex": 11,
 								"value": 0.45,
-								"size": 0.289
+								"size": 0.283
 							},
 							{
 								"monthIndex": 12,
@@ -12301,7 +11880,7 @@ var data = {
 							{
 								"monthIndex": 13,
 								"value": 0.454,
-								"size": 0.032
+								"size": 0.031
 							},
 							{
 								"monthIndex": 22,
@@ -12311,7 +11890,7 @@ var data = {
 							{
 								"monthIndex": 23,
 								"value": 0.532,
-								"size": 0.253
+								"size": 0.251
 							},
 							{
 								"monthIndex": 24,
@@ -12370,28 +11949,6 @@ var data = {
 								"value": 0.996,
 								"size": 0.016
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 1,
-								"size": 0.094
-							},
-							{
-								"monthIndex": 37,
-								"value": 0.995,
-								"size": 0.249
-							},
-							{
-								"monthIndex": 38,
-								"value": 0.995,
-								"size": 0.001
-							},
-							{
-								"monthIndex": 42,
-								"value": 0.996,
-								"size": 0.011
-							}
 						]
 					}
 				},
@@ -12428,7 +11985,7 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.486,
-								"size": 0.025
+								"size": 0.024
 							},
 							{
 								"monthIndex": 11,
@@ -12438,7 +11995,7 @@ var data = {
 							{
 								"monthIndex": 12,
 								"value": 0.4,
-								"size": 0.139
+								"size": 0.138
 							},
 							{
 								"monthIndex": 22,
@@ -12448,7 +12005,7 @@ var data = {
 							{
 								"monthIndex": 23,
 								"value": 0.347,
-								"size": 0.15
+								"size": 0.147
 							},
 							{
 								"monthIndex": 25,
@@ -12509,8 +12066,8 @@ var data = {
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.303,
-								"size": 0.074
+								"value": 0.304,
+								"size": 0.072
 							},
 							{
 								"monthIndex": 29,
@@ -12519,7 +12076,7 @@ var data = {
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.31,
+								"value": 0.311,
 								"size": 0.008
 							},
 							{
@@ -12575,18 +12132,6 @@ var data = {
 								"monthIndex": 42,
 								"value": 0.99,
 								"size": 0.102
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.885,
-								"size": 0.012
-							},
-							{
-								"monthIndex": 42,
-								"value": 0.287,
-								"size": 0.077
 							}
 						]
 					}
@@ -12701,9 +12246,9 @@ var data = {
 			"code": "NO",
 			"name": "Norway",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Norway-2012-01.pdf",
-				"year": 2012,
-				"month": 1
+				"filename": "gsmmap.org-country_report-Norway-2014-08.pdf",
+				"year": 2014,
+				"month": 8
 			},
 			"boundaries": {
 				"xMin": 4.9278,
@@ -12899,6 +12444,11 @@ var data = {
 		{
 			"code": "OM",
 			"name": "Oman",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Oman-2012-01.pdf",
+				"year": 2012,
+				"month": 1
+			},
 			"boundaries": {
 				"xMin": 51.9776,
 				"xMax": 59.8232,
@@ -12921,22 +12471,22 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 11,
-								"value": 0.363,
-								"size": 0.035
+								"value": 0.373,
+								"size": 0.029
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 11,
-								"value": 0.261,
-								"size": 0.011
+								"value": 0.251,
+								"size": 0.008
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 11,
-								"value": 0.934,
-								"size": 0.045
+								"value": 0.932,
+								"size": 0.023
 							}
 						]
 					}
@@ -12955,21 +12505,21 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.365,
-								"size": 0.109
+								"size": 0.098
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 11,
-								"value": 0.267,
-								"size": 0.044
+								"value": 0.27,
+								"size": 0.04
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 11,
-								"value": 0.158,
-								"size": 0.087
+								"value": 0.159,
+								"size": 0.075
 							}
 						]
 					}
@@ -13078,9 +12628,9 @@ var data = {
 			"code": "PL",
 			"name": "Poland",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Poland-2013-08.pdf",
-				"year": 2013,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Poland-2014-10.pdf",
+				"year": 2014,
+				"month": 10
 			},
 			"boundaries": {
 				"xMin": 14.1286,
@@ -13214,23 +12764,6 @@ var data = {
 								"value": 0.994,
 								"size": 0.122
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.167,
-								"size": 0.02
-							},
-							{
-								"monthIndex": 39,
-								"value": 0.177,
-								"size": 0.008
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.397,
-								"size": 0.084
-							}
 						]
 					}
 				},
@@ -13336,18 +12869,6 @@ var data = {
 								"value": 1,
 								"size": 0.064
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.833,
-								"size": 0.001
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.911,
-								"size": 0.033
-							}
 						]
 					}
 				},
@@ -13433,13 +12954,6 @@ var data = {
 								"value": 1,
 								"size": 0.06
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 45,
-								"value": 0.246,
-								"size": 0.045
-							}
 						]
 					}
 				},
@@ -13482,9 +12996,9 @@ var data = {
 			"code": "PT",
 			"name": "Portugal",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Portugal-2012-01.pdf",
-				"year": 2012,
-				"month": 1
+				"filename": "gsmmap.org-country_report-Portugal-2014-10.pdf",
+				"year": 2014,
+				"month": 10
 			},
 			"boundaries": {
 				"xMin": -9.4748,
@@ -13542,13 +13056,6 @@ var data = {
 								"monthIndex": 45,
 								"value": 0.917,
 								"size": 0.007
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 45,
-								"value": 0.083,
-								"size": 0.004
 							}
 						]
 					}
@@ -13660,6 +13167,11 @@ var data = {
 		{
 			"code": "RU",
 			"name": "Russian Federation",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Russian_Federation-2014-03.pdf",
+				"year": 2014,
+				"month": 3
+			},
 			"boundaries": {
 				"xMin": 27.352,
 				"xMax": 180,
@@ -14054,9 +13566,9 @@ var data = {
 			"code": "RS",
 			"name": "Serbia",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Serbia-2012-07.pdf",
-				"year": 2012,
-				"month": 7
+				"filename": "gsmmap.org-country_report-Serbia-2014-11.pdf",
+				"year": 2014,
+				"month": 11
 			},
 			"boundaries": {
 				"xMin": 18.8391,
@@ -14086,11 +13598,11 @@ var data = {
 							{
 								"monthIndex": 18,
 								"value": 0.317,
-								"size": 0.325
+								"size": 0.298
 							},
 							{
 								"monthIndex": 43,
-								"value": 0.495,
+								"value": 0.497,
 								"size": 0.005
 							},
 							{
@@ -14107,12 +13619,12 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 18,
-								"value": 0.236,
-								"size": 0.139
+								"value": 0.235,
+								"size": 0.125
 							},
 							{
 								"monthIndex": 43,
-								"value": 0.348,
+								"value": 0.349,
 								"size": 0.005
 							},
 							{
@@ -14125,7 +13637,7 @@ var data = {
 							{
 								"monthIndex": 18,
 								"value": 0.1,
-								"size": 0.012
+								"size": 0.011
 							},
 							{
 								"monthIndex": 44,
@@ -14144,13 +13656,6 @@ var data = {
 								"value": 0.95,
 								"size": 0.014
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 43,
-								"value": 0.1,
-								"size": 0.004
-							}
 						]
 					}
 				},
@@ -14167,12 +13672,12 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 18,
-								"value": 0.493,
-								"size": 0.216
+								"value": 0.497,
+								"size": 0.196
 							},
 							{
 								"monthIndex": 43,
-								"value": 0.689,
+								"value": 0.69,
 								"size": 0.017
 							},
 							{
@@ -14189,12 +13694,12 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 18,
-								"value": 0.698,
-								"size": 0.083
+								"value": 0.699,
+								"size": 0.074
 							},
 							{
 								"monthIndex": 43,
-								"value": 0.847,
+								"value": 0.848,
 								"size": 0.009
 							},
 							{
@@ -14212,7 +13717,7 @@ var data = {
 							{
 								"monthIndex": 18,
 								"value": 0.82,
-								"size": 0.048
+								"size": 0.044
 							},
 							{
 								"monthIndex": 44,
@@ -14231,13 +13736,6 @@ var data = {
 								"value": 0.959,
 								"size": 0.037
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 43,
-								"value": 0.959,
-								"size": 0.015
-							}
 						]
 					}
 				},
@@ -14255,7 +13753,7 @@ var data = {
 							{
 								"monthIndex": 18,
 								"value": 0.507,
-								"size": 0.269
+								"size": 0.245
 							},
 							{
 								"monthIndex": 44,
@@ -14271,8 +13769,8 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 18,
-								"value": 0.35,
-								"size": 0.111
+								"value": 0.349,
+								"size": 0.104
 							},
 							{
 								"monthIndex": 44,
@@ -14283,13 +13781,6 @@ var data = {
 								"monthIndex": 45,
 								"value": 0.392,
 								"size": 0.007
-							}
-						],
-						"track": [
-							{
-								"monthIndex": 18,
-								"value": 0.296,
-								"size": 0
 							}
 						]
 					}
@@ -14367,13 +13858,6 @@ var data = {
 								"value": 0.971,
 								"size": 0.027
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 37,
-								"value": 0.088,
-								"size": 0.017
-							}
 						]
 					}
 				},
@@ -14408,6 +13892,11 @@ var data = {
 		{
 			"code": "SK",
 			"name": "Slovakia",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Slovakia-2014-06.pdf",
+				"year": 2014,
+				"month": 6
+			},
 			"boundaries": {
 				"xMin": 16.8654,
 				"xMax": 22.5387,
@@ -14495,13 +13984,6 @@ var data = {
 								"value": 0.974,
 								"size": 0.032
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 1,
-								"size": 0.023
-							}
 						]
 					}
 				},
@@ -14522,12 +14004,12 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 15,
-								"value": 0.598,
-								"size": 0.041
+								"value": 0.6,
+								"size": 0.042
 							},
 							{
 								"monthIndex": 18,
-								"value": 0.715,
+								"value": 0.714,
 								"size": 0.022
 							},
 							{
@@ -14544,12 +14026,12 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 15,
-								"value": 0.713,
-								"size": 0.018
+								"value": 0.715,
+								"size": 0.019
 							},
 							{
 								"monthIndex": 18,
-								"value": 0.796,
+								"value": 0.795,
 								"size": 0.008
 							},
 							{
@@ -14694,9 +14176,9 @@ var data = {
 			"code": "ZA",
 			"name": "South Africa",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-South_Africa-2012-10.pdf",
-				"year": 2012,
-				"month": 10
+				"filename": "gsmmap.org-country_report-South_Africa-2014-04.pdf",
+				"year": 2014,
+				"month": 4
 			},
 			"boundaries": {
 				"xMin": 16.4476,
@@ -14754,13 +14236,6 @@ var data = {
 								"value": 1,
 								"size": 0.053
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 37,
-								"value": 0.071,
-								"size": 0.004
-							}
 						]
 					}
 				},
@@ -14776,15 +14251,15 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 21,
-								"value": 0.3,
-								"size": 0.021
+								"value": 0.301,
+								"size": 0.02
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 21,
-								"value": 0.184,
-								"size": 0.007
+								"value": 0.187,
+								"size": 0.006
 							}
 						],
 						"track": [
@@ -14809,35 +14284,35 @@ var data = {
 							{
 								"monthIndex": 21,
 								"value": 0.235,
-								"size": 0.122
+								"size": 0.117
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.502,
+								"value": 0.503,
 								"size": 0.009
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 21,
-								"value": 0.152,
-								"size": 0.068
+								"value": 0.15,
+								"size": 0.065
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.356,
+								"value": 0.357,
 								"size": 0.004
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 21,
-								"value": 0.479,
-								"size": 0.072
+								"value": 0.494,
+								"size": 0.068
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.472,
+								"value": 0.475,
 								"size": 0
 							}
 						]
@@ -14848,6 +14323,11 @@ var data = {
 		{
 			"code": "ES",
 			"name": "Spain",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Spain-2014-12.pdf",
+				"year": 2014,
+				"month": 12
+			},
 			"boundaries": {
 				"xMin": -9.2352,
 				"xMax": 3.3067,
@@ -14875,22 +14355,22 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 23,
-								"value": 0.495,
-								"size": 0.091
+								"value": 0.516,
+								"size": 0.043
 							},
 							{
 								"monthIndex": 28,
-								"value": 0.489,
-								"size": 0.019
+								"value": 0.541,
+								"size": 0.018
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.366,
+								"value": 0.365,
 								"size": 0.021
 							},
 							{
 								"monthIndex": 37,
-								"value": 0.312,
+								"value": 0.31,
 								"size": 0.158
 							},
 							{
@@ -14907,27 +14387,27 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 23,
-								"value": 0.351,
-								"size": 0.045
+								"value": 0.331,
+								"size": 0.02
 							},
 							{
 								"monthIndex": 28,
-								"value": 0.341,
-								"size": 0.007
+								"value": 0.359,
+								"size": 0.006
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.438,
+								"value": 0.448,
 								"size": 0.012
 							},
 							{
 								"monthIndex": 37,
-								"value": 0.445,
+								"value": 0.446,
 								"size": 0.072
 							},
 							{
 								"monthIndex": 38,
-								"value": 0.412,
+								"value": 0.413,
 								"size": 0.223
 							},
 							{
@@ -14946,18 +14426,6 @@ var data = {
 								"monthIndex": 45,
 								"value": 0.961,
 								"size": 0.016
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 38,
-								"value": 0.98,
-								"size": 0.023
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.613,
-								"size": 0
 							}
 						]
 					}
@@ -14979,22 +14447,22 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 23,
-								"value": 0.367,
-								"size": 0.05
+								"value": 0.333,
+								"size": 0.016
 							},
 							{
 								"monthIndex": 28,
-								"value": 0.342,
+								"value": 0.308,
 								"size": 0.003
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.464,
+								"value": 0.468,
 								"size": 0.033
 							},
 							{
 								"monthIndex": 37,
-								"value": 0.466,
+								"value": 0.467,
 								"size": 0.301
 							},
 							{
@@ -15006,22 +14474,22 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 23,
-								"value": 0.37,
-								"size": 0.022
+								"value": 0.384,
+								"size": 0.007
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.475,
+								"value": 0.481,
 								"size": 0.011
 							},
 							{
 								"monthIndex": 37,
-								"value": 0.544,
+								"value": 0.546,
 								"size": 0.108
 							},
 							{
 								"monthIndex": 38,
-								"value": 0.514,
+								"value": 0.515,
 								"size": 0.243
 							}
 						],
@@ -15054,32 +14522,11 @@ var data = {
 					"name": "Yoigo",
 					"color": "#2964A6",
 					"values": {
-						"inter": [
-							{
-								"monthIndex": 23,
-								"value": 0.326,
-								"size": 0.011
-							}
-						],
-						"imper": [
-							{
-								"monthIndex": 23,
-								"value": 0.256,
-								"size": 0.006
-							}
-						],
 						"inter3G": [
 							{
 								"monthIndex": 45,
 								"value": 1,
 								"size": 0.016
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 45,
-								"value": 0.048,
-								"size": 0.014
 							}
 						]
 					}
@@ -15097,22 +14544,22 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 23,
-								"value": 0.311,
-								"size": 0.071
+								"value": 0.321,
+								"size": 0.038
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.303,
+								"value": 0.305,
 								"size": 0.001
 							},
 							{
 								"monthIndex": 28,
-								"value": 0.285,
+								"value": 0.28,
 								"size": 0.01
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.304,
+								"value": 0.305,
 								"size": 0.053
 							},
 							{
@@ -15134,27 +14581,27 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 23,
-								"value": 0.271,
-								"size": 0.034
+								"value": 0.328,
+								"size": 0.015
 							},
 							{
 								"monthIndex": 28,
-								"value": 0.241,
+								"value": 0.254,
 								"size": 0.002
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.399,
+								"value": 0.406,
 								"size": 0.02
 							},
 							{
 								"monthIndex": 37,
-								"value": 0.388,
+								"value": 0.389,
 								"size": 0.067
 							},
 							{
 								"monthIndex": 38,
-								"value": 0.352,
+								"value": 0.353,
 								"size": 0.271
 							},
 							{
@@ -15167,7 +14614,7 @@ var data = {
 							{
 								"monthIndex": 23,
 								"value": 0.426,
-								"size": 0.047
+								"size": 0.013
 							},
 							{
 								"monthIndex": 28,
@@ -15176,7 +14623,7 @@ var data = {
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.45,
+								"value": 0.451,
 								"size": 0.036
 							},
 							{
@@ -15186,7 +14633,7 @@ var data = {
 							},
 							{
 								"monthIndex": 38,
-								"value": 0.446,
+								"value": 0.447,
 								"size": 0.528
 							}
 						],
@@ -15200,13 +14647,6 @@ var data = {
 								"monthIndex": 45,
 								"value": 1,
 								"size": 0.003
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 38,
-								"value": 0.069,
-								"size": 0.017
 							}
 						]
 					}
@@ -15410,13 +14850,6 @@ var data = {
 								"value": 1,
 								"size": 0.015
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.05,
-								"size": 0.015
-							}
 						]
 					}
 				},
@@ -15555,9 +14988,9 @@ var data = {
 			"code": "CH",
 			"name": "Switzerland",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Switzerland-2013-12.pdf",
-				"year": 2013,
-				"month": 12
+				"filename": "gsmmap.org-country_report-Switzerland-2014-10.pdf",
+				"year": 2014,
+				"month": 10
 			},
 			"boundaries": {
 				"xMin": 5.9715,
@@ -15593,11 +15026,11 @@ var data = {
 							{
 								"monthIndex": 9,
 								"value": 0.556,
-								"size": 0.112
+								"size": 0.11
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.541,
+								"value": 0.54,
 								"size": 0.033
 							},
 							{
@@ -15607,8 +15040,8 @@ var data = {
 							},
 							{
 								"monthIndex": 28,
-								"value": 0.505,
-								"size": 0.04
+								"value": 0.512,
+								"size": 0.038
 							},
 							{
 								"monthIndex": 35,
@@ -15617,12 +15050,12 @@ var data = {
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.54,
+								"value": 0.541,
 								"size": 0.125
 							},
 							{
 								"monthIndex": 37,
-								"value": 0.594,
+								"value": 0.595,
 								"size": 0.163
 							},
 							{
@@ -15644,7 +15077,7 @@ var data = {
 							},
 							{
 								"monthIndex": 9,
-								"value": 0.462,
+								"value": 0.463,
 								"size": 0.057
 							},
 							{
@@ -15659,8 +15092,8 @@ var data = {
 							},
 							{
 								"monthIndex": 28,
-								"value": 0.38,
-								"size": 0.024
+								"value": 0.388,
+								"size": 0.022
 							},
 							{
 								"monthIndex": 35,
@@ -15669,7 +15102,7 @@ var data = {
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.456,
+								"value": 0.457,
 								"size": 0.057
 							},
 							{
@@ -15755,23 +15188,6 @@ var data = {
 								"monthIndex": 45,
 								"value": 0.971,
 								"size": 0.154
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 37,
-								"value": 0.967,
-								"size": 0.027
-							},
-							{
-								"monthIndex": 39,
-								"value": 0.978,
-								"size": 0.005
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.969,
-								"size": 0.082
 							}
 						]
 					}
@@ -16076,13 +15492,6 @@ var data = {
 								"value": 1,
 								"size": 0.162
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 45,
-								"value": 0.006,
-								"size": 0.126
-							}
 						]
 					}
 				}
@@ -16250,9 +15659,9 @@ var data = {
 			"code": "TH",
 			"name": "Thailand",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Thailand-2013-02.pdf",
-				"year": 2013,
-				"month": 2
+				"filename": "gsmmap.org-country_report-Thailand-2014-11.pdf",
+				"year": 2014,
+				"month": 11
 			},
 			"boundaries": {
 				"xMin": 97.3739,
@@ -16288,7 +15697,7 @@ var data = {
 							{
 								"monthIndex": 12,
 								"value": 0.388,
-								"size": 0.089
+								"size": 0.088
 							},
 							{
 								"monthIndex": 13,
@@ -16297,8 +15706,8 @@ var data = {
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.451,
-								"size": 0.008
+								"value": 0.468,
+								"size": 0.007
 							},
 							{
 								"monthIndex": 36,
@@ -16320,7 +15729,7 @@ var data = {
 							{
 								"monthIndex": 12,
 								"value": 0.305,
-								"size": 0.046
+								"size": 0.045
 							},
 							{
 								"monthIndex": 13,
@@ -16329,12 +15738,12 @@ var data = {
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.341,
+								"value": 0.344,
 								"size": 0
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.73,
+								"value": 0.731,
 								"size": 0.003
 							},
 							{
@@ -16351,8 +15760,8 @@ var data = {
 							},
 							{
 								"monthIndex": 12,
-								"value": 0.839,
-								"size": 0.105
+								"value": 0.838,
+								"size": 0.104
 							},
 							{
 								"monthIndex": 13,
@@ -16370,13 +15779,6 @@ var data = {
 								"monthIndex": 36,
 								"value": 0.938,
 								"size": 0.01
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.938,
-								"size": 0.005
 							}
 						]
 					}
@@ -16469,11 +15871,11 @@ var data = {
 							{
 								"monthIndex": 12,
 								"value": 0.147,
-								"size": 0.269
+								"size": 0.268
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.147,
+								"value": 0.148,
 								"size": 0.009
 							},
 							{
@@ -16492,13 +15894,6 @@ var data = {
 								"monthIndex": 43,
 								"value": 1,
 								"size": 0.024
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.093,
-								"size": 0.029
 							}
 						]
 					}
@@ -16522,11 +15917,6 @@ var data = {
 								"monthIndex": 12,
 								"value": 0.356,
 								"size": 0.017
-							},
-							{
-								"monthIndex": 17,
-								"value": 0.414,
-								"size": 0
 							}
 						],
 						"imper": [
@@ -16583,8 +15973,8 @@ var data = {
 							},
 							{
 								"monthIndex": 12,
-								"value": 0.354,
-								"size": 0.394
+								"value": 0.355,
+								"size": 0.392
 							},
 							{
 								"monthIndex": 13,
@@ -16594,7 +15984,7 @@ var data = {
 							{
 								"monthIndex": 25,
 								"value": 0.303,
-								"size": 0.089
+								"size": 0.087
 							},
 							{
 								"monthIndex": 36,
@@ -16616,7 +16006,7 @@ var data = {
 							{
 								"monthIndex": 12,
 								"value": 0.234,
-								"size": 0.171
+								"size": 0.169
 							},
 							{
 								"monthIndex": 13,
@@ -16625,8 +16015,8 @@ var data = {
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.201,
-								"size": 0.039
+								"value": 0.2,
+								"size": 0.038
 							},
 							{
 								"monthIndex": 36,
@@ -16648,12 +16038,12 @@ var data = {
 							{
 								"monthIndex": 12,
 								"value": 0.101,
-								"size": 0.227
+								"size": 0.226
 							},
 							{
 								"monthIndex": 25,
 								"value": 0.1,
-								"size": 0.043
+								"size": 0.041
 							},
 							{
 								"monthIndex": 43,
@@ -16666,13 +16056,6 @@ var data = {
 								"monthIndex": 36,
 								"value": 1,
 								"size": 0.004
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 36,
-								"value": 0.1,
-								"size": 0.002
 							}
 						]
 					}
@@ -16773,9 +16156,9 @@ var data = {
 			"code": "TR",
 			"name": "Turkey",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Turkey-2013-02.pdf",
+				"filename": "gsmmap.org-country_report-Turkey-2013-03.pdf",
 				"year": 2013,
-				"month": 2
+				"month": 3
 			},
 			"boundaries": {
 				"xMin": 26.096,
@@ -16801,7 +16184,7 @@ var data = {
 							{
 								"monthIndex": 25,
 								"value": 0.36,
-								"size": 0.219
+								"size": 0.216
 							}
 						],
 						"imper": [
@@ -16833,8 +16216,8 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 25,
-								"value": 0.56,
-								"size": 0.159
+								"value": 0.559,
+								"size": 0.153
 							},
 							{
 								"monthIndex": 26,
@@ -16845,12 +16228,12 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 25,
-								"value": 0.35,
-								"size": 0.07
+								"value": 0.351,
+								"size": 0.068
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.357,
+								"value": 0.358,
 								"size": 0.008
 							}
 						],
@@ -16858,12 +16241,12 @@ var data = {
 							{
 								"monthIndex": 25,
 								"value": 0.516,
-								"size": 0.03
+								"size": 0.029
 							},
 							{
 								"monthIndex": 26,
 								"value": 0.516,
-								"size": 0.01
+								"size": 0.008
 							}
 						]
 					}
@@ -16886,20 +16269,20 @@ var data = {
 							},
 							{
 								"monthIndex": 25,
-								"value": 0.284,
-								"size": 0.173
+								"value": 0.285,
+								"size": 0.171
 							},
 							{
 								"monthIndex": 26,
 								"value": 0.345,
-								"size": 0.256
+								"size": 0.254
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 25,
-								"value": 0.22,
-								"size": 0.099
+								"value": 0.221,
+								"size": 0.097
 							},
 							{
 								"monthIndex": 26,
@@ -16911,7 +16294,7 @@ var data = {
 							{
 								"monthIndex": 25,
 								"value": 0.509,
-								"size": 0.076
+								"size": 0.075
 							},
 							{
 								"monthIndex": 26,
@@ -16982,11 +16365,6 @@ var data = {
 		{
 			"code": "AE",
 			"name": "United Arab Emirates",
-			"pdf": {
-				"filename": "gsmmap.org-country_report-United_Arab_Emirates-2012-10.pdf",
-				"year": 2012,
-				"month": 10
-			},
 			"boundaries": {
 				"xMin": 51.5722,
 				"xMax": 56.388,
@@ -17015,8 +16393,8 @@ var data = {
 							},
 							{
 								"monthIndex": 21,
-								"value": 0.428,
-								"size": 0.035
+								"value": 0.363,
+								"size": 0.005
 							},
 							{
 								"monthIndex": 45,
@@ -17032,8 +16410,8 @@ var data = {
 							},
 							{
 								"monthIndex": 21,
-								"value": 0.522,
-								"size": 0.012
+								"value": 0.434,
+								"size": 0
 							},
 							{
 								"monthIndex": 45,
@@ -17046,13 +16424,6 @@ var data = {
 								"monthIndex": 45,
 								"value": 1,
 								"size": 0.052
-							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 45,
-								"value": 0.085,
-								"size": 0.025
 							}
 						]
 					}
@@ -17091,13 +16462,6 @@ var data = {
 								"size": 0.025
 							}
 						],
-						"track": [
-							{
-								"monthIndex": 21,
-								"value": 0.53,
-								"size": 0.003
-							}
-						],
 						"inter3G": [
 							{
 								"monthIndex": 43,
@@ -17109,18 +16473,6 @@ var data = {
 								"value": 1,
 								"size": 0.037
 							}
-						],
-						"imper3G": [
-							{
-								"monthIndex": 43,
-								"value": 1,
-								"size": 0.007
-							},
-							{
-								"monthIndex": 45,
-								"value": 0.339,
-								"size": 0.016
-							}
 						]
 					}
 				}
@@ -17130,9 +16482,9 @@ var data = {
 			"code": "GB",
 			"name": "United Kingdom",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-United_Kingdom-2013-04.pdf",
+				"filename": "gsmmap.org-country_report-United_Kingdom-2013-08.pdf",
 				"year": 2013,
-				"month": 4
+				"month": 8
 			},
 			"boundaries": {
 				"xMin": -6.1337,
@@ -17166,7 +16518,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.305,
-								"size": 0.365
+								"size": 0.364
 							},
 							{
 								"monthIndex": 13,
@@ -17192,12 +16544,12 @@ var data = {
 						"imper": [
 							{
 								"monthIndex": 11,
-								"value": 0.343,
-								"size": 0.18
+								"value": 0.344,
+								"size": 0.179
 							},
 							{
 								"monthIndex": 13,
-								"value": 0.301,
+								"value": 0.302,
 								"size": 0.207
 							},
 							{
@@ -17210,7 +16562,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.139,
-								"size": 0.262
+								"size": 0.26
 							},
 							{
 								"monthIndex": 13,
@@ -17220,7 +16572,7 @@ var data = {
 							{
 								"monthIndex": 29,
 								"value": 0.13,
-								"size": 0.101
+								"size": 0.099
 							}
 						]
 					}
@@ -17239,7 +16591,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.505,
-								"size": 0.205
+								"size": 0.204
 							},
 							{
 								"monthIndex": 13,
@@ -17298,7 +16650,7 @@ var data = {
 							{
 								"monthIndex": 11,
 								"value": 0.115,
-								"size": 0.111
+								"size": 0.108
 							},
 							{
 								"monthIndex": 13,
@@ -17307,7 +16659,7 @@ var data = {
 							},
 							{
 								"monthIndex": 21,
-								"value": 0.112,
+								"value": 0.111,
 								"size": 0.01
 							},
 							{
@@ -17331,15 +16683,15 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 11,
-								"value": 0.234,
-								"size": 0.154
+								"value": 0.233,
+								"size": 0.152
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 11,
-								"value": 0.182,
-								"size": 0.074
+								"value": 0.177,
+								"size": 0.073
 							}
 						],
 						"track": [
@@ -17368,31 +16720,31 @@ var data = {
 						"inter": [
 							{
 								"monthIndex": 11,
-								"value": 0.225,
-								"size": 0.42
+								"value": 0.226,
+								"size": 0.415
 							},
 							{
 								"monthIndex": 27,
-								"value": 0.255,
-								"size": 0.013
+								"value": 0.254,
+								"size": 0.012
 							}
 						],
 						"imper": [
 							{
 								"monthIndex": 11,
-								"value": 0.166,
-								"size": 0.207
+								"value": 0.167,
+								"size": 0.206
 							}
 						],
 						"track": [
 							{
 								"monthIndex": 11,
-								"value": 0.125,
+								"value": 0.126,
 								"size": 1
 							},
 							{
 								"monthIndex": 27,
-								"value": 0.14,
+								"value": 0.141,
 								"size": 0.014
 							}
 						]
@@ -17404,9 +16756,9 @@ var data = {
 			"code": "US",
 			"name": "United States of America",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-United_States_of_America-2013-08.pdf",
-				"year": 2013,
-				"month": 8
+				"filename": "gsmmap.org-country_report-United_States_of_America-2014-04.pdf",
+				"year": 2014,
+				"month": 4
 			},
 			"boundaries": {
 				"xMin": -124.71,
@@ -17514,7 +16866,7 @@ var data = {
 							{
 								"monthIndex": 17,
 								"value": 0.285,
-								"size": 0.195
+								"size": 0.192
 							},
 							{
 								"monthIndex": 18,
@@ -17523,18 +16875,18 @@ var data = {
 							},
 							{
 								"monthIndex": 19,
-								"value": 0.302,
-								"size": 0.034
+								"value": 0.303,
+								"size": 0.032
 							},
 							{
 								"monthIndex": 21,
 								"value": 0.304,
-								"size": 0.182
+								"size": 0.176
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.331,
-								"size": 0.801
+								"value": 0.33,
+								"size": 0.789
 							},
 							{
 								"monthIndex": 31,
@@ -17556,7 +16908,7 @@ var data = {
 							{
 								"monthIndex": 17,
 								"value": 0.184,
-								"size": 0.145
+								"size": 0.142
 							},
 							{
 								"monthIndex": 18,
@@ -17566,17 +16918,17 @@ var data = {
 							{
 								"monthIndex": 19,
 								"value": 0.197,
-								"size": 0.016
+								"size": 0.015
 							},
 							{
 								"monthIndex": 21,
 								"value": 0.205,
-								"size": 0.094
+								"size": 0.092
 							},
 							{
 								"monthIndex": 26,
 								"value": 0.237,
-								"size": 0.468
+								"size": 0.463
 							},
 							{
 								"monthIndex": 31,
@@ -17608,7 +16960,7 @@ var data = {
 							{
 								"monthIndex": 26,
 								"value": 0.467,
-								"size": 0.315
+								"size": 0.309
 							}
 						]
 					}
@@ -17652,7 +17004,7 @@ var data = {
 							{
 								"monthIndex": 16,
 								"value": 0.285,
-								"size": 0.556
+								"size": 0.55
 							},
 							{
 								"monthIndex": 17,
@@ -17667,21 +17019,21 @@ var data = {
 							{
 								"monthIndex": 21,
 								"value": 0.318,
-								"size": 0.145
+								"size": 0.144
 							},
 							{
 								"monthIndex": 26,
 								"value": 0.347,
-								"size": 0.157
+								"size": 0.153
 							},
 							{
 								"monthIndex": 31,
-								"value": 0.351,
+								"value": 0.35,
 								"size": 0.008
 							},
 							{
 								"monthIndex": 36,
-								"value": 0.361,
+								"value": 0.36,
 								"size": 0.014
 							},
 							{
@@ -17694,7 +17046,7 @@ var data = {
 							{
 								"monthIndex": 16,
 								"value": 0.187,
-								"size": 0.308
+								"size": 0.305
 							},
 							{
 								"monthIndex": 17,
@@ -17709,7 +17061,7 @@ var data = {
 							{
 								"monthIndex": 21,
 								"value": 0.197,
-								"size": 0.064
+								"size": 0.063
 							},
 							{
 								"monthIndex": 26,
@@ -17751,7 +17103,7 @@ var data = {
 							{
 								"monthIndex": 21,
 								"value": 0.453,
-								"size": 0.231
+								"size": 0.228
 							},
 							{
 								"monthIndex": 26,
@@ -17834,6 +17186,11 @@ var data = {
 		{
 			"code": "VN",
 			"name": "Vietnam",
+			"pdf": {
+				"filename": "gsmmap.org-country_report-Vietnam-2014-03.pdf",
+				"year": 2014,
+				"month": 3
+			},
 			"boundaries": {
 				"xMin": 102.1274,
 				"xMax": 109.4449,

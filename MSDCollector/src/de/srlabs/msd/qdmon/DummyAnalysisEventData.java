@@ -30,7 +30,7 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 		GSMmap gsmmap = new GSMmap(context);
 		if (!gsmmap.dataPresent()) {
 			try {
-				String data = Utils.readFromAssets(context, "data.js");
+				String data = Utils.readFromAssets(context, "app_data.json");
 				gsmmap.parse(data);
 			} catch (Exception e) {
 				e.printStackTrace();

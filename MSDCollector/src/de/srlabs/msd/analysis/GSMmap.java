@@ -32,7 +32,7 @@ public class GSMmap {
 
 		JSONObject gsmmapData;
 		long operator_id = 0;
-		gsmmapData = new JSONObject(text.split("^\\s*var\\s*data\\s*=\\s*", 2)[1]);
+		gsmmapData = new JSONObject(text);
 
 		db.beginTransaction();
 

@@ -285,7 +285,7 @@ public class MsdService extends Service{
 			info("MsdService.triggerUploading() calling uploadThread.start()");
 			uploadThread.start();
 		}
-		// Refresh the data.js file
+		// Refresh the app_data.json file
 		if(downloadDataJsThread == null || !downloadDataJsThread.isAlive()){
 			downloadDataJsThread = new DownloadDataJsThread();
 			downloadDataJsThread.start();
@@ -1214,7 +1214,7 @@ public class MsdService extends Service{
 					// http://blog.dev001.net/post/67082904181/android-using-sni-and-tlsv1-2-with-apache
 					SchemeRegistry schemeRegistry = httpClient.getConnectionManager().getSchemeRegistry();
 					schemeRegistry.register(new Scheme("https", new TlsSniSocketFactory(), 443));
-					HttpGet httpGet = new HttpGet("https://gsmmap.org/assets/data/data.js");
+					HttpGet httpGet = new HttpGet("https://gsmmap.org/assets/data/app_data.json");
 					String localFileLastModified = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getString("data_js_last_modified_header",null);
 					if(localFileLastModified != null){
 						httpGet.addHeader("If-Modified-Since",localFileLastModified);
@@ -1236,8 +1236,8 @@ public class MsdService extends Service{
 						}
 						in.close();
 						byte[] buf = byteArrayOutputStream.toByteArray();
-						info("Received new data.js, size=" + buf.length);
-						FileOutputStream os = openFileOutput("data.js", 0);
+						info("Received new data.json, size=" + buf.length);
+						FileOutputStream os = openFileOutput("app_data.json", 0);
 						os.write(buf);
 						// Update saved last modified time
 						Header[] lastModifiedHeaders = resp.getHeaders("Last-Modified");
@@ -1252,7 +1252,7 @@ public class MsdService extends Service{
 						try{
 							gsmmap.parse(new String(buf));
 						} catch(Exception e){
-							handleFatalError("Exception while parsing newly downloaded data.js",e);
+							handleFatalError("Exception while parsing newly downloaded app_data.json",e);
 						}
 						//  FIXME: Should have a dedicated reason for changed data
 						sendStateChanged(StateChangedReason.ANALYSIS_DONE);
