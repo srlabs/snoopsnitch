@@ -176,19 +176,19 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
   	<string name="settings_actionBar_title">Settings</string>
     
     <string name="settings_basebandlogkeepduration_title">Baseband log clean interval</string>
-    <string name="settings_basebandlogkeepduration_summary">Radio traces are stored on the phone for that long</string>
+    <string name="settings_basebandlogkeepduration_summary">Radio traces are purged from the phone that often</string>
     <string name="settings_basebandlogkeepduration_dialogtitle">Select interval:</string>
     
     <string name="settings_locationlogkeepduration_title">Location log clean interval</string>
-    <string name="settings_locationlogkeepduration_summary">Information about your location is stored on the phone for that long</string>
+    <string name="settings_locationlogkeepduration_summary">Information about your location is purged from the phone that often</string>
     <string name="settings_locationlogkeepduration_dialogtitle">Select interval:</string>
     
     <string name="settings_analysiskeepduration_title">Analysis data clean interval</string>
-    <string name="settings_analysiskeepduration_summary">Data from catcher and event analysis is stored on the phone for that long</string>
+    <string name="settings_analysiskeepduration_summary">Data from catcher and event analysis is purged from the phone that often</string>
     <string name="settings_analysiskeepduration_dialogtitle">Select interval:</string>
     
     <string name="settings_debuglogkeepduration_title">Debug log clean interval</string>
-    <string name="settings_debuglogkeepduration_summary">Debug logs are stored on the phone for that long</string>
+    <string name="settings_debuglogkeepduration_summary">Debug logs are purged from the phone that often</string>
     <string name="settings_debuglogkeepduration_dialogtitle">Select interval:</string>
     
     <string name="settings_gpsrecording_title">Record GPS location</string>
