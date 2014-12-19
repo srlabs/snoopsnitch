@@ -509,9 +509,9 @@ SELECT
 	max(ci.r1),
 	max(ci.r2),
 	max(ci.f1),
-	si_loc.longitude,
-	si_loc.latitude,
-	si_loc.valid,
+	ifnull(si_loc.longitude, 0.0),
+	ifnull(si_loc.latitude, 0.0),
+	ifnull(si_loc.valid, 0),
 	max(ci.a1) +
 	max(ci.a2) +
 	max(ci.a4) +
@@ -528,7 +528,7 @@ SELECT
 	max(ci.r1) +
 	max(ci.r2) +
 	max(ci.f1) as score
-FROM si LEFT JOIN ci, si_loc
+FROM si LEFT JOIN ci LEFT JOIN si_loc
 ON
 	ci.mcc = si.mcc AND
 	ci.mnc = si.mnc AND

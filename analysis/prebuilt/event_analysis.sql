@@ -7,9 +7,9 @@ SELECT
 	si.mnc,
 	si.lac,
 	si.cid,
-	sl.longitude,
-	sl.latitude,
-	sl.valid,
+	ifnull(sl.longitude, 0.0),
+	ifnull(sl.latitude, 0.0),
+	ifnull(sl.valid, 0),
 	sm.smsc,
 	sm.msisdn,
 	CASE
@@ -23,12 +23,8 @@ SELECT
 		ELSE 0
 	END as event_type
 FROM
-	session_info as si,
-	si_loc as sl,
-	sms_meta as sm
-ON
-	sm.id = si.id AND
-	si.id = sl.id
+	session_info as si, sms_meta as sm ON sm.id = si.id LEFT JOIN
+    si_loc as sl ON si.id = sl.id
 WHERE
 	event_type > 0 AND
 	domain = 0;
