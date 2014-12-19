@@ -65,8 +65,9 @@ list gsmmap@lists.srlabs.de.
 Thank you for contributing radio data related to this security event
 and supporting SnoopSnitch research and development!\n
 \n
-Please send details about this incident to snoopsnitch@srlabs.de. Do not
-forget your App-ID and the time the event happened. Thank you!\n
+Please send details about this incident to snoopsnitch@srlabs.de
+(PGP fingerprint 9728 A7F9 D457 1FBB 746F  5381 D52C AC10 634A 9561).
+Do not forget your App-ID and the time the event happened. Thank you!\n
 \n
 This upload is encrypted. Keep in mind that radio traces may contain
 private data and location information. Have a look at the
@@ -139,7 +140,8 @@ private information as a side-effect.\n
 \n
 If you have questions or want to contribute to SnoopSnitch, please send an email to
 our mailing list gsmmap@lists.srlabs.de. For a private conversion with the SnoopSnitch
-team, please contact snoopsnitch@srlabs.de.\n
+team, please contact snoopsnitch@srlabs.de (PGP fingerprint 9728 A7F9 D457 1FBB 746F  
+5381 D52C AC10 634A 9561).\n
 \n
 SnoopSnitch is open-source software released under the GPL license version 3.
 Visit our  project website for source code and further information:\n
