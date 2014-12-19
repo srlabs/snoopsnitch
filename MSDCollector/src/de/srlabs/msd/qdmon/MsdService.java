@@ -1902,10 +1902,13 @@ public class MsdService extends Service{
 				boolean delete = false;
 				if(df == null)
 					delete = true; // No database entry => Delete file
-				if(df != null && !containsEvent && keepDurationHours > 0 && df.getEnd_time() < System.currentTimeMillis() - keepDurationHours * 3600 * 1000)
+				long fileAgeMillis = System.currentTimeMillis() - (df.getEnd_time() > df.getStart_time() ? df.getEnd_time() : df.getStart_time());
+				if(df != null && !containsEvent && keepDurationHours > 0 && fileAgeMillis > keepDurationHours * 3600 * 1000)
 					delete = true; // File doesn't contain an event (crash, SMS, IMSI) and it is older than the configured keep duration => Delete it
 				if(df != null && df.getState() == DumpFile.STATE_PENDING)
 					delete = false; // Don't delete files pending for upload
+				if(df != null && (df.getState() == DumpFile.STATE_RECORDING || df.getState() == DumpFile.STATE_RECORDING_PENDING))
+					delete = false; // Don't delete files currently recording, artifacts will be cleaned up in cleanupIncompleteOldFiles()
 				if(delete){
 					deleteFile(filename);
 					info("Deleted file " + filename + ((df != null) ? " and corresponding database entry" : ""));
