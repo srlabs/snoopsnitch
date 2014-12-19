@@ -54,6 +54,7 @@ public class MsdServiceNotifications {
 		.setSmallIcon(R.drawable.ic_content_imsi_event)
 		.setOngoing(false)
 		.setContentIntent(pendingIntent)
+		.setAutoCancel(true)
 		.build();
 		
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
@@ -71,6 +72,7 @@ public class MsdServiceNotifications {
 		.setSmallIcon(R.drawable.ic_content_sms_event)
 		.setOngoing(false)
 		.setContentIntent(pendingIntent)
+		.setAutoCancel(true)
 		.build();
 		
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
@@ -88,6 +90,7 @@ public class MsdServiceNotifications {
 		.setSmallIcon(R.drawable.ic_content_network)
 		.setOngoing(false)
 		.setContentIntent(pendingIntent)
+		.setAutoCancel(true)
 		.build();
 		
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
@@ -109,6 +112,7 @@ public class MsdServiceNotifications {
 		.setLargeIcon(icon)
 		.setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title))
 		.setContentText(service.getString(R.string.error_notification_text))
+		.setAutoCancel(true)
 		.setContentIntent(pendingIntent);
 		Notification n = notificationBuilder.build();
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
