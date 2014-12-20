@@ -20,7 +20,7 @@ public class DetailThreatChartWeek extends DetailThreatChart
 
 		   try 
 		   {
-			   this._timeSpacePosition = a.getInteger(R.styleable.DetailThreatChartMonth_TimeSpacePositionMonth, 0);
+			   this._timeSpacePosition = a.getInteger(R.styleable.DetailThreatChartWeek_TimeSpacePositionWeek, 0);
 		   } 
 		   finally 
 		   {

@@ -13,6 +13,8 @@ public class TimeSpace
 		
 		// Attributes
 		private long startTime;
+
+		// End time, including all smaller time spaces
 		private long endTime;
 		
 		// Constructor
@@ -39,55 +41,44 @@ public class TimeSpace
 	
 	static Times getTimeSpaceMonth ()
 	{
-		Calendar calEnd = Calendar.getInstance();
-		calEnd.add(Calendar.DATE, -8);
-		calEnd.set(Calendar.HOUR_OF_DAY, 23);
-		calEnd.set(Calendar.MINUTE, 59);
-		calEnd.set(Calendar.SECOND, 59);
-		
-		Calendar calStart = (Calendar) calEnd.clone();
+
+		Times.Month.setEndTime(getTimeSpaceWeek().getEndTime());
+
+		Calendar calStart = Calendar.getInstance();
+		calStart.setTimeInMillis(Times.Month.getEndTime());
 		calStart.add(Calendar.DATE, -28);
-		
 		Times.Month.setStartTime(calStart.getTimeInMillis());
-		Times.Month.setEndTime(calEnd.getTimeInMillis());
-		
+
 		return Times.Month;
 	}
 	
 	static Times getTimeSpaceWeek ()
 	{
-		Calendar calEnd = Calendar.getInstance();
-		calEnd.add(Calendar.DATE, -1);
-		calEnd.set(Calendar.HOUR_OF_DAY, 23);
-		calEnd.set(Calendar.MINUTE, 59);
-		calEnd.set(Calendar.SECOND, 59);
-		
-		Calendar calStart = (Calendar) calEnd.clone();
+		//  Set end time of week period to end of this day
+		Calendar endTime = Calendar.getInstance();
+		endTime.setTimeInMillis(getTimeSpaceDay().getEndTime());
+		endTime.set(Calendar.HOUR_OF_DAY, 23);
+		endTime.set(Calendar.MINUTE, 59);
+		endTime.set(Calendar.SECOND, 59);
+		Times.Week.setEndTime(endTime.getTimeInMillis());
+
+		Calendar calStart = Calendar.getInstance();
+		calStart.setTimeInMillis(Times.Week.getEndTime());
 		calStart.add(Calendar.DATE, -7);
-		
 		Times.Week.setStartTime(calStart.getTimeInMillis());
-		Times.Week.setEndTime(calEnd.getTimeInMillis());
-		
+
 		return Times.Week;
 	}
 	
 	static Times getTimeSpaceDay ()
 	{
-    	Calendar calEnd = Calendar.getInstance();
-    	int offset = 5;
-    	
-    	if ((Calendar.MINUTE)%5 != 0)
-    	{
-        	offset = 5-(calEnd.get(Calendar.MINUTE)%5);	
-    	}
-    	
-    	calEnd.add(Calendar.MINUTE, offset);
-		Calendar calStart = (Calendar) calEnd.clone();
+		Times.Day.setEndTime(getTimeSpaceHour().getEndTime());
+
+		Calendar calStart = Calendar.getInstance();
+		calStart.setTimeInMillis(Times.Day.getEndTime());
 		calStart.add(Calendar.HOUR, -24);
-		
 		Times.Day.setStartTime(calStart.getTimeInMillis());
-		Times.Day.setEndTime(calEnd.getTimeInMillis());
-		
+
 		return Times.Day;
 	}
 	

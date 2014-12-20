@@ -73,7 +73,9 @@ public class ChartSlidePageFragment extends Fragment
         	{
         		View v = layout.getChildAt(i);
         		
-        		c -= 300000;
+        		// Last day is divided into 12 parts, i.e. 5 minutes
+        		// Substract 5 minutes (in millis)
+        		c -= 5 * 60 * 1000L;
     			
         		if (v instanceof LinearLayout)
     			{
@@ -91,8 +93,10 @@ public class ChartSlidePageFragment extends Fragment
         	{
         		View v = layout.getChildAt(i);
         		
-        		c -= 14400000;
-        		
+        		// Last day is divided into 6 parts, i.e. 4 hours
+        		// Subtract 4 hours (in millis)
+        		c -= 4 * 60 * 60 * 1000L;
+
     			if (v instanceof LinearLayout)
     			{
     				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(c));
@@ -108,13 +112,16 @@ public class ChartSlidePageFragment extends Fragment
         	for (int i=layout.getChildCount()-1; i>=0; i--)
         	{
         		View v = layout.getChildAt(i);
-        		
+
     			if (v instanceof LinearLayout)
     			{
     				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(c));
     			}
-    			
-        		c -= 86400000;
+
+    			// Last 7 days divided into 7 parts, i.e. one day
+    			// Subtract 1 day in millis
+    			c -= 1 * 24 * 60 * 60 * 1000L;
+
     		}
     	}
     	else if (position == 0)
@@ -122,20 +129,18 @@ public class ChartSlidePageFragment extends Fragment
     		layout = (LinearLayout)view.findViewById(R.id.llTimeLineChartMonth);
         	s = new SimpleDateFormat("dd.MM");
         	c = TimeSpace.Times.Month.getEndTime();
-    		long cc = TimeSpace.Times.Month.getEndTime();
         	
         	for (int i=layout.getChildCount()-1; i>=0; i--)
         	{
         		View v = layout.getChildAt(i);
-        		cc -= 518400000;
         		
     			if (v instanceof LinearLayout)
     			{
-    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(cc) + " - " + s.format(c));
+    				((TextView)((LinearLayout) v).getChildAt(1)).setText(s.format(c - 6 * 24 * 60 * 60 * 1000L) + " - " + s.format(c));
     			}
-    			
-    			cc -= 86400000;
-        		c -= 604800000;
+
+    			// Last 4 weeks divided into parts of 7 days
+    			c -= 7 * 24 * 60 * 60 * 1000L;
     		}
     	}
     }
