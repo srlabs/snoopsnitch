@@ -32,13 +32,7 @@ public class MsdServiceAnalysis {
 		MsdSQLiteOpenHelper.readSQLAsset(context, db, "catcher_analysis.sql", false);
 		after = getLast(db, "catcher", "id");
 
-		//  We should never have fewer elements after analysis
-		if (after < before)
-		{
-			throw new IllegalStateException("runCatcherAnalysis: Number of results decreased");
-		}
-
-		if (after > before)
+		if (after != before)
 		{
 			int numResults = after - before;
 
