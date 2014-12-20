@@ -9,19 +9,16 @@ import android.preference.PreferenceManager;
  */
 public class MsdConfig {
 	public static int getBasebandLogKeepDurationHours(Context context){
-		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_basebandLogKeepDuration", "30"));
+		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_basebandLogKeepDuration", "1"));
 	}
 	public static int getDebugLogKeepDurationHours(Context context){
-		return 3; // TODO: Maybe add a configuration entry
+		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_debugLogKeepDuration", "1"));
 	}
 	public static int getLocationLogKeepDurationHours(Context context){
-		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_locationLogKeepDuration", "30"));
+		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_locationLogKeepDuration", "1"));
 	}
-	public static int getSessionInfoKeepDurationHours(Context context){
-		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_sessionInfoKeepDuration", "30"));
-	}
-	public static int getCellInfoKeepDurationHours(Context context){
-		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_cellInfoKeepDuration", "30"));
+	public static int getAnalysisInfoKeepDurationHours(Context context){
+		return 24*Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString("settings_analysisInfoKeepDuration", "30"));
 	}
 	public static boolean gpsRecordingEnabled(Context context){
 

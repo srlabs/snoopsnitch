@@ -29,10 +29,10 @@
         android:dialogTitle="@string/settings_analysiskeepduration_dialogtitle"
         android:entries="@array/settings_durations_entries"
         android:entryValues="@array/settings_durations_values"
-        android:defaultValue="1" />
+        android:defaultValue="30" />
   	
 	<ListPreference
-        android:key="settings_debuglogKeepDuration"
+        android:key="settings_debugLogKeepDuration"
         android:title="@string/settings_debuglogkeepduration_title"
         android:summary="@string/settings_debuglogkeepduration_summary"
         android:dialogTitle="@string/settings_debuglogkeepduration_dialogtitle"

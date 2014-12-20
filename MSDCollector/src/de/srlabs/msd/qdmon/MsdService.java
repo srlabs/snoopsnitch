@@ -1936,27 +1936,23 @@ public class MsdService extends Service{
 	}
 	private void cleanupDatabase(SQLiteDatabase db) throws SQLException{
 		String sql;
-		int keepDuration = MsdConfig.getSessionInfoKeepDurationHours(MsdService.this);
+		int keepDuration = MsdConfig.getAnalysisInfoKeepDurationHours(MsdService.this);
 		if(keepDuration > 0){
 			sql = "DELETE FROM session_info where timestamp < datetime('now','-" + keepDuration + " hours');";
+			info("cleanup: " + sql);
+			db.execSQL(sql);
+
+			sql = "DELETE FROM serving_cell_info where timestamp < datetime('now','-" + keepDuration + " hours');";
+			info("cleanup: " + sql);
+			db.execSQL(sql);
+
+			sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + keepDuration + " hours');";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
 		}
 		keepDuration = MsdConfig.getLocationLogKeepDurationHours(MsdService.this);
 		if(keepDuration > 0){
 			sql = "DELETE FROM location_info where timestamp < datetime('now','-" + keepDuration + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
-		}
-		keepDuration = MsdConfig.getCellInfoKeepDurationHours(MsdService.this);
-		if(keepDuration > 0){
-			sql = "DELETE FROM serving_cell_info where timestamp < datetime('now','-" + keepDuration + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
-		}
-		keepDuration = MsdConfig.getCellInfoKeepDurationHours(MsdService.this);
-		if(keepDuration > 0){
-			sql = "DELETE FROM neighboring_cell_info where timestamp < datetime('now','-" + keepDuration + " hours');";
 			info("cleanup: " + sql);
 			db.execSQL(sql);
 		}
