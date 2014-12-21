@@ -58,7 +58,7 @@ public class CrashUploadActivity extends Activity implements MsdServiceCallback
 				noLogsAvailable = true;
 				Log.i(TAG, "Row " + fileId + " not found");
 			} else if(df.getState() == DumpFile.STATE_UPLOADED){
-				String msg = "The debug log for this crash has already been uploaded.\n" + errorText;
+				String msg = "The debug log for this problem has already been uploaded.\n" + errorText;
 				MsdDialog.makeNotificationDialog(this, msg, new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -95,7 +95,7 @@ public class CrashUploadActivity extends Activity implements MsdServiceCallback
 			}
 		}
 		if(noLogsAvailable){
-			String msg = "Something went wrong with collecting a crash report. Please run 'adb logcat -v time > log.txt' and submit the resulting log to TODO\n" + errorText;
+			String msg = "Something went wrong with collecting the problem report. Please run 'adb logcat -v time > log.txt' and submit the resulting log to gsmmap@lists.srlabs.de\n" + errorText;
 			MsdDialog.makeNotificationDialog(this, msg, new OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {

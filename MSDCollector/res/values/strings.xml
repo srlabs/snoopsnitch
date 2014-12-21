@@ -78,9 +78,10 @@ privacy policy on our project website on how we protect your data
 <string name="alert_networktest_message">
 The active network test collects security information about your current
 mobile network by sending and receiving a number of SMS and by placing and
-receiving a number of automatic calls.\n
+receiving a number of automatic calls. It is normal to receive error
+status SMS from your operator during that test.\n
 \n
-This should be free of charge. HOWEVER, YOUR OPERATOR MAY CHARGE YOU FOR
+The test should be free of charge. HOWEVER, YOUR OPERATOR MAY CHARGE YOU FOR
 OUTGOING SMS EVEN IF SENT TO AN INVALID DESTINATION!\n
 
 \n
@@ -245,9 +246,9 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="alert_dialog_refreshappid_message">You are about to refresh the app ID. Are you sure?</string>
      
      <!-- Error notification -->
-     <string name="error_notification_title">has crashed</string>
+     <string name="error_notification_title">had a problem</string>
      <string name="error_notification_ticker">encountered an internal error</string>
-     <string name="error_notification_text">Please submit an error report!</string>
+     <string name="error_notification_text">Please submit a problem report!</string>
      <string name="common_null_paging">Null Paging</string>
 
      <!-- Active test -->
