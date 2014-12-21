@@ -125,7 +125,7 @@
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
-                <de.srlabs.msd.views.DashboardThreatChart
+                <de.srlabs.snoopsnitch.views.DashboardThreatChart
                     android:id="@+id/SilentSMSChartMonth"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -156,7 +156,7 @@
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
-                <de.srlabs.msd.views.DashboardThreatChart
+                <de.srlabs.snoopsnitch.views.DashboardThreatChart
                     android:id="@+id/SilentSMSChartWeek"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -187,7 +187,7 @@
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
-                <de.srlabs.msd.views.DashboardThreatChart
+                <de.srlabs.snoopsnitch.views.DashboardThreatChart
                     android:id="@+id/SilentSMSChartDay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -219,7 +219,7 @@
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
-                <de.srlabs.msd.views.DashboardThreatChart
+                <de.srlabs.snoopsnitch.views.DashboardThreatChart
                     android:id="@+id/SilentSMSChartHour"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -297,7 +297,7 @@
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
-                <de.srlabs.msd.views.DashboardThreatChart
+                <de.srlabs.snoopsnitch.views.DashboardThreatChart
                     android:id="@+id/IMSICatcherChartMonth"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -327,7 +327,7 @@
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
-                <de.srlabs.msd.views.DashboardThreatChart
+                <de.srlabs.snoopsnitch.views.DashboardThreatChart
                     android:id="@+id/IMSICatcherChartWeek"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -357,7 +357,7 @@
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
-                <de.srlabs.msd.views.DashboardThreatChart
+                <de.srlabs.snoopsnitch.views.DashboardThreatChart
                     android:id="@+id/IMSICatcherChartDay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -387,7 +387,7 @@
                     android:textSize="@dimen/text_medium"
                     android:textStyle="bold" />
 
-                <de.srlabs.msd.views.DashboardThreatChart
+                <de.srlabs.snoopsnitch.views.DashboardThreatChart
                     android:id="@+id/IMSICatcherChartHour"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -865,7 +865,7 @@
                     android:layout_height="match_parent"
                     android:weightSum="2" >
 
-                    <de.srlabs.msd.views.DashboardProviderChart
+                    <de.srlabs.snoopsnitch.views.DashboardProviderChart
                         android:id="@+id/pvcDashboardInterception"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -879,7 +879,7 @@
                         android:layout_height="match_parent"
                         android:background="@color/common_applicationSeparator" />
 
-                    <de.srlabs.msd.views.DashboardProviderChart
+                    <de.srlabs.snoopsnitch.views.DashboardProviderChart
                         android:id="@+id/pvcDashboardImpersonation"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

@@ -18,49 +18,49 @@
         android:layout_weight="1"
         android:weightSum="7" >
 
-        <de.srlabs.msd.views.DetailThreatChartWeek
+        <de.srlabs.snoopsnitch.views.DetailThreatChartWeek
             android:id="@+id/DetailThreatChartWeek06"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionWeek="Seven" />
 
-        <de.srlabs.msd.views.DetailThreatChartWeek
+        <de.srlabs.snoopsnitch.views.DetailThreatChartWeek
             android:id="@+id/DetailThreatChartWeek05"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionWeek="Six" />
 
-        <de.srlabs.msd.views.DetailThreatChartWeek
+        <de.srlabs.snoopsnitch.views.DetailThreatChartWeek
             android:id="@+id/DetailThreatChartWeek04"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionWeek="Five" />
 
-        <de.srlabs.msd.views.DetailThreatChartWeek
+        <de.srlabs.snoopsnitch.views.DetailThreatChartWeek
             android:id="@+id/DetailThreatChartWeek03"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionWeek="Four" />
 
-        <de.srlabs.msd.views.DetailThreatChartWeek
+        <de.srlabs.snoopsnitch.views.DetailThreatChartWeek
             android:id="@+id/DetailThreatChartWeek02"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionWeek="Three" />
 
-        <de.srlabs.msd.views.DetailThreatChartWeek
+        <de.srlabs.snoopsnitch.views.DetailThreatChartWeek
             android:id="@+id/DetailThreatChartWeek01"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionWeek="Two" />
 
-        <de.srlabs.msd.views.DetailThreatChartWeek
+        <de.srlabs.snoopsnitch.views.DetailThreatChartWeek
             android:id="@+id/detailThreatChartWeek"
             android:layout_width="0dp"
             android:layout_height="match_parent"

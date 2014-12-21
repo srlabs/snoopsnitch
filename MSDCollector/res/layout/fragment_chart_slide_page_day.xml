@@ -18,42 +18,42 @@
         android:layout_weight="1"
         android:weightSum="6" >
 
-        <de.srlabs.msd.views.DetailThreatChartDay
+        <de.srlabs.snoopsnitch.views.DetailThreatChartDay
             android:id="@+id/DetailThreatChartDay05"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionDay="Six" />
 
-        <de.srlabs.msd.views.DetailThreatChartDay
+        <de.srlabs.snoopsnitch.views.DetailThreatChartDay
             android:id="@+id/DetailThreatChartDay04"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionDay="Five" />
 
-        <de.srlabs.msd.views.DetailThreatChartDay
+        <de.srlabs.snoopsnitch.views.DetailThreatChartDay
             android:id="@+id/DetailThreatChartDay03"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionDay="Four" />
 
-        <de.srlabs.msd.views.DetailThreatChartDay
+        <de.srlabs.snoopsnitch.views.DetailThreatChartDay
             android:id="@+id/DetailThreatChartDay02"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionDay="Three" />
 
-        <de.srlabs.msd.views.DetailThreatChartDay
+        <de.srlabs.snoopsnitch.views.DetailThreatChartDay
             android:id="@+id/DetailThreatChartDay01"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionDay="Two" />
 
-        <de.srlabs.msd.views.DetailThreatChartDay
+        <de.srlabs.snoopsnitch.views.DetailThreatChartDay
             android:id="@+id/detailThreatChartDay"
             android:layout_width="0dp"
             android:layout_height="match_parent"

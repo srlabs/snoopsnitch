@@ -18,28 +18,28 @@
         android:layout_weight="1"
         android:weightSum="4" >
 
-        <de.srlabs.msd.views.DetailThreatChartMonth
+        <de.srlabs.snoopsnitch.views.DetailThreatChartMonth
             android:id="@+id/DetailThreatChartMonth03"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionMonth="Four" />
 
-        <de.srlabs.msd.views.DetailThreatChartMonth
+        <de.srlabs.snoopsnitch.views.DetailThreatChartMonth
             android:id="@+id/DetailThreatChartMonth02"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionMonth="Three" />
 
-        <de.srlabs.msd.views.DetailThreatChartMonth
+        <de.srlabs.snoopsnitch.views.DetailThreatChartMonth
             android:id="@+id/DetailThreatChartMonth01"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionMonth="Two" />
 
-        <de.srlabs.msd.views.DetailThreatChartMonth
+        <de.srlabs.snoopsnitch.views.DetailThreatChartMonth
             android:id="@+id/detailThreatChartMonth"
             android:layout_width="0dp"
             android:layout_height="match_parent"

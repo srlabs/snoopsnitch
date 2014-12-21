@@ -19,84 +19,84 @@
         android:layout_weight="1"
         android:weightSum="12" >
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourTwelve"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Twelve"/>
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourEleven"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Eleven" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourTen"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Ten" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourNine"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Nine" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourEight"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Eight" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourSeven"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Seven" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourSix"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Six" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourFive"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Five" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourFour"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Four" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourThree"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Three" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourTwo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             custom:TimeSpacePositionHour="Two" />
 
-        <de.srlabs.msd.views.DetailThreatChartHour
+        <de.srlabs.snoopsnitch.views.DetailThreatChartHour
             android:id="@+id/vwCustomHourOne"
             android:layout_width="0dp"
             android:layout_height="match_parent"

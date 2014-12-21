@@ -8,7 +8,7 @@
     android:paddingTop="4dp"
     android:weightSum="8" >
 
-    <de.srlabs.msd.views.DashboardProviderList
+    <de.srlabs.snoopsnitch.views.DashboardProviderList
         android:id="@+id/dashboardProviderList1"
         android:layout_width="0dp"
         android:layout_height="35dp"
