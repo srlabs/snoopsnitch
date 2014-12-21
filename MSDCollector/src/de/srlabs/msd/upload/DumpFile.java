@@ -379,8 +379,5 @@ public class DumpFile {
 		Date date = new Date(getStart_time());
 		return dateFormat.format(date);
 	}
-	public void setState(int state) {
-		this.state = state;
-	}
 	
 }

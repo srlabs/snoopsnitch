@@ -1805,8 +1805,6 @@ public class MsdService extends Service{
 		// Everything logged from other threads until now still gets to the old file.
 		debugLogWriter = newDebugLogWriter;
 		DumpFile df = new DumpFile(encryptedFilename,DumpFile.TYPE_DEBUG_LOG);
-		// TODO: The following line makes sure that ALL debug logs are uploaded. This should be removed for the final release.
-		df.setState(DumpFile.STATE_RECORDING_PENDING);
 		df.insert(db);
 		debugLogFileId = df.getId();
 		if(oldDebugLogWriter != null){
@@ -1818,7 +1816,6 @@ public class MsdService extends Service{
 			df.endRecording(db);
 		}
 		MsdDatabaseManager.getInstance().closeDatabase();
-		triggerUploading(); // TODO: Remove this for final version.
 		return oldDebugLogId;
 	}
 	private void restartRecording(){
