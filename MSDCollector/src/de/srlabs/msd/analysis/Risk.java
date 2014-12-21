@@ -155,6 +155,9 @@ public class Risk {
 	}
 
 	public String getOperatorColor() {
+		if (operatorColor == null) {
+			return "#111111";
+		}
 		return operatorColor;
 	}
 

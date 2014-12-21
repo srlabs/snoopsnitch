@@ -123,11 +123,7 @@ public class DashboardProviderChart extends View
 
         for (Risk op : providerData) 
         {
-        	String colorString = op.getOperatorColor();
-        	if (colorString == null) {
-        		colorString = "#000000";
-        	}
-        	int color = Color.parseColor(colorString);
+        	int color = Color.parseColor(op.getOperatorColor());
 
         	if (providerData.lastElement().equals(op))
         	{

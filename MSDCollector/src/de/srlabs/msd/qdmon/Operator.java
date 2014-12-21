@@ -36,4 +36,10 @@ class Operator {
 		mnc = Integer.parseInt(networkOperator.substring(3));
 		valid = true;
 	}
+
+	public Operator(int currentMcc, int currentMnc) {
+		mcc = currentMcc;
+		mnc = currentMnc;
+		valid = true;
+	}
 }
