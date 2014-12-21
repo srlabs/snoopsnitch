@@ -471,13 +471,21 @@ public class MsdService extends Service{
 			mainThreadHandler.post(periodicCheckRecordingStateRunnableWrapper);
 			doStartForeground();
 			sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
-			//  Use the following snippet to test handling of fatal errors.
-			//			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(new Runnable() {				
-			//				@Override
-			//				public void run() {
-			//					throw new IllegalStateException("Let's test error reporting");
-			//				}
-			//			}), 3000);
+
+			//  Enable this in the settings to test fatal errors
+			boolean crash = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getBoolean("settings_crash", false);
+			if (crash) {
+				Editor edit = PreferenceManager.getDefaultSharedPreferences(MsdService.this).edit();
+				edit.putBoolean("settings_crash", false);
+				edit.commit();
+
+				mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(new Runnable() {				
+					@Override
+					public void run() {
+						throw new IllegalStateException("Let's test error reporting");
+					}
+				}), 3000);
+			}
 			info("startRecording() finished successfully");
 			return true;
 		} catch (Exception e) { 
