@@ -248,20 +248,22 @@ public class EncryptedFileWriter{
 				msgQueue.add(flushMsg);
 				flushMsg.markerReached.wait();
 			}
-			if(encryptedOutputStream != null)
+			if(encryptedOutputStream != null) {
 				encryptedOutputStream.flush();
-			if(compressPlaintextFile){
-				// GZIPOutputStream doesn't allow reliable flushing of output,
-				// so let's just reopen the file with MODE_APPEND, gzip files
-				// can be concatenated.
-				plaintextOutputStream.close();
-				plaintextOutputStream = msdService.openFileOutput(plaintextFilename, Context.MODE_APPEND);
-				if(compressPlaintextFile){
-					plaintextOutputStream = new GZIPOutputStream(plaintextOutputStream);
-				}
-			} else{
-				if(plaintextOutputStream != null)
+			}
+			if(plaintextOutputStream != null) {
+				if(compressPlaintextFile) {
+					// GZIPOutputStream doesn't allow reliable flushing of output,
+					// so let's just reopen the file with MODE_APPEND, gzip files
+					// can be concatenated.
+					plaintextOutputStream.close();
+					plaintextOutputStream = msdService.openFileOutput(plaintextFilename, Context.MODE_APPEND);
+					if(compressPlaintextFile){
+						plaintextOutputStream = new GZIPOutputStream(plaintextOutputStream);
+					}
+				} else {
 					plaintextOutputStream.flush();
+				}
 			}
 			synchronized (flushMsg.flushDone) {
 				flushMsg.flushDone.notifyAll();
