@@ -266,8 +266,6 @@ public class BaseActivity extends FragmentActivity
 	{	
 		if (reason.equals(StateChangedReason.RECORDING_STATE_CHANGED))
 		{
-			Log.e("msd","REASON: " + reason.name());
-			
 			if (menu != null)
 			{
 				if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
