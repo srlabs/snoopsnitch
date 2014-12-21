@@ -277,5 +277,6 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="settings_debugging_crash">Crash SnoopSnitch</string>
      <string name="settings_debugging_crash_summary">This will crash SnoopSnitch on next start and reset this option. Used for testing crash handling. Leave this off ;-)</string>
      <string name="settings_enable_devel_options">Enable development options</string>
+     <string name="settings_debugging_dump_analysis_stacktraces">Analysis stack traces</string>
 
 </resources>

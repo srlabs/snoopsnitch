@@ -919,8 +919,11 @@ public class MsdService extends Service{
 							}
 						}
 						AnalysisStackTraceLogRunnable analysisStackTraceLogRunnable = null;
+
 						// For debugging delays in the analysis, we can dump a Stack Trace of this Thread every 100 ms.
-						boolean dumpAnalysisStackTraces = true;
+						boolean dumpAnalysisStackTraces =
+								PreferenceManager.getDefaultSharedPreferences(MsdService.this).getBoolean("settings_debugging_dump_analysis_stacktraces",false);
+
 						if(dumpAnalysisStackTraces){
 							analysisStackTraceLogRunnable = new AnalysisStackTraceLogRunnable();
 							mainThreadHandler.post(new ExceptionHandlingRunnable(analysisStackTraceLogRunnable));

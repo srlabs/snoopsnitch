@@ -21,6 +21,7 @@
 	
 	<PreferenceCategory android:title="@string/settings_cat_debugging" android:selectable="false"><CheckBoxPreference android:title="@string/settings_enable_devel_options" android:summary="@string/settings_cat_debugging_summary" android:key="settings_enable_devel_options"/><ListPreference android:key="settings_debugLogKeepDuration" android:title="@string/settings_debuglogkeepduration_title" android:summary="@string/settings_debuglogkeepduration_summary" android:dialogTitle="@string/settings_debuglogkeepduration_dialogtitle" android:entries="@array/settings_durations_entries" android:entryValues="@array/settings_durations_values" android:defaultValue="1" android:dependency="settings_enable_devel_options"/><CheckBoxPreference android:key="settings_recordUnencryptedDumpfiles" android:title="@string/settings_unencrypteddumpfilesrecording_title" android:summary="@string/settings_unencrypteddumpfilesrecording_summary" android:defaultValue="false" android:dependency="settings_enable_devel_options"/>
 	<CheckBoxPreference android:title="@string/settings_debugging_crash" android:summary="@string/settings_debugging_crash_summary" android:key="settings_crash" android:dependency="settings_enable_devel_options"/>
+	<CheckBoxPreference android:key="settings_debugging_dump_analysis_stacktraces" android:title="@string/settings_debugging_dump_analysis_stacktraces" android:dependency="settings_enable_devel_options"/>
 	
 </PreferenceCategory>
 	
