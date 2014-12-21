@@ -131,20 +131,6 @@ public class Utils {
 		return byteArrayOutputStream.toString();
 	}
 
-	public static String readFromExternal(String fileName) throws IOException {
-
-		File sdcard = Environment.getExternalStorageDirectory();
-		File file = new File(sdcard, fileName);
-		StringBuilder text = new StringBuilder();
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String line;
-		while ((line = br.readLine()) != null) {
-			text.append(line);
-		}
-		br.close();
-		return text.toString();
-	}
-
 	public static String readFromFileOrAssets(Context context, String fileName) throws IOException {
 		String jsonData;
 		//  FIXME: Check for file existence - do not use exception for control flow
