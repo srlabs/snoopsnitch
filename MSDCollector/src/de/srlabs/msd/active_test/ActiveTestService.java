@@ -773,7 +773,7 @@ public class ActiveTestService extends Service{
 				this,
 				ActiveTestService.class), 0);
 		MsdLog.i(TAG, "Sending sms to invalid destination");
-		SmsManager.getDefault().sendTextMessage("0", null, "This is a test sms", sentIntent, null);
+		SmsManager.getDefault().sendTextMessage("*****", null, "This is a test SMS", sentIntent, null);
 	}
 	private void broadcastTestResults() {
 		if(callbacks.size() == 0)
