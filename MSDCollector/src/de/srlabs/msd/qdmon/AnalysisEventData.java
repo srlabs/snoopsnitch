@@ -40,7 +40,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	private static String[] events_cols =
 			new String[] {"strftime('%s',timestamp)", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "valid", "msisdn", "smsc", "event_type"};
 
-	static private Event eventFromCursor(Cursor c) {
+	static private Event eventFromCursor(Cursor c, Context context) {
 		Type event_type;
 
 		switch (c.getInt(11))
@@ -73,8 +73,8 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 				 c.getShort(8) > 0,		// valid
 				 c.getString(9),		// msisdn
 				 c.getString(10),		// smsc
-				 event_type				// event type
-				);
+				 event_type,			// event type
+				 context);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		if(!c.moveToFirst()) {
 			throw new IllegalStateException("Requesting non-existing event" + Long.toString(id));
 		}
-		Event result = eventFromCursor (c);
+		Event result = eventFromCursor (c, context);
 		c.close();
 		return result;
 	}
@@ -98,7 +98,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 
 		if(c.moveToFirst()) {
 			do {
-				result.add(eventFromCursor(c));
+				result.add(eventFromCursor(c, context));
 			} while (c.moveToNext());
 		}
 		c.close();
@@ -108,7 +108,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	private static String[] catcher_cols =
 			new String[] {"strftime('%s',timestamp)", "strftime('%s',timestamp) + duration/1000", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "valid", "score"};
 
-	static private ImsiCatcher catcherFromCursor(Cursor c) {
+	static private ImsiCatcher catcherFromCursor(Cursor c, Context context) {
 
 		return new ImsiCatcher
 				(c.getLong(0)*1000L,	// startTime
@@ -121,8 +121,8 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 				 c.getDouble(7),		// latitude
 				 c.getDouble(8),		// longitude
 				 c.getShort(9) > 0,		// valid
-				 c.getDouble(10) 		// score
-				);
+				 c.getDouble(10),		// score
+				 context);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 		if(!c.moveToFirst()) {
 			throw new IllegalStateException("Requesting non-existing IMSI catcher");
 		}
-		ImsiCatcher result = catcherFromCursor (c);
+		ImsiCatcher result = catcherFromCursor (c, context);
 		c.close();
 		return result;
 	}
@@ -147,7 +147,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 
 		if(c.moveToFirst()) {
 			do {
-				catcher = catcherFromCursor(c);
+				catcher = catcherFromCursor(c, context);
 				result.add(catcher);
 			} while (c.moveToNext());
 		}

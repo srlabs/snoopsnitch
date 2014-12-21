@@ -2,7 +2,9 @@ package de.srlabs.msd.analysis;
 
 import java.util.Vector;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.upload.FileState;
 import de.srlabs.msd.util.MsdDatabaseManager;
@@ -23,7 +25,7 @@ public class ImsiCatcher implements AnalysisEvent{
 	SQLiteDatabase db;
 
 	public ImsiCatcher(long startTime, long endTime, long id, int mcc,
-			int mnc, int lac, int cid, double latitude, double longitude, boolean valid, double score) {
+			int mnc, int lac, int cid, double latitude, double longitude, boolean valid, double score, Context context) {
 		super();
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -36,6 +38,7 @@ public class ImsiCatcher implements AnalysisEvent{
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.score = score;
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
 		db = MsdDatabaseManager.getInstance().openDatabase();
 	}
 

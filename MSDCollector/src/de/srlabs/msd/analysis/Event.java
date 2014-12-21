@@ -2,7 +2,9 @@ package de.srlabs.msd.analysis;
 
 import java.util.Vector;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.upload.FileState;
 import de.srlabs.msd.util.MsdDatabaseManager;
@@ -30,7 +32,7 @@ public class Event implements AnalysisEvent{
 	SQLiteDatabase db;
 
 	public Event(long timestamp, long id, int mcc, int mnc, int lac, int cid,
-			double latitude, double longitude, boolean valid, String sender, String smsc, Type type) {
+			double latitude, double longitude, boolean valid, String sender, String smsc, Type type, Context context) {
 		super();
 		this.timestamp = timestamp;
 		this.id = id;
@@ -44,6 +46,7 @@ public class Event implements AnalysisEvent{
 		this.sender = sender;
 		this.smsc = smsc;
 		this.type = type;
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
 		db = MsdDatabaseManager.getInstance().openDatabase();
 	}
 

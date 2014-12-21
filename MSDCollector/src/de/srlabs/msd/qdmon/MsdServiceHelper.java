@@ -111,7 +111,7 @@ public class MsdServiceHelper{
 				if (data instanceof DummyAnalysisEventData) {
 					DummyAnalysisEventData dummyData = (DummyAnalysisEventData) data;
 					dummyData.clearDynamicEvents();
-					dummyData.addDynamicDummyEvents(mIMsdService.getServiceStartTime());
+					dummyData.addDynamicDummyEvents(mIMsdService.getServiceStartTime(), context);
 				}
 				// Write pending log data when the service is connected
 				if(logDataBuffer != null){

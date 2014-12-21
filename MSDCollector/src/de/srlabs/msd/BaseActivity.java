@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.qdmon.StateChangedReason;
 import de.srlabs.msd.upload.DumpFile;
 import de.srlabs.msd.util.MSDServiceHelperCreator;
@@ -178,6 +179,7 @@ public class BaseActivity extends FragmentActivity
 		    	getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
 		    	break;
 		    case R.id.menu_action_upload_suspicious_dumps:
+		    	MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		    	Vector<DumpFile> files = DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, System.currentTimeMillis() - 3600 * 1000, System.currentTimeMillis(), 0);
 		    	long firstStartTime = System.currentTimeMillis();

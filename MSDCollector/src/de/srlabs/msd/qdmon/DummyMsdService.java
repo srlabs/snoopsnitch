@@ -243,6 +243,6 @@ public class DummyMsdService extends Service{
 		super.onCreate();
 		dummyData = new DummyAnalysisEventData(this);
 		serviceStartTime = System.currentTimeMillis();
-		dummyData.addDynamicDummyEvents(serviceStartTime);
+		dummyData.addDynamicDummyEvents(serviceStartTime, this);
 	}
 }

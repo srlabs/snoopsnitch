@@ -304,6 +304,7 @@ public class MsdService extends Service{
 		EncryptedFileWriter copyExtraRecordingRawFileWriter = extraRecordingRawFileWriter;
 		extraRecordingRawFileWriter = null;
 		copyExtraRecordingRawFileWriter.close();
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		DumpFile df = DumpFile.get(db, extraRecordingFileId);
 		df.endRecording(db);
@@ -323,6 +324,7 @@ public class MsdService extends Service{
 			return false;
 		this.extraRecordingStartTime = System.currentTimeMillis();
 		this.extraRecordingRawFileWriter = new EncryptedFileWriter(this, filename + ".gz.smime", true, filename + ".gz", true);
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		DumpFile df = new DumpFile(filename + ".gz.smime",DumpFile.TYPE_ENCRYPTED_QDMON);
 		df.insert(db);
@@ -1689,6 +1691,7 @@ public class MsdService extends Service{
 		String baseFilename = String.format(Locale.US, "qdmon_%04d-%02d-%02d_%02d-%02dUTC",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), 10*(c.get(Calendar.MINUTE) / 10));
 		if(rawWriter != null && currentRawWriterBaseFilename != null && currentRawWriterBaseFilename.equals(baseFilename))
 			return; // No reopen needed
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		// Save the old writer
 		currentRawWriterBaseFilename = baseFilename;
@@ -1735,6 +1738,7 @@ public class MsdService extends Service{
 		triggerUploading();
 	}
 	private void closeRawWriter(){
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		rawWriter.close();
 		rawWriter = null;
@@ -1762,6 +1766,7 @@ public class MsdService extends Service{
 		EncryptedFileWriter tmp = debugLogWriter; // Make sure there are no writes to debugLogWriter after the close()
 		debugLogWriter = null;
 		tmp.close();
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		DumpFile df = DumpFile.get(db, debugLogFileId);
 		df.endRecording(db);
@@ -1779,6 +1784,7 @@ public class MsdService extends Service{
 		if(!forceReopen && debugLogFileStartTime + 3600 * 1000 > System.currentTimeMillis())
 			return 0; // No reopen needed
 		debugLogFileStartTime = System.currentTimeMillis();
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		// Save the existing writer so that it can be closed after the new one has been opened (so we can't loose any messages).
 		EncryptedFileWriter oldDebugLogWriter = debugLogWriter;
@@ -1849,6 +1855,7 @@ public class MsdService extends Service{
 			info("Starting cleanupIncompleteOldFiles");
 			long cleanupStartTime = System.currentTimeMillis();
 			long cleanupStartCpuTimeNanos = android.os.Debug.threadCpuTimeNanos();
+			MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 			Vector<DumpFile> files = DumpFile.getFiles(db, " state = " + DumpFile.STATE_RECORDING + " OR state = " + DumpFile.STATE_RECORDING_PENDING);
 			for(DumpFile df:files){
@@ -1873,6 +1880,7 @@ public class MsdService extends Service{
 				info("Starting cleanup");
 				long cleanupStartTime = System.currentTimeMillis();
 				long cleanupStartCpuTimeNanos = android.os.Debug.threadCpuTimeNanos();
+				MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 				info("Cleaning files");
 				cleanupFiles(db);

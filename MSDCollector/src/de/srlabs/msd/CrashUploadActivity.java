@@ -107,6 +107,7 @@ public class CrashUploadActivity extends Activity implements MsdServiceCallback
 	}
 
 	private void upload() {
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		DumpFile df = DumpFile.get(db, fileId);
 		Log.i(TAG, "calling markForUpload for file " + fileId + " name=" + df.getFilename() + " current state: " + df.getState());

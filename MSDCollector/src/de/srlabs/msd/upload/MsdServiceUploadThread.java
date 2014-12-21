@@ -11,6 +11,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import de.srlabs.msd.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.msd.qdmon.MsdService;
 import de.srlabs.msd.util.Constants;
 import de.srlabs.msd.util.MsdConfig;
@@ -141,6 +142,7 @@ public class MsdServiceUploadThread extends Thread {
 		MsdLog.e(TAG,errorStr);
 	}
 	public static UploadState createUploadState(Context context){
+		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		Vector<DumpFile> files = DumpFile.getFiles(db, "state = " + DumpFile.STATE_PENDING);
 		long totalSize = 0;
