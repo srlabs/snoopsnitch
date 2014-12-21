@@ -200,6 +200,9 @@ http://opensource.srlabs.de/projects/snoopsnitch\n
     <string name="settings_networklocationrecording_title">Record network location</string>
     <string name="settings_networklocationrecording_summary">Use coarse-grained network-based location recording to get location information for IMSI catcher and security events</string>
     
+    <string name="settings_unencryptedlogfilesrecording_title">Unencrypted log files</string>
+    <string name="settings_unencryptedlogfilesrecording_summary">Record log files in plaintext. Sensitive information is NOT removed from the device for you!</string>
+    
     <string name="settings_unencrypteddumpfilesrecording_title">Unencrypted radio data</string>
     <string name="settings_unencrypteddumpfilesrecording_summary">Record dump files in plaintext. Sensitive information is NOT removed from the device for you!</string>
     

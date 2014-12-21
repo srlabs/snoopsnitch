@@ -1687,16 +1687,19 @@ public class MsdService extends Service{
 		long timestamp = System.currentTimeMillis();
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		c.setTimeInMillis(timestamp);
+
 		// Calendar.MONTH starts counting with 0
 		String baseFilename = String.format(Locale.US, "qdmon_%04d-%02d-%02d_%02d-%02dUTC",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), 10*(c.get(Calendar.MINUTE) / 10));
 		if(rawWriter != null && currentRawWriterBaseFilename != null && currentRawWriterBaseFilename.equals(baseFilename))
 			return; // No reopen needed
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+
 		// Save the old writer
 		currentRawWriterBaseFilename = baseFilename;
 		EncryptedFileWriter oldRawWrite = rawWriter;
 		long oldRawLogFileId = rawLogFileId;
+
 		// Get the filename for the new file
 		// When restarting recording within a 10 minutes interval, the file may
 		// already exist. Since smime files can't simply be appended (like gzip
@@ -1718,7 +1721,10 @@ public class MsdService extends Service{
 			Log.e(TAG, "Couldn't find a non-existing filename for raw qdmon dump, baseFilename=" + baseFilename);
 			return;
 		}
-		rawWriter = new EncryptedFileWriter(this, encryptedFilename, true, plaintextFilename, true);
+		
+		rawWriter = new EncryptedFileWriter(this, encryptedFilename, true, MsdConfig.recordUnencryptedDumpfiles(this) ? plaintextFilename : null,
+				true);
+
 		// Register the file in database
 		// Set calendar to start of 10 minute interval
 		c.setTimeInMillis(timestamp);
@@ -1811,9 +1817,8 @@ public class MsdService extends Service{
 			Log.e(TAG, "openOrReopenDebugLog(): Couldn't find an available filename for debug log");
 			return 0;
 		}
-		// Uncomment the following line to disable plaintext logs (might be good for the final release):
-		// plaintextFilename = null;
-		EncryptedFileWriter newDebugLogWriter = new EncryptedFileWriter(this, encryptedFilename, true, plaintextFilename, true);
+		EncryptedFileWriter newDebugLogWriter =
+				new EncryptedFileWriter(this, encryptedFilename, true, MsdConfig.recordUnencryptedLogfiles(this) ? plaintextFilename : null , true);
 		newDebugLogWriter.write(MsdLog.getLogStartInfo(this));
 		if(logBuffer != null){
 			newDebugLogWriter.write("LOGBUFFER: " + logBuffer.toString() + ":LOGBUFFER_END");

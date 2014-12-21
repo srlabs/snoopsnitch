@@ -28,13 +28,13 @@ public class MsdConfig {
 
 		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("settings_networkLocationRecording", true);
 	}
+	public static boolean recordUnencryptedLogfiles(Context context){
+
+		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("settings_recordUnencryptedLogfiles", false);
+	}
 	public static boolean recordUnencryptedDumpfiles(Context context){
 
 		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("settings_recordUnencryptedDumpfiles", false);
-	}
-	public static boolean recordEncryptedDumpfiles(Context context){
-
-		return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("settings_recordEncryptedDumpfiles", true);
 	}
 	public static String getAppId(Context context){
 		return context.getSharedPreferences("preferences", Context.MODE_MULTI_PROCESS).getString("settings_appId", "");
