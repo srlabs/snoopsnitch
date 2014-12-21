@@ -792,6 +792,9 @@ public class MsdService extends Service{
 		@Override
 		public void run() {
 			try {
+				boolean parserLogging =
+						PreferenceManager.getDefaultSharedPreferences(MsdService.this).getBoolean("settings_parser_logging", false);
+
 				while(true){
 					String line = parserStdout.readLine();
 					if(line == null){
@@ -806,11 +809,11 @@ public class MsdService extends Service{
 						continue; // Ignore empty lines
 					if(line.startsWith("SQL:")){
 						String sql = line.substring(4);
-						info("FromParserThread enqueueing SQL Statement: " + sql);
+						info(parserLogging, "FromParserThread enqueueing SQL Statement: " + sql);
 						pendingSqlStatements.add(new PendingSqliteStatement(sql));
 					} else if(line.startsWith("RAT:")){
 						String parserRat = line.substring("RAT:".length()).trim();
-						info("Parser RAT: " + parserRat);
+						info(parserLogging, "Parser RAT: " + parserRat);
 						if(parserRat.equals("GSM")){
 							parserRatGeneration = 2;
 						} else if(parserRat.equals("3G")){
@@ -1500,6 +1503,11 @@ public class MsdService extends Service{
 	}
 	private static void info(String msg){
 		MsdLog.i(TAG,msg);
+	}
+	private static void info(boolean execute, String msg){
+		if (execute) {
+			info(msg);
+		}
 	}
 	private static void warn(String msg){
 		MsdLog.w(TAG,msg);
