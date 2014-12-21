@@ -1559,16 +1559,16 @@ public class MsdService extends Service{
 		}
 		// Check message queues
 		if(toDiagMsgQueue.size() > 100){
-			handleFatalError("testRecordingState(): toDiagMsgQueue contains too many entries");		
-			ok = false;	
+			warn("testRecordingState(): toDiagMsgQueue contains too many entries");		
+			//ok = false;	
 		}
 		if(toParserMsgQueue.size() > 100){
-			handleFatalError("testRecordingState(): diagMsgQueue contains too many entries");
-			ok = false;
+			warn("testRecordingState(): diagMsgQueue contains too many entries");
+			//ok = false;
 		}		
 		if(rawWriter.getQueueSize() > 100){
-			handleFatalError("testRecordingState(): rawWriter contains too many queue entries");
-			ok = false;
+			warn("testRecordingState(): rawWriter contains too many queue entries");
+			//ok = false;
 		}
 
 		// Do not make SQL queue overflow fatal for now
@@ -1692,7 +1692,8 @@ public class MsdService extends Service{
 		for(int i=0;i<300;i++){
 			plaintextFilename = baseFilename + (i>0 ? "." + i : "") +  ".gz";
 			encryptedFilename = plaintextFilename + ".smime";
-			if((new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() || (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists() ){
+			if((new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() ||
+               (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists() ){
 				plaintextFilename = null;
 				encryptedFilename = null;
 			} else{
@@ -1700,7 +1701,7 @@ public class MsdService extends Service{
 			}
 		}
 		if(encryptedFilename == null){
-			handleFatalError("Couldn't find a non-existing filename for raw qdmon dump, baseFilename=" + baseFilename);
+			Log.e(TAG, "Couldn't find a non-existing filename for raw qdmon dump, baseFilename=" + baseFilename);
 			return;
 		}
 		rawWriter = new EncryptedFileWriter(this, encryptedFilename, true, plaintextFilename, true);
@@ -1790,7 +1791,7 @@ public class MsdService extends Service{
 			}
 		}
 		if(encryptedFilename == null){
-			handleFatalError("openOrReopenDebugLog(): Couldn't find an available filename for debug log");
+			Log.e(TAG, "openOrReopenDebugLog(): Couldn't find an available filename for debug log");
 			return 0;
 		}
 		// Uncomment the following line to disable plaintext logs (might be good for the final release):
@@ -1849,7 +1850,7 @@ public class MsdService extends Service{
 			}
 			info("cleanupIncompleteOldFiles took " + (System.currentTimeMillis() - cleanupStartTime) + "ms, CPU time: " + ((android.os.Debug.threadCpuTimeNanos()-cleanupStartCpuTimeNanos)/1000000) + "ms");
 		} catch(Exception e){
-			handleFatalError("Exception during cleanup",e);
+			Log.e(TAG, "Exception during cleanup",e);
 		} finally{
 			MsdDatabaseManager.getInstance().closeDatabase();
 			wl.release();
@@ -1871,7 +1872,7 @@ public class MsdService extends Service{
 				cleanupDatabase(db);
 				info("Cleanup took " + (System.currentTimeMillis() - cleanupStartTime) + "ms, CPU time: " + ((android.os.Debug.threadCpuTimeNanos()-cleanupStartCpuTimeNanos)/1000000) + "ms");
 			} catch(Exception e){
-				handleFatalError("Exception during cleanup",e);
+				Log.e(TAG, "Exception during cleanup:" + e.getMessage());
 			} finally{
 				MsdDatabaseManager.getInstance().closeDatabase();
 				wl.release();
