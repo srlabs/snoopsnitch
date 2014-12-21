@@ -162,7 +162,12 @@ public class EncryptedFileWriter{
 		}
 	}
 	private void info(String msg){
-		MsdLog.i(TAG + ":" + encryptedFilename,msg);
+		MsdLog.i(TAG + ":" + encryptedFilename, msg);
+	}
+	private void info(boolean execute, String msg){
+		if (execute) {
+			info(msg);
+		}
 	}
 	public synchronized void write(byte[] data){
 		if(closed){
@@ -179,11 +184,15 @@ public class EncryptedFileWriter{
 		// Send shutdown marker
 		msgQueue.add(new ShutdownMsgWrapper());
 		try{
+			boolean joinFailed = false;
 			writerThread.join(3000);
 			if(writerThread.isAlive()){
-				msdService.handleFatalError("EncryptedFileWriter.close() failed to stop writerThread for file " + encryptedFilename);
+				joinFailed = true;
+				info("EncryptedFileWriter.close() failed to stop writerThread");
 			}
 			writerThread.join();
+			info(joinFailed, "Join succeeded");
+
 			writerThread = null;
 			opensslErrorThread.closeOutputRunning = true;
 			if(encryptedOutputStream != null)
