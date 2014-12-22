@@ -2,6 +2,7 @@ DELETE FROM events;
 INSERT INTO events
 SELECT
 	si.id,
+	sm.sequence,
 	si.timestamp,
 	si.mcc,
 	si.mnc,
@@ -32,6 +33,7 @@ WHERE
 INSERT INTO events
 SELECT
 	si.id,
+	-1,
 	si.timestamp,
 	si.mcc,
 	si.mnc,

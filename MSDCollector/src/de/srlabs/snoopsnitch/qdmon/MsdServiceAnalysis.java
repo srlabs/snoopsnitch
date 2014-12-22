@@ -25,7 +25,7 @@ public class MsdServiceAnalysis {
 		}
 	}
 
-	public static boolean runCatcherAnalysis(Context context, SQLiteDatabase db) throws Exception{
+	public static int runCatcherAnalysis(Context context, SQLiteDatabase db) throws Exception{
 		int before, after;
 
 		before = getLast(db, "catcher", "id");
@@ -39,12 +39,12 @@ public class MsdServiceAnalysis {
 			// New analysis results
 			Log.i(TAG,"CatcherAnalysis: " + numResults + " new catcher results");
 
-			return true;
+			return after - before;
 		}
-		return false;
+		return 0;
 	}
 
-	public static boolean runEventAnalysis(Context context, SQLiteDatabase db) throws Exception{
+	public static int runEventAnalysis(Context context, SQLiteDatabase db) throws Exception{
 		int before, after;
 
 		String[] event_cols = new String[]
@@ -72,10 +72,10 @@ public class MsdServiceAnalysis {
 
 			if (numResults > 0)
 			{
-				return true;
+				return numResults;
 			}
 		}
-		return false;
+		return 0;
 	}
 
 	public static void log(Risk before, Risk after){

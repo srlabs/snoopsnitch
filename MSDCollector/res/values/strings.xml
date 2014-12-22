@@ -280,4 +280,13 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="settings_debugging_parser_logging">Extended parser logging</string>
      <string name="settings_debugging_parser_logging_summary">Output additional state information, RAT changes and SQL statements from parser. Warning: This option will create a lot of logs!</string>
 
+     <!-- Compat check -->
+     <string name="no_service_running">service running</string>
+     <string name="no_catcher_title">IMSI catcher evenst</string>
+     <string name="no_catcher_ticker">IMSI catcher events detected</string>
+     <string name="no_catcher_events_detected"> IMSI catcher events detected</string>
+
+     <string name="no_events_title">Security events</string>
+     <string name="no_events_ticker">Security events detected</string>
+     <string name="no_events_detected"> security events detected</string>
 </resources>

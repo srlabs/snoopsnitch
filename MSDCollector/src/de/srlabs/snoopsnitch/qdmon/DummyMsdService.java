@@ -178,7 +178,7 @@ public class DummyMsdService extends Service{
 			}
 		}
 		if(numSilentSms > 0 || numBinarySms > 0){
-			msdServiceNotifications.showSmsNotification(numSilentSms, numBinarySms, lastSmsId);
+			msdServiceNotifications.showSmsNotification(numSilentSms + numBinarySms);
 			sendStateChanged(StateChangedReason.SMS_DETECTED);
 		}
 		Vector<ImsiCatcher> notificationCachers = new Vector<ImsiCatcher>();
@@ -192,7 +192,7 @@ public class DummyMsdService extends Service{
 			}
 		}
 		if(notificationCachers.size() > 0){
-			msdServiceNotifications.showImsiCatcherNotification(notificationCachers.size(), notificationCachers.lastElement().getId());
+			msdServiceNotifications.showImsiCatcherNotification(notificationCachers.size());
 			sendStateChanged(StateChangedReason.CATCHER_DETECTED);
 		}
 		timeCallbacksDone = currentTime;

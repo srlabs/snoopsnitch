@@ -947,10 +947,17 @@ public class MsdService extends Service{
 							info("updateLocationInfo done");
 							// Update location info
 
-							if (MsdServiceAnalysis.runCatcherAnalysis(MsdService.this, db)) {
+							int numCatchers = MsdServiceAnalysis.runCatcherAnalysis(MsdService.this, db);
+							if (numCatchers != 0) {
+								if (numCatchers > 0) {
+									msdServiceNotifications.showImsiCatcherNotification(numCatchers);
+								}
 								sendStateChanged(StateChangedReason.CATCHER_DETECTED);
 							};
-							if (MsdServiceAnalysis.runEventAnalysis(MsdService.this, db)) {
+							
+							int numEvents = MsdServiceAnalysis.runEventAnalysis(MsdService.this, db);
+							if (numEvents > 0) {
+								msdServiceNotifications.showSmsNotification(numEvents);
 								sendStateChanged(StateChangedReason.SMS_DETECTED);
 							};
 							if (MsdServiceAnalysis.runSecurityAnalysis(MsdService.this, db)) {

@@ -33,7 +33,8 @@ CREATE TABLE catcher
 DROP TABLE IF EXISTS events;
 CREATE TABLE events 
 (
-	id integer PRIMARY KEY,
+	id integer,
+	sequence integer,
 	timestamp datetime NOT NULL,
 	mcc smallint NOT NULL,
 	mnc smallint NOT NULL,
@@ -44,5 +45,6 @@ CREATE TABLE events
 	valid SMALLINT,
 	smsc CHAR(32) NOT NULL,
 	msisdn CHAR(32) NOT NULL,
-	event_type integer 			-- type of event (0 - OTA/binary SMS, 1 - silent SMS, 2 - null paging)
+	event_type integer,			-- type of event (0 - OTA/binary SMS, 1 - silent SMS, 2 - null paging)
+	PRIMARY KEY(id, sequence, event_type)
 );
