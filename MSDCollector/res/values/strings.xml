@@ -3,7 +3,7 @@
     
     <!-- General -->
 	<string name="app_name">SnoopSnitch</string>
-    <string name="website">http://opensource.srlabs.de/projects/snoopsnitch</string>
+    <string name="website">https://opensource.srlabs.de/projects/snoopsnitch</string>
     <string name="common_silent_sms">Silent SMS</string>
     <string name="common_binary_sms">Binary SMS</string>
     <string name="common_imsi_catcher">IMSI Catcher</string>
@@ -54,9 +54,10 @@ Your device is not compatible with SnoopSnitch.\n
 
 <string name="alert_deviceCompatibility_message">
 You need a rooted device with a Qualcomm chipset running stock Android 4.1 or higher.
-Unfortunately, custom ROMs are unsupported as they lack necessary proprietary drivers.\n
+Unfortunately, custom ROMs are unsupported at the moment as they lack necessary
+proprietary drivers.\n
 \n
-For details, visit the project website (http://opensource.srlabs.de/projects/snoopsnitch).
+For details, visit the project website (https://opensource.srlabs.de/projects/snoopsnitch).
 If you believe your device is compatible and this is an error, please send an email to our
 list gsmmap@lists.srlabs.de.
 </string>
@@ -102,7 +103,7 @@ READ THIS MESSAGE CAREFULLY BEFORE PROCEEDING!\n
 \n
 SnoopSnitch collects and analyzes mobile radio data to make you aware
 of your mobile network security and to warn you about threats like fake base
-stations, user tracking and over-the-air updates.\n
+stations (IMSI catchers), user tracking and over-the-air updates.\n
 \n
 This application uses data contributed by other users. By choosing to upload your
 measurement results or security events, you can help improve this data base and
@@ -123,7 +124,7 @@ If SnoopSnitch\'s way of functioning concerns you, press Cancel now!
 <string name="about_text">
 SnoopSnitch collects and analyzes mobile radio data to make you aware
 of your mobile network security and to warn you about threats like fake base
-stations, user tracking, and over-the-air updates.\n
+stations (IMSI catchers), user tracking and over-the-air updates.\n
 \n
 This application uses data contributed by other users. By choosing to upload your
 measurement results or security events, you can help improve this data base and
@@ -138,10 +139,10 @@ our mailing list gsmmap@lists.srlabs.de. For a private conversion with the Snoop
 team, please contact snoopsnitch@srlabs.de (PGP fingerprint 9728 A7F9 D457 1FBB 746F  
 5381 D52C AC10 634A 9561).\n
 \n
-SnoopSnitch is open-source software released under the GPL license version 3.
+SnoopSnitch is open-source software released under the GPL version 3.
 Visit our  project website for source code and further information:\n
 \n
-http://opensource.srlabs.de/projects/snoopsnitch\n
+https://opensource.srlabs.de/projects/snoopsnitch\n
 
 </string>
 
