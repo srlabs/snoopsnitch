@@ -9,7 +9,7 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.CrashUploadActivity;
 import de.srlabs.snoopsnitch.DashboardActivity;
 import de.srlabs.snoopsnitch.util.Constants;

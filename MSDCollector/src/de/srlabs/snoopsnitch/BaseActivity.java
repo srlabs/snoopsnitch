@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.upload.DumpFile;

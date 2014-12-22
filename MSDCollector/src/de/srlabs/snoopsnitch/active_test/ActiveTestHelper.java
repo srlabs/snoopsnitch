@@ -17,7 +17,7 @@ import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdService;
 import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MsdDialog;

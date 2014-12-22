@@ -10,7 +10,7 @@ import java.util.Vector;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.telephony.TelephonyManager;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.Utils;
 

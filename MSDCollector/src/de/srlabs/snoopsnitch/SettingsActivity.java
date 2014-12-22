@@ -3,7 +3,7 @@ package de.srlabs.snoopsnitch;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.util.Utils;
 
 public class SettingsActivity extends PreferenceActivity

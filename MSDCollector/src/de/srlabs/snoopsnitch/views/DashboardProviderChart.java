@@ -16,7 +16,7 @@ import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.analysis.Risk;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 

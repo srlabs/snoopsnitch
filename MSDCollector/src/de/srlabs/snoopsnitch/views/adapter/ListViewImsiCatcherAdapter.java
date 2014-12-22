@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.DetailChartActivity;
 import de.srlabs.snoopsnitch.analysis.ImsiCatcher;
 import de.srlabs.snoopsnitch.util.MsdDialog;

@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.DetailChartActivity;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 

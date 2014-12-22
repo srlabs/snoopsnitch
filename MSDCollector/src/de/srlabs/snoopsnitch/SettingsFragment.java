@@ -1,6 +1,6 @@
 package de.srlabs.snoopsnitch;
 
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;

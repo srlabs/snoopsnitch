@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 
 public class DashboardProviderList extends View
 {

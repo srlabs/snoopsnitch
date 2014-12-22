@@ -6,7 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 
 public class MsdDialog extends DialogFragment
 {	

@@ -1,6 +1,6 @@
 package de.srlabs.snoopsnitch;
 
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;

@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 import android.content.Context;
 
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 public class DeviceCompatibilityChecker {
 	private static String su_binary = null;
 

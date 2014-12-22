@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceCallback;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;

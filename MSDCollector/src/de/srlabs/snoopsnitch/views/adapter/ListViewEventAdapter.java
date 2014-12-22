@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.DetailChartActivity;
 import de.srlabs.snoopsnitch.analysis.Event;
 import de.srlabs.snoopsnitch.analysis.Event.Type;

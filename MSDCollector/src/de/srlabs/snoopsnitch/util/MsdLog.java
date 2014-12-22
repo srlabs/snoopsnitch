@@ -5,7 +5,7 @@ import java.util.Calendar;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdService;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 

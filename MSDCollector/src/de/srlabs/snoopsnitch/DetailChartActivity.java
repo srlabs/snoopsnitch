@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import de.srlabs.msd.R;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.analysis.Event;
 import de.srlabs.snoopsnitch.analysis.Event.Type;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
