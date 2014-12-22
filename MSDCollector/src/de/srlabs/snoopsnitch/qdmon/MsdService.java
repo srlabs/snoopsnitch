@@ -325,7 +325,8 @@ public class MsdService extends Service{
 		if(!recording)
 			return false;
 		this.extraRecordingStartTime = System.currentTimeMillis();
-		this.extraRecordingRawFileWriter = new EncryptedFileWriter(this, filename + ".gz.smime", true, filename + ".gz", true);
+		this.extraRecordingRawFileWriter =
+				new EncryptedFileWriter(this, filename + ".gz.smime", true, MsdConfig.recordUnencryptedDumpfiles(this) ? filename + ".gz" : null, true);
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		DumpFile df = new DumpFile(filename + ".gz.smime",DumpFile.TYPE_ENCRYPTED_QDMON);
