@@ -295,7 +295,8 @@ public class BaseActivity extends FragmentActivity
 	        editor.commit();
 		}
 		
-		return "App-ID: " + sharedPreferences.getString("settings_appId", "");
+		
+		return getResources().getText(R.string.actionBar_subTitle) + " " + sharedPreferences.getString("settings_appId", "");
 	}
 	
 	protected Runnable runnable = new Runnable() 

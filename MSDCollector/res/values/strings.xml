@@ -12,7 +12,7 @@
     
     <!-- Action Bar Titles -->
     <string name="actionBar_title">SnoopSnitch</string>
-    <string name="actionBar_subTitle">App-ID: 1324687436-D</string>
+    <string name="actionBar_subTitle">App ID:</string>
    	
    	<!-- Action Bar Buttons -->
    	<string name="action_scan">Scan</string>
