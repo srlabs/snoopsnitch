@@ -25,12 +25,12 @@ public class MsdServiceNotifications {
 	public Notification getForegroundNotification(){
 		Intent intent = new Intent(service, DashboardActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_network);
+		Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_ok);
 		Notification n = new NotificationCompat.Builder(service)
 		.setContentTitle(service.getString(R.string.app_name))
 		.setTicker(service.getString(R.string.app_name) + " service running")
 		.setContentText("Service running [" + service.getString(R.string.app_version) + "]")
-		.setSmallIcon(R.drawable.ic_content_network)
+		.setSmallIcon(R.drawable.ic_content_imsi_ok)
 		.setLargeIcon(icon)
 		.setOngoing(true)
 		.setContentIntent(pendingIntent)
@@ -84,7 +84,7 @@ public class MsdServiceNotifications {
 		.setContentTitle("Error occured")
 		.setTicker("Error occured")
 		.setContentText("An error occured: " + errorId)
-		.setSmallIcon(R.drawable.ic_content_network)
+		.setSmallIcon(R.drawable.ic_content_imsi_event)
 		.setOngoing(false)
 		.setContentIntent(pendingIntent)
 		.setAutoCancel(true)
@@ -95,7 +95,7 @@ public class MsdServiceNotifications {
 	}
 	public void showInternalErrorNotification(String msg, Long debugLogFileId){
 		// TODO: Maybe directly start the error reporting activity if the app was on top when the error occured
-		Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_network);
+		Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_event);
 		Log.i("MsdServiceNotifications","showInternalErrorNotification(" + msg + "  debugLogFileId=" + debugLogFileId + ")");
 		Intent intent = new Intent(service, CrashUploadActivity.class);
 		intent.putExtra(CrashUploadActivity.EXTRA_ERROR_ID, debugLogFileId == null ? 0:(long)debugLogFileId);
@@ -105,7 +105,7 @@ public class MsdServiceNotifications {
 		// TODO: Make this notification pretty
 		NotificationCompat.Builder notificationBuilder =
 				new NotificationCompat.Builder(service)
-		.setSmallIcon(R.drawable.ic_content_network)
+		.setSmallIcon(R.drawable.ic_content_imsi_event)
 		.setLargeIcon(icon)
 		.setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title))
 		.setContentText(service.getString(R.string.error_notification_text))
