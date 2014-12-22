@@ -269,7 +269,7 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
 
      <!-- Compat check -->
      <string name="compat_no_qualcomm">Device /dev/diag does not exist, probably your phone has no Qualcomm chipset</string>
-     <string name="compat_no_root">No working su binasettings_enable_devel_optionssettings_enable_devel_optionsy found, please check whether you phone is rooted</string>
+     <string name="compat_no_root">No working su binary found, please check whether you phone is rooted</string>
      <string name="settings_cat_debugging">Development</string>
      <string name="settings_cat_debugging_summary">DO NOT ENABLE THIS, unless you are a SnoopSnatch developer!</string>
      <string name="settings_debugging_crash">Crash SnoopSnitch</string>
