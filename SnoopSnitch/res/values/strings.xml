@@ -139,11 +139,24 @@ our mailing list gsmmap@lists.srlabs.de. For a private conversion with the Snoop
 team, please contact snoopsnitch@srlabs.de (PGP fingerprint 9728 A7F9 D457 1FBB 746F  
 5381 D52C AC10 634A 9561).\n
 \n
-SnoopSnitch is open-source software released under the GPL version 3.
 Visit our  project website for source code and further information:\n
 \n
 https://opensource.srlabs.de/projects/snoopsnitch\n
-
+\n
+Copyright (C) 2014  Security Research Labs\n
+\n
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.\n
+\n
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.\n
+\n
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.\n
 </string>
 
     
