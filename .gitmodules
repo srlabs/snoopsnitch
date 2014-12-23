@@ -8,5 +8,5 @@
 	ignore = dirty
 [submodule "contrib/metagsm"]
 	path = contrib/metagsm
-	url = ssh://gitolite@git.srlabs.de/metagsm.git
+	url = http://opensource.srlabs.de/git/gsm-parser.git
 	ignore = dirty
