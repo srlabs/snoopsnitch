@@ -3,6 +3,7 @@ package de.srlabs.snoopsnitch.qdmon;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.PowerManager;
 import android.util.Log;
 import de.srlabs.snoopsnitch.util.Utils;
 
@@ -16,11 +17,16 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	}
 
 	public static void readSQLAsset(Context context, SQLiteDatabase db, String file, Boolean verbose) throws Exception {
+		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, file);
+
 		Long tmp = System.currentTimeMillis();
 
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") called");
-		db.execSQL("BEGIN TRANSACTION;");
+
 		try {
+			wl.acquire();
+			db.beginTransaction();
 			String sql = Utils.readFromAssets(context, file);
 			if (verbose){
 				Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + "): " + sql);
@@ -38,11 +44,13 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 					}
 				}
 			}
+			db.setTransactionSuccessful();
 		} catch (Exception e) {
-			db.execSQL("ROLLBACK;");
 			throw e;
+		} finally {
+			db.endTransaction();
+			wl.release();
 		}
-		db.execSQL("COMMIT;");
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.readSQLAsset(" + file + ") done, took " + (System.currentTimeMillis() - tmp) + "ms");
 	}
 

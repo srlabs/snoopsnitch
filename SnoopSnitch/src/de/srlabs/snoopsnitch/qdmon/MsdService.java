@@ -992,7 +992,10 @@ public class MsdService extends Service{
 		}
 		void updateLocationInfo(SQLiteDatabase db, boolean allTimes){
 			Cursor location_info = null, session_info = null;
-			try{
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
+			try {
+				wl.acquire();
 				class LocationRow{
 					long timestamp;
 					double latitude;
@@ -1053,6 +1056,7 @@ public class MsdService extends Service{
 					location_info.close();
 				if(session_info != null)
 					session_info.close();
+				wl.release();
 			}
 		}
 	}
@@ -1076,15 +1080,25 @@ public class MsdService extends Service{
 			return sql == null && table == null;
 		}
 		public void run(SQLiteDatabase db) throws SQLException{
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
 			preRunHook();
 			if(table != null){
 				generatedRowId = db.insert(table, null, values);
 			}
 			if(sql != null){
-				for(String statement:sql.split(";")){
-					if(statement.trim().length() > 0){
-						db.execSQL(statement);
+				try {
+					wl.acquire();
+					db.beginTransaction();
+					for(String statement:sql.split(";")){
+						if(statement.trim().length() > 0){
+							db.execSQL(statement);
+						}
 					}
+					db.setTransactionSuccessful();
+				} finally {
+					db.endTransaction();
+					wl.release();
 				}
 			}
 		}
