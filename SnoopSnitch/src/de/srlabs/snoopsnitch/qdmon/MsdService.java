@@ -1992,42 +1992,39 @@ public class MsdService extends Service{
 		String sql;
 		int keepDuration = MsdConfig.getAnalysisInfoKeepDurationHours(MsdService.this);
 		if(keepDuration > 0){
-			sql = "DELETE FROM session_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
+			try {
+				db.beginTransaction();
+				sql = "DELETE FROM session_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
+				db.execSQL(sql);
 
-			sql = "DELETE FROM sms_meta WHERE id < (SELECT min(id) FROM session_info);";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
+				sql = "DELETE FROM sms_meta WHERE id < (SELECT min(id) FROM session_info);";
+				db.execSQL(sql);
 
-			sql = "DELETE FROM serving_cell_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
+				sql = "DELETE FROM serving_cell_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
+				db.execSQL(sql);
 
-			sql = "DELETE FROM neighboring_cell_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
+				sql = "DELETE FROM neighboring_cell_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
+				db.execSQL(sql);
 
-			sql = "DELETE FROM cell_info WHERE last_seen < datetime('now','-" + keepDuration + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
+				sql = "DELETE FROM cell_info WHERE last_seen < datetime('now','-" + keepDuration + " hours');";
+				db.execSQL(sql);
 
-			sql = "DELETE FROM arfcn_list WHERE id < (select min(id) from cell_info);";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
+				sql = "DELETE FROM arfcn_list WHERE id < (select min(id) from cell_info);";
+				db.execSQL(sql);
 
-			sql = "DELETE FROM events WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
+				sql = "DELETE FROM events WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
+				db.execSQL(sql);
 
-			sql = "DELETE FROM paging_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
-			info("cleanup: " + sql);
-			db.execSQL(sql);
+				sql = "DELETE FROM paging_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
+				db.execSQL(sql);
+				db.setTransactionSuccessful();
+			} finally {
+				db.endTransaction();
+			}
 		}
 		keepDuration = MsdConfig.getLocationLogKeepDurationHours(MsdService.this);
 		if(keepDuration > 0){
 			sql = "DELETE FROM location_info where timestamp < datetime('now','-" + keepDuration + " hours');";
-			info("cleanup: " + sql);
 			db.execSQL(sql);
 		}
 	}
