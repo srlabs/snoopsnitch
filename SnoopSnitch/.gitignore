@@ -28,6 +28,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+.ant-targets-build.xml
 
 # External tool builders
 .externalToolBuilders/
