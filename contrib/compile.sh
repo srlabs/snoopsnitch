@@ -145,7 +145,7 @@ then
 	# Install parser
 	PARSER_DIR=${OUTPUT_DIR}/parser
 	install -d ${PARSER_DIR}
-	install -m 755 ${OUTPUT_DIR}/out/lib/libasn1c.so.0         ${PARSER_DIR}/libasn1c.so
+	install -m 755 ${OUTPUT_DIR}/out/lib/libasn1c.so           ${PARSER_DIR}/libasn1c.so
 	install -m 755 ${OUTPUT_DIR}/out/lib/libosmo-asn1-rrc.so.0 ${PARSER_DIR}/libosmo-asn1-rrc.so
 	install -m 755 ${OUTPUT_DIR}/out/lib/libosmocore.so.5      ${PARSER_DIR}/libosmocore.so
 	install -m 755 ${OUTPUT_DIR}/out/lib/libosmogsm.so.5       ${PARSER_DIR}/libosmogsm.so
