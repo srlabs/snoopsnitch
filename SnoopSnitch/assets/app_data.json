@@ -431,6 +431,16 @@
 								"monthIndex": 45,
 								"value": 0.517,
 								"size": 0.136
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.51,
+								"size": 0.205
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.507,
+								"size": 0.01
 							}
 						],
 						"imper": [
@@ -463,6 +473,16 @@
 								"monthIndex": 45,
 								"value": 0.353,
 								"size": 0.113
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.355,
+								"size": 0.186
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.354,
+								"size": 0.008
 							}
 						],
 						"track": [
@@ -487,6 +507,16 @@
 								"monthIndex": 45,
 								"value": 1,
 								"size": 0.062
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.995,
+								"size": 0.158
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.996,
+								"size": 0.032
 							}
 						]
 					}
@@ -536,6 +566,16 @@
 								"monthIndex": 41,
 								"value": 0.612,
 								"size": 0.581
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.606,
+								"size": 0.118
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.598,
+								"size": 0.02
 							}
 						],
 						"imper": [
@@ -573,6 +613,16 @@
 								"monthIndex": 41,
 								"value": 0.673,
 								"size": 0.57
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.629,
+								"size": 0.11
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.613,
+								"size": 0.018
 							}
 						],
 						"track": [
@@ -656,6 +706,11 @@
 								"monthIndex": 45,
 								"value": 0.443,
 								"size": 0.058
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.447,
+								"size": 0.017
 							}
 						],
 						"imper": [
@@ -688,6 +743,11 @@
 								"monthIndex": 45,
 								"value": 0.402,
 								"size": 0.048
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.412,
+								"size": 0.017
 							}
 						],
 						"track": [
@@ -732,6 +792,11 @@
 								"monthIndex": 45,
 								"value": 0.999,
 								"size": 0.313
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.999,
+								"size": 0.063
 							}
 						]
 					}
@@ -830,6 +895,13 @@
 								"value": 0.559,
 								"size": 0
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0
+							}
 						]
 					}
 				},
@@ -848,6 +920,13 @@
 								"monthIndex": 26,
 								"value": 0.416,
 								"size": 0.001
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.003
 							}
 						]
 					}
@@ -1201,6 +1280,13 @@
 								"value": 0.244,
 								"size": 0.007
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.009
+							}
 						]
 					}
 				}
@@ -1310,6 +1396,13 @@
 								"value": 0.649,
 								"size": 0.194
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 36,
+								"value": null,
+								"size": 0.106
+							}
 						]
 					}
 				},
@@ -1335,6 +1428,13 @@
 								"monthIndex": 36,
 								"value": 0.274,
 								"size": 0.138
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 36,
+								"value": null,
+								"size": 0.041
 							}
 						]
 					}
@@ -1398,6 +1498,20 @@
 								"size": 0.015
 							}
 						],
+						"imper": [
+							{
+								"monthIndex": 28,
+								"value": 0,
+								"size": 0.006
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 28,
+								"value": null,
+								"size": 0.014
+							}
+						],
 						"inter3G": [
 							{
 								"monthIndex": 36,
@@ -1430,6 +1544,25 @@
 								"value": 0.194,
 								"size": 0.004
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 28,
+								"value": null,
+								"size": 0.006
+							}
+						],
+						"inter3G": [
+							{
+								"monthIndex": 36,
+								"value": 0,
+								"size": 0.018
+							},
+							{
+								"monthIndex": 39,
+								"value": 0,
+								"size": 0.015
+							}
 						]
 					}
 				},
@@ -1448,6 +1581,13 @@
 								"monthIndex": 28,
 								"value": 0.091,
 								"size": 0.003
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 28,
+								"value": null,
+								"size": 0.007
 							}
 						]
 					}
@@ -1473,6 +1613,13 @@
 								"monthIndex": 36,
 								"value": 0.212,
 								"size": 0.057
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 36,
+								"value": null,
+								"size": 0
 							}
 						]
 					}
@@ -1716,6 +1863,33 @@
 								"value": 0.465,
 								"size": 0.012
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 27,
+								"value": 0,
+								"size": 0.194
+							},
+							{
+								"monthIndex": 34,
+								"value": 0,
+								"size": 0.02
+							},
+							{
+								"monthIndex": 35,
+								"value": 0,
+								"size": 0.004
+							},
+							{
+								"monthIndex": 40,
+								"value": 0,
+								"size": 0.06
+							},
+							{
+								"monthIndex": 42,
+								"value": 0,
+								"size": 0.026
+							}
 						]
 					}
 				},
@@ -1751,6 +1925,30 @@
 								"monthIndex": 27,
 								"value": 0.38,
 								"size": 0.033
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 22,
+								"value": 0,
+								"size": 0.004
+							},
+							{
+								"monthIndex": 27,
+								"value": 0,
+								"size": 0.126
+							},
+							{
+								"monthIndex": 34,
+								"value": 0,
+								"size": 0.015
+							}
+						],
+						"inter3G": [
+							{
+								"monthIndex": 46,
+								"value": 0.846,
+								"size": 0.008
 							}
 						]
 					}
@@ -2131,6 +2329,11 @@
 								"monthIndex": 44,
 								"value": 0.782,
 								"size": 0.04
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.778,
+								"size": 0.006
 							}
 						],
 						"imper": [
@@ -2163,6 +2366,11 @@
 								"monthIndex": 44,
 								"value": 0.753,
 								"size": 0.04
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.749,
+								"size": 0.006
 							}
 						],
 						"track": [
@@ -2202,6 +2410,11 @@
 								"monthIndex": 45,
 								"value": 0.99,
 								"size": 0.005
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.991,
+								"size": 0.015
 							}
 						]
 					}
@@ -2625,11 +2838,6 @@
 		{
 			"code": "EG",
 			"name": "Egypt",
-			"pdf": {
-				"filename": "gsmmap.org-country_report-Egypt-2012-06.pdf",
-				"year": 2012,
-				"month": 6
-			},
 			"boundaries": {
 				"xMin": 24.7032,
 				"xMax": 36.8714,
@@ -2851,6 +3059,11 @@
 								"monthIndex": 45,
 								"value": 0.476,
 								"size": 0.038
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.483,
+								"size": 0.012
 							}
 						],
 						"imper": [
@@ -2868,6 +3081,11 @@
 								"monthIndex": 45,
 								"value": 0.431,
 								"size": 0.033
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.483,
+								"size": 0.012
 							}
 						],
 						"track": [
@@ -2892,6 +3110,11 @@
 								"monthIndex": 45,
 								"value": 0.954,
 								"size": 0.012
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.968,
+								"size": 0.022
 							}
 						]
 					}
@@ -2964,6 +3187,11 @@
 								"monthIndex": 26,
 								"value": 0.311,
 								"size": 0.019
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.291,
+								"size": 0.037
 							}
 						],
 						"imper": [
@@ -2976,6 +3204,11 @@
 								"monthIndex": 26,
 								"value": 0.434,
 								"size": 0.005
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.323,
+								"size": 0.037
 							}
 						],
 						"track": [
@@ -2988,6 +3221,13 @@
 								"monthIndex": 26,
 								"value": 0.146,
 								"size": 0.025
+							}
+						],
+						"inter3G": [
+							{
+								"monthIndex": 47,
+								"value": 0.974,
+								"size": 0.034
 							}
 						]
 					}
@@ -3073,6 +3313,18 @@
 								"monthIndex": 11,
 								"value": 0.306,
 								"size": 0.001
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.856,
+								"size": 0.059
+							}
+						],
+						"imper": [
+							{
+								"monthIndex": 47,
+								"value": 0.956,
+								"size": 0.04
 							}
 						],
 						"track": [
@@ -3080,6 +3332,13 @@
 								"monthIndex": 11,
 								"value": 0.12,
 								"size": 0.003
+							}
+						],
+						"inter3G": [
+							{
+								"monthIndex": 47,
+								"value": 1,
+								"size": 0.016
 							}
 						]
 					}
@@ -3154,6 +3413,11 @@
 								"monthIndex": 13,
 								"value": 0.26,
 								"size": 0.165
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.356,
+								"size": 0.076
 							}
 						],
 						"imper": [
@@ -3166,6 +3430,11 @@
 								"monthIndex": 13,
 								"value": 0.231,
 								"size": 0.095
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.368,
+								"size": 0.066
 							}
 						],
 						"track": [
@@ -3178,6 +3447,13 @@
 								"monthIndex": 13,
 								"value": 0.84,
 								"size": 0.154
+							}
+						],
+						"inter3G": [
+							{
+								"monthIndex": 47,
+								"value": 1,
+								"size": 0.035
 							}
 						]
 					}
@@ -4022,6 +4298,11 @@
 								"monthIndex": 45,
 								"value": 0.765,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.765,
+								"size": 1
 							}
 						],
 						"imper": [
@@ -4219,6 +4500,11 @@
 								"monthIndex": 45,
 								"value": 0.726,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.726,
+								"size": 0.823
 							}
 						],
 						"track": [
@@ -4400,6 +4686,11 @@
 							{
 								"monthIndex": 45,
 								"value": 0.878,
+								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.88,
 								"size": 1
 							}
 						],
@@ -4690,6 +4981,16 @@
 								"monthIndex": 45,
 								"value": 0.534,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.53,
+								"size": 0.62
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.527,
+								"size": 0.01
 							}
 						],
 						"imper": [
@@ -4907,6 +5208,16 @@
 								"monthIndex": 45,
 								"value": 0.465,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.462,
+								"size": 0.292
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.46,
+								"size": 0.003
 							}
 						],
 						"track": [
@@ -5119,6 +5430,11 @@
 								"monthIndex": 45,
 								"value": 0.9,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.9,
+								"size": 1
 							}
 						],
 						"inter3G": [
@@ -5171,6 +5487,11 @@
 								"monthIndex": 45,
 								"value": 0.982,
 								"size": 0.004
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.985,
+								"size": 0.01
 							}
 						]
 					}
@@ -5383,6 +5704,16 @@
 								"monthIndex": 45,
 								"value": 0.454,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.452,
+								"size": 0.563
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.483,
+								"size": 0.301
 							}
 						],
 						"imper": [
@@ -5570,6 +5901,16 @@
 								"monthIndex": 45,
 								"value": 0.578,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.577,
+								"size": 0.293
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.587,
+								"size": 0.231
 							}
 						],
 						"track": [
@@ -5762,6 +6103,11 @@
 								"monthIndex": 45,
 								"value": 0.579,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.58,
+								"size": 1
 							}
 						],
 						"inter3G": [
@@ -5784,6 +6130,11 @@
 								"monthIndex": 45,
 								"value": 1,
 								"size": 0
+							},
+							{
+								"monthIndex": 47,
+								"value": 1,
+								"size": 0.139
 							}
 						]
 					}
@@ -6026,6 +6377,11 @@
 								"monthIndex": 45,
 								"value": 0.33,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.328,
+								"size": 1
 							}
 						],
 						"imper": [
@@ -6243,6 +6599,11 @@
 								"monthIndex": 45,
 								"value": 0.272,
 								"size": 1
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.271,
+								"size": 1
 							}
 						],
 						"track": [
@@ -6450,6 +6811,11 @@
 								"monthIndex": 45,
 								"value": 0.5,
 								"size": 0.001
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.5,
+								"size": 1
 							}
 						],
 						"inter3G": [
@@ -6477,6 +6843,11 @@
 								"monthIndex": 45,
 								"value": 0.995,
 								"size": 0.003
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.996,
+								"size": 0.025
 							}
 						]
 					}
@@ -6835,11 +7206,6 @@
 		{
 			"code": "HK",
 			"name": "Hong Kong",
-			"pdf": {
-				"filename": "gsmmap.org-country_report-Hong_Kong-2014-09.pdf",
-				"year": 2014,
-				"month": 9
-			},
 			"boundaries": {
 				"xMin": 113.8965,
 				"xMax": 114.3353,
@@ -6938,6 +7304,18 @@
 								"monthIndex": 44,
 								"value": 0.008,
 								"size": 0.005
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 16,
+								"value": null,
+								"size": 0.016
+							},
+							{
+								"monthIndex": 44,
+								"value": null,
+								"size": 0.004
 							}
 						]
 					}
@@ -7104,6 +7482,11 @@
 								"monthIndex": 45,
 								"value": 0.637,
 								"size": 0.017
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.637,
+								"size": 0.015
 							}
 						],
 						"imper": [
@@ -7126,6 +7509,11 @@
 								"monthIndex": 45,
 								"value": 0.522,
 								"size": 0.015
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.513,
+								"size": 0.013
 							}
 						],
 						"track": [
@@ -7160,6 +7548,11 @@
 								"monthIndex": 45,
 								"value": 0.996,
 								"size": 0.024
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.996,
+								"size": 0.005
 							}
 						]
 					}
@@ -7210,6 +7603,11 @@
 								"monthIndex": 43,
 								"value": 1,
 								"size": 0.254
+							},
+							{
+								"monthIndex": 46,
+								"value": 1,
+								"size": 0.031
 							}
 						]
 					}
@@ -7378,8 +7776,13 @@
 							},
 							{
 								"monthIndex": 22,
-								"value": 0.378,
-								"size": 0.083
+								"value": 0.343,
+								"size": 0.093
+							},
+							{
+								"monthIndex": 23,
+								"value": 0.301,
+								"size": 0.007
 							},
 							{
 								"monthIndex": 39,
@@ -7388,30 +7791,45 @@
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.106,
-								"size": 0.018
+								"value": 0.104,
+								"size": 0.019
 							},
 							{
 								"monthIndex": 42,
-								"value": 0.105,
-								"size": 0.083
+								"value": 0.103,
+								"size": 0.085
 							}
 						],
 						"track": [
 							{
+								"monthIndex": 22,
+								"value": null,
+								"size": 0.07
+							},
+							{
+								"monthIndex": 23,
+								"value": null,
+								"size": 0.002
+							},
+							{
 								"monthIndex": 39,
-								"value": 0.7,
+								"value": null,
 								"size": 0.219
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.7,
+								"value": null,
 								"size": 0.062
 							},
 							{
 								"monthIndex": 42,
-								"value": 0.7,
+								"value": null,
 								"size": 0.261
+							},
+							{
+								"monthIndex": 47,
+								"value": null,
+								"size": 0
 							}
 						],
 						"inter3G": [
@@ -7419,6 +7837,11 @@
 								"monthIndex": 44,
 								"value": 1,
 								"size": 0.006
+							},
+							{
+								"monthIndex": 46,
+								"value": 1,
+								"size": 0.008
 							}
 						]
 					}
@@ -7574,6 +7997,13 @@
 								"value": 0.916,
 								"size": 0.241
 							}
+						],
+						"inter3G": [
+							{
+								"monthIndex": 46,
+								"value": 0,
+								"size": 0.055
+							}
 						]
 					}
 				},
@@ -7668,23 +8098,65 @@
 								"monthIndex": 42,
 								"value": 0.223,
 								"size": 0.235
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.224,
+								"size": 0
 							}
 						],
 						"imper": [
 							{
+								"monthIndex": 22,
+								"value": 0,
+								"size": 0.083
+							},
+							{
+								"monthIndex": 23,
+								"value": 0,
+								"size": 0.032
+							},
+							{
 								"monthIndex": 39,
-								"value": 0.5,
+								"value": 0.492,
 								"size": 0.41
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.5,
+								"value": 0.494,
 								"size": 0.231
 							},
 							{
 								"monthIndex": 42,
-								"value": 0.5,
+								"value": 0.497,
 								"size": 0.128
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 22,
+								"value": null,
+								"size": 0.11
+							},
+							{
+								"monthIndex": 23,
+								"value": null,
+								"size": 0.031
+							},
+							{
+								"monthIndex": 39,
+								"value": null,
+								"size": 0.219
+							},
+							{
+								"monthIndex": 40,
+								"value": null,
+								"size": 0.021
+							},
+							{
+								"monthIndex": 42,
+								"value": null,
+								"size": 0.469
 							}
 						]
 					}
@@ -7799,6 +8271,40 @@
 								"monthIndex": 42,
 								"value": 0.063,
 								"size": 0.052
+							}
+						],
+						"imper": [
+							{
+								"monthIndex": 39,
+								"value": 0.002,
+								"size": 0.002
+							},
+							{
+								"monthIndex": 40,
+								"value": 0,
+								"size": 0.029
+							},
+							{
+								"monthIndex": 42,
+								"value": 0,
+								"size": 0.016
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 39,
+								"value": null,
+								"size": 0.011
+							},
+							{
+								"monthIndex": 40,
+								"value": null,
+								"size": 0.024
+							},
+							{
+								"monthIndex": 42,
+								"value": null,
+								"size": 0.056
 							}
 						]
 					}
@@ -8017,35 +8523,47 @@
 							},
 							{
 								"monthIndex": 39,
-								"value": 0.018,
-								"size": 0.017
+								"value": 0.008,
+								"size": 0.045
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.016,
+								"value": 0.011,
 								"size": 0.027
 							},
 							{
 								"monthIndex": 42,
-								"value": 0.008,
+								"value": 0.007,
 								"size": 0.211
 							}
 						],
 						"track": [
 							{
+								"monthIndex": 22,
+								"value": null,
+								"size": 0.071
+							},
+							{
 								"monthIndex": 39,
-								"value": 0.7,
+								"value": null,
 								"size": 0.264
 							},
 							{
 								"monthIndex": 40,
-								"value": 0.7,
+								"value": null,
 								"size": 0.098
 							},
 							{
 								"monthIndex": 42,
-								"value": 0.701,
+								"value": null,
 								"size": 0.288
+							}
+						],
+						"inter3G": [
+							{
+								"monthIndex": 46,
+								"value": 1,
+								"size": 0.011
 							}
 						]
 					}
@@ -8252,11 +8770,36 @@
 					"name": "Telkomsel",
 					"color": "#F2142B",
 					"values": {
+						"track": [
+							{
+								"monthIndex": 35,
+								"value": null,
+								"size": 0.013
+							}
+						],
 						"inter3G": [
 							{
 								"monthIndex": 39,
 								"value": 1,
 								"size": 0.006
+							}
+						]
+					}
+				},
+				{
+					"mcc_mnc": [
+						{
+							"mcc": 510,
+							"mnc": 11
+						}
+					],
+					"name": "Excelcomindo",
+					"values": {
+						"track": [
+							{
+								"monthIndex": 35,
+								"value": null,
+								"size": 0
 							}
 						]
 					}
@@ -8378,6 +8921,13 @@
 								"value": 0.65,
 								"size": 0.05
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 38,
+								"value": null,
+								"size": 0.034
+							}
 						]
 					}
 				},
@@ -8425,6 +8975,13 @@
 								"size": 0.023
 							}
 						],
+						"track": [
+							{
+								"monthIndex": 38,
+								"value": null,
+								"size": 0.038
+							}
+						],
 						"inter3G": [
 							{
 								"monthIndex": 40,
@@ -8466,6 +9023,13 @@
 								"monthIndex": 40,
 								"value": 0.671,
 								"size": 0.023
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 38,
+								"value": null,
+								"size": 0
 							}
 						],
 						"inter3G": [
@@ -8536,13 +9100,25 @@
 						"imper": [
 							{
 								"monthIndex": 25,
-								"value": 0.101,
-								"size": 0.156
+								"value": 0.1,
+								"size": 0.157
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.109,
+								"value": 0.108,
 								"size": 0.147
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 25,
+								"value": null,
+								"size": 0.201
+							},
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.186
 							}
 						]
 					}
@@ -8650,6 +9226,13 @@
 								"value": 0.16,
 								"size": 0.185
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.218
+							}
 						]
 					}
 				},
@@ -8685,6 +9268,18 @@
 								"monthIndex": 26,
 								"value": 0.626,
 								"size": 0.041
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 25,
+								"value": null,
+								"size": 0.596
+							},
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.017
 							}
 						]
 					}
@@ -9450,7 +10045,182 @@
 				"yc": 36.6447,
 				"area": 231181.7024
 			},
-			"operators": []
+			"operators": [
+				{
+					"mcc_mnc": [
+						{
+							"mcc": 440,
+							"mnc": 1
+						},
+						{
+							"mcc": 440,
+							"mnc": 2
+						},
+						{
+							"mcc": 440,
+							"mnc": 3
+						},
+						{
+							"mcc": 440,
+							"mnc": 9
+						},
+						{
+							"mcc": 440,
+							"mnc": 10
+						},
+						{
+							"mcc": 440,
+							"mnc": 11
+						},
+						{
+							"mcc": 440,
+							"mnc": 12
+						},
+						{
+							"mcc": 440,
+							"mnc": 13
+						},
+						{
+							"mcc": 440,
+							"mnc": 14
+						},
+						{
+							"mcc": 440,
+							"mnc": 15
+						},
+						{
+							"mcc": 440,
+							"mnc": 16
+						},
+						{
+							"mcc": 440,
+							"mnc": 17
+						},
+						{
+							"mcc": 440,
+							"mnc": 18
+						},
+						{
+							"mcc": 440,
+							"mnc": 19
+						},
+						{
+							"mcc": 440,
+							"mnc": 21
+						},
+						{
+							"mcc": 440,
+							"mnc": 22
+						}
+					],
+					"name": "NTT docomo",
+					"color": "#CC0033",
+					"values": {
+						"inter3G": [
+							{
+								"monthIndex": 46,
+								"value": 1,
+								"size": 0.016
+							}
+						]
+					}
+				},
+				{
+					"mcc_mnc": [
+						{
+							"mcc": 440,
+							"mnc": 4
+						},
+						{
+							"mcc": 440,
+							"mnc": 6
+						},
+						{
+							"mcc": 440,
+							"mnc": 20
+						},
+						{
+							"mcc": 440,
+							"mnc": 40
+						},
+						{
+							"mcc": 440,
+							"mnc": 41
+						},
+						{
+							"mcc": 440,
+							"mnc": 42
+						},
+						{
+							"mcc": 440,
+							"mnc": 43
+						},
+						{
+							"mcc": 440,
+							"mnc": 44
+						},
+						{
+							"mcc": 440,
+							"mnc": 45
+						},
+						{
+							"mcc": 440,
+							"mnc": 46
+						},
+						{
+							"mcc": 440,
+							"mnc": 47
+						},
+						{
+							"mcc": 440,
+							"mnc": 48
+						},
+						{
+							"mcc": 440,
+							"mnc": 90
+						},
+						{
+							"mcc": 440,
+							"mnc": 92
+						},
+						{
+							"mcc": 440,
+							"mnc": 93
+						},
+						{
+							"mcc": 440,
+							"mnc": 94
+						},
+						{
+							"mcc": 440,
+							"mnc": 95
+						},
+						{
+							"mcc": 440,
+							"mnc": 96
+						},
+						{
+							"mcc": 440,
+							"mnc": 97
+						},
+						{
+							"mcc": 440,
+							"mnc": 98
+						}
+					],
+					"name": "SoftBank",
+					"color": "#BABCBE",
+					"values": {
+						"inter3G": [
+							{
+								"monthIndex": 46,
+								"value": 1,
+								"size": 0.014
+							}
+						]
+					}
+				}
+			]
 		},
 		{
 			"code": "JO",
@@ -9488,6 +10258,13 @@
 								"value": 0.281,
 								"size": 0.042
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.005
+							}
 						]
 					}
 				},
@@ -9514,6 +10291,13 @@
 								"value": 0.242,
 								"size": 0.009
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.001
+							}
 						]
 					}
 				},
@@ -9539,6 +10323,13 @@
 								"monthIndex": 26,
 								"value": 0.285,
 								"size": 0.038
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.014
 							}
 						]
 					}
@@ -9581,6 +10372,13 @@
 								"value": 0.207,
 								"size": 0.159
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 21,
+								"value": null,
+								"size": 0.02
+							}
 						]
 					}
 				},
@@ -9607,6 +10405,13 @@
 								"value": 0.195,
 								"size": 0.193
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 21,
+								"value": null,
+								"size": 0.172
+							}
 						]
 					}
 				},
@@ -9631,6 +10436,13 @@
 								"monthIndex": 21,
 								"value": 0.242,
 								"size": 0.081
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 21,
+								"value": null,
+								"size": 0.019
 							}
 						]
 					}
@@ -10132,7 +10944,46 @@
 				"yc": 36.4497,
 				"area": 93024.9981
 			},
-			"operators": []
+			"operators": [
+				{
+					"mcc_mnc": [
+						{
+							"mcc": 450,
+							"mnc": 5
+						}
+					],
+					"name": "SKT",
+					"color": "#F58026",
+					"values": {
+						"inter3G": [
+							{
+								"monthIndex": 46,
+								"value": 0,
+								"size": 0.012
+							}
+						]
+					}
+				},
+				{
+					"mcc_mnc": [
+						{
+							"mcc": 450,
+							"mnc": 8
+						}
+					],
+					"name": "olleh",
+					"color": "#F43D38",
+					"values": {
+						"inter3G": [
+							{
+								"monthIndex": 46,
+								"value": 0,
+								"size": 0.026
+							}
+						]
+					}
+				}
+			]
 		},
 		{
 			"code": "KW",
@@ -10151,11 +11002,6 @@
 		{
 			"code": "KG",
 			"name": "Kyrgyz Republic",
-			"pdf": {
-				"filename": "gsmmap.org-country_report-Kyrgyz_Republic-2012-10.pdf",
-				"year": 2012,
-				"month": 10
-			},
 			"boundaries": {
 				"xMin": 69.2291,
 				"xMax": 80.2162,
@@ -10271,6 +11117,23 @@
 								"monthIndex": 21,
 								"value": 0.135,
 								"size": 0.254
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 18,
+								"value": null,
+								"size": 0.008
+							},
+							{
+								"monthIndex": 19,
+								"value": null,
+								"size": 0.08
+							},
+							{
+								"monthIndex": 21,
+								"value": null,
+								"size": 0.182
 							}
 						]
 					}
@@ -10516,6 +11379,28 @@
 								"value": 0.377,
 								"size": 0.002
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 17,
+								"value": null,
+								"size": 0.382
+							},
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.042
+							},
+							{
+								"monthIndex": 31,
+								"value": null,
+								"size": 0.011
+							},
+							{
+								"monthIndex": 32,
+								"value": null,
+								"size": 0.009
+							}
 						]
 					}
 				},
@@ -10550,6 +11435,18 @@
 								"monthIndex": 26,
 								"value": 0.184,
 								"size": 0.031
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 17,
+								"value": null,
+								"size": 0.227
+							},
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.02
 							}
 						]
 					}
@@ -10657,6 +11554,13 @@
 								"monthIndex": 40,
 								"value": 0.327,
 								"size": 0.016
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 30,
+								"value": null,
+								"size": 0.009
 							}
 						]
 					}
@@ -10944,6 +11848,13 @@
 								"size": 0.042
 							}
 						],
+						"track": [
+							{
+								"monthIndex": 36,
+								"value": null,
+								"size": 0.003
+							}
+						],
 						"inter3G": [
 							{
 								"monthIndex": 36,
@@ -10998,6 +11909,13 @@
 								"monthIndex": 36,
 								"value": 0.187,
 								"size": 0.205
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 36,
+								"value": null,
+								"size": 0.006
 							}
 						],
 						"inter3G": [
@@ -11137,6 +12055,13 @@
 								"value": 0.683,
 								"size": 0.095
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 19,
+								"value": null,
+								"size": 0.091
+							}
 						]
 					}
 				},
@@ -11166,6 +12091,13 @@
 								"monthIndex": 19,
 								"value": 0.352,
 								"size": 0.021
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 19,
+								"value": null,
+								"size": 0.068
 							}
 						],
 						"inter3G": [
@@ -11423,8 +12355,8 @@
 							},
 							{
 								"monthIndex": 23,
-								"value": 0.054,
-								"size": 0.639
+								"value": 0.053,
+								"size": 0.644
 							}
 						],
 						"track": [
@@ -13167,11 +14099,6 @@
 		{
 			"code": "RU",
 			"name": "Russian Federation",
-			"pdf": {
-				"filename": "gsmmap.org-country_report-Russian_Federation-2014-03.pdf",
-				"year": 2014,
-				"month": 3
-			},
 			"boundaries": {
 				"xMin": 27.352,
 				"xMax": 180,
@@ -13614,6 +14541,11 @@
 								"monthIndex": 45,
 								"value": 0.355,
 								"size": 0.007
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.571,
+								"size": 0.172
 							}
 						],
 						"imper": [
@@ -13631,6 +14563,11 @@
 								"monthIndex": 44,
 								"value": 0.201,
 								"size": 0.043
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.349,
+								"size": 0.072
 							}
 						],
 						"track": [
@@ -13689,6 +14626,11 @@
 								"monthIndex": 45,
 								"value": 0.507,
 								"size": 0.116
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.608,
+								"size": 0.342
 							}
 						],
 						"imper": [
@@ -13711,6 +14653,11 @@
 								"monthIndex": 45,
 								"value": 0.678,
 								"size": 0.058
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.737,
+								"size": 0.134
 							}
 						],
 						"track": [
@@ -13764,6 +14711,11 @@
 								"monthIndex": 45,
 								"value": 0.637,
 								"size": 0.04
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.623,
+								"size": 0.016
 							}
 						],
 						"imper": [
@@ -13781,6 +14733,11 @@
 								"monthIndex": 45,
 								"value": 0.392,
 								"size": 0.007
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.377,
+								"size": 0.006
 							}
 						]
 					}
@@ -14091,6 +15048,13 @@
 								"value": 0.784,
 								"size": 1
 							}
+						],
+						"inter3G": [
+							{
+								"monthIndex": 41,
+								"value": 0,
+								"size": 0.003
+							}
 						]
 					}
 				}
@@ -14323,11 +15287,6 @@
 		{
 			"code": "ES",
 			"name": "Spain",
-			"pdf": {
-				"filename": "gsmmap.org-country_report-Spain-2014-12.pdf",
-				"year": 2014,
-				"month": 12
-			},
 			"boundaries": {
 				"xMin": -9.2352,
 				"xMax": 3.3067,
@@ -14382,6 +15341,11 @@
 								"monthIndex": 45,
 								"value": 0.394,
 								"size": 0.071
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.503,
+								"size": 0.191
 							}
 						],
 						"imper": [
@@ -14414,6 +15378,38 @@
 								"monthIndex": 45,
 								"value": 0.364,
 								"size": 0.07
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.493,
+								"size": 0.08
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 23,
+								"value": null,
+								"size": 0
+							},
+							{
+								"monthIndex": 36,
+								"value": null,
+								"size": 0.002
+							},
+							{
+								"monthIndex": 37,
+								"value": null,
+								"size": 0.026
+							},
+							{
+								"monthIndex": 38,
+								"value": null,
+								"size": 0.072
+							},
+							{
+								"monthIndex": 46,
+								"value": null,
+								"size": 0.097
 							}
 						],
 						"inter3G": [
@@ -14576,6 +15572,16 @@
 								"monthIndex": 45,
 								"value": 0.302,
 								"size": 0.014
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.489,
+								"size": 0.213
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.469,
+								"size": 0.142
 							}
 						],
 						"imper": [
@@ -14608,6 +15614,16 @@
 								"monthIndex": 45,
 								"value": 0.347,
 								"size": 0.012
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.476,
+								"size": 0.124
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.405,
+								"size": 0.129
 							}
 						],
 						"track": [
@@ -14635,6 +15651,11 @@
 								"monthIndex": 38,
 								"value": 0.447,
 								"size": 0.528
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.449,
+								"size": 0.001
 							}
 						],
 						"inter3G": [
@@ -14647,6 +15668,11 @@
 								"monthIndex": 45,
 								"value": 1,
 								"size": 0.003
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.858,
+								"size": 0.064
 							}
 						]
 					}
@@ -14979,6 +16005,13 @@
 								"value": 0.336,
 								"size": 0.002
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 36,
+								"value": null,
+								"size": 0.104
+							}
 						]
 					}
 				}
@@ -15188,6 +16221,11 @@
 								"monthIndex": 45,
 								"value": 0.971,
 								"size": 0.154
+							},
+							{
+								"monthIndex": 47,
+								"value": 0.971,
+								"size": 0.003
 							}
 						]
 					}
@@ -15599,6 +16637,13 @@
 								"value": 0.163,
 								"size": 0
 							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.009
+							}
 						]
 					}
 				},
@@ -15623,6 +16668,13 @@
 								"monthIndex": 26,
 								"value": 0.139,
 								"size": 0.042
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.159
 							}
 						]
 					}
@@ -15649,6 +16701,13 @@
 								"monthIndex": 26,
 								"value": 0.204,
 								"size": 0.005
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 26,
+								"value": null,
+								"size": 0.033
 							}
 						]
 					}
@@ -15718,6 +16777,11 @@
 								"monthIndex": 41,
 								"value": 0.454,
 								"size": 0.017
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.521,
+								"size": 0.005
 							}
 						],
 						"imper": [
@@ -15750,6 +16814,11 @@
 								"monthIndex": 41,
 								"value": 0.432,
 								"size": 0.006
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.609,
+								"size": 0.004
 							}
 						],
 						"track": [
@@ -15894,6 +16963,11 @@
 								"monthIndex": 43,
 								"value": 1,
 								"size": 0.024
+							},
+							{
+								"monthIndex": 46,
+								"value": 1,
+								"size": 0.015
 							}
 						]
 					}
@@ -15995,6 +17069,11 @@
 								"monthIndex": 43,
 								"value": 0.361,
 								"size": 0.232
+							},
+							{
+								"monthIndex": 46,
+								"value": 0.369,
+								"size": 0.007
 							}
 						],
 						"imper": [
@@ -16939,28 +18018,33 @@
 						"track": [
 							{
 								"monthIndex": 16,
-								"value": 0.46,
+								"value": null,
 								"size": 0.831
 							},
 							{
 								"monthIndex": 17,
-								"value": 0.461,
+								"value": null,
 								"size": 0.033
 							},
 							{
 								"monthIndex": 18,
-								"value": 0.461,
+								"value": null,
 								"size": 0.001
 							},
 							{
 								"monthIndex": 21,
-								"value": 0.453,
+								"value": null,
 								"size": 0.041
 							},
 							{
 								"monthIndex": 26,
-								"value": 0.467,
+								"value": null,
 								"size": 0.309
+							},
+							{
+								"monthIndex": 31,
+								"value": null,
+								"size": 0.049
 							}
 						]
 					}
@@ -17186,11 +18270,6 @@
 		{
 			"code": "VN",
 			"name": "Vietnam",
-			"pdf": {
-				"filename": "gsmmap.org-country_report-Vietnam-2014-03.pdf",
-				"year": 2014,
-				"month": 3
-			},
 			"boundaries": {
 				"xMin": 102.1274,
 				"xMax": 109.4449,
@@ -17448,6 +18527,13 @@
 								"monthIndex": 38,
 								"value": 0.5,
 								"size": 0.014
+							}
+						],
+						"track": [
+							{
+								"monthIndex": 38,
+								"value": null,
+								"size": 0.005
 							}
 						]
 					}
@@ -20054,36 +21140,12 @@
 				"yc": -32.7877,
 				"area": 170622.1538
 			}
-		},
-		"65535": {
-			"country": "ignore",
-			"boundaries": {
-				"xMin": 76.7669,
-				"xMax": 77.7994,
-				"yMin": 35.1099,
-				"yMax": 35.6617,
-				"xc": 77.1812,
-				"yc": 35.4007,
-				"area": 2217.7853
-			}
-		},
-		"NaN": {
-			"country": "ignore",
-			"boundaries": {
-				"xMin": 76.7669,
-				"xMax": 77.7994,
-				"yMin": 35.1099,
-				"yMax": 35.6617,
-				"xc": 77.1812,
-				"yc": 35.4007,
-				"area": 2217.7853
-			}
 		}
 	},
 	"month": {
 		"from": 133,
-		"to": 178,
+		"to": 180,
 		"fromText": "2011-01",
-		"toText": "2014-10"
+		"toText": "2014-12"
 	}
 }

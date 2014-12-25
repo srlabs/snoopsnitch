@@ -110,6 +110,12 @@ public class GSMmap {
 			for (int v = 0, vs = value.length(); v < vs; v++) {
 
 				JSONObject val = value.getJSONObject(v);
+
+				//  Should not happen, except when upstream data is broken
+				if (val.isNull("monthIndex") || val.isNull("value")) {
+					continue;
+				}
+
 				int monthIndex = val.getInt("monthIndex");
 				int year  = 2011 + monthIndex / 12;
 				int month = monthIndex % 12 + 1;
