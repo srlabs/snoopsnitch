@@ -295,7 +295,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 
      <!-- Compat check -->
      <string name="no_service_running">service running</string>
-     <string name="no_catcher_title">IMSI catcher evenst</string>
+     <string name="no_catcher_title">IMSI catcher events</string>
      <string name="no_catcher_ticker">IMSI catcher events detected</string>
      <string name="no_catcher_events_detected"> IMSI catcher events detected</string>
 
