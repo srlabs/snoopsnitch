@@ -41,7 +41,8 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 		View rowView = inflater.inflate(R.layout.custom_row_layout_imsicatcher, parent, false);
 		
 		// Set score
-		((TextView) rowView.findViewById(R.id.txtImsiRowScoreValue)).setText(String.valueOf(values.get(position).getScore()));
+		String scoreText = String.format("%.2f", values.get(position).getScore());
+		((TextView) rowView.findViewById(R.id.txtImsiRowScoreValue)).setText(scoreText);
 		
 		// Set time
 		Timestamp stamp = new Timestamp(values.get(position).getStartTime());
