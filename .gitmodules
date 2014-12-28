@@ -7,6 +7,6 @@
 	url = git://git.osmocom.org/libosmocore/
 	ignore = dirty
 [submodule "contrib/metagsm"]
-	path = contrib/metagsm
+	path = contrib/gsm-parser
 	url = http://opensource.srlabs.de/git/gsm-parser.git
 	ignore = dirty

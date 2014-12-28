@@ -37,14 +37,21 @@ repository, the app may also build on Windows.
 To build SnoopSnitch you need the Android SDK [1] for building the actual app
 and the Android NDK [2] to build the native components like the Qualcomm DIAG
 wrapper or the GSM parser. Download SDK and NDK and install it somewhere in
-your file system. Set the environment varialbe NDK and SDK to the respective
+your file system. Set the environment variable NDK and SDK to the respective
 paths:
 
 	$ export ANDROID_HOME=<your_sdk_dir>
 	$ export NDK_DIR=<your_ndk_dir>
 
-As SnoopSnitch ships with prebuilt binaries, the following step is optional. To
-build the parser binary from source, the ant packages are required:
+IMPORTANT NOTE: contrib/prebuilt/ contains binaries to allow e.g. windows users
+to build and deploy the SnoopSnitch app easily. However, you can rebuild
+everything contained in contrib/prebuilt - including the libasn1c and
+libosmocore projects we depend on - from source using the contrib/compile.sh
+script. The source of those projects is pulled in by the build scripts through
+sub-modules.
+
+As SnoopSnitch ships with the prebuilt binaries, the following step is optional.
+To build the parser binary from source, the ant packages are required:
 
 	$ sudo apt-get install ant default-jdk
 

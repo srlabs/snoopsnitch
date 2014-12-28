@@ -64,9 +64,9 @@ if [ -n "${do_git}" ];then
 	(cd .. && git submodule init contrib/libosmocore)
     fi
 
-    if [ ! "$(ls -A metagsm)" -a "x${fast}" = "x" ];
+    if [ ! "$(ls -A gsm-parser)" -a "x${fast}" = "x" ];
     then
-	(cd .. && git submodule init contrib/metagsm)
+	(cd .. && git submodule init contrib/gsm-parser)
     fi
 fi
 
@@ -76,7 +76,7 @@ if [ -n "${do_git}" ];then
 	(cd .. && \
 	    git submodule update contrib/libasn1c && \
 	    git submodule update contrib/libosmocore && \
-	    git submodule update contrib/metagsm)
+	    git submodule update contrib/gsm-parser)
     fi
 fi
 
@@ -98,13 +98,13 @@ case ${target} in
 		export CPPFLAGS="-I${NDK_DIR}/platforms/android-19/arch-arm/usr/include/"
 		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/,-L${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/"
 		export LIBS="-lc -lm"
-		export METAGSM_MAKE_ARGS="-f Makefile.Android PREFIX=${MSD_DESTDIR}   DESTDIR=${MSD_DESTDIR}/metagsm   SYSROOT=${SYSROOT} install"
+		export GSM_PARSER_MAKE_ARGS="-f Makefile.Android PREFIX=${MSD_DESTDIR}   DESTDIR=${MSD_DESTDIR}/gsm-parser   SYSROOT=${SYSROOT} install"
 		;;
 	host)
 		export MSD_CONFIGURE_OPTS="--prefix=${MSD_DESTDIR}"
 		export EXTRA_CFLAGS="-I${MSD_DESTDIR}/include -I${MSD_DESTDIR}/include/asn1c"
 		export EXTRA_LDFLAGS="-L${MSD_DESTDIR}/lib"
-		export METAGSM_MAKE_ARGS=""
+		export GSM_PARSER_MAKE_ARGS=""
 		;;
 	*)
 		# Shouldn't happen
@@ -126,7 +126,7 @@ then
 	TARGETS="${TARGETS} openssl"
 fi
 
-TARGETS="${TARGETS} metagsm"
+TARGETS="${TARGETS} gsm-parser"
 
 for i in ${TARGETS}; do
     echo -n "Building $i..."
@@ -149,19 +149,19 @@ then
 	install -m 755 ${OUTPUT_DIR}/out/lib/libosmo-asn1-rrc.so.0 ${PARSER_DIR}/libosmo-asn1-rrc.so
 	install -m 755 ${OUTPUT_DIR}/out/lib/libosmocore.so.5      ${PARSER_DIR}/libosmocore.so
 	install -m 755 ${OUTPUT_DIR}/out/lib/libosmogsm.so.5       ${PARSER_DIR}/libosmogsm.so
-	install -m 755 ${OUTPUT_DIR}/out/metagsm/diag_import       ${PARSER_DIR}/libdiag_import.so
-	install -m 755 ${OUTPUT_DIR}/out/metagsm/libcompat.so      ${PARSER_DIR}/libcompat.so
+	install -m 755 ${OUTPUT_DIR}/out/gsm-parser/diag_import       ${PARSER_DIR}/libdiag_import.so
+	install -m 755 ${OUTPUT_DIR}/out/gsm-parser/libcompat.so      ${PARSER_DIR}/libcompat.so
 
-	install -m 644 ${OUTPUT_DIR}/out/metagsm/sm_2g.sql    ${PARSER_DIR}/sm_2g.sql
-	install -m 644 ${OUTPUT_DIR}/out/metagsm/sm_3g.sql    ${PARSER_DIR}/sm_3g.sql
-	install -m 644 ${OUTPUT_DIR}/out/metagsm/mcc.sql      ${PARSER_DIR}/mcc.sql
-	install -m 644 ${OUTPUT_DIR}/out/metagsm/mnc.sql      ${PARSER_DIR}/mnc.sql
-	install -m 644 ${OUTPUT_DIR}/out/metagsm/hlr_info.sql ${PARSER_DIR}/hlr_info.sql
-	install -m 644 ${OUTPUT_DIR}/out/metagsm/sm.sql       ${PARSER_DIR}/sm.sql
+	install -m 644 ${OUTPUT_DIR}/out/gsm-parser/sm_2g.sql    ${PARSER_DIR}/sm_2g.sql
+	install -m 644 ${OUTPUT_DIR}/out/gsm-parser/sm_3g.sql    ${PARSER_DIR}/sm_3g.sql
+	install -m 644 ${OUTPUT_DIR}/out/gsm-parser/mcc.sql      ${PARSER_DIR}/mcc.sql
+	install -m 644 ${OUTPUT_DIR}/out/gsm-parser/mnc.sql      ${PARSER_DIR}/mnc.sql
+	install -m 644 ${OUTPUT_DIR}/out/gsm-parser/hlr_info.sql ${PARSER_DIR}/hlr_info.sql
+	install -m 644 ${OUTPUT_DIR}/out/gsm-parser/sm.sql       ${PARSER_DIR}/sm.sql
 
-	install -m 644 ${BASE_DIR}/metagsm/cell_info.sql ${PARSER_DIR}/cell_info.sql
-	install -m 644 ${BASE_DIR}/metagsm/si.sql        ${PARSER_DIR}/si.sql
-	install -m 644 ${BASE_DIR}/metagsm/sms.sql       ${PARSER_DIR}/sms.sql
+	install -m 644 ${BASE_DIR}/gsm-parser/cell_info.sql ${PARSER_DIR}/cell_info.sql
+	install -m 644 ${BASE_DIR}/gsm-parser/si.sql        ${PARSER_DIR}/si.sql
+	install -m 644 ${BASE_DIR}/gsm-parser/sms.sql       ${PARSER_DIR}/sms.sql
 	
 	# Put the smime crt into the library directory since it needs to be a physical 
 	# file on the Android system so that it can be accessed from the openssl binary. 
