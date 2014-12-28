@@ -5,7 +5,6 @@ import de.srlabs.snoopsnitch.active_test.IActiveTestCallback;
 interface IActiveTestService {
 	void registerCallback(IActiveTestCallback callback);
 	boolean startTest(String ownNumber);
-	void setForegroundActivityClass(String className);
 	void stopTest();
 	void clearResults();
 	void clearCurrentResults();

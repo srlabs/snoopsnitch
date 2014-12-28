@@ -60,9 +60,7 @@ public class ActiveTestService extends Service{
 	private MySmsReceiver smsReceiver = new MySmsReceiver();
 	private String currentExtraRecordingFilename;
 	private boolean testRunning;
-	boolean previousCheckAlreadyInForeground = true;
 	private MsdServiceHelper msdServiceHelper;
-	public String foregroundActivityClassName;
 	private ITelephony telephonyService;
 
 	class MyPhoneStateListener extends PhoneStateListener{
@@ -130,12 +128,6 @@ public class ActiveTestService extends Service{
 		}
 
 		@Override
-		public void setForegroundActivityClass(String className)
-				throws RemoteException {
-			foregroundActivityClassName = className;
-		}
-
-		@Override
 		public void setUploadDisabled(boolean uploadDisabled)
 				throws RemoteException {
 			ActiveTestService.this.uploadDisabled  = uploadDisabled;
@@ -157,7 +149,6 @@ public class ActiveTestService extends Service{
 			updateNetworkOperatorAndRat();
 			if(testRunning){
 				stateMachine.progressTick();
-				checkForeground();
 			}
 			broadcastTestResults();
 			handler.postDelayed(this, 1000);
@@ -823,29 +814,5 @@ public class ActiveTestService extends Service{
 		broadcastTestResults();
 		stopTest();
 		stopSelf(); // Terminate this service after a fatal error
-	}
-	private void checkForeground(){
-		// http://stackoverflow.com/questions/5504632/how-can-i-tell-if-android-app-is-running-in-the-foreground
-		ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-		List<RunningTaskInfo> services = activityManager.getRunningTasks(Integer.MAX_VALUE);
-		boolean alreadyInForeground = false;
-		MsdLog.d(TAG, "RUNNING: " + services.get(0).topActivity.getPackageName().toString());
-		MsdLog.d(TAG, "EXPECTED: " + getApplicationContext().getPackageName().toString());
-		if (services.get(0).topActivity.getPackageName().toString().equalsIgnoreCase(getApplicationContext().getPackageName().toString())) {
-			alreadyInForeground = true;
-		}
-		MsdLog.d(TAG, "stayInForegroundRunnable.run(): alreadyInForeground=" + alreadyInForeground);
-		if(!alreadyInForeground && !previousCheckAlreadyInForeground){
-			try {
-				Class<?> c = Class.forName(foregroundActivityClassName);
-				Intent intent = new Intent(getApplicationContext(), c);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				//intent.setComponent(new ComponentName(getApplicationContext().getPackageName(), c.getName()));
-				getApplication().startActivity(intent);
-			} catch (ClassNotFoundException e) {
-				handleFatalError("Class.forName(foregroundActivityClassName) failed", e);
-			}
-		}
-		previousCheckAlreadyInForeground = alreadyInForeground;
 	}
 }

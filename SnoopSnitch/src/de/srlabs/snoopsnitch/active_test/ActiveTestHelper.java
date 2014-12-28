@@ -101,7 +101,6 @@ public class ActiveTestHelper{
 
 	public boolean startActiveTest(String ownNumber){
 		try {
-			mIActiveTestService.setForegroundActivityClass(context.getClass().getName());
 			return mIActiveTestService.startTest(ownNumber);
 		} catch (Exception e) {
 			handleFatalError("Exception while running mIActiveTestService.startTest(ownNumber)", e);
