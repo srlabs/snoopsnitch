@@ -293,7 +293,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="settings_debugging_parser_logging">Extended parser logging</string>
      <string name="settings_debugging_parser_logging_summary">Output additional state information, RAT changes and SQL statements from parser. Warning: This option will create a lot of logs!</string>
 
-     <!-- Compat check -->
      <string name="no_service_running">service running</string>
      <string name="no_catcher_title">IMSI catcher events</string>
      <string name="no_catcher_ticker">IMSI catcher events detected</string>

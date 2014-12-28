@@ -15,7 +15,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -56,7 +55,6 @@ public class ActiveTestService extends Service{
 	private TelephonyManager telephonyManager;
 	private final static String ACTION_SMS_SENT = "msd-active-test-service_SMS_SENT";
 	private String ownNumber;
-	private int originalRingerMode;
 	private StateMachine stateMachine;
 	private MyPhoneStateListener phoneStateListener = new MyPhoneStateListener() ;
 	private MySmsReceiver smsReceiver = new MySmsReceiver();
@@ -649,9 +647,6 @@ public class ActiveTestService extends Service{
 		intentFilter.setPriority(Integer.MAX_VALUE); // we mean it
 		registerReceiver(smsReceiver, intentFilter);
 		updateNetworkOperatorAndRat();
-		AudioManager audio = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		originalRingerMode = audio.getRingerMode();
-		audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 		stateMachine.postIterateRunnable(0);
 		broadcastTestStateChanged();
 		broadcastTestResults();
@@ -669,8 +664,6 @@ public class ActiveTestService extends Service{
 			endExtraFileRecording(false);
 		this.msdServiceHelper.stopActiveTest();
 		testRunning = false;
-		AudioManager audio = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		audio.setRingerMode(originalRingerMode);
 		telephonyManager.listen(phoneStateListener, 0);
 		broadcastTestStateChanged();
 		broadcastTestResults();
