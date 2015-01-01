@@ -53,13 +53,14 @@ Your device is not compatible with SnoopSnitch.\n
 </string>
 
 <string name="alert_deviceCompatibility_message">
-You need a rooted device with a Qualcomm chipset running stock Android 4.1 or higher.
-Unfortunately, custom ROMs are unsupported at the moment as they lack necessary
-proprietary drivers.\n
+YOUR DEVICE MUST BE ROOTET! See http://www.xda-developers.com/root/\n\n
+\n
+You device must have a Qualcomm chipset running stock Android 4 or higher.
+Custom ROMs like CyanogenMod may or may not work.\n
 \n
 For details, visit the project website (https://opensource.srlabs.de/projects/snoopsnitch).
 If you believe your device is compatible and this is an error, please send an email to our
-list gsmmap@lists.srlabs.de.
+list https://lists.srlabs.de/cgi-bin/mailman/listinfo/gsmmap.
 </string>
 
 <string name="alert_upload_message">
@@ -135,9 +136,9 @@ our servers. All uploads are encrypted. Note that uploaded radio traces may cont
 private information as a side-effect.\n
 \n
 If you have questions or want to contribute to SnoopSnitch, please send an email to
-our mailing list gsmmap@lists.srlabs.de. For a private conversion with the SnoopSnitch
-team, please contact snoopsnitch@srlabs.de (PGP fingerprint 9728 A7F9 D457 1FBB 746F  
-5381 D52C AC10 634A 9561).\n
+our mailing list https://lists.srlabs.de/cgi-bin/mailman/listinfo/gsmmap. For a
+private conversion with the SnoopSnitch team, please contact snoopsnitch@srlabs.de
+(PGP fingerprint 9728 A7F9 D457 1FBB 746F  5381 D52C AC10 634A 9561).\n
 \n
 Visit our  project website for source code and further information:\n
 \n
@@ -272,7 +273,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="at_send_sms">Sending SMS to invalid destination</string>
      <string name="at_outgoing_call_ringing">Outgoing call ringing</string>
      <string name="at_incoming_call_ringing">Incoming call ringing</string>
-     <string name="at_banned">BANNED. Mail to snoopsnitch@srlabs.de</string>
+     <string name="at_banned">BANNED. Go to banned.srlabs.de</string>
      <string name="at_invalid_number">Invalid number</string>
      <string name="at_update">Please update SnoopSnitch</string>
      <string name="at_done">Done - please also test other network technologies</string>
