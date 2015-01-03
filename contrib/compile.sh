@@ -168,6 +168,8 @@ then
 	# Other parts of the App like assets are not stored as read files on the Android 
 	# system and therefore can only be used from the Android java code but not from 
 	# native binaries.
+
+	install -m 755 openssl-1.0.1i/apps/openssl                 ${PARSER_DIR}/libopenssl.so
 	install -m 755 $BASE_DIR/smime.crt                         ${PARSER_DIR}/libsmime_crt.so
 
 	# Really dirty hack: The Android build system and package installer require 
