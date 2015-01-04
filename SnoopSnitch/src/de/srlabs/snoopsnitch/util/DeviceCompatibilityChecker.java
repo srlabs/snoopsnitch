@@ -26,19 +26,53 @@ public class DeviceCompatibilityChecker {
 	 *         Error if the phone is not compatible.
 	 */
 	public static String checkDeviceCompatibility(Context context){
+		String suBinary;
 		File diagDevice = new File("/dev/diag");
 
-		if(!diagDevice.exists()) {
-			return context.getResources().getString(R.string.compat_no_qualcomm);
+		suBinary = getSuBinary();
+		if(suBinary == null) {
+			return context.getResources().getString(R.string.compat_no_root);
 		}
 
-		if(getSuBinary() == null) {
-			return context.getResources().getString(R.string.compat_no_root);
+		if(!diagDevice.exists()) {
+			return context.getResources().getString(R.string.compat_no_diag);
+		}
+
+		if(!testRunOK(context,suBinary)) {
+			return context.getResources().getString(R.string.compat_broken_diag);
 		}
 
 		// Everything OK
 		return null;
 	}
+
+	private static boolean testRunOK(Context context, String suBinary) {
+
+		Process helper;
+
+		String libdir = context.getApplicationInfo().nativeLibraryDir;
+		String diag_helper = libdir + "/libdiag-helper.so";
+		String cmd[] = { suBinary, "-c", "exec " + diag_helper + " test"};
+
+		try {
+			helper = Runtime.getRuntime().exec(cmd);
+		} catch (IOException e) {
+			return false;
+		}
+
+		boolean terminated = false;
+		do {
+			try {
+				helper.waitFor();
+				terminated = true;
+			} catch (InterruptedException e) {
+				// Do nothing
+			}
+		} while (!terminated);
+
+		return helper.exitValue() == 0;
+	}
+
 	public static String getSuBinary(){
 		if(su_binary == null)
 			su_binary = findSuBinary();
