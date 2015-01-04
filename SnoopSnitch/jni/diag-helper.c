@@ -61,7 +61,7 @@ open_diag_dev(void)
         const unsigned long DIAG_IOCTL_SWITCH_LOGGING = 7;
         const int MEMORY_DEVICE_MODE = 2;
         if (ioctl(diag_fd, DIAG_IOCTL_SWITCH_LOGGING, MEMORY_DEVICE_MODE) < 0) {
-                logmsg(ANDROID_LOG_FATAL, "error setting diag device logging mode: %m");
+                logmsg(ANDROID_LOG_FATAL, "error setting diag device logging mode: %s", strerror(errno));
                 close(diag_fd);
                 diag_fd = -1;
                 goto exit;
@@ -176,6 +176,7 @@ int
 main(int argc, char **argv)
 {
         int for_real = 0;
+        int rv = -1;
 
         logmsg(ANDROID_LOG_INFO, "starting");
 
@@ -211,6 +212,10 @@ main(int argc, char **argv)
          * kernel driver is tracking us by pid.
          */
         diag_fd = open_diag_dev();
+        if (diag_fd < 0) {
+                logmsg(ANDROID_LOG_ERROR, "error opening DIAG device");
+                exit(10);
+        }
 
         if (write(to_app_fd, "OKAY", 4) != 4) {
                 logmsg(ANDROID_LOG_ERROR, "failed to write handshake message");
@@ -232,7 +237,10 @@ main(int argc, char **argv)
                 logmsg(ANDROID_LOG_FATAL, "failed to spawn socket data pump thread: %s", strerror(res));
                 exit(11);
         }
-        data_pump_dev();
+        rv = data_pump_dev();
+        if (rv < 0) {
+            exit(1);
+        }
 
         logmsg(ANDROID_LOG_DEBUG, "closing socket connection");
 
