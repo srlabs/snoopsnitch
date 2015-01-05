@@ -60,6 +60,7 @@ CREATE TABLE gsmmap_inter(
   year SMALLINT UNSIGNED NOT NULL,	-- Year
   month SMALLINT UNSIGNED NOT NULL,	-- Month
   value DOUBLE,				-- Intercept value
+  size DOUBLE,				-- Size value
   PRIMARY KEY(id, year, month, value)
 );
 
@@ -69,6 +70,7 @@ CREATE TABLE gsmmap_imper(
   year SMALLINT UNSIGNED NOT NULL,	-- Year
   month SMALLINT UNSIGNED NOT NULL,	-- Month
   value DOUBLE,				-- Impersonation value
+  size DOUBLE,				-- Size value
   PRIMARY KEY(id, year, month, value)
 );
 
@@ -78,6 +80,7 @@ CREATE TABLE gsmmap_track(
   year SMALLINT UNSIGNED NOT NULL,	-- Year
   month SMALLINT UNSIGNED NOT NULL,	-- Month
   value DOUBLE,				-- Tracking value
+  size DOUBLE,				-- Size value
   PRIMARY KEY(id, year, month, value)
 );
 
@@ -87,6 +90,7 @@ CREATE TABLE gsmmap_inter3G(
   year SMALLINT UNSIGNED NOT NULL,	-- Year
   month SMALLINT UNSIGNED NOT NULL,	-- Month
   value DOUBLE,				-- Intercept value
+  size DOUBLE,				-- Size value
   PRIMARY KEY(id, year, month, value)
 );
 
@@ -96,5 +100,6 @@ CREATE TABLE gsmmap_imper3G(
   year SMALLINT UNSIGNED NOT NULL,	-- Year
   month SMALLINT UNSIGNED NOT NULL,	-- Month
   value DOUBLE,				-- Impersonation value
+  size DOUBLE,				-- Size value
   PRIMARY KEY(id, year, month, value)
 );

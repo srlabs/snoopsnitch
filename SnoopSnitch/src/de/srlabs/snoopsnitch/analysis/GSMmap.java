@@ -1,5 +1,8 @@
 package de.srlabs.snoopsnitch.analysis;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,11 +16,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class GSMmap {
 
-	private SQLiteDatabase db;
+	private static SQLiteDatabase db;
 
 	public GSMmap(Context context) {
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
-		this.db = MsdDatabaseManager.getInstance().openDatabase();
+		db = MsdDatabaseManager.getInstance().openDatabase();
 	}
 
 	public boolean dataPresent(){
@@ -26,6 +29,90 @@ public class GSMmap {
 		result = c.getCount() > 0;
 		c.close();
 		return result;
+	}
+
+	/**
+	 * Checks whether enough data is available on gsmmap.org to skip an active test
+	 * @param mcc - current MCC
+	 * @param mnc - current MNC
+	 * @param networkType
+	 * 2: GSM
+	 * 3: 3G
+	 * 4: LTE
+	 */
+	public static boolean dataSufficient(int mcc, int mnc, int networkType) {
+		Cursor c;
+		String interTable, imperTable;
+		int interYear, interMonth, imperYear, imperMonth;
+		double interSize, imperSize;
+
+		switch (networkType) {
+			case 2:
+				interTable = "gsmmap_inter";
+				imperTable = "gsmmap_imper";
+				break;
+			case 3:
+				interTable = "gsmmap_inter3G";
+				imperTable = "gsmmap_imper3G";
+				break;
+			case 4:
+				//  Keep collecting data for LTE
+				return false;
+			default:
+				return true;
+		}
+
+		c = db.rawQuery ("SELECT year, month, size FROM gsmmap_codes as gc, " + interTable +  " as i ON gc.id = i.id WHERE mcc=? and mnc=? ORDER BY year DESC, month DESC LIMIT 1",
+				new String[] {Integer.toString(mcc), Integer.toString(mnc)});
+		if (!c.moveToFirst()) {
+			//  Not found - keep collecting
+			c.close();
+			return false;
+		}
+
+		interYear  = c.getInt(0);
+		interMonth = c.getInt(1);
+		interSize  = c.getDouble(2);
+
+		if (interSize < 1.0) {
+			c.close();
+			return false;
+		}
+
+		c = db.rawQuery ("SELECT year, month, size FROM gsmmap_codes as gc, " + imperTable +  " as i ON gc.id = i.id WHERE mcc=? and mnc=? ORDER BY year DESC, month DESC LIMIT 1",
+				new String[] {Integer.toString(mcc), Integer.toString(mnc)});
+		if (!c.moveToFirst()) {
+			//  Not found - keep collecting
+			c.close();
+			return false;
+		}
+
+		imperYear  = c.getInt(0);
+		imperMonth = c.getInt(1);
+		imperSize  = c.getDouble(2);
+
+		if (imperSize < 1.0) {
+			c.close();
+			return false;
+		}
+
+		c.close();
+		return isCurrent(imperYear, imperMonth) && isCurrent(interYear, interMonth);
+	}
+
+	private static boolean isCurrent(int year, int month) {
+		Calendar currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		Calendar dataTime = Calendar.getInstance();
+		dataTime.clear();
+		dataTime.set(Calendar.YEAR, year);
+		dataTime.set(Calendar.MONTH, month);
+		dataTime.set(Calendar.DAY_OF_MONTH, 0);
+		dataTime.set(Calendar.HOUR_OF_DAY, 0);
+		dataTime.set(Calendar.MINUTE, 0);
+		dataTime.set(Calendar.SECOND, 0);
+
+		//  Hard code to approximately 2 months
+		return (currentTime.getTimeInMillis() - dataTime.getTimeInMillis()) < 60 * 24 * 60 * 60 * 1000L;
 	}
 
 	public void parse(String text) throws JSONException {
@@ -110,10 +197,15 @@ public class GSMmap {
 			for (int v = 0, vs = value.length(); v < vs; v++) {
 
 				JSONObject val = value.getJSONObject(v);
+				double size = 0.0;
 
 				//  Should not happen, except when upstream data is broken
 				if (val.isNull("monthIndex") || val.isNull("value")) {
 					continue;
+				}
+
+				if (!val.isNull("size")) {
+					size = val.getDouble("size");
 				}
 
 				int monthIndex = val.getInt("monthIndex");
@@ -125,6 +217,7 @@ public class GSMmap {
 				cont.put("year", Integer.toString(year));
 				cont.put("month", Integer.toString(month));
 				cont.put("value", val.getDouble("value"));
+				cont.put("size", size);
 				db.insert("gsmmap_" + kind, null, cont);
 				cont.clear();
 			}

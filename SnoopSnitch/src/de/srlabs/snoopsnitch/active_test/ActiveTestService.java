@@ -3,13 +3,10 @@ package de.srlabs.snoopsnitch.active_test;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
 
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -38,7 +35,9 @@ import com.android.internal.telephony.ITelephony;
 import de.srlabs.snoopsnitch.active_test.IActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.IActiveTestService;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults.SingleTestState;
+import de.srlabs.snoopsnitch.analysis.GSMmap;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
+import de.srlabs.snoopsnitch.qdmon.Operator;
 import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdLog;
@@ -287,9 +286,8 @@ public class ActiveTestService extends Service{
 				handleFatalError("Continious mode is not yet implemented");
 			} else{
 				boolean skipIncomingSms = true;
-				// TODO: Find out whether we have enough data for the current
-				// network based on getCurrentNetworkRatGeneration() and
-				// telephonyManager.getNetworkOperator();
+				Operator operator = new Operator(ActiveTestService.this);
+				skipIncomingSms = GSMmap.dataSufficient(operator.getMcc(), operator.getMnc(), getCurrentNetworkRatGeneration());
 				
 				// Find the action with the lowest run count and then trigger this action
 				int numSmsMo = results.getCurrentNetworkOperatorRatTestResults().getNumRuns(TestType.SMS_MO);

@@ -9,7 +9,7 @@ import de.srlabs.snoopsnitch.util.Utils;
 
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "msd.db";
-	private static final int DATABASE_VERSION = 16;
+	private static final int DATABASE_VERSION = 17;
 	private Context context;
 	public MsdSQLiteOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -78,10 +78,16 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// The si.sql statement already contains a "DROP TABLE IF EXISTS" statement
-		// Upgrading the database will delete all data
-		//db.execSQL("DROP TABLE IF EXISTS session_info;");
-		onCreate(db);
+		if (oldVersion == 16 && newVersion > oldVersion) {
+			db.execSQL("ALTER TABLE gsmmap_inter ADD COLUMN size DOUBLE DEFAULT 0.0");
+			db.execSQL("ALTER TABLE gsmmap_imper ADD COLUMN size DOUBLE DEFAULT 0.0");
+			db.execSQL("ALTER TABLE gsmmap_track ADD COLUMN size DOUBLE DEFAULT 0.0");
+			db.execSQL("ALTER TABLE gsmmap_inter3G ADD COLUMN size DOUBLE DEFAULT 0.0");
+			db.execSQL("ALTER TABLE gsmmap_imper3G ADD COLUMN size DOUBLE DEFAULT 0.0");
+
+			// Force rebuild of GSMmap database entries
+			db.execSQL("DELETE FROM gsmmap_operators");
+		}
 	}
 
 }

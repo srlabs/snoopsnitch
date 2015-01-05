@@ -3,7 +3,7 @@ package de.srlabs.snoopsnitch.qdmon;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 
-class Operator {
+public class Operator {
 	int mcc;
 	int mnc;
 	boolean valid = false;
