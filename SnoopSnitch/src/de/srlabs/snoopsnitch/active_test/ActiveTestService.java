@@ -286,6 +286,11 @@ public class ActiveTestService extends Service{
 			if(continiousMode){
 				handleFatalError("Continious mode is not yet implemented");
 			} else{
+				boolean skipIncomingTests = true;
+				// TODO: Find out whether we have enough data for the current
+				// network based on getCurrentNetworkRatGeneration() and
+				// telephonyManager.getNetworkOperator();
+				
 				// Find the action with the lowest run count and then trigger this action
 				int numSmsMo = results.getCurrentNetworkOperatorRatTestResults().getNumRuns(TestType.SMS_MO);
 				int numCallMo = results.getCurrentNetworkOperatorRatTestResults().getNumRuns(TestType.CALL_MO);
@@ -298,11 +303,11 @@ public class ActiveTestService extends Service{
 					nextState = State.CALL_MO;
 				}
 				// Offline mode can only trigger CALL_MO, the tests SMS_MT and CALL_MT are automatically done after CALL_MO
-				if(results.isOnlineMode() && numSmsMt < minRunCount){
+				if(!skipIncomingTests && results.isOnlineMode() && numSmsMt < minRunCount){
 					minRunCount = numSmsMt;
 					nextState = State.SMS_MT_API;
 				}
-				if(results.isOnlineMode() && numCallMt < minRunCount){
+				if(!skipIncomingTests && results.isOnlineMode() && numCallMt < minRunCount){
 					minRunCount = numCallMt;
 					nextState = State.CALL_MT_API;
 				}
@@ -334,7 +339,7 @@ public class ActiveTestService extends Service{
 					results.getCurrentTest().stateWaiting();
 					previousCallMoOnline = results.isOnlineMode();
 					startExtraFileRecording(TestType.CALL_MO);
-					triggerCallMo(results.isOnlineMode());
+					triggerCallMo(results.isOnlineMode() || skipIncomingTests);
 				} else if(nextState == State.SMS_MT_API){
 					setState(State.SMS_MT_API, "iterate()",Constants.API_TIMEOUT);
 					updateNetworkOperatorAndRat();
@@ -585,13 +590,18 @@ public class ActiveTestService extends Service{
 		return mBinder;
 	}
 
-	public void updateNetworkOperatorAndRat() {
+	private int getCurrentNetworkRatGeneration(){
 		int fallbackNetworkGeneration = 3; // Default to 3G for now if we can't determine the network generation
+		// Some combinations of phone and network operator do not return a valid newtork type in telephonyManager.getNetworkType().
 		if(msdServiceHelper != null && msdServiceHelper.isConnected() && msdServiceHelper.getParserNetworkGeneration()>0)
 			fallbackNetworkGeneration = msdServiceHelper.getParserNetworkGeneration();
 		int networkGeneration = Utils.networkTypeToNetworkGeneration(telephonyManager.getNetworkType());
 		if(networkGeneration == 0)
 			networkGeneration = fallbackNetworkGeneration;
+		return networkGeneration;
+	}
+	private void updateNetworkOperatorAndRat() {
+		int networkGeneration = getCurrentNetworkRatGeneration();
 		if(networkGeneration == 4){
 			results.setLteDetected(true);
 			ActiveTestService.this.stopTest();
