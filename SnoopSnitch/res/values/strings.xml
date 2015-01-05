@@ -280,6 +280,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="at_idle"></string>
      <string name="at_progress">Progress</string>
      <string name="at_fatal">Test terminated with fatal error</string>
+     <string name="at_lte_not_supported">Please disable LTE for active test.</string>
 
      <!-- Compat check -->
      <string name="compat_no_diag">Device /dev/diag does not exist, no Qualcomm chipset or unsuitable ROM</string>

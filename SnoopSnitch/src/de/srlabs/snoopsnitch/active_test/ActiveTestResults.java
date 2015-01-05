@@ -26,6 +26,7 @@ public class ActiveTestResults implements Serializable {
 	private String errorLog = "";
 	private boolean onlineMode = true;
 	private boolean blacklisted = false;
+	private boolean lteDetected = false;
 	private boolean invalidNumber;
 	private boolean invalidRequest;
 
@@ -304,9 +305,8 @@ public class ActiveTestResults implements Serializable {
 			return (int)(100.0*progress);
 		}
 	}
-	public void setNetworkOperatorAndRat(TelephonyManager tm, int fallbackNetworkGeneration) throws IllegalArgumentException{
+	public void setNetworkOperatorAndRat(TelephonyManager tm, int networkGeneration){
 		this.currentMccMnc = tm.getNetworkOperator();
-		// MsdLog.i("active-test-results",currentMccMnc);
 		NetworkOperatorTestResults networkOperator;
 		if(networkOperators.containsKey(currentMccMnc)){
 			networkOperator = networkOperators.get(currentMccMnc);
@@ -315,12 +315,6 @@ public class ActiveTestResults implements Serializable {
 			networkOperator.mccMnc = currentMccMnc;
 			networkOperator.operatorName = tm.getNetworkOperatorName();
 			networkOperators.put(networkOperator.mccMnc, networkOperator);
-		}
-		int networkGeneration = Utils.networkTypeToNetworkGeneration(tm.getNetworkType());
-		if(networkGeneration == 0)
-			networkGeneration = fallbackNetworkGeneration;
-		if(networkGeneration == 4){
-			throw new IllegalArgumentException("LTE is not yet supported");
 		}
 		networkOperator.currentGeneration = networkGeneration;
 	}
@@ -435,7 +429,10 @@ public class ActiveTestResults implements Serializable {
 		return result.toString();
 	}
 	public String getCurrentActionString(Context context){
-		if(blacklisted){
+		//at_lte_not_supported
+		if(lteDetected){
+			return getRes(context, R.string.at_lte_not_supported);
+		} else if(blacklisted){
 			return getRes(context, R.string.at_banned);
 		} else if(invalidNumber){
 			return getRes(context, R.string.at_invalid_number);
@@ -548,6 +545,9 @@ public class ActiveTestResults implements Serializable {
 	}
 	public void setBlacklisted(boolean b) {
 		this.blacklisted = b;
+	}
+	public void setLteDetected(boolean b){
+		this.lteDetected = b;
 	}
 	public void setInvalidNumber(boolean b) {
 		this.invalidNumber = b;

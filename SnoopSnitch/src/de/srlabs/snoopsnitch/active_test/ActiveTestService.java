@@ -551,10 +551,10 @@ public class ActiveTestService extends Service{
 	}
 	// http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
 	private boolean isNetworkAvailable() {
-	    ConnectivityManager connectivityManager 
-	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+		ConnectivityManager connectivityManager 
+		= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 	private void applySettings(boolean switchToOnline){
 		if(switchToOnline && isNetworkAvailable())
@@ -586,14 +586,18 @@ public class ActiveTestService extends Service{
 	}
 
 	public void updateNetworkOperatorAndRat() {
-		try{
-			int fallbackGeneration = 3; // Default to 3G for now if we can't determine the network generation
-			if(msdServiceHelper != null && msdServiceHelper.isConnected() && msdServiceHelper.getParserNetworkGeneration()>0)
-				fallbackGeneration = msdServiceHelper.getParserNetworkGeneration();
-			results.setNetworkOperatorAndRat(telephonyManager, fallbackGeneration);
-		} catch(IllegalArgumentException e){
-			handleFatalError("LTE is not yet supported for the active test module. Please configure your phone to use 2G/3G only.");
+		int fallbackNetworkGeneration = 3; // Default to 3G for now if we can't determine the network generation
+		if(msdServiceHelper != null && msdServiceHelper.isConnected() && msdServiceHelper.getParserNetworkGeneration()>0)
+			fallbackNetworkGeneration = msdServiceHelper.getParserNetworkGeneration();
+		int networkGeneration = Utils.networkTypeToNetworkGeneration(telephonyManager.getNetworkType());
+		if(networkGeneration == 0)
+			networkGeneration = fallbackNetworkGeneration;
+		if(networkGeneration == 4){
+			results.setLteDetected(true);
+			ActiveTestService.this.stopTest();
+			return;
 		}
+		results.setNetworkOperatorAndRat(telephonyManager, networkGeneration);
 	}
 
 	public void debugInfo(String msg) {
