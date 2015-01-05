@@ -78,16 +78,16 @@ private data and location information.\n
 <string name="alert_networktest_message">
 The active network test collects security information about your current
 mobile network by sending and receiving a number of SMS and by placing and
-receiving a number of automatic calls. It is normal to receive error
-status SMS from your operator during that test.\n
+receiving a number of automatic calls.\n
 \n
+DO NOT PICK UP THE PHONE AND DO NOT REJECT THE CALL WHEN THE SERVER CALLS. IF
+YOU DO SO, YOUR NUMBER WILL GET BLACKLISTED AND BANNED FROM OUR SERVICE.
+\n
+It is normal to receive error status SMS from your operator during that test.
 The test should be free of charge. HOWEVER, YOUR OPERATOR MAY CHARGE YOU FOR
 OUTGOING SMS EVEN IF SENT TO AN INVALID DESTINATION!\n
-
 \n
-YOU MUST ONLY ENTER YOUR OWN PHONE NUMBER IN THE NEXT DIALOG. DO NOT PICK
-UP THE PHONE WHEN THE SERVER CALLS. IF YOU DO SO, YOUR NUMBER WILL GET
-BLACKLISTED AND BANNED FROM OUR SERVICE.\n
+YOU MUST ONLY ENTER YOUR OWN PHONE NUMBER IN THE NEXT DIALOG.\n
 </string>
 
 <string name="alert_networktest_privacy_disclaimer">
@@ -276,7 +276,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="at_banned">BANNED. Go to banned.srlabs.de</string>
      <string name="at_invalid_number">Invalid number</string>
      <string name="at_update">Please update SnoopSnitch</string>
-     <string name="at_done">Done - please also test other network technologies</string>
+     <string name="at_done">Done - Please test both, 2G and 3G</string>
      <string name="at_idle"></string>
      <string name="at_progress">Progress</string>
      <string name="at_fatal">Test terminated with fatal error</string>
