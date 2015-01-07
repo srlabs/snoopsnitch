@@ -4,6 +4,7 @@
     <!-- General -->
 	<string name="app_name">SnoopSnitch</string>
     <string name="website">https://opensource.srlabs.de/projects/snoopsnitch</string>
+    <string name="common_events">Events</string>
     <string name="common_silent_sms">Silent SMS</string>
     <string name="common_binary_sms">Binary SMS</string>
     <string name="common_imsi_catcher">IMSI Catcher</string>

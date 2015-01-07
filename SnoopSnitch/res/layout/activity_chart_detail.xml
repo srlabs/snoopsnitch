@@ -112,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical"
                     android:paddingLeft="5dp"
-                    android:text="@string/common_silent_sms"
+                    android:text="@string/common_events"
                     android:textSize="@dimen/text_large"
                     android:textStyle="bold" />
 
