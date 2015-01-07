@@ -46,9 +46,9 @@ public class StartupActivity extends Activity{
     private void showDeviceIncompatibleDialog(String incompatibilityReason){
     	
     	String dialogMessage =
-    			getResources().getString(R.string.alert_deviceCompatibility_header) + "\n(" +
-    			incompatibilityReason + ")\n\n" +
-    			getResources().getString(R.string.alert_deviceCompatibility_message);
+    			getResources().getString(R.string.alert_deviceCompatibility_header) + " " +
+    					incompatibilityReason + " " +
+    					getResources().getString(R.string.alert_deviceCompatibility_message);
 
     	MsdDialog.makeFatalConditionDialog(this, dialogMessage, new OnClickListener() 
 		{	

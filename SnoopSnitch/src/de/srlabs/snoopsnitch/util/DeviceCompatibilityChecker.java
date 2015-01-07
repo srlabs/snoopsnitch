@@ -12,6 +12,11 @@ import de.srlabs.snoopsnitch.R;
 public class DeviceCompatibilityChecker {
 	private static String su_binary = null;
 
+	private static int suFailReason = 0;
+	private static final int SU_ROOT_DENIED = 1;
+	private static final int SU_NOT_PRESENT = 2;
+	private static final int SU_NOT_WORKING = 3;
+
 	/**
 	 * Check whether the phone is compatible with the App. Please note that this
 	 * test already requests root privileges to test whether the su binary is
@@ -31,7 +36,12 @@ public class DeviceCompatibilityChecker {
 
 		suBinary = getSuBinary();
 		if(suBinary == null) {
-			return context.getResources().getString(R.string.compat_no_root);
+			switch (suFailReason) {
+				case SU_ROOT_DENIED: return context.getResources().getString(R.string.compat_root_denied);
+				case SU_NOT_PRESENT: return context.getResources().getString(R.string.compat_su_not_present);
+				case SU_NOT_WORKING: return context.getResources().getString(R.string.compat_su_not_working);
+				default: return context.getResources().getString(R.string.compat_no_root);
+			}
 		}
 
 		if(!diagDevice.exists()) {
@@ -79,19 +89,25 @@ public class DeviceCompatibilityChecker {
 		return su_binary;
 	}
 	private static String findSuBinary(){
+
 		// Iterate over all PATH entries to find su binary
 		String path = System.getenv("PATH");
 		HashSet<String> pathDirs = new HashSet<String>();
+
 		// Always consider the default paths /system/bin/ and /system/xbin/ in case $PATH is incomplete
 		pathDirs.add("/system/bin/");
 		pathDirs.add("/system/xbin/");
 		for(String pathEntry: path.split(":")){
 			pathDirs.add(pathEntry);
 		}
+
+		int suBinariesTried = 0;
+
 		for(String pathDir:pathDirs){
 			File f = new File(pathDir + "/su");
 			if(!f.exists())
 				continue;	
+			suBinariesTried++;
 			String cmd[] = {pathDir + "/su","-c","id"};
 			Process p;
 			try {
@@ -102,6 +118,7 @@ public class DeviceCompatibilityChecker {
 				p.waitFor();
 				// We don't receive anything if root was denied
 				if(id_line == null){
+					suFailReason = SU_ROOT_DENIED;
 					return null;
 				}
 				// Check whether the id command reports UID zero (root) to make sure that the su binary actually works
@@ -114,6 +131,14 @@ public class DeviceCompatibilityChecker {
 				e.printStackTrace();
 			}
 		}
-		return null;
+		if (suBinariesTried > 0) {
+			//  Found and su binary, but it didn't work
+			suFailReason = SU_NOT_WORKING;
+			return null;
+		} else {
+			//  No su binary found.
+			suFailReason = SU_NOT_PRESENT;
+			return null;
+		}
 	}
 }

@@ -48,20 +48,9 @@
 	<!-- Device compatibility check failure -->
     <string name="alert_deviceCompatibility_title">Compatibility check failed</string>
 
-<string name="alert_deviceCompatibility_header">
-Your device is not compatible with SnoopSnitch.\n
-</string>
+<string name="alert_deviceCompatibility_header">Your device is not compatible.\n\nREASON:</string>
 
-<string name="alert_deviceCompatibility_message">
-YOUR DEVICE MUST BE ROOTET! See http://www.xda-developers.com/root/\n\n
-\n
-You device must have a Qualcomm chipset running stock Android 4 or higher.
-Custom ROMs like CyanogenMod may or may not work.\n
-\n
-For details, visit the project website (https://opensource.srlabs.de/projects/snoopsnitch).
-If you believe your device is compatible and this is an error, please send an email to our
-list https://lists.srlabs.de/cgi-bin/mailman/listinfo/gsmmap.
-</string>
+<string name="alert_deviceCompatibility_message">\n\nVisit the project website for details (https://opensource.srlabs.de/projects/snoopsnitch).</string>
 
 <string name="alert_upload_message">
 Thank you for contributing radio data related to this security event
@@ -285,7 +274,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <!-- Compat check -->
      <string name="compat_no_diag">Device /dev/diag does not exist, no Qualcomm chipset or unsuitable ROM</string>
      <string name="compat_broken_diag">Could not initialize DIAG interface</string>
-     <string name="compat_no_root">No working su binary found, please check whether you phone is rooted</string>
+
+     <string name="compat_su_not_working">Your device is not properly rooted (su binary does not work).</string>
+     <string name="compat_su_not_present">Your device is not rooted (no su binary found).</string>
+     <string name="compat_root_denied">Root access denied by su. Check permissions.</string>
+     <string name="compat_no_root">Root access failed.</string>
 
      <!-- Settings-->
      <string name="settings_cat_debugging">Development</string>
