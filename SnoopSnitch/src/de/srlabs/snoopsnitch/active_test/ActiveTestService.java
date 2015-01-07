@@ -565,7 +565,7 @@ public class ActiveTestService extends Service{
 		if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("settings_active_test_force_offline", false)){
 			results.setOnlineMode(false);
 		}
-		int numIterations = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString("settings_active_test_num_iterations","5"));
+		int numIterations = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString("settings_active_test_num_iterations","3"));
 		stateInfo("applySettings(): numIterations= " + numIterations);
 		results.setNumIterations(numIterations);
 	}
