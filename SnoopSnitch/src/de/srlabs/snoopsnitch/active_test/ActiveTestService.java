@@ -286,7 +286,7 @@ public class ActiveTestService extends Service{
 			if(continiousMode){
 				handleFatalError("Continious mode is not yet implemented");
 			} else{
-				boolean skipIncomingTests = true;
+				boolean skipIncomingSms = true;
 				// TODO: Find out whether we have enough data for the current
 				// network based on getCurrentNetworkRatGeneration() and
 				// telephonyManager.getNetworkOperator();
@@ -303,11 +303,11 @@ public class ActiveTestService extends Service{
 					nextState = State.CALL_MO;
 				}
 				// Offline mode can only trigger CALL_MO, the tests SMS_MT and CALL_MT are automatically done after CALL_MO
-				if(!skipIncomingTests && results.isOnlineMode() && numSmsMt < minRunCount){
+				if(!skipIncomingSms && results.isOnlineMode() && numSmsMt < minRunCount){
 					minRunCount = numSmsMt;
 					nextState = State.SMS_MT_API;
 				}
-				if(!skipIncomingTests && results.isOnlineMode() && numCallMt < minRunCount){
+				if(results.isOnlineMode() && numCallMt < minRunCount){
 					minRunCount = numCallMt;
 					nextState = State.CALL_MT_API;
 				}
@@ -339,7 +339,7 @@ public class ActiveTestService extends Service{
 					results.getCurrentTest().stateWaiting();
 					previousCallMoOnline = results.isOnlineMode();
 					startExtraFileRecording(TestType.CALL_MO);
-					triggerCallMo(results.isOnlineMode() || skipIncomingTests);
+					triggerCallMo(results.isOnlineMode() || skipIncomingSms);
 				} else if(nextState == State.SMS_MT_API){
 					setState(State.SMS_MT_API, "iterate()",Constants.API_TIMEOUT);
 					updateNetworkOperatorAndRat();
