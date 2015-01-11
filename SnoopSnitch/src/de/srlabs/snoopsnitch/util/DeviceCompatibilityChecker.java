@@ -34,6 +34,10 @@ public class DeviceCompatibilityChecker {
 		String suBinary;
 		File diagDevice = new File("/dev/diag");
 
+		if(!diagDevice.exists()) {
+			return context.getResources().getString(R.string.compat_no_diag);
+		}
+
 		suBinary = getSuBinary();
 		if(suBinary == null) {
 			switch (suFailReason) {
@@ -42,10 +46,6 @@ public class DeviceCompatibilityChecker {
 				case SU_NOT_WORKING: return context.getResources().getString(R.string.compat_su_not_working);
 				default: return context.getResources().getString(R.string.compat_no_root);
 			}
-		}
-
-		if(!diagDevice.exists()) {
-			return context.getResources().getString(R.string.compat_no_diag);
 		}
 
 		if(!testRunOK(context,suBinary)) {
