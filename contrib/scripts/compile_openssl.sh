@@ -6,7 +6,5 @@ export CC="gcc --sysroot=${SYSROOT}"
 
 tar xzf $BASE_DIR/openssl-1.0.1i.tar.gz
 cd openssl-1.0.1i
-./Configure android
-
-# The first call to make fails for some unknown reason. However, the compilation does finish correclty when funning the same make command again.
-make
+./Configure android -fPIE
+make LDFLAGS="-fPIE -pie"
