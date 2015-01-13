@@ -3,8 +3,8 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:=		diag-helper
 LOCAL_SRC_FILES:=	diag-helper.c
-LOCAL_CFLAGS+=		-Wall -std=gnu99
-LOCAL_LDLIBS:=		$(LOCAL_LDLIBS) -llog
+LOCAL_CFLAGS+=		-Wall -std=gnu99 -fPIE
+LOCAL_LDLIBS:=		$(LOCAL_LDLIBS) -llog -pie
 
 # We want to create the executable name with .so suffix, so that it
 # gets automatically packaged into the apk.  However, the clever NDK
