@@ -49,6 +49,8 @@ static int
 open_diag_dev(void)
 {
         int diag_fd = -1;
+        int rv = -1;
+        int olderrno;
 
         logmsg(ANDROID_LOG_DEBUG, "opening diag device");
 
@@ -60,11 +62,22 @@ open_diag_dev(void)
 
         const unsigned long DIAG_IOCTL_SWITCH_LOGGING = 7;
         const int MEMORY_DEVICE_MODE = 2;
-        if (ioctl(diag_fd, DIAG_IOCTL_SWITCH_LOGGING, MEMORY_DEVICE_MODE) < 0) {
-                logmsg(ANDROID_LOG_FATAL, "error setting diag device logging mode: %s", strerror(errno));
-                close(diag_fd);
-                diag_fd = -1;
-                goto exit;
+
+        //  In commit ae92f0b2 of the MSM kernel this ioctl was changed to
+        //  have its parameter passed as a pointer. I don't know how to detect
+        //  that reliably, so I brute-force the right method.
+        rv = ioctl(diag_fd, DIAG_IOCTL_SWITCH_LOGGING, MEMORY_DEVICE_MODE);
+        if (rv < 0) {
+            olderrno = errno;
+            rv = ioctl(diag_fd, DIAG_IOCTL_SWITCH_LOGGING, (void *)&MEMORY_DEVICE_MODE);
+        }
+
+        if (rv < 0) {
+            logmsg(ANDROID_LOG_FATAL, "error setting diag device logging mode: %s/%s",
+				strerror(olderrno), strerror(errno));
+            close(diag_fd);
+            diag_fd = -1;
+            goto exit;
         }
 
         logmsg(ANDROID_LOG_DEBUG, "diag device opened");
