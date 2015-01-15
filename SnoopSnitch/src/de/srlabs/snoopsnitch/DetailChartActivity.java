@@ -138,17 +138,7 @@ public class DetailChartActivity extends BaseActivity
 	
 	private void configureSpinner (int id)
 	{
-		if (id == R.id.IMSICatcherCharts)
-		{
-			ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, 
-					android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.imsi_types));
-		    spinner.setAdapter(spinnerAdapter);
-		    
-			spinner.setVisibility(View.GONE);
-			_llSpinnerDetailChart.setVisibility(View.GONE);
-			spinner.setEnabled(false);
-		}
-		else if (id == R.id.SilentSMSCharts)
+		if (id == R.id.SilentSMSCharts)
 		{			
 			ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, 
 					android.R.layout.simple_spinner_dropdown_item, getResources().getStringArray(R.array.event_types));
