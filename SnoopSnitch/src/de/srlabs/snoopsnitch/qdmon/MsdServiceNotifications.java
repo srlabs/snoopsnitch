@@ -30,7 +30,7 @@ public class MsdServiceNotifications {
 		Notification n = new NotificationCompat.Builder(service)
 		.setContentTitle(service.getString(R.string.app_name))
 		.setTicker(service.getString(R.string.app_name) + " " + service.getString(R.string.no_service_running))
-		.setContentText("Service running [" + service.getString(R.string.app_version) + "]")
+		.setContentText(service.getString(R.string.no_service_running) + " [" + service.getString(R.string.app_version) + "]")
 		.setSmallIcon(R.drawable.ic_content_imsi_ok)
 		.setLargeIcon(icon)
 		.setOngoing(true)

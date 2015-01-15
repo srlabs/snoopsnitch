@@ -3,7 +3,6 @@
     
     <!-- General -->
 	<string name="app_name">SnoopSnitch</string>
-    <string name="website">https://opensource.srlabs.de/projects/snoopsnitch</string>
     <string name="common_events">Events</string>
     <string name="common_silent_sms">Silent SMS</string>
     <string name="common_binary_sms">Binary SMS</string>
@@ -39,8 +38,7 @@
     <string name="message_recordingStopped">Recording stopped&#8230;</string>
     
     <!-- Alerts -->
-    <string name="alert_button_ok">OK</string>
-    <string name="alert_button_cancel">Cancel</string>
+
     <string name="alert_button_quit">Quit</string>
     <string name="alert_confirmation_title">Confirmation</string>
     <string name="alert_fatal_condition_title">Fatal Condition</string>
@@ -152,7 +150,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 
     
     <!-- Dashboard Screen -->
-    <string name="dashboard_upload_description"> scans are ready to upload</string>
     <string name="dashboard_lastanalysis">Last analysis: </string>
     <string name="dashboard_lastanalysis_time"></string>
     <string name="dashboard_sms_description">SMS &amp; SS7 attacks</string>
@@ -282,6 +279,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="compat_no_root">Root access failed.</string>
 
      <!-- Settings-->
+     <string name="no_service_running">service running</string>
+     <string name="no_catcher_title">IMSI catcher events</string>
+     <string name="no_catcher_ticker">IMSI catcher events detected</string>
+     <string name="no_catcher_events_detected"> IMSI catcher events detected</string>
+
+     <string name="no_events_title">Security events</string>
+     <string name="no_events_ticker">Security events detected</string>
+     <string name="no_events_detected"> security events detected</string>
+
+     <!-- NO TRANSLATION NEEDED FOR ANY OF THE STRINGS BELOW -->
+
      <string name="settings_cat_debugging">Development</string>
      <string name="settings_cat_debugging_summary">DO NOT ENABLE THIS, unless you are a SnoopSnatch developer!</string>
      <string name="settings_debugging_crash">Crash SnoopSnitch</string>
@@ -292,12 +300,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="settings_debugging_parser_logging">Extended parser logging</string>
      <string name="settings_debugging_parser_logging_summary">Output additional state information, RAT changes and SQL statements from parser. Warning: This option will create a lot of logs!</string>
 
-     <string name="no_service_running">service running</string>
-     <string name="no_catcher_title">IMSI catcher events</string>
-     <string name="no_catcher_ticker">IMSI catcher events detected</string>
-     <string name="no_catcher_events_detected"> IMSI catcher events detected</string>
+    <string name="alert_button_ok">@android:string/ok</string>
+    <string name="alert_button_cancel">@android:string/cancel</string>
 
-     <string name="no_events_title">Security events</string>
-     <string name="no_events_ticker">Security events detected</string>
-     <string name="no_events_detected"> security events detected</string>
 </resources>
