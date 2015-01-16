@@ -81,7 +81,7 @@ YOU MUST ONLY ENTER YOUR OWN PHONE NUMBER IN THE NEXT DIALOG.\n
 <string name="alert_networktest_privacy_disclaimer">
 Following the test, the resulting radio data is uploaded to our servers
 automatically. If you do not agree with this, press Cancel now and disable
-recording for active tests in the settings menu.Note that radio traces may
+recording for active tests in the settings menu. Note that radio traces may
 contain private data and location information as a side effect.\n
 </string>
 
@@ -240,7 +240,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      
      <!-- Alert Dialog (to Refresh App ID) -->
      <string name="alert_dialog_refreshappid_button_refresh">Refresh</string>
-     <string name="alert_dialog_refreshappid_button_cancel">No</string>
      <string name="alert_dialog_refreshappid_title">Refresh app ID</string>
      <string name="alert_dialog_refreshappid_message">You are about to refresh the app ID. Are you sure?</string>
      
@@ -302,5 +301,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 
     <string name="alert_button_ok">@android:string/ok</string>
     <string name="alert_button_cancel">@android:string/cancel</string>
+     <string name="alert_dialog_refreshappid_button_cancel">@android:string/cancel</string>
 
 </resources>
