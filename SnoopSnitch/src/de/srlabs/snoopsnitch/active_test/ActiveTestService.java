@@ -711,13 +711,18 @@ public class ActiveTestService extends Service{
 		else if(networkGeneration == 4)
 			connectionType = "LTE";
 		else
-			connectionType = "UNKNWON";
+			connectionType = "UNKNOWN";
 		String network = telephonyManager.getNetworkOperator() + "-" + determineCell();
+
+		String IMSI = telephonyManager.getSubscriberId();
+		String SIM_MCC_MNC = (IMSI == null) ? "NOIMSI" : IMSI.substring(0, 5);
+
 		int iteration = results.getCurrentTest().getNum();
 		String filename = String.format(Locale.US,
-				"%s.%s.%04d%02d%02d-%02d%02d%02d.%s.%s.%s.%d.log",
+				"%s.%s.%s.%04d%02d%02d-%02d%02d%02d.%s.%s.%s.%d.log",
 				"qdmon",
 				Build.MODEL,
+				SIM_MCC_MNC,
 				calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH) + 1,
 				calendar.get(Calendar.DAY_OF_MONTH),
