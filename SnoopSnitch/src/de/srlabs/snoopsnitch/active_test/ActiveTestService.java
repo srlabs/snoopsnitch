@@ -715,7 +715,7 @@ public class ActiveTestService extends Service{
 		String network = telephonyManager.getNetworkOperator() + "-" + determineCell();
 
 		String IMSI = telephonyManager.getSubscriberId();
-		String SIM_MCC_MNC = (IMSI == null) ? "NOIMSI" : IMSI.substring(0, 5);
+		String SIM_MCC_MNC = (IMSI == null || IMSI.length() < 6) ? "NOIMSI" : IMSI.substring(0, 6);
 
 		int iteration = results.getCurrentTest().getNum();
 		String filename = String.format(Locale.US,
