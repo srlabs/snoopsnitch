@@ -53,7 +53,7 @@
 Danke, dass Sie die zu diesem Ereignis gehörenden Radiodaten hochladen und
 damit die Forschung und Weiterentwicklung von SnoopSnitch unterstützen.\n
 \n
-Bitte senden Sie eine Email mit Details zu diesem Ereignis an
+Bitte senden Sie eine E-Mail mit Details zu diesem Ereignis an
 snoopsnitch@srlabs.de (PGP fingerprint 9728 A7F9 D457 1FBB 746F  5381 D52C AC10
 634A 9561). Bitte vergessen Sie Ihre App ID und den Zeitpunkt des
 Ereignisses nicht. Vielen Dank!\n
@@ -73,10 +73,10 @@ AUSGESCHLOSSEN.\n
 \n
 Fehlermeldungen Ihres Netzbetreibers per SMS sind während des Tests normal.
 Dennoch sollte Sie der aktive Netzwerktest nichts kosten. EINIGE
-NETZBETREIBER KÖNNTEN JEDOCH GEBEÜHREN ERHEBEN, OBWOHL AUSGEHENDE SMS AN
+NETZBETREIBER KÖNNTEN JEDOCH GEBÜHREN ERHEBEN, OBWOHL AUSGEHENDE SMS AN
 EINE UNGÜLTIGE NUMMER GESENDET WERDEN.\n
 \n
-IM NÄCHSTEN DIALOG DÜRFEN SIE AUSSCHLIESSLICH IHRE EIGENE TELEFONNUMMER
+IM NÄCHSTEN DIALOG DÜRFEN SIE AUSSCHLIEßLICH IHRE EIGENE TELEFONNUMMER
 EINGEBEN!\n
 </string>
 
@@ -84,9 +84,9 @@ EINGEBEN!\n
 Im Anschluss an diesen Test werden die aufgezeichneten Radiodaten
 automatisch auf unsere Server hochgeladen. Falls Sie damit nicht einverstanden
 sind, brechen Sie den Test jetzt ab und deaktivieren Sie in den Einstellungen
-die Aufzeichung von Radiodaten für den aktiven Test. Beachten Sie, dass die
-aufgezeichneten Daten als Nebeneffekt persönliche Informationen und
-Positionsdaten enthalten können.\n
+die Aufzeichnung von Radiodaten für den aktiven Test. Beachten Sie, dass die
+aufgezeichneten Daten persönliche Informationen und Positionsdaten enthalten
+können.\n
 </string>
 
 <string name="alert_first_app_start_message">
@@ -96,24 +96,24 @@ BITTE LESEN SIE DIESEN TEXT GRÜNDLICH BEVOR SIE BESTÄTIGEN!\n
 \n
 SnoopSnitch sammelt und analysiert Radiodaten um die Sicherheit Ihres
 Mobilfunknetzes zu bewerten und Sie auf Gefahren wie IMSI Catcher, Ortung Ihres
-Telefons oder Fernupdate hinzuweisen.\n
+Telefons oder Fernupdates hinzuweisen.\n
 \n
-Diese Anwendung verwendent Daten die durch andere Nutzer gesammelt wurden.
+Diese Anwendung verwendet Daten die durch andere Nutzer gesammelt wurden.
 Indem auch Sie Ihre Messergebnisse oder Ereignisse hochladen, helfen Sie die
-Qualität dieser Datenbasis zu verbessern und ermöglichen weitereführende
+Qualität dieser Datenbasis zu verbessern und ermöglichen weiterführende
 Forschung.\n
 \n
 SnoopSnitch wird für sämtliche Uploads auf unsere Server Ihr Einverständnis
 einholen. Alle Uploads sind verschlüsselt. Beachten Sie, dass die
-aufgezeichneten Daten als Nebeneffekt persönliche Informationen und
-Positionsdaten enthalten können.\n
+aufgezeichneten Daten auch persönliche Informationen und Positionsdaten
+enthalten können.\n
 \n
 Radiodaten werden verschlüsselt auf dem Gerät abgelegt. Für die kontinuierliche
 Sicherheitsanalyse im Hintergrund muss SnoopSnitch jedoch eine Datenbank
 anlegen die dazu geeignet ist Ihre Bewegungen und möglicherweise
-Nachriteninhalte zu rekonstruieren. Diese Informationen werden regelmäßig
-bereinigt - stellen Sie sicher, dass Sie einen für sich geeigneten Interval
-konfiguriert haben.
+Nachrichteninhalte zu rekonstruieren. Diese Informationen werden regelmäßig
+bereinigt - stellen Sie sicher, dass Sie einen für sich geeigneten Intervall
+konfiguriert haben.\n
 \n
 Falls Sie Bedenken bezüglich der Wirkungsweise von SnoopSnitch haben, brechen
 Sie jetzt ab!
@@ -124,9 +124,9 @@ SnoopSnitch sammelt und analysiert Radiodaten um die Sicherheit Ihres
 Mobilfunknetzes zu bewerten und Sie auf Gefahren wie IMSI Catcher, Ortung Ihres
 Telefons oder Fernupdate hinzuweisen.\n
 \n
-Diese Anwendung verwendent Daten die durch andere Nutzer gesammelt wurden.
+Diese Anwendung verwendet Daten die durch andere Nutzer gesammelt wurden.
 Indem auch Sie Ihre Messergebnisse oder Ereignisse hochladen, helfen Sie die
-Qualität dieser Datenbasis zu verbessern und ermöglich weitere Forschung.\n
+Qualität dieser Datenbasis zu verbessern und ermöglichen weitere Forschung.\n
 \n
 SnoopSnitch wird für sämtliche Uploads auf unsere Server Ihr Einverständnis
 einholen. Alle Uploads sind verschlüsselt. Beachten Sie, dass die
@@ -188,31 +188,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     
     <string name="settings_basebandlogkeepduration_title">Säuberung von Basebandlogs</string>
     <string name="settings_basebandlogkeepduration_summary">Zeitraum nach dem Radiodaten gelöscht werden</string>
-    <string name="settings_basebandlogkeepduration_dialogtitle">Interval wählen:</string>
+    <string name="settings_basebandlogkeepduration_dialogtitle">Intervall wählen:</string>
     
     <string name="settings_locationlogkeepduration_title">Säuberung von Ortsdaten</string>
     <string name="settings_locationlogkeepduration_summary">Zeitraum nach dem Ortsdaten gelöscht werden</string>
-    <string name="settings_locationlogkeepduration_dialogtitle">Interval wählen:</string>
+    <string name="settings_locationlogkeepduration_dialogtitle">Intervall wählen:</string>
     
     <string name="settings_analysiskeepduration_title">Säuberung von Analysedaten</string>
     <string name="settings_analysiskeepduration_summary">Zeitraum nach dem Daten der Hintergrundanalyse gelöscht werden</string>
-    <string name="settings_analysiskeepduration_dialogtitle">Interval wählen:</string>
+    <string name="settings_analysiskeepduration_dialogtitle">Intervall wählen:</string>
     
     <string name="settings_debuglogkeepduration_title">Säuberung von Debuglogs</string>
     <string name="settings_debuglogkeepduration_summary">Zeitraum nach dem Logdateien gelöscht werden</string>
-    <string name="settings_debuglogkeepduration_dialogtitle">Interval wählen:</string>
+    <string name="settings_debuglogkeepduration_dialogtitle">Intervall wählen:</string>
     
     <string name="settings_gpsrecording_title">GPS-basierte Position aufzeichnen</string>
     <string name="settings_gpsrecording_summary">Genaue GPS-basierte Position aufzeichnen um Ortsangaben für IMSI Catcher und Sicherheitsereignisse zu erhalten</string>
     
     <string name="settings_networklocationrecording_title">Netzwerkbasierte Position aufzeichnen</string>
-    <string name="settings_networklocationrecording_summary">Ungenaue netwerkbasierte Position aufzeichnen um Ortsangaben für IMSI Catcher und Sicherheitsereignisse zu erhalten</string>
+    <string name="settings_networklocationrecording_summary">Ungenaue netzwerkbasierte Position aufzeichnen um Ortsangaben für IMSI Catcher und Sicherheitsereignisse zu erhalten</string>
     
     <string name="settings_applicationid_title">App ID</string>
     <string name="settings_applicationid_summary">Die App ID wird verwendet um hochgeladene Dateien zu referenzieren. Mit diesem Menüpunkt kann jederzeit eine neue App ID erzeugt werden.</string>
     
     <string name="settings_active_test_force_offline_title">Offlinetest erzwingen</string>
-    <string name="settings_active_test_force_offline_summary">Verwende ausschließlich den Offlinemodus im aktiven Test. Dafür ist keine Datenverbindung notewendig.</string>
+    <string name="settings_active_test_force_offline_summary">Verwende ausschließlich den Offlinemodus im aktiven Test. Dafür ist keine Datenverbindung notwendig.</string>
     
     <string name="settings_active_test_num_iterations_title">Durchläufe beim aktiven Test</string>
     <string name="settings_active_test_num_iterations_dialogtitle">Anzahl der Testrunden beim aktiven Test</string>
@@ -253,7 +253,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="common_null_paging">Null Paging</string>
 
      <!-- Active test -->
-     <string name="test_and_upload">Testen and Hochladen</string>
+     <string name="test_and_upload">Testen und Hochladen</string>
      <string name="at_invalid">UNGÜLTIG</string>
      <string name="at_running">Test läuft</string>
      <string name="at_dialing">Wählt</string>
