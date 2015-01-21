@@ -1327,7 +1327,7 @@ public class MsdService extends Service{
 		String parser_binary = libdir + "/libdiag_import.so";
 		long nextSessionInfoId = getNextRowId("session_info");
 		long nextCellInfoId = getNextRowId("cell_info");
-		String cmd[] = {parser_binary, "" + nextSessionInfoId, "" + nextCellInfoId};
+		String cmd[] = {parser_binary, "-s", "" + nextSessionInfoId, "-c", "" + nextCellInfoId, "-"};
 		info("Launching parser: " + TextUtils.join(" ",cmd));
 		// Warning: /data/local/tmp is not accessible by default, must be manually changed to 755 (including parent directories)
 		//String cmd[] = {libdir+"/libstrace.so","-f","-v","-s","1000","-o","/data/local/tmp/parser.strace.log",parser_binary};
