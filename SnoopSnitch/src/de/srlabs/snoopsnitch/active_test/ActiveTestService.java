@@ -65,6 +65,8 @@ public class ActiveTestService extends Service{
 	class MyPhoneStateListener extends PhoneStateListener{
 		@Override
 		public void onCallStateChanged(final int phoneState, final String incomingNumber) {
+			if(!testRunning)
+				return;
 			MsdLog.i(TAG, "onCallStateChanged(" + phoneState + "," + incomingNumber + ")");
 			if (phoneState == TelephonyManager.CALL_STATE_IDLE){
 				MsdLog.i(TAG,"CALL_STATE_IDLE: " + incomingNumber);
@@ -602,7 +604,8 @@ public class ActiveTestService extends Service{
 		int networkGeneration = getCurrentNetworkRatGeneration();
 		if(networkGeneration == 4){
 			results.setLteDetected(true);
-			ActiveTestService.this.stopTest();
+			if(testRunning)
+				ActiveTestService.this.stopTest();
 			return;
 		}
 		results.setNetworkOperatorAndRat(telephonyManager, networkGeneration);
@@ -650,6 +653,11 @@ public class ActiveTestService extends Service{
 		intentFilter.setPriority(Integer.MAX_VALUE); // we mean it
 		registerReceiver(smsReceiver, intentFilter);
 		updateNetworkOperatorAndRat();
+		// If updateNetworkOperatorAndRat() detects that the phone is using an
+		// LTE network, it will call stopTest(). In that case, there is no point
+		// in continuing startTest().
+		if(!testRunning)
+			return false;
 		stateMachine.postIterateRunnable(0);
 		broadcastTestStateChanged();
 		broadcastTestResults();
@@ -659,15 +667,15 @@ public class ActiveTestService extends Service{
 		try{
 			unregisterReceiver(smsReceiver);
 		} catch(Exception e){} // unregisterReceiver throws an Exception if it isn't registered, so let's just ignore it.
-		if(stateMachine != null){
-			stateMachine.stopTest();
-			stateMachine = null;
-		}
 		if(this.currentExtraRecordingFilename != null)
 			endExtraFileRecording(false);
 		this.msdServiceHelper.stopActiveTest();
 		testRunning = false;
 		telephonyManager.listen(phoneStateListener, 0);
+		if(stateMachine != null){
+			stateMachine.stopTest();
+			stateMachine = null;
+		}
 		broadcastTestStateChanged();
 		broadcastTestResults();
 	}
