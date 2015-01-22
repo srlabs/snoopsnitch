@@ -81,6 +81,10 @@ public class ActiveTestHelper{
 			isActiveTestRunning();
 			callback.testStateChanged();
 		}
+		@Override
+		public void deviceIncompatibleDetected() throws RemoteException {
+			callback.deviceIncompatibleDetected();
+		}
 	}
 	public ActiveTestHelper(Activity activity, ActiveTestCallback callback, boolean dummy){
 		this.context = activity;

@@ -24,4 +24,7 @@ interface IMsdService {
 	long reopenAndUploadDebugLog();
 	// Returns the network generation detected by the parser (2,3,4) or 0 if it is unknown.
 	int getParserNetworkGeneration();
+	// Returns the number of recorded diag messages since the last startRecording().
+	// Required for verifying that the device is actually recording baseband messages during the active test.
+	int getDiagMsgCount();
 }

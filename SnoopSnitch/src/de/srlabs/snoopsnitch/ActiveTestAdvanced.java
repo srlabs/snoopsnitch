@@ -12,11 +12,11 @@ import android.view.WindowManager.LayoutParams;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
 import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.Utils;
 
 public class ActiveTestAdvanced extends BaseActivity{
 	private static final String TAG = "ActiveTestAdvanced";
@@ -54,6 +54,18 @@ public class ActiveTestAdvanced extends BaseActivity{
 		@Override
 		public void internalError(String msg) {
 			showErrorMsg(msg);
+		}
+
+		@Override
+		public void deviceIncompatibleDetected() {
+			String incompatibilityReason = getResources().getString(R.string.compat_no_baseband_messages_in_active_test);
+			Utils.showDeviceIncompatibleDialog(ActiveTestAdvanced.this, incompatibilityReason, new Runnable() {
+				@Override
+				public void run() {
+					msdServiceHelperCreator.getMsdServiceHelper().stopRecording();
+					quitApplication();
+				}
+			});
 		}
 	}
 	private void showErrorMsg(String msg) {

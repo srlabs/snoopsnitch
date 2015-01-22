@@ -4,9 +4,9 @@ import java.util.Vector;
 
 import android.app.ActionBar;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.upload.DumpFile;
@@ -42,6 +41,8 @@ public class BaseActivity extends FragmentActivity
 	protected Boolean isInForeground = false;
 	protected Handler handler;
 	protected final int refresh_intervall = 1000;
+	// Static variable so that it is common to all Activities of the App
+	private static boolean exitFlag = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -63,7 +64,12 @@ public class BaseActivity extends FragmentActivity
 	
 	@Override
 	protected void onResume() 
-	{		
+	{
+		if(exitFlag ){
+			finish();
+			System.exit(0);
+			return;
+		}
 		msdServiceHelperCreator.setCurrentActivity(this);
 		
 		isInForeground = true;
@@ -330,7 +336,7 @@ public class BaseActivity extends FragmentActivity
 	
 	protected void quitApplication ()
 	{
+		exitFlag = true;
 		finish();
-		System.exit(0);
 	}
 }

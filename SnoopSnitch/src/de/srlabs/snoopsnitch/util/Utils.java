@@ -1,10 +1,7 @@
 package de.srlabs.snoopsnitch.util;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -23,9 +20,13 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
-import android.os.Environment;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.telephony.TelephonyManager;
+import de.srlabs.snoopsnitch.R;
 
 
 public class Utils {
@@ -140,5 +141,27 @@ public class Utils {
 			jsonData = readFromAssets(context, fileName);
 		}
 		return jsonData;
+	}
+	public static void showDeviceIncompatibleDialog(Activity activity, String incompatibilityReason, final Runnable callback){
+		String dialogMessage =
+				activity.getResources().getString(R.string.alert_deviceCompatibility_header) + " " +
+						incompatibilityReason + " " +
+						activity.getResources().getString(R.string.alert_deviceCompatibility_message);
+
+		MsdDialog.makeFatalConditionDialog(activity, dialogMessage, new OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				callback.run();
+			}
+		}, null,
+		new OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				callback.run();
+			}
+		}, false
+				).show();
 	}
 }

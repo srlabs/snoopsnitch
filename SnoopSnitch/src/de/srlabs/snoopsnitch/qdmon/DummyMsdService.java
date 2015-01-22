@@ -119,6 +119,12 @@ public class DummyMsdService extends Service{
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public int getDiagMsgCount() throws RemoteException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	};
 	private class DummyDataRunnable implements Runnable{
 		private boolean recordingStopped = false;

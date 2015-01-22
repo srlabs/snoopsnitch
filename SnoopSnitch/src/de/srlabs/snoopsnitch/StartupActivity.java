@@ -14,6 +14,7 @@ import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdDialog;
+import de.srlabs.snoopsnitch.util.Utils;
 
 /**
  * This class is launched when starting the App. It will display a dialog if the
@@ -44,28 +45,14 @@ public class StartupActivity extends Activity{
     }
 
     private void showDeviceIncompatibleDialog(String incompatibilityReason){
-    	
-    	String dialogMessage =
-    			getResources().getString(R.string.alert_deviceCompatibility_header) + " " +
-    					incompatibilityReason + " " +
-    					getResources().getString(R.string.alert_deviceCompatibility_message);
-
-    	MsdDialog.makeFatalConditionDialog(this, dialogMessage, new OnClickListener() 
-		{	
+    	Utils.showDeviceIncompatibleDialog(this, incompatibilityReason, new Runnable() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) 
-			{
+			public void run() {
 				quitApplication();
 			}
-		}, null,
-		new OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				quitApplication();
-			}
-		}, false
-		).show();
+		});
     }
+    
 	private void showFirstRunDialog() {
 		final SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
 		MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.alert_first_app_start_message),

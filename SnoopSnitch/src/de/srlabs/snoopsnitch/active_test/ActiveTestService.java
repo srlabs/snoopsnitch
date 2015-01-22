@@ -12,6 +12,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -32,8 +33,6 @@ import android.util.Log;
 
 import com.android.internal.telephony.ITelephony;
 
-import de.srlabs.snoopsnitch.active_test.IActiveTestCallback;
-import de.srlabs.snoopsnitch.active_test.IActiveTestService;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults.SingleTestState;
 import de.srlabs.snoopsnitch.analysis.GSMmap;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
@@ -58,9 +57,11 @@ public class ActiveTestService extends Service{
 	private MyPhoneStateListener phoneStateListener = new MyPhoneStateListener() ;
 	private MySmsReceiver smsReceiver = new MySmsReceiver();
 	private String currentExtraRecordingFilename;
-	private boolean testRunning;
+	private boolean testRunning = false;
 	private MsdServiceHelper msdServiceHelper;
 	private ITelephony telephonyService;
+	private int currentExtraRecordingStartDiagMsgCount;
+	private int numTestsWithNoMessages = 0;
 
 	class MyPhoneStateListener extends PhoneStateListener{
 		@Override
@@ -79,6 +80,7 @@ public class ActiveTestService extends Service{
 				stateMachine.handleTelRinging();
 			} else
 				MsdLog.d(TAG, "unhandled call state: " + phoneState);
+
 		}
 	};
 	class MySmsReceiver extends SmsReceiver{
@@ -180,6 +182,8 @@ public class ActiveTestService extends Service{
 			if(state == State.SMS_MT_WAITING){
 				currentTestSuccess();
 				broadcastTestResults();
+				if(!testRunning)
+					return;
 				iterate();
 			} else if(state == State.SMS_MT_API){
 				// The SMS is coming in before the API reports a result, this
@@ -190,6 +194,8 @@ public class ActiveTestService extends Service{
 				api = null;
 				currentTestSuccess();
 				broadcastTestResults();
+				if(!testRunning)
+					return;
 				iterate();
 			} else{
 				stateInfo("Received unexpected Gsmmap test sms in state " + state.name());
@@ -239,6 +245,8 @@ public class ActiveTestService extends Service{
 			if(state == State.CALL_MT_ACTIVE){
 				currentTestSuccess();
 				broadcastTestResults();
+				if(!testRunning)
+					return;
 				if(previousCallMoOnline)
 					iterate();
 				else{
@@ -252,6 +260,8 @@ public class ActiveTestService extends Service{
 			} else if(state == State.CALL_MO_ACTIVE){
 				currentTestSuccess();
 				broadcastTestResults();
+				if(!testRunning)
+					return;
 				if(previousCallMoOnline)
 					iterate();
 				else{
@@ -290,7 +300,7 @@ public class ActiveTestService extends Service{
 				boolean skipIncomingSms = true;
 				Operator operator = new Operator(ActiveTestService.this);
 				skipIncomingSms = GSMmap.dataSufficient(operator.getMcc(), operator.getMnc(), getCurrentNetworkRatGeneration());
-				
+
 				// Find the action with the lowest run count and then trigger this action
 				int numSmsMo = results.getCurrentNetworkOperatorRatTestResults().getNumRuns(TestType.SMS_MO);
 				int numCallMo = results.getCurrentNetworkOperatorRatTestResults().getNumRuns(TestType.CALL_MO);
@@ -501,6 +511,9 @@ public class ActiveTestService extends Service{
 			stateInfo("handleSmsSent() received in state " + state.name());
 			if(state == State.SMS_MO){
 				currentTestSuccess();
+				broadcastTestResults();
+				if(!testRunning)
+					return;
 				iterate();
 			} else{
 				// This can happen if sending an SMS is delayed e.g. due to an unreliable network connection.
@@ -633,7 +646,9 @@ public class ActiveTestService extends Service{
 	}
 
 	private boolean startTest(String ownNumber){
+		stateInfo("ActiveTestService.startTest(" + ownNumber + ") called");
 		this.ownNumber = ownNumber;
+		this.numTestsWithNoMessages = 0;
 		this.msdServiceHelper.startActiveTest();
 		// http://stackoverflow.com/questions/599443/how-to-hang-up-outgoing-call-in-android
 		try {
@@ -668,18 +683,19 @@ public class ActiveTestService extends Service{
 		return true;
 	}
 	private void stopTest(){
+		stateInfo("ActiveTestService.stopTest() called");
+		testRunning = false;
 		try{
 			unregisterReceiver(smsReceiver);
 		} catch(Exception e){} // unregisterReceiver throws an Exception if it isn't registered, so let's just ignore it.
 		if(this.currentExtraRecordingFilename != null)
 			endExtraFileRecording(false);
-		this.msdServiceHelper.stopActiveTest();
-		testRunning = false;
 		telephonyManager.listen(phoneStateListener, 0);
 		if(stateMachine != null){
 			stateMachine.stopTest();
 			stateMachine = null;
 		}
+		this.msdServiceHelper.stopActiveTest();
 		broadcastTestStateChanged();
 		broadcastTestResults();
 	}
@@ -746,6 +762,7 @@ public class ActiveTestService extends Service{
 				type.name(),
 				iteration);
 		this.currentExtraRecordingFilename = filename;
+		currentExtraRecordingStartDiagMsgCount = msdServiceHelper.getDiagMsgCount();
 		if(uploadDisabled){
 			stateInfo("Would now open dumpfile " + filename);
 			msdServiceHelper.startActiveTest(); // Make sure MsdService keeps recording (for the local analysis) even if we don't upload anything
@@ -761,19 +778,50 @@ public class ActiveTestService extends Service{
 			} else{
 				stateInfo("Would now discard " + currentExtraRecordingFilename);			
 			}
-			msdServiceHelper.endExtraRecording(upload); // Just to make sure there is no extra recording
+			msdServiceHelper.endExtraRecording(false); // Just to make sure there is no extra recording
 			currentExtraRecordingFilename = null;
-			return;
-		}
-		if(currentExtraRecordingFilename == null)
-			throw new IllegalStateException("endExtraFileRecording(" + upload + ") called but currentExtraRecordingFilename == null");
-		if(upload){
-			stateInfo("Closing and uploading " + currentExtraRecordingFilename);
 		} else{
-			stateInfo("Discarding " + currentExtraRecordingFilename);			
+			if(currentExtraRecordingFilename == null)
+				throw new IllegalStateException("endExtraFileRecording(" + upload + ") called but currentExtraRecordingFilename == null");
+			if(upload){
+				stateInfo("Closing and uploading " + currentExtraRecordingFilename);
+			} else{
+				stateInfo("Discarding " + currentExtraRecordingFilename);
+			}
+			msdServiceHelper.endExtraRecording(upload);
+			currentExtraRecordingFilename = null;
 		}
-		msdServiceHelper.endExtraRecording(upload);
-		currentExtraRecordingFilename = null;
+		int numMessages = msdServiceHelper.getDiagMsgCount() - currentExtraRecordingStartDiagMsgCount;
+		if(upload){ // upload is only set if the Android API reports that the test was successful
+			stateInfo("Number of messages: " + numMessages);
+			if(numMessages == 0){
+				numTestsWithNoMessages++;
+				if(numTestsWithNoMessages >= 3){
+					// At least 3 tests have not generated any diag messages.
+					boolean deviceCompatibleDetected = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("device_compatible_detected", false);
+					if(!deviceCompatibleDetected){
+						stateInfo("Detected incompatible device, stopping test");
+						// We have never received an SQL message from the parser
+						// and we have at least 3 tests without diag messages =>
+						// The device is most likely incompatible.
+						stopTest();
+						Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+						editor.putBoolean("device_incompatible_detected", true);
+						editor.commit();
+						Vector<IActiveTestCallback> callbacksToRemove = new Vector<IActiveTestCallback>();
+						for(IActiveTestCallback callback:callbacks){
+							try {
+								callback.deviceIncompatibleDetected();
+							} catch (Exception e) {
+								debugInfo("Removing callback due to " + e.getClass().getCanonicalName());
+								callbacksToRemove.add(callback);
+							}
+						}
+						callbacks.removeAll(callbacksToRemove);
+					}
+				}
+			}
+		}
 	}
 	private void triggerCallMo(final boolean online) {
 		final Uri telUri = Uri.parse("tel:" + (online ? Constants.CALL_NUMBER : Constants.CALLBACK_NUMBER));

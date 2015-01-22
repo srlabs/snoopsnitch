@@ -215,4 +215,12 @@ public class MsdServiceHelper{
 			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.getParserNetworkGeneration()", e);
 		}
 	}
+	public int getDiagMsgCount() {
+		try {
+			return mIMsdService.getDiagMsgCount();
+		} catch (RemoteException e) {
+			handleFatalError("RemoteException in MsdServiceHelper.mIMsdService.getParserNetworkGeneration()", e);
+			return 0;
+		}
+	}
 }

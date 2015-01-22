@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 
 import de.srlabs.snoopsnitch.R;
 public class DeviceCompatibilityChecker {
@@ -31,6 +32,11 @@ public class DeviceCompatibilityChecker {
 	 *         Error if the phone is not compatible.
 	 */
 	public static String checkDeviceCompatibility(Context context){
+		boolean deviceIncompatibleDetected = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("device_incompatible_detected", false);
+		if(deviceIncompatibleDetected){
+			return context.getResources().getString(R.string.compat_no_baseband_messages_in_active_test);
+		}
+		
 		String suBinary;
 		File diagDevice = new File("/dev/diag");
 
@@ -51,7 +57,7 @@ public class DeviceCompatibilityChecker {
 		if(!testRunOK(context,suBinary)) {
 			return context.getResources().getString(R.string.compat_broken_diag);
 		}
-
+		
 		// Everything OK
 		return null;
 	}

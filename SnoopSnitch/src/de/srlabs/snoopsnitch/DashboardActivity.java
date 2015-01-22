@@ -4,7 +4,10 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Vector;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +22,8 @@ import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
 import de.srlabs.snoopsnitch.analysis.Risk;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
+import de.srlabs.snoopsnitch.util.MsdDialog;
+import de.srlabs.snoopsnitch.util.Utils;
 import de.srlabs.snoopsnitch.views.DashboardProviderChart;
 import de.srlabs.snoopsnitch.views.DashboardThreatChart;
 import de.srlabs.snoopsnitch.views.adapter.ListViewProviderAdapter;
@@ -335,5 +340,17 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		{
 			activeTestHelper.showConfirmDialogAndStart(true);
 		}
+	}
+
+	@Override
+	public void deviceIncompatibleDetected() {
+		String incompatibilityReason = getResources().getString(R.string.compat_no_baseband_messages_in_active_test);
+    	Utils.showDeviceIncompatibleDialog(this, incompatibilityReason, new Runnable() {
+			@Override
+			public void run() {
+				msdServiceHelperCreator.getMsdServiceHelper().stopRecording();
+				quitApplication();
+			}
+		});
 	}
 }

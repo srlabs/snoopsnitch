@@ -109,6 +109,7 @@ public class MsdService extends Service{
 			}
 			if(System.currentTimeMillis() < activeTestTimestamp + 120 * 1000){
 				// ignore stopRecording if active test is running
+				info("Ignoring stopRecording() due to activeTestTimestamp");
 				sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 				return false;
 			}
@@ -194,6 +195,11 @@ public class MsdService extends Service{
 				recordingStartedForActiveTest = false;
 			}
 		}
+
+		@Override
+		public int getDiagMsgCount() throws RemoteException {
+			return diagMsgCount;
+		}
 	};
 	AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
@@ -257,6 +263,10 @@ public class MsdService extends Service{
 	public int parserRatGeneration = 0;
 
 	private long lastCleanupTime = 0;
+
+	private int diagMsgCount = 0;
+
+	private boolean deviceCompatibleDetected = false;
 
 	class QueueElementWrapper<T>{
 		T obj;
@@ -456,8 +466,10 @@ public class MsdService extends Service{
 			this.shuttingDown.set(false);
 			this.sqliteThread = new SqliteThread();
 			sqliteThread.start();
+			deviceCompatibleDetected = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("device_compatible_detected", false);
 			launchParser();
 			openOrReopenRawWriter();
+			diagMsgCount = 0;
 			launchHelper();
 			mainThreadHandler.post(new ExceptionHandlingRunnable(new Runnable(){
 				@Override
@@ -676,6 +688,7 @@ public class MsdService extends Service{
 					MsdService.this.diagStdout.readFully(individual_buf, 0, data_len);
 					for(byte[] buf:fromDev(individual_buf, 0, individual_buf.length)){
 						DiagMsgWrapper msg = new DiagMsgWrapper(buf);
+						diagMsgCount ++;
 						toParserMsgQueue.add(msg);
 						rawWriter.write(buf);
 						if(extraRecordingRawFileWriter != null){
@@ -812,6 +825,13 @@ public class MsdService extends Service{
 					}
 					if(line.trim().length() == 0)
 						continue; // Ignore empty lines
+					// Mark the device as compatible after the first SQL or RAT line from the parser.
+					if(!deviceCompatibleDetected && (line.startsWith("SQL:") || line.startsWith("RAT:"))){
+						Editor editor = PreferenceManager.getDefaultSharedPreferences(MsdService.this).edit();
+						editor.putBoolean("device_compatible_detected", true);
+						editor.commit();
+						deviceCompatibleDetected = true;
+					}
 					if(line.startsWith("SQL:")){
 						String sql = line.substring(4);
 						info(parserLogging, "FromParserThread enqueueing SQL Statement: " + sql);
