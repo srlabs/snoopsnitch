@@ -396,6 +396,8 @@ public class ActiveTestService extends Service{
 					handleFatalError("RemoteException in telephonyService.endCall()");
 				}
 			} else if(state == State.CALL_MT_API){
+				if(api != null)
+					api.abort();
 				results.getCurrentTest().failApiTimeout();
 				endExtraFileRecording(false);
 				results.setOnlineMode(false);
@@ -417,6 +419,8 @@ public class ActiveTestService extends Service{
 			} else if(state == State.CALL_MT_ACTIVE){
 				stateInfo("Soft timeout in CALL_MT_ACTIVE reached, continuing to wait until the phone is idle again");
 			} else if(state == State.SMS_MT_API){
+				if(api != null)
+					api.abort();
 				results.getCurrentTest().failApiTimeout();
 				endExtraFileRecording(false);
 				results.setOnlineMode(false);
