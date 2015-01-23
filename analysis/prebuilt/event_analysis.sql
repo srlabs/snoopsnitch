@@ -18,7 +18,9 @@ SELECT
 		WHEN ota AND from_network
 			THEN 1
 		-- silent SMS
-		WHEN dcs >= 192 AND dcs <= 207 AND from_network
+		WHEN from_network AND
+		     (dcs >= 192 AND dcs <= 207) OR
+			 (pid = 64 AND info NOT LIKE '%PORT%5499%')
 			THEN 2
 		-- All other transaction we don't care about
 		ELSE 0
