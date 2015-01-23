@@ -276,6 +276,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="compat_su_not_present">Your device is not rooted (no su binary found).</string>
      <string name="compat_root_denied">Root access denied by su. Check permissions.</string>
      <string name="compat_no_root">Root access failed.</string>
+     
+     <string name="compat_no_baseband_messages_in_active_test">No baseband messages received during active test.</string>
 
      <!-- Settings-->
      <string name="no_service_running">service running</string>
