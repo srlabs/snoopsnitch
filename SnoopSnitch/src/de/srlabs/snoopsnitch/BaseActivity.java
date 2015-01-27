@@ -143,6 +143,12 @@ public class BaseActivity extends FragmentActivity
 	    Intent intent = new Intent(this, AboutActivity.class);
 	    startActivity(intent);
 	}
+
+	protected void showNetworkInfo()
+	{
+	    Intent intent = new Intent(this, NetworkInfoActivity.class);
+	    startActivity(intent);
+	}
 	
 	protected void toggleRecording ()
 	{
@@ -234,6 +240,9 @@ public class BaseActivity extends FragmentActivity
 		    	break;
 		    case R.id.menu_action_about:
 		    	showAbout ();
+		    	break;
+		    case R.id.menu_action_network_info:
+		    	showNetworkInfo ();
 		    	break;
 		    case android.R.id.home:
 		        NavUtils.navigateUpFromSameTask(this);

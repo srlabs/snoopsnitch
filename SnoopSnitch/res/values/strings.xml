@@ -22,6 +22,7 @@
     <string name="action_active_test_advanced">Active test (advanced mode)</string>
     <string name="action_upload_suspicious_dumps">Upload suspicious activity</string>
     <string name="action_upload_debug_logs">Upload debug logs</string>
+    <string name="action_network_info">Network Info</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
     
@@ -289,6 +290,48 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="no_events_ticker">Security events detected</string>
      <string name="no_events_detected"> security events detected</string>
 
+     <!-- Network Info -->
+     <string name="network_info_title">Network Info</string>
+     <string name="network_info_tmsi_text">TMSI:</string>
+     <string name="network_info_imsi_text">IMSI:</string>
+     <string name="network_info_usim_text">USIM:</string>
+     <string name="network_info_rat_text">RAT:</string>
+     <string name="network_info_mcc_text">MCC:</string>
+     <string name="network_info_mnc_text">MNC:</string>
+     <string name="network_info_lac_text">LAC:</string>
+     <string name="network_info_cid_text">CID:</string>
+     <string name="network_info_auth_text">Auth:</string>
+     <string name="network_info_cipher_text">Cipher:</string>
+     <string name="network_info_integrity_text">Integrity:</string>
+     <string name="network_info_duration_text">Duration:</string>
+     <string name="network_info_direction_text">Direction:</string>
+     <string name="network_info_paging_text">Paging:</string>
+     <string name="network_info_type_text">Type:</string>
+     <string name="network_info_msisdn_text">MSISDN:</string>
+     <string name="network_info_previous_mcc_text">Previous MCC:</string>
+     <string name="network_info_previous_mnc_text">Previous MNC:</string>
+     <string name="network_info_previous_lac_text">Previous LAC:</string>
+     <string name="network_info_lu_result_text">LU result:</string>
+     <string name="network_info_lu_reject_cause_text">LU reject cause:</string>
+     <string name="network_info_lu_type_text">LU type:</string>
+     <string name="network_info_internal_id_text">Internal ID:</string>
+
+     <string name="network_info_identity">Identity</string>
+     <string name="network_info_lupd">Location Update</string>
+     <string name="network_info_session">Session</string>
+
+     <string name="network_info_usim_unknown">unknown</string>
+     <string name="network_info_usim_not_present">not present</string>
+     <string name="network_info_usim_present">present</string>
+
+     <string name="network_info_mobile_originated">mobile originated</string>
+     <string name="network_info_mobile_terminated">mobile terminated</string>
+     <string name="network_info_lu_rejected">rejected</string>
+     <string name="network_info_lu_accepted">accepted</string>
+
+     <string name="common_none">none</string>
+     <string name="common_invalid">invalid</string>
+
      <!-- NO TRANSLATION NEEDED FOR ANY OF THE STRINGS BELOW -->
 
      <string name="settings_cat_debugging">Development</string>
@@ -303,6 +346,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 
     <string name="alert_button_ok">@android:string/ok</string>
     <string name="alert_button_cancel">@android:string/cancel</string>
-     <string name="alert_dialog_refreshappid_button_cancel">@android:string/cancel</string>
+    <string name="alert_dialog_refreshappid_button_cancel">@android:string/cancel</string>
 
+    <!-- Replaced on create -->
+    <string name="network_info_timestamp">timestamp</string>
+    <string name="network_info_tmsi_value">unknown</string>
+    <string name="network_info_imsi_value">unknown</string>
+    <string name="network_info_usim_value">unknown</string>
+    <string name="network_info_rat_value">unknown</string>
+    <string name="network_info_mcc_value">unknown</string>
+    <string name="network_info_mnc_value">unknown</string>
+    <string name="network_info_lac_value">unknown</string>
+    <string name="network_info_cid_value">unknown</string>
+    <string name="network_info_auth_value">unknown</string>
+    <string name="network_info_cipher_value">unknown</string>
+    <string name="network_info_integrity_value">unknown</string>
+    <string name="network_info_duration_value">unknown</string>
+    <string name="network_info_direction_value">unknown</string>
+    <string name="network_info_paging_value">unknown</string>
+    <string name="network_info_type_value">unknown</string>
+    <string name="network_info_msisdn_value">unknown</string>
+    <string name="network_info_lu_result_value">unknown</string>
+    <string name="network_info_lu_reject_cause_value">unknown</string>
+    <string name="network_info_lu_type_value">unknown</string>
+    <string name="network_info_internal_id_value">unknown</string>
 </resources>

@@ -90,6 +90,14 @@
             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
         </activity>
         
+        <!-- Network Info Activity -->
+        <activity
+            android:name="de.srlabs.snoopsnitch.NetworkInfoActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
+        </activity>
+
         <!-- Crash Upload Activity-->
         <activity
             android:name="de.srlabs.snoopsnitch.CrashUploadActivity"
