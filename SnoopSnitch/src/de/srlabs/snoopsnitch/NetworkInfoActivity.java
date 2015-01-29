@@ -108,7 +108,7 @@ public class NetworkInfoActivity extends BaseActivity {
 
 	private void setUSIM(SQLiteDatabase db) {
 
-		String usimText;
+		String usimText = context.getResources().getString(R.string.network_info_usim_unknown);
 		TextView usim = (TextView) findViewById(R.id.networkInfoCurrentUSIM);
 
 		Cursor query = db.rawQuery
@@ -126,10 +126,6 @@ public class NetworkInfoActivity extends BaseActivity {
 				case 2:
 					// UMTS AKA authentications happened
 					usimText = context.getResources().getString(R.string.network_info_usim_present);
-					break;
-				default:
-					// No authentication happend, we don't know
-					usimText = context.getResources().getString(R.string.network_info_usim_unknown);
 					break;
 			}
 		}
