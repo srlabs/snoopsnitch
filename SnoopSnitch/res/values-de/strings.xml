@@ -21,6 +21,7 @@
     <string name="action_active_test_advanced">Aktiver Test (Details)</string>
     <string name="action_upload_suspicious_dumps">Verdächtige Aktivitäten hochladen</string>
     <string name="action_upload_debug_logs">Debug Logs hochladen</string>
+    <string name="action_network_info">Netzwerkinfo</string>
     <string name="action_settings">Einstellungen</string>
     <string name="action_about">Über</string>
     
@@ -289,5 +290,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="no_events_title">Ereignisse</string>
      <string name="no_events_ticker">Ereignisse erkannt</string>
      <string name="no_events_detected"> Ereignisse erkannt</string>
+
+     <!-- Netzwerk Info -->
+     <string name="network_info_title">Netzwerkinfo</string>
+     <string name="network_info_auth_text">Auth:</string>
+     <string name="network_info_cipher_text">Verschlüsselung:</string>
+     <string name="network_info_integrity_text">Integritätsschutz:</string>
+     <string name="network_info_duration_text">Dauer:</string>
+     <string name="network_info_direction_text">Richtung:</string>
+     <string name="network_info_type_text">Typ:</string>
+     <string name="network_info_previous_mcc_text">Letzter MCC:</string>
+     <string name="network_info_previous_mnc_text">Letzter MNC:</string>
+     <string name="network_info_previous_lac_text">Letzter LAC:</string>
+     <string name="network_info_lu_result_text">LU Resultat:</string>
+     <string name="network_info_lu_reject_cause_text">LU Reject Cause:</string>
+     <string name="network_info_lu_type_text">LU Typ:</string>
+     <string name="network_info_internal_id_text">Interne ID:</string>
+
+     <string name="network_info_identity">Identität</string>
+     <string name="network_info_lupd">Location Update</string>
+     <string name="network_info_session">Session</string>
+
+     <string name="network_info_usim_unknown">unbekannt</string>
+     <string name="network_info_usim_not_present">nicht vorhanden</string>
+     <string name="network_info_usim_present">vorhanden</string>
+
+     <string name="network_info_mobile_originated">vom Gerät</string>
+     <string name="network_info_mobile_terminated">vom Netzwerk</string>
+     <string name="network_info_lu_rejected">abgewiesen</string>
+     <string name="network_info_lu_accepted">akzeptiert</string>
+
+     <string name="common_none">keine</string>
+     <string name="common_invalid">ungültig</string>
 
 </resources>

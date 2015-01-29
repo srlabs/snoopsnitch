@@ -292,22 +292,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 
      <!-- Network Info -->
      <string name="network_info_title">Network Info</string>
-     <string name="network_info_tmsi_text">TMSI:</string>
-     <string name="network_info_imsi_text">IMSI:</string>
-     <string name="network_info_usim_text">USIM:</string>
-     <string name="network_info_rat_text">RAT:</string>
-     <string name="network_info_mcc_text">MCC:</string>
-     <string name="network_info_mnc_text">MNC:</string>
-     <string name="network_info_lac_text">LAC:</string>
-     <string name="network_info_cid_text">CID:</string>
      <string name="network_info_auth_text">Auth:</string>
      <string name="network_info_cipher_text">Cipher:</string>
      <string name="network_info_integrity_text">Integrity:</string>
      <string name="network_info_duration_text">Duration:</string>
      <string name="network_info_direction_text">Direction:</string>
-     <string name="network_info_paging_text">Paging:</string>
      <string name="network_info_type_text">Type:</string>
-     <string name="network_info_msisdn_text">MSISDN:</string>
      <string name="network_info_previous_mcc_text">Previous MCC:</string>
      <string name="network_info_previous_mnc_text">Previous MNC:</string>
      <string name="network_info_previous_lac_text">Previous LAC:</string>
@@ -333,6 +323,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="common_invalid">invalid</string>
 
      <!-- NO TRANSLATION NEEDED FOR ANY OF THE STRINGS BELOW -->
+
+     <string name="network_info_tmsi_text">TMSI:</string>
+     <string name="network_info_imsi_text">IMSI:</string>
+     <string name="network_info_usim_text">USIM:</string>
+     <string name="network_info_rat_text">RAT:</string>
+     <string name="network_info_mcc_text">MCC:</string>
+     <string name="network_info_mnc_text">MNC:</string>
+     <string name="network_info_lac_text">LAC:</string>
+     <string name="network_info_cid_text">CID:</string>
+     <string name="network_info_msisdn_text">MSISDN:</string>
+     <string name="network_info_paging_text">Paging:</string>
 
      <string name="settings_cat_debugging">Development</string>
      <string name="settings_cat_debugging_summary">DO NOT ENABLE THIS, unless you are a SnoopSnatch developer!</string>
