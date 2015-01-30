@@ -211,6 +211,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     
     <string name="settings_active_test_force_offline_title">Force offline test</string>
     <string name="settings_active_test_force_offline_summary">Force using offline mode in active test. No data connection is used in this case.</string>
+
+    <string name="settings_active_test_sms_mo_disabled_title">Disable outgoing SMS</string>
+    <string name="settings_active_test_sms_mo_disabled_summary">Sending SMS to an invalid destination can still cost money for some providers.</string>
+
+    <string name="settings_active_test_sms_mo_number_title">Outgoing SMS number</string>
+    <string name="settings_active_test_sms_mo_number_summary">Please enter a number to which you can send SMS for free. The default \"****\" is an invalid number and most providers don\'t charge for SMS sent to this number.</string>
     
     <string name="settings_active_test_num_iterations_title">Active test iterations</string>
     <string name="settings_active_test_num_iterations_dialogtitle">Number of iterations for each active test.</string>
@@ -262,6 +268,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="at_incoming_call_ringing">Incoming call ringing</string>
      <string name="at_banned">BANNED. Go to banned.srlabs.de</string>
      <string name="at_invalid_number">Invalid number</string>
+     <string name="at_invalid_sms_mo_number">Invalid number for outgoing SMS</string>
      <string name="at_update">Please update SnoopSnitch</string>
      <string name="at_done">Done - Please test both, 2G and 3G</string>
      <string name="at_idle"></string>

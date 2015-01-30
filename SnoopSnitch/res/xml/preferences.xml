@@ -84,6 +84,20 @@
             android:key="settings_active_test_num_iterations"
             android:summary="%s"
             android:title="@string/settings_active_test_num_iterations_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:key="settings_active_test_sms_mo_disabled"
+            android:summary="@string/settings_active_test_sms_mo_disabled_summary"
+            android:title="@string/settings_active_test_sms_mo_disabled_title" />
+
+        <EditTextPreference
+            android:defaultValue="****"
+            android:dependency="settings_active_test_sms_mo_disabled"
+            android:key="settings_active_test_sms_mo_number"
+            android:summary="@string/settings_active_test_sms_mo_number_summary"
+            android:title="@string/settings_active_test_sms_mo_number_title" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="cat_debugging"

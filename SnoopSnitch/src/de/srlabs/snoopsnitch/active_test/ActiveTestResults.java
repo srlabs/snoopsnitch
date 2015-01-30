@@ -27,8 +27,10 @@ public class ActiveTestResults implements Serializable {
 	private boolean onlineMode = true;
 	private boolean blacklisted = false;
 	private boolean lteDetected = false;
-	private boolean invalidNumber;
-	private boolean invalidRequest;
+	private boolean invalidNumber = false;
+	private boolean invalidSmsMoNumber = false;
+	private boolean invalidRequest = false;
+	private boolean smsMoDisabled = false;
 
 	class NetworkOperatorTestResults implements Serializable{
 		private static final long serialVersionUID = 1L;
@@ -436,6 +438,8 @@ public class ActiveTestResults implements Serializable {
 			return getRes(context, R.string.at_banned);
 		} else if(invalidNumber){
 			return getRes(context, R.string.at_invalid_number);
+		} else if(invalidSmsMoNumber){
+			return getRes(context, R.string.at_invalid_sms_mo_number);
 		} else if(invalidRequest){
 			return getRes(context, R.string.at_update);
 		} else if(testRoundComplete){
@@ -472,6 +476,8 @@ public class ActiveTestResults implements Serializable {
 		return 0;
 	}
 	public boolean isTestTypeCompleted(TestType type){
+		if(type == TestType.SMS_MO && smsMoDisabled)
+			return true;
 		NetworkOperatorRatTestResults results = getCurrentNetworkOperatorRatTestResults();
 		if(results == null)
 			return false;
@@ -525,6 +531,8 @@ public class ActiveTestResults implements Serializable {
 		errorLog = "";
 	}
 	public boolean isTestTypeContinuable(TestType type){
+		if(type == TestType.SMS_MO && smsMoDisabled)
+			return false;
 		NetworkOperatorRatTestResults results = getCurrentNetworkOperatorRatTestResults();
 		if(results == null)
 			return false;
@@ -552,10 +560,19 @@ public class ActiveTestResults implements Serializable {
 	public void setInvalidNumber(boolean b) {
 		this.invalidNumber = b;
 	}
+	public void setInvalidSmsMoNumber(boolean b){
+		this.invalidSmsMoNumber = b;
+	}
 	public void setInvalidRequest(boolean b) {
 		this.invalidRequest = b;
 	}
 	public boolean isOnlineMode() {
 		return onlineMode;
+	}
+	public boolean isSmsMoDisabled() {
+		return smsMoDisabled;
+	}
+	public void setSmsMoDisabled(boolean smsMoDisabled) {
+		this.smsMoDisabled = smsMoDisabled;
 	}
 }

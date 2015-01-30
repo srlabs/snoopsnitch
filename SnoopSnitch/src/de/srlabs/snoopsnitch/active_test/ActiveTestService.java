@@ -62,6 +62,8 @@ public class ActiveTestService extends Service{
 	private ITelephony telephonyService;
 	private int currentExtraRecordingStartDiagMsgCount;
 	private int numTestsWithNoMessages = 0;
+	private boolean smsMoDisabled = false;
+	private String smsMoNumber = null;
 
 	class MyPhoneStateListener extends PhoneStateListener{
 		@Override
@@ -308,7 +310,7 @@ public class ActiveTestService extends Service{
 				int numCallMt = results.getCurrentNetworkOperatorRatTestResults().getNumRuns(TestType.CALL_MT);
 				State nextState = State.SMS_MO;
 				int minRunCount = numSmsMo;
-				if(numCallMo < minRunCount){
+				if(smsMoDisabled || numCallMo < minRunCount){
 					minRunCount = numCallMo;
 					nextState = State.CALL_MO;
 				}
@@ -584,6 +586,9 @@ public class ActiveTestService extends Service{
 		if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("settings_active_test_force_offline", false)){
 			results.setOnlineMode(false);
 		}
+		smsMoDisabled = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("settings_active_test_sms_mo_disabled", false);
+		results.setSmsMoDisabled(smsMoDisabled);
+		smsMoNumber  = PreferenceManager.getDefaultSharedPreferences(this).getString("settings_active_test_sms_mo_number", "*****");
 		int numIterations = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString("settings_active_test_num_iterations","3"));
 		stateInfo("applySettings(): numIterations= " + numIterations);
 		results.setNumIterations(numIterations);
@@ -836,7 +841,16 @@ public class ActiveTestService extends Service{
 				this,
 				ActiveTestService.class), 0);
 		MsdLog.i(TAG, "Sending sms to invalid destination");
-		SmsManager.getDefault().sendTextMessage("*****", null, "This is a test SMS", sentIntent, null);
+		try{
+			SmsManager.getDefault().sendTextMessage(smsMoNumber, null, "This is a test SMS", sentIntent, null);
+		} catch(Exception e){
+			results.getCurrentTest().fail("Failed to send SMS to " + smsMoNumber);
+			endExtraFileRecording(false);
+			stateMachine.setState(State.END, "Invalid SMS MO number", 0);
+			stateInfo("Invalid Number: " + smsMoNumber + ", aborting test");
+			results.setInvalidSmsMoNumber(true);
+			ActiveTestService.this.stopTest();
+		}
 	}
 	private void broadcastTestResults() {
 		if(callbacks.size() == 0)
