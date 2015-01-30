@@ -19,7 +19,12 @@ public class ChartSlidePageFragment extends Fragment
 	{
 		this.position = position;
 	}
-	
+	/**
+	 * The empty Constructor is needed to restore the View after it has been destroyed.
+	 */
+	public ChartSlidePageFragment() {
+		this.position = 3;
+	}
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) 
