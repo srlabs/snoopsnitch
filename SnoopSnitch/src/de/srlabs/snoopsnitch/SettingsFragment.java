@@ -44,6 +44,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	
 	private void updatePreference(Preference preference) 
 	{
+		if(preference == null || preference.getKey() == null)
+			return;
 		if (preference.getKey().equals("settings_appId")) 
 		{
 			this.getActivity().invalidateOptionsMenu();
