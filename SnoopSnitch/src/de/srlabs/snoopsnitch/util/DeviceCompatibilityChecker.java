@@ -32,7 +32,7 @@ public class DeviceCompatibilityChecker {
 	 *         Error if the phone is not compatible.
 	 */
 	public static String checkDeviceCompatibility(Context context){
-		boolean deviceIncompatibleDetected = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("device_incompatible_detected", false);
+		boolean deviceIncompatibleDetected = MsdConfig.getDeviceIncompatible(context);
 		if(deviceIncompatibleDetected){
 			return context.getResources().getString(R.string.compat_no_baseband_messages_in_active_test);
 		}

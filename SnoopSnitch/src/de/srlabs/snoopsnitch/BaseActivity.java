@@ -25,6 +25,7 @@ import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.upload.DumpFile;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
@@ -281,17 +282,11 @@ public class BaseActivity extends FragmentActivity
 	
 	private String setAppId ()
 	{
-		SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_MULTI_PROCESS);
-
-		if (sharedPreferences.getString("settings_appId", "") == "")
+		if (MsdConfig.getAppId(this) == "")
 		{
-	        SharedPreferences.Editor editor = sharedPreferences.edit();
-	        editor.putString("settings_appId", Utils.generateAppId());
-	        editor.commit();
+			MsdConfig.setAppId(this, Utils.generateAppId());
 		}
-		
-		
-		return getResources().getText(R.string.actionBar_subTitle) + " " + sharedPreferences.getString("settings_appId", "");
+		return getResources().getText(R.string.actionBar_subTitle) + " " + MsdConfig.getAppId(this);
 	}
 	
 	protected Runnable runnable = new Runnable() 

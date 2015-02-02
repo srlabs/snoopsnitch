@@ -466,7 +466,7 @@ public class MsdService extends Service{
 			this.shuttingDown.set(false);
 			this.sqliteThread = new SqliteThread();
 			sqliteThread.start();
-			deviceCompatibleDetected = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("device_compatible_detected", false);
+			deviceCompatibleDetected = MsdConfig.getDeviceCompatibleDetected(this);
 			launchParser();
 			openOrReopenRawWriter();
 			diagMsgCount = 0;
@@ -490,11 +490,9 @@ public class MsdService extends Service{
 			sendStateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
 
 			//  Enable this in the settings to test fatal errors
-			boolean crash = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getBoolean("settings_crash", false);
+			boolean crash = MsdConfig.getCrash(MsdService.this);
 			if (crash) {
-				Editor edit = PreferenceManager.getDefaultSharedPreferences(MsdService.this).edit();
-				edit.putBoolean("settings_crash", false);
-				edit.commit();
+				MsdConfig.setCrash(MsdService.this, false);
 
 				mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(new Runnable() {				
 					@Override
@@ -810,8 +808,7 @@ public class MsdService extends Service{
 		@Override
 		public void run() {
 			try {
-				boolean parserLogging =
-						PreferenceManager.getDefaultSharedPreferences(MsdService.this).getBoolean("settings_parser_logging", false);
+				boolean parserLogging = MsdConfig.getParserLogging(MsdService.this);
 
 				while(true){
 					String line = parserStdout.readLine();
@@ -827,10 +824,8 @@ public class MsdService extends Service{
 						continue; // Ignore empty lines
 					// Mark the device as compatible after the first SQL or RAT line from the parser.
 					if(!deviceCompatibleDetected && (line.startsWith("SQL:") || line.startsWith("RAT:"))){
-						Editor editor = PreferenceManager.getDefaultSharedPreferences(MsdService.this).edit();
-						editor.putBoolean("device_compatible_detected", true);
-						editor.commit();
 						deviceCompatibleDetected = true;
+						MsdConfig.setDeviceCompatibleDetected(MsdService.this, true);
 					}
 					if(line.startsWith("SQL:")){
 						String sql = line.substring(4);
@@ -949,8 +944,7 @@ public class MsdService extends Service{
 						AnalysisStackTraceLogRunnable analysisStackTraceLogRunnable = null;
 
 						// For debugging delays in the analysis, we can dump a Stack Trace of this Thread every 100 ms.
-						boolean dumpAnalysisStackTraces =
-								PreferenceManager.getDefaultSharedPreferences(MsdService.this).getBoolean("settings_debugging_dump_analysis_stacktraces",false);
+						boolean dumpAnalysisStackTraces = MsdConfig.getDumpAnalysisStackTraces(MsdService.this);
 
 						if(dumpAnalysisStackTraces){
 							analysisStackTraceLogRunnable = new AnalysisStackTraceLogRunnable();
@@ -1261,7 +1255,7 @@ public class MsdService extends Service{
 		public void run() {
 			// info("DownloadDataJsThread.run() called");
 			// Check for a new version at most once in 24 hours
-			long lastCheckTime = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getLong("data_js_last_check_time",0);
+			long lastCheckTime = MsdConfig.getDataJSLastCheckTime(MsdService.this);
 			if(System.currentTimeMillis() > lastCheckTime + 24*3600*1000){
 				try {
 					info("DownloadDataJsThread.run(): Checking if there is a new version on the server");
@@ -1275,7 +1269,7 @@ public class MsdService extends Service{
 					SchemeRegistry schemeRegistry = httpClient.getConnectionManager().getSchemeRegistry();
 					schemeRegistry.register(new Scheme("https", new TlsSniSocketFactory(), 443));
 					HttpGet httpGet = new HttpGet("https://gsmmap.org/assets/data/app_data.json");
-					String localFileLastModified = PreferenceManager.getDefaultSharedPreferences(MsdService.this).getString("data_js_last_modified_header",null);
+					String localFileLastModified = MsdConfig.getDataJSLastModifiedHeader(MsdService.this);
 					if(localFileLastModified != null){
 						httpGet.addHeader("If-Modified-Since",localFileLastModified);
 					}
@@ -1304,9 +1298,7 @@ public class MsdService extends Service{
 						if(lastModifiedHeaders.length == 1){
 							String lastModifiedHeader = lastModifiedHeaders[0].getValue();
 							info("lastModifiedHeader: " + lastModifiedHeader);
-							Editor editor = PreferenceManager.getDefaultSharedPreferences(MsdService.this).edit();
-							editor.putString("data_js_last_modified_header",lastModifiedHeader);
-							editor.commit();
+							MsdConfig.setDataJSLastModifiedHeader(MsdService.this, lastModifiedHeader);
 						}
 						//  Parse data
 						try{
@@ -1327,9 +1319,7 @@ public class MsdService extends Service{
 					return;
 				}
 				// Update last check time
-				Editor editor = PreferenceManager.getDefaultSharedPreferences(MsdService.this).edit();
-				editor.putLong("data_js_last_check_time",System.currentTimeMillis());
-				editor.commit();
+				MsdConfig.setDataJSLastCheckTime(MsdService.this, System.currentTimeMillis());
 			}
 		}
 	}

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdService;
 import de.srlabs.snoopsnitch.util.Constants;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
 
@@ -169,8 +170,7 @@ public class ActiveTestHelper{
 		queryPhoneNumberAndStart(null);
 	}
 	private void queryPhoneNumberAndStart(String msg){
-		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		final String lastConfirmedOwnNumber = prefs.getString(Constants.PREFS_KEY_OWN_NUMBER, "");
+		final String lastConfirmedOwnNumber = MsdConfig.getOwnNumber(context);
 		final EditText editText = new EditText(context);
 		editText.setHint("intl. notation, start with '+'");
 		editText.setInputType(InputType.TYPE_CLASS_PHONE);
@@ -208,7 +208,7 @@ public class ActiveTestHelper{
 				confirmedOwnNumber = tmp;
 				if(confirmedOwnNumber.isEmpty())
 					return;
-				prefs.edit().putString(Constants.PREFS_KEY_OWN_NUMBER, confirmedOwnNumber).commit();
+				MsdConfig.setOwnNumber(context, confirmedOwnNumber);
 				startActiveTest(confirmedOwnNumber);
 			}
 		});
@@ -224,7 +224,9 @@ public class ActiveTestHelper{
 	public void showConfirmDialogAndStart(final boolean clearResults){
 		if(confirmDialog != null && confirmDialog.isShowing())
 			return;
-		final boolean uploadDisabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("settings_active_test_disable_upload", false);
+
+		final boolean uploadDisabled = MsdConfig.getActiveTestDisableUpload(context);
+
 		String positiveButtonText;
 		String networkTestMessage;
 		if(uploadDisabled) {

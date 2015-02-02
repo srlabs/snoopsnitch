@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.Utils;
 
 public class SettingsActivity extends PreferenceActivity
@@ -23,9 +24,6 @@ public class SettingsActivity extends PreferenceActivity
 	
 	public void refreshAppId ()
 	{
-		SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
-	    SharedPreferences.Editor editor = sharedPreferences.edit();
-	    editor.putString("settings_appId", Utils.generateAppId());
-	    editor.commit();
+		MsdConfig.setAppId(this, Utils.generateAppId());
 	}
 }

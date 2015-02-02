@@ -39,6 +39,7 @@ import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 import de.srlabs.snoopsnitch.qdmon.Operator;
 import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.Utils;
 
@@ -583,13 +584,13 @@ public class ActiveTestService extends Service{
 	private void applySettings(boolean switchToOnline){
 		if(switchToOnline && isNetworkAvailable())
 			results.setOnlineMode(true);
-		if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("settings_active_test_force_offline", false)){
+		if(MsdConfig.getActiveTestForceOffline(this)){
 			results.setOnlineMode(false);
 		}
-		smsMoDisabled = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("settings_active_test_sms_mo_disabled", false);
+		smsMoDisabled = MsdConfig.getActiveTestSMSMODisabled(this);
 		results.setSmsMoDisabled(smsMoDisabled);
-		smsMoNumber  = PreferenceManager.getDefaultSharedPreferences(this).getString("settings_active_test_sms_mo_number", "*****");
-		int numIterations = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString("settings_active_test_num_iterations","3"));
+		smsMoNumber  = MsdConfig.getActiveTestSMSMONumber(this);
+		int numIterations = MsdConfig.getActiveTestNumIterations(this);
 		stateInfo("applySettings(): numIterations= " + numIterations);
 		results.setNumIterations(numIterations);
 	}
@@ -803,16 +804,14 @@ public class ActiveTestService extends Service{
 				numTestsWithNoMessages++;
 				if(numTestsWithNoMessages >= 3){
 					// At least 3 tests have not generated any diag messages.
-					boolean deviceCompatibleDetected = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("device_compatible_detected", false);
+					boolean deviceCompatibleDetected = MsdConfig.getDeviceIncompatible(this);
 					if(!deviceCompatibleDetected){
 						stateInfo("Detected incompatible device, stopping test");
 						// We have never received an SQL message from the parser
 						// and we have at least 3 tests without diag messages =>
 						// The device is most likely incompatible.
 						stopTest();
-						Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-						editor.putBoolean("device_incompatible_detected", true);
-						editor.commit();
+						MsdConfig.setDeviceIncompatible(this, true);
 						Vector<IActiveTestCallback> callbacksToRemove = new Vector<IActiveTestCallback>();
 						for(IActiveTestCallback callback:callbacks){
 							try {

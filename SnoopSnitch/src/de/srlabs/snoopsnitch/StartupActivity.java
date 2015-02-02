@@ -13,6 +13,7 @@ import android.os.Handler;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.Utils;
 
@@ -33,8 +34,7 @@ public class StartupActivity extends Activity{
     	super.onCreate(savedInstanceState);
     	String incompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
         if(incompatibilityReason == null){
-    		final SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
-        	if(sharedPreferences.getBoolean("app_first_run", true)){
+        	if(MsdConfig.getFirstRun(this)){
         		showFirstRunDialog();
         	} else{
         		createDatabaseAndStartDashboard();
@@ -54,7 +54,6 @@ public class StartupActivity extends Activity{
     }
     
 	private void showFirstRunDialog() {
-		final SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
 		MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.alert_first_app_start_message),
 				new OnClickListener() 
 				{
@@ -65,7 +64,7 @@ public class StartupActivity extends Activity{
 							return;
 						alreadyClicked = true;
 					    // record the fact that the app has been started at least once
-					    sharedPreferences.edit().putBoolean("app_first_run", false).commit(); 	
+					    MsdConfig.setFirstRun(StartupActivity.this, false);
 						createDatabaseAndStartDashboard();
 					}
 				},

@@ -13,6 +13,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import de.srlabs.snoopsnitch.util.Constants;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.Utils;
 
@@ -34,7 +35,7 @@ public abstract class ApiCall extends Thread {
 		this.action = action;
 		this.number = number;
 		this.context = context;
-		this.appId = context.getSharedPreferences("preferences", Context.MODE_PRIVATE).getString("settings_appId", "NO_APPI_ID");
+		this.appId = MsdConfig.getAppId(context);
 		this.callbackHandler = new Handler(Looper.myLooper());
 	}
 
