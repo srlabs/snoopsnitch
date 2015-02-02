@@ -40,16 +40,14 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) 
 	{
-		updatePreference(findPreference(key));		
-	}
-	
-	private void updatePreference(Preference preference) 
-	{
-		if(preference == null || preference.getKey() == null)
-			return;
-		if (preference.getKey().equals("settings_appId")) 
+		this.getActivity().invalidateOptionsMenu();
+
+		if (key.equals("settings_basebandLogKeepDuration")
+		 || key.equals("settings_debugLogKeepDuration")
+		 || key.equals("settings_locationLogKeepDuration")
+		 || key.equals("settings_analysisLogKeepDuration"))
 		{
-			this.getActivity().invalidateOptionsMenu();
+			MsdConfig.setLastCleanupTime(sharedPreferences, 0);
 		}
 	}
 	

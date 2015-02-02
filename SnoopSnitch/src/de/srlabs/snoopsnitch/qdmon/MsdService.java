@@ -262,8 +262,6 @@ public class MsdService extends Service{
 
 	public int parserRatGeneration = 0;
 
-	private long lastCleanupTime = 0;
-
 	private int diagMsgCount = 0;
 
 	private boolean deviceCompatibleDetected = false;
@@ -1920,7 +1918,7 @@ public class MsdService extends Service{
 		}
 	}
 	private void cleanup(){
-		if(System.currentTimeMillis() > lastCleanupTime + 3600 * 1000){
+		if(System.currentTimeMillis() > MsdConfig.getLastCleanupTime(this) + 3600 * 1000){
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
 			try{
@@ -1941,7 +1939,7 @@ public class MsdService extends Service{
 				MsdDatabaseManager.getInstance().closeDatabase();
 				wl.release();
 			}
-			lastCleanupTime = System.currentTimeMillis();
+			MsdConfig.setLastCleanupTime(this, System.currentTimeMillis());
 		}
 	}
 	private void cleanupFiles(SQLiteDatabase db){
