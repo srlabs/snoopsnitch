@@ -1,7 +1,9 @@
 package de.srlabs.snoopsnitch;
 
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 import de.srlabs.snoopsnitch.util.MsdConfig;
+import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -13,28 +15,29 @@ import android.preference.PreferenceFragment;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener
 {
-	@Override
-    public void onCreate(Bundle savedInstanceState) 
-	{
-        super.onCreate(savedInstanceState);
+	private boolean settingsChanged = false;
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
-        
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-        
-        Preference myPref = findPreference("settings_appId");
-        myPref.setOnPreferenceClickListener(new OnPreferenceClickListener() 
-        {
-                     @Override
-					public boolean onPreferenceClick(Preference preference) 
-                     {
-                    	 showgenerateAppIdDialog ();
-                    	 
-                    	 return true;
-                     }
-                 });
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) 
+	{
+		super.onCreate(savedInstanceState);
+
+		// Load the preferences from an XML resource
+		addPreferencesFromResource(R.xml.preferences);
+
+		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+
+		Preference myPref = findPreference("settings_appId");
+		myPref.setOnPreferenceClickListener(new OnPreferenceClickListener() 
+		{
+			@Override
+			public boolean onPreferenceClick(Preference preference) 
+			{
+				showgenerateAppIdDialog ();
+				return true;
+			}
+		});
+	}
 	
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -49,6 +52,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		{
 			MsdConfig.setLastCleanupTime(sharedPreferences, 0);
 		}
+
+		settingsChanged = true;
 	}
 	
 	private void showgenerateAppIdDialog ()
@@ -77,6 +82,18 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		    
 	      AlertDialog alertDialog = alertDialogBuilder.create();
 	      alertDialog.show();
+	}
+
+	@Override
+	public void onDestroyView(){
+		MSDServiceHelperCreator msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(getActivity(), true);
+		MsdServiceHelper msdServiceHelper = msdServiceHelperCreator.getMsdServiceHelper();
+
+		if (settingsChanged){
+			msdServiceHelper.stopRecording();
+			msdServiceHelper.startRecording();
+			settingsChanged = false;
+		}
 	}
 }
 	
