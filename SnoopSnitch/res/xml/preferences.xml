@@ -99,45 +99,48 @@
             android:summary="@string/settings_active_test_sms_mo_number_summary"
             android:title="@string/settings_active_test_sms_mo_number_title" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:key="cat_debugging"
-        android:selectable="false"
-        android:title="@string/settings_cat_debugging" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="settings_enable_devel_options"
-            android:summary="@string/settings_cat_debugging_summary"
-            android:title="@string/settings_enable_devel_options" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="settings_enable_devel_options"
-            android:key="settings_recordUnencryptedLogfiles"
-            android:summary="@string/settings_unencryptedlogfilesrecording_summary"
-            android:title="@string/settings_unencryptedlogfilesrecording_title" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="settings_enable_devel_options"
-            android:key="settings_recordUnencryptedDumpfiles"
-            android:summary="@string/settings_unencrypteddumpfilesrecording_summary"
-            android:title="@string/settings_unencrypteddumpfilesrecording_title" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="settings_enable_devel_options"
-            android:key="settings_crash"
-            android:summary="@string/settings_debugging_crash_summary"
-            android:title="@string/settings_debugging_crash" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="settings_enable_devel_options"
-            android:key="settings_debugging_dump_analysis_stacktraces"
-            android:summary="@string/settings_debugging_dump_analysis_stacktraces_summary"
-            android:title="@string/settings_debugging_dump_analysis_stacktraces" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="settings_enable_devel_options"
-            android:key="settings_parser_logging"
-            android:summary="@string/settings_debugging_parser_logging_summary"
-            android:title="@string/settings_debugging_parser_logging" />
-    </PreferenceCategory>
+
+    <PreferenceScreen android:title="@string/settings_cat_debugging" >
+        <PreferenceCategory
+            android:key="cat_debugging"
+            android:selectable="false"
+            android:title="@string/settings_cat_debugging" >
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="settings_enable_devel_options"
+                android:summary="@string/settings_cat_debugging_summary"
+                android:title="@string/settings_enable_devel_options" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_recordUnencryptedLogfiles"
+                android:summary="@string/settings_unencryptedlogfilesrecording_summary"
+                android:title="@string/settings_unencryptedlogfilesrecording_title" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_recordUnencryptedDumpfiles"
+                android:summary="@string/settings_unencrypteddumpfilesrecording_summary"
+                android:title="@string/settings_unencrypteddumpfilesrecording_title" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_crash"
+                android:summary="@string/settings_debugging_crash_summary"
+                android:title="@string/settings_debugging_crash" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_debugging_dump_analysis_stacktraces"
+                android:summary="@string/settings_debugging_dump_analysis_stacktraces_summary"
+                android:title="@string/settings_debugging_dump_analysis_stacktraces" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_parser_logging"
+                android:summary="@string/settings_debugging_parser_logging_summary"
+                android:title="@string/settings_debugging_parser_logging" />
+        </PreferenceCategory>
+    </PreferenceScreen>
 
 </PreferenceScreen>
