@@ -375,7 +375,9 @@ public class ActiveTestResults implements Serializable {
 				result.append("set3GActive();\n");			
 			}
 		}
-		String mode = (onlineMode ? "Setting: Online, " : "Setting: Offline, ") + numIterations + " x 4 tests";
+		String mode = (onlineMode ? "Setting: Online, " : "Setting: Offline, ") +
+				numIterations + " x 4 tests" +
+				(smsMoDisabled ? ", " + "no SMS out" : "");
 		result.append("setTestMode(" + escape(mode) + ");\n");
 		if(currentNetworkOperator != null){
 			result.append("updateBuckets({");
