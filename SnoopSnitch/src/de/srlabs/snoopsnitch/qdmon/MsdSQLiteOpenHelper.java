@@ -9,7 +9,7 @@ import de.srlabs.snoopsnitch.util.Utils;
 
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "msd.db";
-	private static final int DATABASE_VERSION = 17;
+	private static final int DATABASE_VERSION = 18;
 	private Context context;
 	public MsdSQLiteOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -88,6 +88,29 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 			// Force rebuild of GSMmap database entries
 			db.execSQL("DELETE FROM gsmmap_operators");
 		}
-	}
 
+		// A number of new fields have been introduced into the sms_meta table and a
+		// new table sid_appid was added.
+		if (oldVersion <= 17 && newVersion > oldVersion) {
+			// We add the new columns, but do not convert the old content.
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN concat_frag smallint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN concat_total smallint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN src_port smallint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN dst_port smallint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN ota_iei tinyint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN ota_enc tinyint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN ota_enc_algo tinyint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN ota_sign tinyint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN ota_sign_algo tinyint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN ota_counter tinyint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN ota_counter_value CHAR(10) DEFAULT NULL");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN ota_tar CHAR(6) DEFAULT NULL");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN ota_por smallint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN udh_length smallint NOT NULL DEFAULT 0");
+			db.execSQL("ALTER TABLE sms_meta ADD COLUMN real_length smallint NOT NULL DEFAULT 0");
+
+			//  New table sid_appid added
+			db.execSQL("CREATE TABLE sid_appid (sid integer PRIMARY KEY, appid char(8) NOT NULL)");
+		}
+	}
 }
