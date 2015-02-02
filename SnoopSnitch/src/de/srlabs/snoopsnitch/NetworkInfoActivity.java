@@ -78,18 +78,6 @@ public class NetworkInfoActivity extends BaseActivity {
 		MsdDatabaseManager.getInstance().closeDatabase();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu _menu)
-	{
-		super.onCreateOptionsMenu(_menu);
-
-		// Disable map, recording icon and preferences
-		menu.getItem(0).setVisible(false);
-		menu.getItem(1).setVisible(false);
-
-		return true;
-	}
-
 	private void setCurrentTMSI(SQLiteDatabase db) {
 
 		String tmsiText = "-";

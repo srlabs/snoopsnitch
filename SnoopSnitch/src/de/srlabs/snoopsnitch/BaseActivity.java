@@ -100,26 +100,6 @@ public class BaseActivity extends FragmentActivity
 		super.onDestroy();
 	}
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu _menu) 
-	{
-	    // Inflate the menu items for use in the action bar
-		this.menu = _menu;
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.main, menu);
-	    
-		if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
-		{
-			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_record_disable));
-		}
-		else
-		{
-			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
-		}
-	    
-	    return super.onCreateOptionsMenu(menu);
-	}
-	
 	protected void showMap ()
 	{
 	    Intent intent = new Intent(this, MapActivity.class);

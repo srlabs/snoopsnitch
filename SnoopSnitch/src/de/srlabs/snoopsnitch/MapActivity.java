@@ -30,16 +30,4 @@ public class MapActivity extends BaseActivity
 			Log.e(getLocalClassName(), e.getMessage());
 		}
 	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu _menu) 
-	{
-		super.onCreateOptionsMenu(_menu);
-		
-		// Disable map and recording icon
-		menu.getItem(0).setVisible(false);
-		menu.getItem(1).setVisible(false);
-		
-		return true;
-	}
 }

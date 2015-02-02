@@ -10,6 +10,8 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -113,6 +115,26 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		threatImsiCounts.add(txtImsiDayCount);
 		threatImsiCounts.add(txtImsiWeekCount);
 		threatImsiCounts.add(txtImsiMonthCount);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu _menu) 
+	{
+	    // Inflate the menu items for use in the action bar
+		this.menu = _menu;
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main, menu);
+	    
+		if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
+		{
+			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_record_disable));
+		}
+		else
+		{
+			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
+		}
+		
+	    return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
