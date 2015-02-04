@@ -1,6 +1,8 @@
 package de.srlabs.snoopsnitch.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import android.content.Context;
 import android.os.Build;
@@ -12,13 +14,13 @@ import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 public class MsdLog {
 	private static MsdServiceHelper msdServiceHelper;
 	private static MsdService msd;
+
 	private static String getTimePrefix(){
 		Calendar c = Calendar.getInstance();
-		String result = "" + c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) < 10 ? "0" : "") + c.get(Calendar.MONTH) + "-" + ( c.get(Calendar.DAY_OF_MONTH) < 10 ? "0" : "" ) + c.get(Calendar.DAY_OF_MONTH);
-		// TODO: Add millis
-		result += " " + (c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" : "") + c.get(Calendar.HOUR_OF_DAY) + ":" + (c.get(Calendar.MINUTE) < 10 ? "0" : "") + c.get(Calendar.MINUTE) + ":" + (c.get(Calendar.SECOND) < 10 ? "0" : "") + c.get(Calendar.SECOND) + " ";
-		return result;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+		return format.format(c.getTime()) + " ";
 	}
+
 	public static void i(String tag, String msg) {
 		Log.i(tag,msg);
 		printlnToLog(getTimePrefix() + tag + ": INFO: " + msg);
