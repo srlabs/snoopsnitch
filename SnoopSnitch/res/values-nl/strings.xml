@@ -22,6 +22,7 @@
     <string name="action_active_test_advanced">Actieve test (Details)</string>
     <string name="action_upload_suspicious_dumps">Upload verdachte activiteit</string>
     <string name="action_upload_debug_logs">Upload debug logs</string>
+    <string name="action_network_info">Netwerk Info</string>
     <string name="action_settings">Instellingen</string>
     <string name="action_about">Over</string>
     
@@ -287,4 +288,36 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="no_events_title">Beveiligingsincidenten</string>
      <string name="no_events_ticker">Beveiligingsincidenten ontdekt</string>
      <string name="no_events_detected"> Beveiligingsincidenten ontdekt</string>
+
+     <!-- Netwerk Info -->
+     <string name="network_info_title">Netwerk Info</string>
+     <string name="network_info_auth_text">Auth:</string>
+     <string name="network_info_cipher_text">Cipher:</string>
+     <string name="network_info_integrity_text">Integriteit:</string>
+     <string name="network_info_duration_text">Duur:</string>
+     <string name="network_info_direction_text">Richting:</string>
+     <string name="network_info_type_text">Type:</string>
+     <string name="network_info_previous_mcc_text">Vorige MCC:</string>
+     <string name="network_info_previous_mnc_text">Vorige MNC:</string>
+     <string name="network_info_previous_lac_text">Vorige LAC:</string>
+     <string name="network_info_lu_result_text">LU resultaat:</string>
+     <string name="network_info_lu_reject_cause_text">LU afgewijzing reden:</string>
+     <string name="network_info_lu_type_text">LU type:</string>
+     <string name="network_info_internal_id_text">Interne ID:</string>
+
+     <string name="network_info_identity">Identiteit</string>
+     <string name="network_info_lupd">Locatie Update</string>
+     <string name="network_info_session">Sessie</string>
+
+     <string name="network_info_usim_unknown">onbekend</string>
+     <string name="network_info_usim_not_present">niet beschikbaar</string>
+     <string name="network_info_usim_present">beschikbaar</string>
+
+     <string name="network_info_mobile_originated">mobile oorsprong</string>
+     <string name="network_info_mobile_terminated">mobile bestemming</string>
+     <string name="network_info_lu_rejected">afgewezen</string>
+     <string name="network_info_lu_accepted">geaccepteerd</string>
+
+     <string name="common_none">geen</string>
+     <string name="common_invalid">invalide</string>
 </resources>
