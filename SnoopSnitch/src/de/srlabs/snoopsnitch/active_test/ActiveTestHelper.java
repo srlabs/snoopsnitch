@@ -116,7 +116,7 @@ public class ActiveTestHelper{
 		try {
 			mIActiveTestService.stopTest();
 		} catch (Exception e) {
-			handleFatalError("Exception while running mIActiveTestService.startTest(ownNumber)", e);
+			handleFatalError("Exception while running mIActiveTestService.stopTest(ownNumber)", e);
 		}
 	}
 	public boolean isConnected(){
@@ -137,8 +137,6 @@ public class ActiveTestHelper{
 	}
 	private void handleFatalError(String errorMsg, Exception e){
 		String msg = errorMsg;
-		if(e != null)
-			msg += e.getClass().getCanonicalName() + ": " + e.getMessage() + "  Stack: " + Log.getStackTraceString(e);
 		MsdLog.e(TAG, msg, e);
 		callback.internalError(msg);
 	}
