@@ -130,11 +130,17 @@ public class NetworkInfoActivity extends BaseActivity {
 		{
 			view.setText(value);
 		}
+		view.invalidate();
 	}
 
 	private void setVisibility(boolean visible, int ID) {
 		TextView view = (TextView) findViewById(ID);
 		view.setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+
+	private void setVisibility2(boolean visible, int ID1, int ID2) {
+		setVisibility(visible, ID1);
+		setVisibility(visible, ID2);
 	}
 
 	private String toAuthString(int value) {
@@ -151,7 +157,7 @@ public class NetworkInfoActivity extends BaseActivity {
 			case 0: return "2G";
 			case 1: return "3G";
 			case 2: return "LTE";
-			default: return "-";
+			default: return "unknown";
 		}
 	}
 
@@ -179,10 +185,10 @@ public class NetworkInfoActivity extends BaseActivity {
 		if (mo > 0 && mt > 0)
 		{
 			return context.getResources().getString(R.string.common_invalid) + "(MO+MT)";
-		} else if (mo > 0)
+		} else if (mt > 0)
 		{
 			return context.getResources().getString(R.string.network_info_mobile_terminated);
-		} else if (mt > 0)
+		} else if (mo > 0)
 		{
 			return context.getResources().getString(R.string.network_info_mobile_originated);
 		} else
@@ -207,19 +213,19 @@ public class NetworkInfoActivity extends BaseActivity {
 		String result = "";
 
 		if (locupd > 0) {
-			result += "LU ";
+			result += "location update ";
 		}
 
 		if (abort > 0) {
-			result += "A ";
+			result += "aborted ";
 		}
 
 		if (call > 0) {
-			result += "C ";
+			result += "call ";
 		}
 
-		if (abort > 0) {
-			result += "S ";
+		if (sms > 0) {
+			result += "sms ";
 		}
 		return result;
 	}
@@ -241,8 +247,14 @@ public class NetworkInfoActivity extends BaseActivity {
 	}
 	
 	private String toLUTypeString(int lu_type) {
-		// FIXME: use names
-		return Integer.toString(lu_type);
+		switch (lu_type)
+		{
+			case 0:  return "normal";
+			case 1:  return "periodic";
+			case 2:  return "IMSI attach";
+			case 3:  return "reserved";
+			default: return "-";
+		}
 	}
 
 	private void setTransaction(SQLiteDatabase db) {
@@ -321,6 +333,32 @@ public class NetworkInfoActivity extends BaseActivity {
 			setTextView(R.id.networkInfoLURejectCause, Integer.toString(rej_cause));
 
 			setTextView(R.id.networkInfoCurrentImsi, IMSI);
+
+			// Disable invalid elements
+
+			// paging
+			setVisibility2(paging_mi != 0, R.id.txtPaging, R.id.networkInfoCurrentPaging);
+
+			// location update
+			setVisibility(t_locupd == 1,    				R.id.networkInfoLupd);
+			setVisibility2(t_locupd == 1,    				R.id.txtLUType, R.id.networkInfoLUType);
+			setVisibility2(t_locupd == 1,    				R.id.txtLUResult, R.id.networkInfoLUResult);
+			setVisibility2(t_locupd == 1 && lu_reject == 1, R.id.txtLURejectCause, R.id.networkInfoLURejectCause);
+			setVisibility2(t_locupd == 1 && lu_acc == 1,    R.id.txtPreviousMCC, R.id.networkInfoPreviousMCC);
+			setVisibility2(t_locupd == 1 && lu_acc == 1,    R.id.txtPreviousMNC, R.id.networkInfoPreviousMNC);
+			setVisibility2(t_locupd == 1 && lu_acc == 1,    R.id.txtPreviousLAC, R.id.networkInfoPreviousLAC);
+
+			// MSISDN
+			setVisibility2(t_call == 1 || t_sms == 1,    	R.id.txtMSISDN, R.id.networkInfoCurrentMSISDN);
+
+			// MCC, MNC, LAC or CID may not be present
+			setVisibility2(mcc > 0,    						R.id.txtMCC, R.id.networkInfoCurrentMCC);
+			setVisibility2(mnc > 0,    						R.id.txtMNC, R.id.networkInfoCurrentMNC);
+			setVisibility2(lac > 0,    						R.id.txtLAC, R.id.networkInfoCurrentLAC);
+			setVisibility2(cid > 0,    						R.id.txtCID, R.id.networkInfoCurrentCID);
+
+			// Duration may be 0
+			setVisibility2(duration > 0,    				R.id.txtDuration, R.id.networkInfoCurrentDuration);
 		}
 	}
 
