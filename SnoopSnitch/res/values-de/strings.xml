@@ -215,6 +215,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="settings_active_test_force_offline_title">Offlinetest erzwingen</string>
     <string name="settings_active_test_force_offline_summary">Verwende ausschließlich den Offlinemodus im aktiven Test. Dafür ist keine Datenverbindung notwendig.</string>
     
+    <string name="settings_active_test_sms_mo_disabled_title">Keine ausgehenden SMS</string>
+    <string name="settings_active_test_sms_mo_disabled_summary">Einige Provider erheben Gebühren für SMS die an ungültige Nummern versandt werden.</string>
+
+    <string name="settings_active_test_sms_mo_number_title">Outgoing SMS number</string>
+    <string name="settings_active_test_sms_mo_number_summary">Bitte geben Sie eine Nummer ein, an die Sie kostenlos SMS versenden können. Die Voreinstellung \"*4*\" ist eine ungültige Nummer. Die meisten Provider erheben keine Gebühren für SMS die an diese Nummer versandt werden.</string>
+    
     <string name="settings_active_test_num_iterations_title">Durchläufe beim aktiven Test</string>
     <string name="settings_active_test_num_iterations_dialogtitle">Anzahl der Testrunden beim aktiven Test</string>
     

@@ -216,7 +216,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="settings_active_test_sms_mo_disabled_summary">Sending SMS to an invalid destination can still cost money for some providers.</string>
 
     <string name="settings_active_test_sms_mo_number_title">Outgoing SMS number</string>
-    <string name="settings_active_test_sms_mo_number_summary">Please enter a number to which you can send SMS for free. The default \"****\" is an invalid number and most providers don\'t charge for SMS sent to this number.</string>
+    <string name="settings_active_test_sms_mo_number_summary">Please enter a number to which you can send SMS for free. The default \"*4*\" is an invalid number and most providers don\'t charge for SMS sent to this number.</string>
     
     <string name="settings_active_test_num_iterations_title">Active test iterations</string>
     <string name="settings_active_test_num_iterations_dialogtitle">Number of iterations for each active test.</string>

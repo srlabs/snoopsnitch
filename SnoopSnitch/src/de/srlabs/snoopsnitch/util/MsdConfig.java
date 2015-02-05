@@ -103,7 +103,7 @@ public class MsdConfig {
 
 	public static String getActiveTestSMSMONumber(Context context)
 	{
-		return sharedPrefs(context).getString("settings_active_test_sms_mo_number", "*****");
+		return sharedPrefs(context).getString("settings_active_test_sms_mo_number", "*4*");
 	}
 
 	public static long getDataJSLastCheckTime(Context context)

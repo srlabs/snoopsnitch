@@ -93,7 +93,7 @@
             android:title="@string/settings_active_test_sms_mo_disabled_title" />
 
         <EditTextPreference
-            android:defaultValue="****"
+            android:defaultValue="*4*"
             android:dependency="settings_active_test_sms_mo_disabled"
             android:key="settings_active_test_sms_mo_number"
             android:summary="@string/settings_active_test_sms_mo_number_summary"
