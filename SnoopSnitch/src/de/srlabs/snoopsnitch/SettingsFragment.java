@@ -87,12 +87,17 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
 	@Override
 	public void onDestroyView(){
+		super.onDestroyView();
+
 		MSDServiceHelperCreator msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(getActivity(), true);
 		MsdServiceHelper msdServiceHelper = msdServiceHelperCreator.getMsdServiceHelper();
 
 		if (settingsChanged){
-			msdServiceHelper.stopRecording();
-			msdServiceHelper.startRecording();
+			if (msdServiceHelper.isRecording())
+			{
+				msdServiceHelper.stopRecording();
+				msdServiceHelper.startRecording();
+			}
 			settingsChanged = false;
 		}
 		super.onDestroyView();
