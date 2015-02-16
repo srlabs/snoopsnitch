@@ -43,7 +43,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) 
 	{
-		this.getActivity().invalidateOptionsMenu();
+		if(this.getActivity() != null)
+			this.getActivity().invalidateOptionsMenu();
 
 		if (key.equals("settings_basebandLogKeepDuration")
 		 || key.equals("settings_debugLogKeepDuration")
@@ -94,6 +95,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			msdServiceHelper.startRecording();
 			settingsChanged = false;
 		}
+		super.onDestroyView();
 	}
 }
 	
