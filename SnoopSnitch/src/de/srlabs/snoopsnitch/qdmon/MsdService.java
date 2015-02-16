@@ -517,7 +517,11 @@ public class MsdService extends Service{
 	}
 
 	private synchronized boolean shutdown(boolean shuttingDownAlreadySet){
+		PowerManager.WakeLock wl = null;
 		try{
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
+			wl.acquire();
 			info("MsdService.shutdown(" + shuttingDownAlreadySet + ") called");
 			if(shuttingDownAlreadySet){
 				if(!this.shuttingDown.get()){
@@ -675,6 +679,9 @@ public class MsdService extends Service{
 			}
 			handleFatalError("Received Exception during shutdown", e);
 			return false;
+		} finally{
+			if(wl != null)
+				wl.release();
 		}
 	}
 
