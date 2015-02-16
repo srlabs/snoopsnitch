@@ -34,6 +34,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -1284,6 +1285,10 @@ public class MsdService extends Service{
 						resp = httpClient.execute(httpGet);
 					} catch(SSLPeerUnverifiedException e){
 						MsdLog.e(TAG,"SSLPeerUnverifiedException " + e + " in DownloadDataJsThread.run()");
+						// TODO: Display error message or upload state to user
+						return;
+					} catch(HttpHostConnectException e){
+						MsdLog.e(TAG,"HttpHostConnectException " + e + " in DownloadDataJsThread.run()");
 						// TODO: Display error message or upload state to user
 						return;
 					}
