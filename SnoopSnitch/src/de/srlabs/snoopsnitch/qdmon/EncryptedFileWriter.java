@@ -11,6 +11,7 @@ import java.util.zip.GZIPOutputStream;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.PowerManager;
 import android.text.TextUtils;
 import de.srlabs.snoopsnitch.util.MsdLog;
 
@@ -181,9 +182,15 @@ public class EncryptedFileWriter{
 	}
 	public synchronized void close(){
 		closed = true;
-		// Send shutdown marker
-		msgQueue.add(new ShutdownMsgWrapper());
+		// Use a WakeLock during close() so that the openssl process doesn't
+		// hang and can terminate cleanly after closing its standard input
+		PowerManager.WakeLock wl = null;
 		try{
+			PowerManager pm = (PowerManager) msdService.getSystemService(Context.POWER_SERVICE);
+			wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,TAG);
+			wl.acquire();
+			// Send shutdown marker
+			msgQueue.add(new ShutdownMsgWrapper());
 			boolean joinFailed = false;
 			writerThread.join(3000);
 			if(writerThread.isAlive()){
@@ -219,7 +226,7 @@ public class EncryptedFileWriter{
 					int exitValue = openssl.exitValue();
 					info("openssl terminated with exit value " + exitValue);
 				} catch(IllegalThreadStateException e){
-					msdService.handleFatalError("EncryptedFileWriter.close() for file " + encryptedFilename + " failed to stop parser, calling destroy(): " + e.getMessage());
+					msdService.handleFatalError("EncryptedFileWriter.close() for file " + encryptedFilename + " failed to stop openssl, calling destroy(): " + e.getMessage());
 					openssl.destroy();
 				}
 				openssl = null;
@@ -236,6 +243,9 @@ public class EncryptedFileWriter{
 			msdService.handleFatalError("InterruptedException in EncryptedFileWriter.close() for file " + encryptedFilename,e);
 		} catch (IOException e1) {
 			msdService.handleFatalError("IOException in EncryptedFileWriter.close() for file " + encryptedFilename,e1);
+		} finally{
+			if(wl != null)
+				wl.release();
 		}
 	}
 	public synchronized void flush(){
