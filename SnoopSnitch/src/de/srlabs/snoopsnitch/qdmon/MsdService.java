@@ -434,10 +434,20 @@ public class MsdService extends Service{
 	private void startLocationRecording(){
 		myLocationListener = new MyLocationListener();
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		if(MsdConfig.gpsRecordingEnabled(MsdService.this))
-			locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 10000, 0, myLocationListener);
-		if(MsdConfig.networkLocationRecordingEnabled(MsdService.this))
-			locationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 10000, 0, myLocationListener);
+		if(MsdConfig.gpsRecordingEnabled(MsdService.this)){
+			try{
+				locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 10000, 0, myLocationListener);
+			} catch(IllegalArgumentException e){
+				info("GPS location recording not available");
+			}
+		}
+		if(MsdConfig.networkLocationRecordingEnabled(MsdService.this)){
+			try{
+				locationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 10000, 0, myLocationListener);
+			} catch(IllegalArgumentException e){
+				info("Network location recording not available");
+			}
+		}
 	}
 	private void stopLocationRecording(){
 		if(locationManager == null)
