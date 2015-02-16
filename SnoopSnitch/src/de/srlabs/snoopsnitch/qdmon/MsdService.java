@@ -1604,6 +1604,8 @@ public class MsdService extends Service{
 	private synchronized void checkRecordingState(){
 		if(shuttingDown.get())
 			return;
+		if(!recording)
+			return;
 		boolean ok = true;
 		int sqlQueueSize;
 		// Check all threads
