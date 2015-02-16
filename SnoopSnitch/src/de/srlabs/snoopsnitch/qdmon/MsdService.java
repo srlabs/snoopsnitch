@@ -28,6 +28,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -42,7 +44,6 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -56,7 +57,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoWcdma;
@@ -66,8 +66,6 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
-import de.srlabs.snoopsnitch.qdmon.IMsdService;
-import de.srlabs.snoopsnitch.qdmon.IMsdServiceCallback;
 import de.srlabs.snoopsnitch.analysis.GSMmap;
 import de.srlabs.snoopsnitch.upload.DumpFile;
 import de.srlabs.snoopsnitch.upload.MsdServiceUploadThread;
@@ -1281,7 +1279,14 @@ public class MsdService extends Service{
 					if(localFileLastModified != null){
 						httpGet.addHeader("If-Modified-Since",localFileLastModified);
 					}
-					HttpResponse resp = httpClient.execute(httpGet);
+					HttpResponse resp;
+					try{
+						resp = httpClient.execute(httpGet);
+					} catch(SSLPeerUnverifiedException e){
+						MsdLog.e(TAG,"SSLPeerUnverifiedException " + e + " in DownloadDataJsThread.run()");
+						// TODO: Display error message or upload state to user
+						return;
+					}
 					int statusCode = resp.getStatusLine().getStatusCode();
 					if(statusCode == 200){ // OK
 						InputStream in = resp.getEntity().getContent();
