@@ -1441,7 +1441,7 @@ public class MsdService extends Service{
 		String diag_helper = libdir + "/libdiag-helper.so";
 		String suBinary = DeviceCompatibilityChecker.getSuBinary();
 		if(suBinary == null){
-			throw new IllegalStateException("No working su binary found, can't start recording");
+			shutdownDueToExpectedError(MsdServiceNotifications.ERROR_ROOT_PRIVILEGES_DENIED);
 		}
 		String cmd[] = { suBinary, "-c", "exec " + diag_helper + " run"};
 
@@ -1596,6 +1596,26 @@ public class MsdService extends Service{
 		mBinder.callbacks.removeAll(callbacksToRemove);
 		sendFatalErrorMessage(msg, e);
 		MsdLog.e(TAG, "Terminating MsdService after shutting down due to an unexpected error");
+		System.exit(1);
+	}
+	private void shutdownDueToExpectedError(int errorId){
+		if(recording)
+			shutdown(false);
+		MsdLog.e(TAG, "Sending internalError() to all callbacks");
+		Vector<IMsdServiceCallback> callbacksToRemove = new Vector<IMsdServiceCallback>();
+		for(IMsdServiceCallback callback:mBinder.callbacks){
+			try {
+				callback.internalError();
+			} catch (DeadObjectException e1) {
+				info("DeadObjectException in MsdService.shutdownDueToExpectedError() => unregistering callback");
+				callbacksToRemove.add(callback);
+			} catch (RemoteException e1) {
+				warn("Exception in MsdService.shutdownDueToExpectedError() => callback.internalError();");
+			}
+		}
+		mBinder.callbacks.removeAll(callbacksToRemove);
+		msdServiceNotifications.showExpectedErrorNotification(errorId);
+		MsdLog.e(TAG, "Terminating MsdService after shutting down due to an expected error");
 		System.exit(1);
 	}
 	/**

@@ -13,6 +13,7 @@ public class Constants {
 	public static final int NOTIFICATION_ID_ERROR = 3;
 	public static final int NOTIFICATION_ID_SMS = 4;
 	public static final int NOTIFICATION_ID_IMSI = 5;
+	public static final int NOTIFICATION_ID_EXPECTED_ERROR = 6;
 	public static final long ANALYSIS_INTERVAL_MS = 60000;
 	public static final int LOC_MAX_DELTA = 600;
 	

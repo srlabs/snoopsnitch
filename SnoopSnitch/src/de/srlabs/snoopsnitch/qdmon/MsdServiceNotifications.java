@@ -18,6 +18,7 @@ public class MsdServiceNotifications {
 	Service service;
 	public static final int ERROR_STORAGE_FULL = 1;
 	public static final int ERROR_RECORDING_STOPPED_BATTERY_LEVEL = 2;
+	public static final int ERROR_ROOT_PRIVILEGES_DENIED = 2;
 
 	public MsdServiceNotifications(Service service) {
 		this.service = service;
@@ -100,5 +101,21 @@ public class MsdServiceNotifications {
 		Notification n = notificationBuilder.build();
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
 		notificationManager.notify(Constants.NOTIFICATION_ID_INTERNAL_ERROR, n);
+	}
+	public void showExpectedErrorNotification(int errorId){
+		Log.i("MsdServiceNotifications","showExpectedErrorNotification(" + errorId + ")");
+		Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_event);
+		NotificationCompat.Builder notificationBuilder =
+				new NotificationCompat.Builder(service)
+		.setSmallIcon(R.drawable.ic_content_imsi_event)
+		.setLargeIcon(icon)
+		// .setAutoCancel(true)
+		.setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title));;
+		if(errorId == ERROR_ROOT_PRIVILEGES_DENIED){
+			notificationBuilder.setContentText(service.getString(R.string.error_root_privileges_denied));
+		}
+		Notification n = notificationBuilder.build();
+		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
+		notificationManager.notify(Constants.NOTIFICATION_ID_EXPECTED_ERROR, n);
 	}
 }

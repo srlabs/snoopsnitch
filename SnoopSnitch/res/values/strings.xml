@@ -255,6 +255,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="error_notification_ticker">encountered an internal error</string>
      <string name="error_notification_text">Please submit a problem report!</string>
      <string name="common_null_paging">Null Paging</string>
+     <string name="error_root_privileges_denied">Root privileges denied!</string>
 
      <!-- Active test -->
      <string name="test_and_upload">Test and Upload</string>
