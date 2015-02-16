@@ -153,7 +153,7 @@ public class DumpFile {
 		if(id != -1)
 			throw new IllegalStateException("Dumpfile " + filename + " already exists in database, please use update() instead of insert()");
 		ContentValues values = this.makeContentValues();
-		id = db.insert("files",null,values);
+		id = db.insertOrThrow("files",null,values);
 		if( id == -1)
 			throw new IllegalStateException("Failed to insert file " + filename + " into database");
 	}
