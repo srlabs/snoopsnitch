@@ -1118,7 +1118,11 @@ public class MsdService extends Service{
 					}
 					db.setTransactionSuccessful();
 				} finally {
-					db.endTransaction();
+					try{
+						db.endTransaction();
+					} catch(IllegalStateException e){
+						// db.endTransaction() throws an IllegalStateException if there is no current transaction.
+					}
 					wl.release();
 				}
 			}
