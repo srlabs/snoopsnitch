@@ -98,13 +98,11 @@ case ${target} in
 		export CPPFLAGS="-I${NDK_DIR}/platforms/android-19/arch-arm/usr/include/"
 		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/,-L${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/"
 		export LIBS="-lc -lm"
-		export GSM_PARSER_MAKE_ARGS="-f Makefile.Android PREFIX=${MSD_DESTDIR}   DESTDIR=${MSD_DESTDIR}/gsm-parser   SYSROOT=${SYSROOT} install"
+		export GSM_PARSER_MAKE_ARGS="TARGET=android PREFIX=${MSD_DESTDIR} DESTDIR=${MSD_DESTDIR}/gsm-parser SYSROOT=${SYSROOT} install"
 		;;
 	host)
 		export MSD_CONFIGURE_OPTS="--prefix=${MSD_DESTDIR}"
-		export EXTRA_CFLAGS="-I${MSD_DESTDIR}/include -I${MSD_DESTDIR}/include/asn1c"
-		export EXTRA_LDFLAGS="-L${MSD_DESTDIR}/lib"
-		export GSM_PARSER_MAKE_ARGS=""
+		export GSM_PARSER_MAKE_ARGS="TARGET=host PREFIX=${MSD_DESTDIR}"
 		;;
 	*)
 		# Shouldn't happen
@@ -146,9 +144,9 @@ then
 	PARSER_DIR=${OUTPUT_DIR}/parser
 	install -d ${PARSER_DIR}
 	install -m 755 ${OUTPUT_DIR}/out/lib/libasn1c.so           ${PARSER_DIR}/libasn1c.so
-	install -m 755 ${OUTPUT_DIR}/out/lib/libosmo-asn1-rrc.so.0 ${PARSER_DIR}/libosmo-asn1-rrc.so
-	install -m 755 ${OUTPUT_DIR}/out/lib/libosmocore.so.5      ${PARSER_DIR}/libosmocore.so
-	install -m 755 ${OUTPUT_DIR}/out/lib/libosmogsm.so.5       ${PARSER_DIR}/libosmogsm.so
+	install -m 755 ${OUTPUT_DIR}/out/lib/libosmo-asn1-rrc.so   ${PARSER_DIR}/libosmo-asn1-rrc.so
+	install -m 755 ${OUTPUT_DIR}/out/lib/libosmocore.so        ${PARSER_DIR}/libosmocore.so
+	install -m 755 ${OUTPUT_DIR}/out/lib/libosmogsm.so         ${PARSER_DIR}/libosmogsm.so
 	install -m 755 ${OUTPUT_DIR}/out/gsm-parser/diag_import       ${PARSER_DIR}/libdiag_import.so
 	install -m 755 ${OUTPUT_DIR}/out/gsm-parser/libcompat.so      ${PARSER_DIR}/libcompat.so
 
