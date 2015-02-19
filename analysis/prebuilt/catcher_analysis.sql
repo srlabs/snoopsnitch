@@ -57,9 +57,24 @@ SELECT
         mnc,
         lac,
         cid,
-        (CASE WHEN iden_imsi_bc AND iden_imei_bc THEN 1 WHEN iden_imsi_bc OR iden_imei_bc THEN 0.7 ELSE 0 END) as score
+        (CASE
+			WHEN auth = 0 THEN 2.0
+			WHEN auth = 1 THEN 0.5
+			ELSE 0.0
+		END) *
+		(CASE
+			WHEN (iden_imei_bc = 0 AND iden_imei_ac = 0) THEN 1.0
+			ELSE 3.0
+		END)
+			as score
 FROM session_info
-WHERE domain = 0;
+WHERE
+	domain = 0  AND
+	cipher = 0  AND
+	t_locupd    AND
+	lu_type = 0 AND
+	lu_reject   AND
+	iden_imsi_bc;
 DROP VIEW IF EXISTS c5;
 CREATE VIEW c5 AS
 SELECT
