@@ -193,7 +193,7 @@ public class MsdConfig {
 
 	public static boolean getFirstRun(Context context)
 	{
-		return sharedPrefs(context).getBoolean("app_first_run", false);
+		return sharedPrefs(context).getBoolean("app_first_run", true);
 	}
 
 	public static void setFirstRun(Context context, boolean firstRun)
