@@ -26,7 +26,6 @@ public class ActiveTestResults implements Serializable {
 	private String errorLog = "";
 	private boolean onlineMode = true;
 	private boolean blacklisted = false;
-	private boolean lteDetected = false;
 	private boolean invalidNumber = false;
 	private boolean invalidSmsMoNumber = false;
 	private boolean invalidRequest = false;
@@ -38,12 +37,15 @@ public class ActiveTestResults implements Serializable {
 		private String operatorName = null;
 		NetworkOperatorRatTestResults results2g = new NetworkOperatorRatTestResults(2);
 		NetworkOperatorRatTestResults results3g = new NetworkOperatorRatTestResults(3);
+		NetworkOperatorRatTestResults results4g = new NetworkOperatorRatTestResults(4);
 		public int currentGeneration;
 		public NetworkOperatorRatTestResults getGeneration(int generation){
 			if(generation == 2)
 				return results2g;
 			else if(generation == 3)
 				return results3g;
+			else if(generation == 4)
+				return results4g;
 			else
 				throw new IllegalStateException("Generation " + generation + " not supported");
 		}
@@ -52,12 +54,12 @@ public class ActiveTestResults implements Serializable {
 		}
 		public void formatTable(StringBuffer result) {
 			result.append("Network " + operatorName + ": " + mccMnc + "\n");
-			String format = "%-10s%-10s%-10s\n";
-			result.append(String.format(format,"Test", currentGeneration == 2 ? "*GSM*" : "GSM",currentGeneration == 3 ? "*3G*" : "3G"));
-			result.append(String.format(format,"SMS out",getGeneration(2).formatCounts(TestType.SMS_MO),getGeneration(3).formatCounts(TestType.SMS_MO)));
-			result.append(String.format(format,"Call out",getGeneration(2).formatCounts(TestType.CALL_MO),getGeneration(3).formatCounts(TestType.CALL_MO)));
-			result.append(String.format(format,"SMS in",getGeneration(2).formatCounts(TestType.SMS_MT),getGeneration(3).formatCounts(TestType.SMS_MT)));
-			result.append(String.format(format,"Call in",getGeneration(2).formatCounts(TestType.CALL_MT),getGeneration(3).formatCounts(TestType.CALL_MT)));
+			String format = "%-10s%-10s%-10s-%10s\n";
+			result.append(String.format(format,"Test", currentGeneration == 2 ? "*GSM*" : "GSM",currentGeneration == 3 ? "*3G*" : "3G", currentGeneration == 4 ? "*LTE*" : "LTE"));
+			result.append(String.format(format,"SMS out",getGeneration(2).formatCounts(TestType.SMS_MO),getGeneration(3).formatCounts(TestType.SMS_MO),getGeneration(4).formatCounts(TestType.SMS_MO)));
+			result.append(String.format(format,"Call out",getGeneration(2).formatCounts(TestType.CALL_MO),getGeneration(3).formatCounts(TestType.CALL_MO),getGeneration(4).formatCounts(TestType.CALL_MO)));
+			result.append(String.format(format,"SMS in",getGeneration(2).formatCounts(TestType.SMS_MT),getGeneration(3).formatCounts(TestType.SMS_MT),getGeneration(4).formatCounts(TestType.SMS_MT)));
+			result.append(String.format(format,"Call in",getGeneration(2).formatCounts(TestType.CALL_MT),getGeneration(3).formatCounts(TestType.CALL_MT),getGeneration(4).formatCounts(TestType.CALL_MT)));
 			result.append("\n");
 		}
 	}
@@ -371,8 +373,10 @@ public class ActiveTestResults implements Serializable {
 		if(currentNetworkOperator != null){
 			if(currentNetworkOperator.currentGeneration == 2){
 				result.append("setGsmActive();\n");
-			} else{
+			} else if(currentNetworkOperator.currentGeneration == 3){
 				result.append("set3GActive();\n");			
+			} else{
+				result.append("setLTEActive();\n");
 			}
 		}
 		String mode = (onlineMode ? "Setting: Online, " : "Setting: Offline, ") +
@@ -381,8 +385,14 @@ public class ActiveTestResults implements Serializable {
 		result.append("setTestMode(" + escape(mode) + ");\n");
 		if(currentNetworkOperator != null){
 			result.append("updateBuckets({");
-			for(int generation = 2;generation <= 3; generation++){
-				String prefix = generation == 2 ? "gsm_" : "3g_";
+			for(int generation = 2;generation <= 4; generation++){
+				String prefix = null;
+				if(generation == 2)
+					prefix = "gsm_";
+				else if(generation == 3)
+					prefix = "3g_";
+				else if(generation == 4)
+					prefix = "lte_";
 				for(TestType test:TestType.values()){
 					String bucketPrefix = prefix + test.name().toLowerCase();
 					result.append("\"" + bucketPrefix + "_success\":" + currentNetworkOperator.getGeneration(generation).getNumSuccess(test) + ",");
@@ -394,7 +404,12 @@ public class ActiveTestResults implements Serializable {
 		}
 		if(isTestRunning()){
 			result.append("setProgressPercent(" + getCurrentTest().getProgressPercent() + ");\n");
-			String currentTest = (getCurrentNetworkOperatorRatTestResults().generation == 2 ? "gsm_" : "3g_") + getCurrentTest().type.name().toLowerCase();
+			String currentTest = "gsm_";
+			if(getCurrentNetworkOperatorRatTestResults().generation == 3)
+				currentTest = "3g_";
+			else if(getCurrentNetworkOperatorRatTestResults().generation == 4)
+				currentTest = "lte_";
+			currentTest += getCurrentTest().type.name().toLowerCase();
 			result.append("setCurrentTest(" + escape(currentTest) + ");\n");
 		} else{
 			result.append("setCurrentTest(\"\");\n");
@@ -433,10 +448,7 @@ public class ActiveTestResults implements Serializable {
 		return result.toString();
 	}
 	public String getCurrentActionString(Context context){
-		//at_lte_not_supported
-		if(lteDetected){
-			return getRes(context, R.string.at_lte_not_supported);
-		} else if(blacklisted){
+		if(blacklisted){
 			return getRes(context, R.string.at_banned);
 		} else if(invalidNumber){
 			return getRes(context, R.string.at_invalid_number);
@@ -555,9 +567,6 @@ public class ActiveTestResults implements Serializable {
 	}
 	public void setBlacklisted(boolean b) {
 		this.blacklisted = b;
-	}
-	public void setLteDetected(boolean b){
-		this.lteDetected = b;
 	}
 	public void setInvalidNumber(boolean b) {
 		this.invalidNumber = b;

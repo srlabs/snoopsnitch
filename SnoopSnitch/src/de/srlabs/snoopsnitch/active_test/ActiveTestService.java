@@ -65,6 +65,7 @@ public class ActiveTestService extends Service{
 	private int numTestsWithNoMessages = 0;
 	private boolean smsMoDisabled = false;
 	private String smsMoNumber = null;
+	private int networkGenerationAtTestStart = 0;
 
 	class MyPhoneStateListener extends PhoneStateListener{
 		@Override
@@ -624,13 +625,10 @@ public class ActiveTestService extends Service{
 		return networkGeneration;
 	}
 	private void updateNetworkOperatorAndRat() {
-		int networkGeneration = getCurrentNetworkRatGeneration();
-		if(networkGeneration == 4){
-			results.setLteDetected(true);
-			if(testRunning)
-				ActiveTestService.this.stopTest();
-			return;
-		}
+		// If the phone was in LTE mode when starting test, all tests will be
+		// counted for LTE even if the phone switches back to 2G/3G during the
+		// test.
+		int networkGeneration = networkGenerationAtTestStart == 4 ? 4 : getCurrentNetworkRatGeneration();
 		results.setNetworkOperatorAndRat(telephonyManager, networkGeneration);
 	}
 
@@ -677,6 +675,7 @@ public class ActiveTestService extends Service{
 		final IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
 		intentFilter.setPriority(Integer.MAX_VALUE); // we mean it
 		registerReceiver(smsReceiver, intentFilter);
+		networkGenerationAtTestStart = getCurrentNetworkRatGeneration();
 		updateNetworkOperatorAndRat();
 		// If updateNetworkOperatorAndRat() detects that the phone is using an
 		// LTE network, it will call stopTest(). In that case, there is no point
@@ -737,6 +736,9 @@ public class ActiveTestService extends Service{
 		int networkGeneration = Utils.networkTypeToNetworkGeneration(telephonyManager.getNetworkType());
 		if(networkGeneration == 0)
 			networkGeneration = msdServiceHelper.getParserNetworkGeneration();
+		if(networkGenerationAtTestStart == 4){
+			networkGeneration = 4;
+		}
 		String connectionType;
 		if(networkGeneration == 2)
 			connectionType = "GSM";

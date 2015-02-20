@@ -13,20 +13,19 @@ function setCurrentBucket(newCurrentBucket){
 	document.getElementById(currentBucket).className = "current"
 }
 function setGsmActive(){
-	if(document.getElementById("header_GSM") != null)
-		document.getElementById("header_GSM").className = "header_active";
 	document.getElementById("advanced_header_GSM").className = "header_active";
-	if(document.getElementById("header_3G") != null)
-		document.getElementById("header_3G").className = "header_inactive";
 	document.getElementById("advanced_header_3G").className = "header_inactive";
+	document.getElementById("advanced_header_LTE").className = "header_inactive";
 }
 function set3GActive(){
-	if(document.getElementById("header_GSM") != null)
-		document.getElementById("header_GSM").className = "header_inactive";
 	document.getElementById("advanced_header_GSM").className = "header_inactive";
-	if(document.getElementById("header_3G") != null)
-		document.getElementById("header_3G").className = "header_active";
 	document.getElementById("advanced_header_3G").className = "header_active";
+	document.getElementById("advanced_header_LTE").className = "header_inactive";
+}
+function setLTEActive(){
+	document.getElementById("advanced_header_GSM").className = "header_inactive";
+	document.getElementById("advanced_header_3G").className = "header_inactive";
+	document.getElementById("advanced_header_LTE").className = "header_active";
 }
 var currentBuckets = {};
 function updateBuckets(newBuckets){
