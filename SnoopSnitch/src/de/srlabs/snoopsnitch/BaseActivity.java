@@ -24,6 +24,7 @@ import android.widget.Toast;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.upload.DumpFile;
+import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
@@ -222,6 +223,9 @@ public class BaseActivity extends FragmentActivity
 		    case R.id.menu_action_about:
 		    	showAbout ();
 		    	break;
+		    case R.id.menu_action_exit:
+				quitApplication();
+				break;
 		    case R.id.menu_action_network_info:
 		    	showNetworkInfo ();
 		    	break;
@@ -320,7 +324,19 @@ public class BaseActivity extends FragmentActivity
 	
 	protected void quitApplication ()
 	{
+		MsdLog.i("MSD","BaseActivity.quitApplication() called");
+		msdServiceHelperCreator.getMsdServiceHelper().stopRecording();
+		msdServiceHelperCreator.getMsdServiceHelper().stopService();
+		// If we call System.exit() here from an activity launched by
+		// DashboardActivity, the Android system will restart the App to resume
+		// DashboardActivity (which is still on the activity stack). So
+		// System.exit() has to be called from onResume() in DashboardActivity
+		// instead. This is implemented via exitFlag, which is a static variable
+		// of BaseActivity.
 		exitFlag = true;
 		finish();
+		if(this.getClass() == DashboardActivity.class){
+			System.exit(0);
+		}
 	}
 }

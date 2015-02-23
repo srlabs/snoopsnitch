@@ -199,6 +199,16 @@ public class MsdService extends Service{
 		public int getDiagMsgCount() throws RemoteException {
 			return diagMsgCount;
 		}
+
+		@Override
+		public void exitService() throws RemoteException {
+			info("exitService() called");
+			if(isRecording())
+				MsdService.this.shutdown(false);
+			// Just set an exit flag so that the service is terminated directly
+			// after the UI terminates (and closes its ServiceConnection)
+			exitFlag = true;
+		}
 	};
 	AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
@@ -265,6 +275,8 @@ public class MsdService extends Service{
 
 	private boolean deviceCompatibleDetected = false;
 
+	private boolean exitFlag;
+
 	class QueueElementWrapper<T>{
 		T obj;
 		boolean done = false;
@@ -281,7 +293,18 @@ public class MsdService extends Service{
 	@Override
 	public IBinder onBind(Intent intent) {
 		info("MsdService.onBind() called");
-		return mBinder;
+		if(exitFlag)
+			return null;
+		else
+			return mBinder;
+	}
+	public boolean onUnbind(Intent intent) {
+		if(exitFlag){
+			Log.i(TAG,"MsdService.onUnbind() called and exitFlag set => calling stopSelf()");
+			stopSelf();
+			return false;
+		} else
+			return super.onUnbind(intent);
 	}
 
 	public void triggerUploading() {
@@ -425,10 +448,13 @@ public class MsdService extends Service{
 	}
 	@Override
 	public void onDestroy() {
-		info("MsdService.onDestroy() called, shutting down");
-		shutdown(false);
+		info("MsdService.onDestroy() called " + ( recording ? "shutting down" : ""));
+		if(recording)
+			shutdown(false);
 		closeDebugLog(false);
 		super.onDestroy();
+		// Make sure that the process of this service is actually closed
+		System.exit(0);
 	}
 	private void startLocationRecording(){
 		myLocationListener = new MyLocationListener();

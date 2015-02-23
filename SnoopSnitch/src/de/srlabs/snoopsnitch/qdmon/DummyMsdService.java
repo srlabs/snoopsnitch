@@ -125,6 +125,12 @@ public class DummyMsdService extends Service{
 			// TODO Auto-generated method stub
 			return 0;
 		}
+
+		@Override
+		public void exitService() throws RemoteException {
+			// TODO Auto-generated method stub
+			
+		}
 	};
 	private class DummyDataRunnable implements Runnable{
 		private boolean recordingStopped = false;

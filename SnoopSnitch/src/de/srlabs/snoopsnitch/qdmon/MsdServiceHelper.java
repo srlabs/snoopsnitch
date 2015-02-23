@@ -223,4 +223,12 @@ public class MsdServiceHelper{
 			return 0;
 		}
 	}
+	public void stopService() {
+		try {
+			mIMsdService.exitService();
+			context.unbindService(serviceConnection);
+		} catch (Exception e) {
+			handleFatalError("Exception in MsdServiceHelper.stopService()", e);
+		}
+	}
 }

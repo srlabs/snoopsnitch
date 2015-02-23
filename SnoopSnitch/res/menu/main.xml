@@ -46,6 +46,9 @@
         android:orderInCategory="300"
         android:showAsAction="never"
         android:title="@string/action_about"/>
-
-
+	<item
+        android:id="@+id/menu_action_exit"
+        android:orderInCategory="300"
+        android:showAsAction="never"
+        android:title="@string/action_exit"/>
 </menu>

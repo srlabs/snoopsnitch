@@ -8,6 +8,7 @@ interface IMsdService {
 	void registerCallback(IMsdServiceCallback callback);
 	boolean startRecording();
 	boolean stopRecording();
+	void exitService();
 	// Needed for DummyMsdService
 	long getServiceStartTime();
 	// Reporting log messages from UI or ActiveTestService to the central LOG written by MsdService
