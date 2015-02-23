@@ -22,6 +22,6 @@ WHERE
 	domain = 0  AND
 	cipher = 0  AND
 	t_locupd    AND
-	lu_type = 0 AND
+	(lu_type = 0 OR lu_type = 2) AND
 	lu_reject   AND
 	iden_imsi_bc;
