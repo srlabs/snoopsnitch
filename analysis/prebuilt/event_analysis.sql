@@ -20,9 +20,10 @@ SELECT
 		-- silent SMS
 		WHEN from_network AND
 		     (dcs >= 192 AND dcs <= 207) OR
-			 (pid = 64 AND info NOT LIKE '%PORT%5499%')
+			 (pid = 64 AND dst_port != 5499) OR
+			 (dst_port = 2948 AND udh_length = 6)
 			THEN 2
-		-- All other transaction we don't care about
+		-- All other transactions we don't care about
 		ELSE 0
 	END as event_type
 FROM
