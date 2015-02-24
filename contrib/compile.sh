@@ -138,10 +138,11 @@ for i in ${TARGETS}; do
     fi
 done
 
+PARSER_DIR=${OUTPUT_DIR}/parser
+
 if [ "x${target}" = "xandroid" ];
 then
 	# Install parser
-	PARSER_DIR=${OUTPUT_DIR}/parser
 	install -d ${PARSER_DIR}
 	install -m 755 ${OUTPUT_DIR}/out/lib/libasn1c.so           ${PARSER_DIR}/libasn1c.so
 	install -m 755 ${OUTPUT_DIR}/out/lib/libosmo-asn1-rrc.so   ${PARSER_DIR}/libosmo-asn1-rrc.so
