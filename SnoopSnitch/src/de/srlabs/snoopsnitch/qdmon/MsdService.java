@@ -239,6 +239,7 @@ public class MsdService extends Service{
 	private ExceptionHandlingRunnable periodicCheckRecordingStateRunnableWrapper = new ExceptionHandlingRunnable(periodicCheckRecordingStateRunnable);
 	private PeriodicFlushRunnable periodicFlushRunnable = new PeriodicFlushRunnable();
 	private boolean recording = false;
+	private long recordingStartTime = 0;
 	private LocationManager locationManager;
 	private MyLocationListener myLocationListener;
 	private MyPhoneStateListener myPhoneStateListener;
@@ -517,6 +518,7 @@ public class MsdService extends Service{
 				}
 			}));
 			this.recording  = true;
+			this.recordingStartTime = System.currentTimeMillis();
 			mainThreadHandler.removeCallbacks(periodicCheckRecordingStateRunnableWrapper);
 			mainThreadHandler.post(periodicCheckRecordingStateRunnableWrapper);
 			doStartForeground();
@@ -1659,6 +1661,9 @@ public class MsdService extends Service{
 			return;
 		if(!recording)
 			return;
+		if(!deviceCompatibleDetected && System.currentTimeMillis() - recordingStartTime > 5*60*1000 && telephonyManager.getNetworkType() != 0){
+			sendStateChanged(StateChangedReason.NO_BASEBAND_DATA);
+		}
 		boolean ok = true;
 		int sqlQueueSize;
 		// Check all threads

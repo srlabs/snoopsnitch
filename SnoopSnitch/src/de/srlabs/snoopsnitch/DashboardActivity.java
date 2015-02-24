@@ -206,6 +206,10 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		{
 			updateInterseptionImpersonation();
 		}
+		else if (reason.equals(StateChangedReason.NO_BASEBAND_DATA))
+		{
+			txtLastAnalysisTime.setText(getString(R.string.compat_no_baseband_messages));
+		}
 		
 		super.stateChanged(reason);
 	}
