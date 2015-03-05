@@ -163,7 +163,7 @@ FROM session_info as si LEFT JOIN
     c5 ON si.id = c5.id LEFT JOIN
     t3 ON si.id = t3.id LEFT JOIN
     t4 ON si.id = t4.id
-WHERE si.domain = 0 AND si.mcc > 0 AND si.mnc > 0 AND si.lac > 0 AND si.cid > 0;
+WHERE si.domain = 0;
 --  All cell_info-based criteria
 
 --  Attract
