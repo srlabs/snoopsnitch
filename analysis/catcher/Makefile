@@ -168,7 +168,7 @@ TESTS = \
 	test-III-3_2 \
 	test-III-3_3_1 \
 
-all: ../prebuilt/catcher_analysis.sql
+all: ../prebuilt/catcher_analysis.sql ../prebuilt/catcher_analysis_si.sql
 
 base_charts: \
 	$(PREFIX)_duration.pdf \
@@ -238,6 +238,10 @@ $(TESTS):
 # containing only comments being passed to SQLite which causes an
 # exception
 	@grep -e '--.*;' $@.tmp; test $$? -eq 1
+	@mv $@.tmp $@
+
+../prebuilt/catcher_analysis_si.sql: analysis_si.sql sql/*.sql scripts/resolve_read.pl
+	@./scripts/resolve_read.pl $< > $@.tmp
 	@mv $@.tmp $@
 
 $(PREFIX)_catcher.log: validate.sql
