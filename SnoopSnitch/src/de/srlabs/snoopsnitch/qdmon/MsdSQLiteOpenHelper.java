@@ -9,7 +9,7 @@ import de.srlabs.snoopsnitch.util.Utils;
 
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "msd.db";
-	private static final int DATABASE_VERSION = 18;
+	private static final int DATABASE_VERSION = 19;
 	private Context context;
 	public MsdSQLiteOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -111,6 +111,37 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 
 			//  New table sid_appid added
 			db.execSQL("CREATE TABLE sid_appid (sid integer PRIMARY KEY, appid char(8) NOT NULL)");
+		}
+
+		// Several tables were changed in version 18
+		if (oldVersion <= 18 && newVersion > oldVersion) {
+
+			// paging_info now is associated with a session_info id
+			db.execSQL("ALTER TABLE paging_info ADD COLUMN sid integer NOT NULL DEFAULT 0");
+
+			// MCC/MNC have changed
+			try {
+				readSQLAsset(context, db, "mcc.sql", true);
+				readSQLAsset(context, db, "mnc.sql", true);
+			} catch(Exception e){
+				Log.e("MSD","Failed to update database",e);
+			}
+
+			// Add rand check table
+			db.execSQL("DROP TABLE IF EXISTS rand_check");
+			db.execSQL(
+				"CREATE TABLE rand_check (" +
+				"  sid integer NOT NULL," +
+				"  si5 float DEFAULT NULL," +
+				"  si5bis float DEFAULT NULL," +
+				"  si5ter float DEFAULT NULL," +
+				"  si6 float DEFAULT NULL," +
+				"  nullframe float DEFAULT NULL," +
+				"  sdcch_padding float DEFAULT NULL," +
+				"  sacch_padding float DEFAULT NULL," +
+				"  PRIMARY KEY(sid)" +
+				")"
+			);
 		}
 	}
 }
