@@ -13,8 +13,8 @@ CREATE TABLE sms_meta (
   concat tinyint NOT NULL,		-- Message is composed of several fragments
   concat_frag smallint NOT NULL,	-- Sequential index of this fragment
   concat_total smallint NOT NULL,	-- Total number of fragments 
-  src_port smallint NOT NULL,		-- Source port for application addressing
-  dst_port smallint NOT NULL,		-- Destination port for application addressing
+  src_port integer NOT NULL,		-- Source port for application addressing
+  dst_port integer NOT NULL,		-- Destination port for application addressing
   ota tinyint NOT NULL,			-- Message contains an OTA command or response 
   ota_iei tinyint NOT NULL,		-- Security header IEI
   ota_enc tinyint NOT NULL,		-- OTA payload is encrypted

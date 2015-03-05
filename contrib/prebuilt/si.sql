@@ -100,6 +100,19 @@ CREATE TABLE session_info (
   ue_integrity_cap smallint DEFAULT NULL -- Supported integrity algorithms for UMTS
 );
 
+DROP TABLE IF EXISTS rand_check;
+CREATE TABLE rand_check (
+  sid integer NOT NULL,			-- Linked session ID
+  si5 float DEFAULT NULL,		-- Content randomization ratio for SI5
+  si5bis float DEFAULT NULL,		-- Content randomization ratio for SI5bis
+  si5ter float DEFAULT NULL,		-- Content randomization ratio for SI5ter
+  si6 float DEFAULT NULL,		-- Content randomization ratio for SI6
+  nullframe float DEFAULT NULL,		-- Padding randomization for NULL frames
+  sdcch_padding float DEFAULT NULL,	-- Padding randomization for non-NULL SDCCH messages
+  sacch_padding float DEFAULT NULL,	-- Padding randomization for non-NULL SDCCH messages
+  PRIMARY KEY(sid)
+);
+
 DROP TABLE IF EXISTS sid_appid;
 CREATE TABLE sid_appid (
   sid integer PRIMARY KEY,	-- Session ID

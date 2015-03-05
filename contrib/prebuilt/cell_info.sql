@@ -78,10 +78,11 @@ CREATE TABLE arfcn_list (
 
 DROP TABLE IF EXISTS paging_info;
 CREATE TABLE paging_info (
-  timestamp DATETIME PRIMARY KEY,	-- End of measurement timestamp
-  pag1_rate float NOT NULL,		-- Paging1 rate (paging/s)
-  pag2_rate float NOT NULL,		-- Paging2 rate (paging/s)
-  pag3_rate float NOT NULL,		-- Paging3 rate (paging/s)
-  imsi_rate float NOT NULL,		-- IMSI paging rate (IMSI/s)
-  tmsi_rate float NOT NULL		-- TMSI paging rate (TMSI/s)
+  sid integer NOT NULL,			-- Linked session ID
+  pag1_count float NOT NULL,		-- Paging1 count
+  pag2_count float NOT NULL,		-- Paging2 count
+  pag3_count float NOT NULL,		-- Paging3 count
+  imsi_count float NOT NULL,		-- Paged IMSI count
+  tmsi_count float NOT NULL,		-- Paged TMSI count
+  PRIMARY KEY(sid)
 );
