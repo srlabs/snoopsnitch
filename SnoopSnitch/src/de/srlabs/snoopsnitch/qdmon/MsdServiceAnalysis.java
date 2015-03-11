@@ -11,26 +11,23 @@ public class MsdServiceAnalysis {
 
 	private static String TAG = "MsdServiceAnalysis";
 
-	private static int getLast(SQLiteDatabase db, String tableName, String rowName){
+	private static int getLast(SQLiteDatabase db, String tableName){
 		try{
-			Cursor c = db.rawQuery("SELECT MAX(" + rowName + ") FROM " +  tableName, null);
-			if (!c.moveToFirst()){
-				throw new IllegalStateException("Invalid SQL result");
-			}
-			int result = c.getInt(0);
+			Cursor c = db.rawQuery("SELECT * FROM " +  tableName, null);
+			int result = c.getCount();
 			c.close();
 			return result;
 		} catch(SQLException e){
-			throw new IllegalStateException("SQLException in getLast(" + tableName + "," + rowName + ",): ", e);
+			throw new IllegalStateException("SQLException in getLast(" + tableName + ",): ", e);
 		}
 	}
 
 	public static int runCatcherAnalysis(Context context, SQLiteDatabase db) throws Exception{
 		int before, after;
 
-		before = getLast(db, "catcher", "id");
+		before = getLast(db, "catcher");
 		MsdSQLiteOpenHelper.readSQLAsset(context, db, "catcher_analysis.sql", false);
-		after = getLast(db, "catcher", "id");
+		after = getLast(db, "catcher");
 
 		if (after != before)
 		{
@@ -50,9 +47,9 @@ public class MsdServiceAnalysis {
 		String[] event_cols = new String[]
 				{"sum(CASE WHEN event_type > 0 THEN 1 ELSE 0 END)"};
 
-		before = getLast(db, "events", "id");
+		before = getLast(db, "events");
 		MsdSQLiteOpenHelper.readSQLAsset(context, db, "event_analysis.sql", false);
-		after = getLast(db, "events", "id");
+		after = getLast(db, "events");
 
 		if (after > before)
 		{
