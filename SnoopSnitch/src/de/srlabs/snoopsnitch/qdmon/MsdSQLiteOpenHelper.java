@@ -116,11 +116,9 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		// Several tables were changed in version 18
 		if (oldVersion <= 18 && newVersion > oldVersion) {
 
-			// paging_info now is associated with a session_info id
-			db.execSQL("ALTER TABLE paging_info ADD COLUMN sid integer NOT NULL DEFAULT 0");
-
-			// MCC/MNC have changed
+			// paging_info, mcc and mnc have changed
 			try {
+				readSQLAsset(context, db, "cell_info.sql", true);
 				readSQLAsset(context, db, "mcc.sql", true);
 				readSQLAsset(context, db, "mnc.sql", true);
 			} catch(Exception e){
