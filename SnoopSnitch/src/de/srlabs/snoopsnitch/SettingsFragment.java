@@ -6,6 +6,7 @@ import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -27,8 +28,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
 		getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-		Preference myPref = findPreference("settings_appId");
-		myPref.setOnPreferenceClickListener(new OnPreferenceClickListener() 
+		Preference appIDPref = findPreference("settings_appId");
+		appIDPref.setOnPreferenceClickListener(new OnPreferenceClickListener() 
 		{
 			@Override
 			public boolean onPreferenceClick(Preference preference) 
@@ -57,21 +58,31 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		settingsChanged = true;
 	}
 	
-	private void showgenerateAppIdDialog ()
+	private void showCleanupDialog ()
 	{
-	      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this.getActivity());
-	      alertDialogBuilder.setTitle(getResources().getString(R.string.alert_dialog_refreshappid_title));
-	      alertDialogBuilder.setMessage(getResources().getString(R.string.alert_dialog_refreshappid_message));
-	      alertDialogBuilder.setPositiveButton(getResources().getString(R.string.alert_dialog_refreshappid_button_refresh), 
-	      new DialogInterface.OnClickListener() 
-	      {		
-	         @Override
-	         public void onClick(DialogInterface arg0, int arg1) 
-	         {
-	        	 ((SettingsActivity)getActivity()).refreshAppId();
-	         }
-	      });
-	      alertDialogBuilder.setNegativeButton(getResources().getString(R.string.alert_dialog_refreshappid_button_cancel), 
+
+	}
+
+	private void showgenerateAppIdDialog() {
+		showDialog(R.string.alert_dialog_refreshappid_title,
+				R.string.alert_dialog_refreshappid_message,
+				R.string.alert_dialog_refreshappid_button_refresh,
+				R.string.alert_dialog_refreshappid_button_cancel,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						((SettingsActivity) getActivity()).refreshAppId();
+					}
+				});
+	}
+
+	private void showDialog(int dialogTitle, int dialogMessage, int dialogPositiveButton, int dialogNegativeButton, OnClickListener dialogOnClick) {
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this.getActivity());
+	      alertDialogBuilder.setTitle(getResources().getString(dialogTitle));
+	      alertDialogBuilder.setMessage(getResources().getString(dialogMessage));
+	      alertDialogBuilder.setPositiveButton(getResources().getString(dialogPositiveButton), 
+	      dialogOnClick);
+	      alertDialogBuilder.setNegativeButton(getResources().getString(dialogNegativeButton), 
 	      new DialogInterface.OnClickListener() 
 	      {		
 	         @Override
