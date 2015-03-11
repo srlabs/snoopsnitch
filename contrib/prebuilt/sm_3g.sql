@@ -62,8 +62,10 @@ GROUP BY
 	mcc, mnc, month, lac;
 
 -- Clean up invalid operators
+-- Tuple comparison is not available in SQLite. We should find a better
+-- way than this concatention workaround.
 DELETE FROM risk_3G
-WHERE (mcc, mnc) NOT IN (SELECT DISTINCT mcc, mnc FROM valid_op);
+WHERE mcc || mnc NOT IN (SELECT DISTINCT mcc || mnc FROM valid_op);
 
 -- Round up scores close to 100%
 UPDATE risk_3G set enc_perc = 1.0 where enc_perc > 0.5;
