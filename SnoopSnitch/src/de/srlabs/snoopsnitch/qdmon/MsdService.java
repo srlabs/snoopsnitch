@@ -2116,8 +2116,9 @@ public class MsdService extends Service{
 				sql = "DELETE FROM events WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
 				db.execSQL(sql);
 
-				sql = "DELETE FROM paging_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
+				sql = "DELETE FROM paging_info WHERE sid < (SELECT min(id) FROM session_info);";
 				db.execSQL(sql);
+
 				db.setTransactionSuccessful();
 			} finally {
 				db.endTransaction();
