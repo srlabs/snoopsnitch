@@ -90,10 +90,10 @@ public class MsdServiceAnalysis {
 
 		if (op.isValid()){
 			Log.i(TAG,"Security Analysis for mcc=" + op.getMcc() + ", mnc=" + op.getMnc());
-			Risk before = new Risk(db, op.getMcc(), op.getMnc());
+			Risk before = new Risk(db, op);
 			MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_2g.sql", false);
 			MsdSQLiteOpenHelper.readSQLAsset(context, db, "sm_3g.sql", false);
-			Risk after = new Risk(db, op.getMcc(), op.getMnc());
+			Risk after = new Risk(db, op);
 			log(before, after);
 
 			result = after.changed(before);

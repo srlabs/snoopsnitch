@@ -158,7 +158,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	@Override
 	public Risk getScores() {
 		Operator operator = new Operator(context);
-		return new Risk(db, operator.getMcc(), operator.getMnc());
+		return new Risk(db, operator);
 	}
 
 	@Override

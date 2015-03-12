@@ -179,7 +179,7 @@ public class DummyAnalysisEventData implements AnalysisEventDataInterface {
 	public Risk getScores() {
 		// Vodafone Germany
 //		return new Risk(db, 262, 2);
-		return new Risk(db, 405, 47);  // India
+		return new Risk(db, new Operator (405, 47));  // India
 //		return new Risk(db, 240, 24);  // Sweden
 //		return new Risk(db, 452, 7);   // Vietnam
 //		return new Risk(db, 401, 77);  // Kazakhstan 

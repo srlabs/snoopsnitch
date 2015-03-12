@@ -2,6 +2,8 @@ package de.srlabs.snoopsnitch.analysis;
 
 import java.util.Vector;
 
+import de.srlabs.snoopsnitch.qdmon.Operator;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -15,35 +17,37 @@ public class Risk {
 	private String operatorName = null;
 	private String operatorColor = null;
 	private int mcc;
+	private int mnc;
 
 	private Vector<Risk> serverData = null;
 
-	public Risk(SQLiteDatabase db, int currentMCC, int currentMNC) {
+	public Risk(SQLiteDatabase db, Operator currentOperator) {
 
 		// Set MCC
-		mcc = currentMCC;
+		mcc = currentOperator.getMcc();
+		mnc = currentOperator.getMnc();
 
 		//  Set inter, imper and track values
-		this.inter = query2GScores(db, currentMCC, currentMNC, "intercept");
-		this.imper = query2GScores(db, currentMCC, currentMNC, "impersonation");
-		this.track = query2GScores(db, currentMCC, currentMNC, "tracking");
-		this.inter3G = query3GScores(db, currentMCC, currentMNC, "intercept3G");
+		this.inter = query2GScores(db, mcc, mnc, "intercept");
+		this.imper = query2GScores(db, mcc, mnc, "impersonation");
+		this.track = query2GScores(db, mcc, mnc, "tracking");
+		this.inter3G = query3GScores(db, mcc, mnc, "intercept3G");
 
 		//  Impersonation makes no sense for 3G in its current form
-		//  this.imper3G = query3GScores(db, currentMCC, currentMNC, "impersonation3G");
+		//  this.imper3G = query3GScores(db, mcc, mnc, "impersonation3G");
 		this.imper3G = new Vector<Score>();
 
-		queryOperatorData(db, currentMCC, currentMNC);
+		queryOperatorData(db, mcc, mnc);
  
 		// Set other operators
 		serverData = new Vector<Risk>();
 		Cursor c = db.rawQuery
 			("select go.id, go.name, go.color from gsmmap_operators AS go, gsmmap_codes AS gc ON go.id = gc.id WHERE mcc=? GROUP BY gc.id",
-			new String[] {Integer.toString(currentMCC)});
+			new String[] {Integer.toString(mcc)});
 
 		if (c.moveToFirst()){
 			do {
-				serverData.add(new Risk(db, c.getLong(0), c.getString(1), c.getString(2), currentMCC));
+				serverData.add(new Risk(db, c.getLong(0), c.getString(1), c.getString(2), mcc));
 			} while (c.moveToNext());
 		}
 		c.close();
