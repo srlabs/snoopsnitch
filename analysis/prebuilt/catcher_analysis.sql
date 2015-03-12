@@ -310,8 +310,12 @@ SELECT
         lac,
         cid,
         t3212 AS value,
-        t3212 < config.t3212_min AS score
-FROM cell_info, config
+		CASE
+			WHEN t3212 < 5 THEN 1.5
+			WHEN t3212 < 9 THEN 0.7
+			ELSE 0.0
+		END AS score
+FROM cell_info
 WHERE t3212 > 0;
 
 --  Reject
