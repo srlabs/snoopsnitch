@@ -58,6 +58,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
 		try{
+			db.execSQL("PRAGMA secure_delete = 1");
 			readSQLAsset(context, db, "si.sql", true);
 			readSQLAsset(context, db, "si_loc.sql", true);
 			readSQLAsset(context, db, "sm.sql", true);
@@ -78,6 +79,10 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+		//  Enable secure delete
+		db.execSQL("PRAGMA secure_delete = 1");
+
 		if (oldVersion == 16 && newVersion > oldVersion) {
 			db.execSQL("ALTER TABLE gsmmap_inter ADD COLUMN size DOUBLE DEFAULT 0.0");
 			db.execSQL("ALTER TABLE gsmmap_imper ADD COLUMN size DOUBLE DEFAULT 0.0");

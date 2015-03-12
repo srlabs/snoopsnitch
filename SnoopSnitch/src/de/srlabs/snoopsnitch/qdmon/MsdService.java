@@ -2128,5 +2128,6 @@ public class MsdService extends Service{
 			sql = "DELETE FROM location_info where timestamp < datetime('now','-" + keepDuration + " hours');";
 			db.execSQL(sql);
 		}
+		db.execSQL("VACUUM;");
 	}
 }
