@@ -258,6 +258,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="error_notification_ticker">hatte einen internen Fehler</string>
      <string name="error_notification_text">Bitte senden Sie einen Fehlerbericht!</string>
      <string name="common_null_paging">Null Paging</string>
+     <string name="error_root_privileges_denied">Rootzugriff verweigert!</string>
+
+     <!-- Operator or country is unknown -->
+     <string name="operator_not_found">
+		Das aktuelle Netzwerk oder Land ist nicht in userer Datenbank.
+		Sie können trotzdem den aktiven Test ausführen und Daten hochladen.\n\n
+		Bitte schicken Sie eine E-Mail an snoopsnitch@srlabs.de mit dem Namen
+		Ihres aktuellen Landes, Ihres aktuellen Mobilfunknetzes und der MCC/MNC.
+     </string>
 
      <!-- Active test -->
      <string name="test_and_upload">Testen und Hochladen</string>

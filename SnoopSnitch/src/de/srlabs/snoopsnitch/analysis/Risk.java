@@ -16,16 +16,18 @@ public class Risk {
 	private Vector<Score> imper3G = null;
 	private String operatorName = null;
 	private String operatorColor = null;
-	private int mcc;
-	private int mnc;
+	private Operator op = null;
+	private int mcc = 0;
+	private int mnc = 0;
+	private boolean valid = false;
 
 	private Vector<Risk> serverData = null;
 
 	public Risk(SQLiteDatabase db, Operator currentOperator) {
 
-		// Set MCC
-		mcc = currentOperator.getMcc();
-		mnc = currentOperator.getMnc();
+		op = currentOperator;
+		mcc = op.getMcc();
+		mnc = op.getMnc();
 
 		//  Set inter, imper and track values
 		this.inter = query2GScores(db, mcc, mnc, "intercept");
@@ -97,6 +99,7 @@ public class Risk {
 			return;
 		}
 
+		this.valid = true;
 		this.operatorName  = c.getString(0);
 		this.operatorColor = c.getString(1);
 		c.close();
@@ -171,6 +174,14 @@ public class Risk {
 
 	public int getMcc() {
 		return mcc;
+	}
+
+	public int getMnc() {
+		return mnc;
+	}
+
+	public boolean operatorUnknown() {
+		return op.isValid() && !valid;
 	}
 
 	public boolean changed(Risk previous) {

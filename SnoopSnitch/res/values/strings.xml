@@ -258,6 +258,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="common_null_paging">Null Paging</string>
      <string name="error_root_privileges_denied">Root privileges denied!</string>
 
+     <!-- Operator or country is unknown -->
+     <string name="operator_not_found">
+         Your current network operator or country is not in our database.
+         You can still run the network test and contribute data.\n\n
+         Please email to snoopsnitch@srlabs.de telling us your current country
+         name, your current operator name and the MCC/MNC.
+     </string>
+
      <!-- Active test -->
      <string name="test_and_upload">Test and Upload</string>
      <string name="at_invalid">INVALID</string>

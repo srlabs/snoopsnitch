@@ -24,6 +24,7 @@ import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
 import de.srlabs.snoopsnitch.analysis.Risk;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
+import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.Utils;
 import de.srlabs.snoopsnitch.views.DashboardProviderChart;
@@ -63,6 +64,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	Vector<TextView> threatSmsCounts;
 	Vector<TextView> threatImsiCounts;
 	private ActiveTestHelper activeTestHelper;
+	private boolean unknownOperator = false;
 
 	// Methods
 	@Override
@@ -193,6 +195,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	@Override
 	public void stateChanged(StateChangedReason reason) 
 	{
+
 		if (reason.equals(StateChangedReason.CATCHER_DETECTED) || reason.equals(StateChangedReason.SMS_DETECTED))
 		{
 			refreshView();
@@ -217,6 +220,8 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	@Override
 	protected void refreshView() 
 	{
+		checkOperator();
+
 		// Redraw charts
 		resetCharts();
 		
@@ -226,6 +231,24 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		
 		// Set texts
 		resetThreatCounts();
+	}
+
+	private void checkOperator() {
+
+		Risk risk = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores();
+		if (!unknownOperator && risk.operatorUnknown())
+		{
+			String msg =
+					this.getResources().getString(R.string.operator_not_found) +
+					" (MCC=" + risk.getMcc() + ", MNC=" + risk.getMnc() + ")";
+			MsdDialog.makeNotificationDialog(this, msg, new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			}, false).show();
+
+		}
+		unknownOperator = risk.operatorUnknown();
 	}
 	
 	private void resetThreatCounts ()
