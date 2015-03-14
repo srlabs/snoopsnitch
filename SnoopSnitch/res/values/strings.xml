@@ -175,7 +175,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     
     <!-- Preferences Screen -->
   	<string name="settings_actionBar_title">Settings</string>
-    
+
+    <string name="settings_start_on_boot_title">Start on boot</string>
+    <string name="settings_start_on_boot_summary">Start the SnoopSnitch background service automatically when the device is booted</string>
+
     <string name="settings_basebandlogkeepduration_title">Baseband log clean interval</string>
     <string name="settings_basebandlogkeepduration_summary">Radio traces are purged from the phone that often</string>
     <string name="settings_basebandlogkeepduration_dialogtitle">Select interval:</string>

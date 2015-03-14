@@ -202,4 +202,16 @@ public class MsdConfig {
 		edit.putBoolean("app_first_run", firstRun);
 		edit.commit();
 	}
+
+	public static boolean getStartOnBoot(Context context)
+	{
+		return sharedPrefs(context).getBoolean("settings_start_on_boot", true);
+	}
+
+	public static void setStartOnBoot(Context context, boolean startOnBoot)
+	{
+		Editor edit = sharedPrefs(context).edit();
+		edit.putBoolean("settings_start_on_boot", startOnBoot);
+		edit.commit();
+	}
 }

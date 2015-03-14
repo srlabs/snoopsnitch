@@ -187,6 +187,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <!-- Preferences Screen -->
   	<string name="settings_actionBar_title">Einstellungen</string>
     
+    <string name="settings_start_on_boot_title">Beim Booten ausführen</string>
+    <string name="settings_start_on_boot_summary">SnoopSnitch Hintergrunddienst automatisch ausführen wenn das Geräte gebootet wird</string>
+ 
     <string name="settings_basebandlogkeepduration_title">Säuberung von Basebandlogs</string>
     <string name="settings_basebandlogkeepduration_summary">Zeitraum nach dem Radiodaten gelöscht werden</string>
     <string name="settings_basebandlogkeepduration_dialogtitle">Intervall wählen:</string>
