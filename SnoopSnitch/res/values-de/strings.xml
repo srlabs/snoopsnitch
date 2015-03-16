@@ -299,6 +299,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
      <string name="compat_root_denied">Rootzugang durch su verweigert. Bitte Berechtigungen prüfen.</string>
      <string name="compat_no_root">Rootzugang fehlgeschlagen.</string>
 
+     <string name="compat_no_baseband_messages_in_active_test">Fehler, keine Basebandnachrichten während aktivem Test.</string>
+     <string name="compat_no_baseband_messages">Fehler, keine Basebandnachrichten.</string>
+
      <!-- Settings-->
      <string name="no_service_running">Dienst läuft</string>
      <string name="no_catcher_title">IMSI Catcher Ereignisse</string>

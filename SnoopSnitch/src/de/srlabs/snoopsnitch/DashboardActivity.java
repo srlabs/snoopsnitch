@@ -55,6 +55,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	private DashboardProviderChart pvcProviderInterception;
 	private DashboardProviderChart pvcProviderImpersonation;
 	private TextView txtLastAnalysisTime;
+	private TextView txtDashboardLastAnalysis;
 	private TextView txtDashboardInterception3g;
 	private TextView txtDashboardInterception2g;
 	private TextView txtDashboardImpersonation2g;
@@ -84,6 +85,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		txtImsiDayCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherDayCount);
 		txtImsiHourCount = (TextView) findViewById(R.id.txtDashboardImsiCatcherHourCount);
 		txtLastAnalysisTime = (TextView) findViewById(R.id.txtDashboardLastAnalysisTime);
+		txtDashboardLastAnalysis = (TextView) findViewById(R.id.txtDashboardLastAnalysis);
 		
 		dtcSmsHour = (DashboardThreatChart) findViewById(R.id.SilentSMSChartHour);
 		dtcSmsDay = (DashboardThreatChart) findViewById(R.id.SilentSMSChartDay);
@@ -212,6 +214,8 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		else if (reason.equals(StateChangedReason.NO_BASEBAND_DATA))
 		{
 			txtLastAnalysisTime.setText(getString(R.string.compat_no_baseband_messages));
+			txtLastAnalysisTime.setTextColor(getResources().getColor(R.color.common_chartRed));
+			txtDashboardLastAnalysis.setVisibility(View.GONE);
 		}
 		
 		super.stateChanged(reason);
@@ -321,6 +325,8 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	{
 		// Set time of last measurement
 		txtLastAnalysisTime.setText(String.valueOf(DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())));
+		txtLastAnalysisTime.setTextColor(getResources().getColor(R.color.common_text));
+		txtDashboardLastAnalysis.setVisibility(View.VISIBLE);
 	}
 	
 	private void updateInterseptionImpersonation ()
