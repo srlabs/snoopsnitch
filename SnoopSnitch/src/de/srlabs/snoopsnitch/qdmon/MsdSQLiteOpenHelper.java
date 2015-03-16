@@ -118,8 +118,9 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		// Several tables were changed in version 18
 		if (oldVersion <= 18 && newVersion > oldVersion) {
 
-			// paging_info, mcc and mnc have changed
+			// valid_op, paging_info, mcc and mnc have changed
 			try {
+				readSQLAsset(context, db, "sm.sql", verbose);
 				readSQLAsset(context, db, "cell_info.sql", verbose);
 				readSQLAsset(context, db, "mcc.sql", verbose);
 				readSQLAsset(context, db, "mnc.sql", verbose);
