@@ -10,6 +10,7 @@ import de.srlabs.snoopsnitch.util.Utils;
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "msd.db";
 	private static final int DATABASE_VERSION = 19;
+	private static final boolean verbose = false;
 	private Context context;
 	public MsdSQLiteOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -58,18 +59,18 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.i(MsdService.TAG,"MsdSQLiteOpenHelper.onCreate() called");
 		try{
-			readSQLAsset(context, db, "si.sql", true);
-			readSQLAsset(context, db, "si_loc.sql", true);
-			readSQLAsset(context, db, "sm.sql", true);
-			readSQLAsset(context, db, "cell_info.sql", true);
-			readSQLAsset(context, db, "sms.sql", true);
-			readSQLAsset(context, db, "config.sql", true);
-			readSQLAsset(context, db, "mcc.sql", true);
-			readSQLAsset(context, db, "mnc.sql", true);
-			readSQLAsset(context, db, "hlr_info.sql", true);
-			readSQLAsset(context, db, "analysis_tables.sql", true);
-			readSQLAsset(context, db, "local.sqlx", true);
-			readSQLAsset(context, db, "files.sql", true);
+			readSQLAsset(context, db, "si.sql", verbose);
+			readSQLAsset(context, db, "si_loc.sql", verbose);
+			readSQLAsset(context, db, "sm.sql", verbose);
+			readSQLAsset(context, db, "cell_info.sql", verbose);
+			readSQLAsset(context, db, "sms.sql", verbose);
+			readSQLAsset(context, db, "config.sql", verbose);
+			readSQLAsset(context, db, "mcc.sql", verbose);
+			readSQLAsset(context, db, "mnc.sql", verbose);
+			readSQLAsset(context, db, "hlr_info.sql", verbose);
+			readSQLAsset(context, db, "analysis_tables.sql", verbose);
+			readSQLAsset(context, db, "local.sqlx", verbose);
+			readSQLAsset(context, db, "files.sql", verbose);
 		} catch(Exception e){
 			Log.e("MSD","Failed to create database",e);
 		}
@@ -119,9 +120,9 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 
 			// paging_info, mcc and mnc have changed
 			try {
-				readSQLAsset(context, db, "cell_info.sql", true);
-				readSQLAsset(context, db, "mcc.sql", true);
-				readSQLAsset(context, db, "mnc.sql", true);
+				readSQLAsset(context, db, "cell_info.sql", verbose);
+				readSQLAsset(context, db, "mcc.sql", verbose);
+				readSQLAsset(context, db, "mnc.sql", verbose);
 			} catch(Exception e){
 				Log.e("MSD","Failed to update database",e);
 			}
