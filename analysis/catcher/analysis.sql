@@ -22,6 +22,7 @@ SELECT
 	ifnull(max(ci.a1), 0.0),
 	ifnull(max(ci.a2), 0.0),
 	ifnull(max(ci.a4), 0.0),
+	ifnull(max(si.a5), 0.0),
 	ifnull(max(ci.k1), 0.0),
 	ifnull(max(ci.k2), 0.0),
 	ifnull(max(si.c1), 0.0),

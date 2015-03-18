@@ -1,5 +1,8 @@
 --  All session_info-based criteria
 
+--  Attract
+.read sql/a_05.sql
+
 --  Collect
 .read sql/c_01.sql
 .read sql/c_02.sql
@@ -22,6 +25,7 @@ SELECT
         si.mnc,
         si.lac,
         si.cid,
+        ifnull(a5.score, 0) as a5,
         ifnull(c1.score, 0) as c1,
         ifnull(c2.score, 0) as c2,
         ifnull(c3.score, 0) as c3,
@@ -30,6 +34,7 @@ SELECT
         ifnull(t3.score, 0) as t3,
         ifnull(t4.score, 0) as t4
 FROM session_info as si LEFT JOIN
+    a5 ON si.id = a5.id LEFT JOIN
     c1 ON si.id = c1.id LEFT JOIN
     c2 ON si.id = c2.id LEFT JOIN
     c3 ON si.id = c3.id LEFT JOIN

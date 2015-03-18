@@ -2,6 +2,55 @@
 
 --  All session_info-based criteria
 
+--  Attract
+--  All cells with a valid cell ID
+DROP VIEW IF EXISTS valid_cells;
+CREATE VIEW valid_cells AS
+SELECT
+	mcc,
+	mnc,
+	lac,
+	cid
+FROM
+	session_info
+WHERE
+	mcc > 0 AND mnc > 0 AND lac > 0 AND cid > 0 AND mcc < 1000 AND mnc < 1000
+GROUP BY
+	mcc, mnc, lac, cid;
+
+--  Query all LACs that have only a single cell. This
+--  can be a sign of a catcher, e.g. when the catchers
+--  invents a new LAC
+DROP VIEW IF EXISTS lonesome_lacs;
+CREATE VIEW lonesome_lacs AS
+SELECT
+	mcc,
+	mnc,
+	lac
+FROM
+	valid_cells
+GROUP BY
+	mcc, mnc, lac
+HAVING
+	count(*) = 1;
+
+--  Match all sessions with 'lonesome LACs'
+DROP VIEW IF EXISTS a5;
+CREATE VIEW a5 as
+SELECT 
+    si.id,
+    si.mcc,
+    si.mnc,
+    si.lac,
+    si.cid,
+	1.0 AS score
+FROM
+	session_info as si, lonesome_lacs as ll
+ON
+	si.mcc = ll.mcc AND
+	si.mnc = ll.mnc AND
+	si.lac = ll.lac;
+
 --  Collect
 DROP VIEW IF EXISTS max_cipher;
 CREATE VIEW max_cipher AS
@@ -221,6 +270,7 @@ SELECT
         si.mnc,
         si.lac,
         si.cid,
+        ifnull(a5.score, 0) as a5,
         ifnull(c1.score, 0) as c1,
         ifnull(c2.score, 0) as c2,
         ifnull(c3.score, 0) as c3,
@@ -229,6 +279,7 @@ SELECT
         ifnull(t3.score, 0) as t3,
         ifnull(t4.score, 0) as t4
 FROM session_info as si LEFT JOIN
+    a5 ON si.id = a5.id LEFT JOIN
     c1 ON si.id = c1.id LEFT JOIN
     c2 ON si.id = c2.id LEFT JOIN
     c3 ON si.id = c3.id LEFT JOIN
@@ -589,6 +640,7 @@ SELECT
 	ifnull(max(ci.a1), 0.0),
 	ifnull(max(ci.a2), 0.0),
 	ifnull(max(ci.a4), 0.0),
+	ifnull(max(si.a5), 0.0),
 	ifnull(max(ci.k1), 0.0),
 	ifnull(max(ci.k2), 0.0),
 	ifnull(max(si.c1), 0.0),
