@@ -19,4 +19,4 @@ SELECT
          NOT sms_presence AND
          NOT call_presence) THEN 1 ELSE 0 END as score
 FROM session_info
-WHERE domain = 0;
+WHERE domain = 0 and mobile_term;

@@ -233,7 +233,7 @@ SELECT
          NOT sms_presence AND
          NOT call_presence) THEN 1 ELSE 0 END as score
 FROM session_info
-WHERE domain = 0;
+WHERE domain = 0 and mobile_term;
 DROP VIEW IF EXISTS t4;
 CREATE VIEW t4 AS
 SELECT
@@ -256,7 +256,7 @@ SELECT
           NOT call_presence            AND
           duration > config.delta_tch) THEN 1 ELSE 0 END as score
 FROM session_info, config
-WHERE domain = 0 AND duration > 0;
+WHERE domain = 0 AND duration > 0 AND mobile_term;
 
 --  Result
 DROP VIEW IF EXISTS si;
