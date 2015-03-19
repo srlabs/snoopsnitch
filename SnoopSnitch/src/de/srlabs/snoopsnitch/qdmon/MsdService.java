@@ -1398,7 +1398,7 @@ public class MsdService extends Service{
 		String appID = MsdConfig.getAppId(MsdService.this);
 		String libdir = this.getApplicationInfo().nativeLibraryDir;
 		String parser_binary = libdir + "/libdiag_import.so";
-		long nextSessionInfoId = getNextRowId("session_info");
+		long nextSessionInfoId = Math.max(getNextRowId("session_info"),getNextRowId("sms_meta"));
 		long nextCellInfoId = getNextRowId("cell_info");
 
 		String cmd[] = {parser_binary,
