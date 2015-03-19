@@ -2124,13 +2124,13 @@ public class MsdService extends Service{
 				sql = "DELETE FROM cell_info WHERE last_seen < datetime('now','-" + keepDuration + " hours');";
 				db.execSQL(sql);
 
-				sql = "DELETE FROM arfcn_list WHERE id < (select min(id) from cell_info);";
+				sql = "DELETE FROM arfcn_list WHERE id < ifnull((select min(id) from cell_info),1000000000);";
 				db.execSQL(sql);
 
 				sql = "DELETE FROM events WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
 				db.execSQL(sql);
 
-				sql = "DELETE FROM paging_info WHERE sid < (SELECT min(id) FROM session_info);";
+				sql = "DELETE FROM paging_info WHERE sid < ifnull((SELECT min(id) FROM session_info),1000000000);";
 				db.execSQL(sql);
 
 				db.setTransactionSuccessful();
