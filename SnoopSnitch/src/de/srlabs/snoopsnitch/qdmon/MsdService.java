@@ -2112,7 +2112,7 @@ public class MsdService extends Service{
 				sql = "DELETE FROM session_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
 				db.execSQL(sql);
 
-				sql = "DELETE FROM sms_meta WHERE id < (SELECT min(id) FROM session_info);";
+				sql = "DELETE FROM sms_meta WHERE id < ifnull((SELECT min(id) FROM session_info),1000000000);";
 				db.execSQL(sql);
 
 				sql = "DELETE FROM serving_cell_info WHERE timestamp < datetime('now','-" + keepDuration + " hours');";
