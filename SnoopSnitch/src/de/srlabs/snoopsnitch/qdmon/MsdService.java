@@ -1193,7 +1193,8 @@ public class MsdService extends Service{
 			if(location.hasAltitude())
 				values.put("altitude", location.getAltitude());
 			values.put("provider_name",location.getProvider());
-			pendingSqlStatements.add(new PendingSqliteStatement("location_info", values));
+			if(!shuttingDown.get())
+				pendingSqlStatements.add(new PendingSqliteStatement("location_info", values));
 		}
 		@Override
 		public void onProviderDisabled(String provider) {
@@ -1230,7 +1231,8 @@ public class MsdService extends Service{
 					values.put("lac", lac);
 				values.put("psc", gsmLoc.getPsc());
 				last_sc_insert = new PendingSqliteStatement("serving_cell_info", values);
-				pendingSqlStatements.add(last_sc_insert);
+				if(!shuttingDown.get())
+					pendingSqlStatements.add(last_sc_insert);
 				// Some phones may not send onCellInfoChanged(). So let's record
 				// the neighboring cells as well if the current serving cell
 				// changes.
