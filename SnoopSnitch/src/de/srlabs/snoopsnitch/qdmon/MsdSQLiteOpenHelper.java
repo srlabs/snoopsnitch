@@ -118,31 +118,16 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		// Several tables were changed in version 18
 		if (oldVersion <= 18 && newVersion > oldVersion) {
 
-			// valid_op, paging_info, mcc and mnc have changed
 			try {
+				readSQLAsset(context, db, "upgrade_18.sqlx", verbose);
 				readSQLAsset(context, db, "sm.sql", verbose);
-				readSQLAsset(context, db, "cell_info.sql", verbose);
 				readSQLAsset(context, db, "mcc.sql", verbose);
 				readSQLAsset(context, db, "mnc.sql", verbose);
+				readSQLAsset(context, db, "analysis_tables.sql", verbose);
 			} catch(Exception e){
 				Log.e("MSD","Failed to update database",e);
 			}
 
-			// Add rand check table
-			db.execSQL("DROP TABLE IF EXISTS rand_check");
-			db.execSQL(
-				"CREATE TABLE rand_check (" +
-				"  sid integer NOT NULL," +
-				"  si5 float DEFAULT NULL," +
-				"  si5bis float DEFAULT NULL," +
-				"  si5ter float DEFAULT NULL," +
-				"  si6 float DEFAULT NULL," +
-				"  nullframe float DEFAULT NULL," +
-				"  sdcch_padding float DEFAULT NULL," +
-				"  sacch_padding float DEFAULT NULL," +
-				"  PRIMARY KEY(sid)" +
-				")"
-			);
 		}
 	}
 }
