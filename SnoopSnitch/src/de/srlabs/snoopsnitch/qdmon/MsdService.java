@@ -1870,6 +1870,8 @@ public class MsdService extends Service{
 		triggerUploading();
 	}
 	private void closeRawWriter(){
+		if(rawWriter == null)
+			return;
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		rawWriter.close();
