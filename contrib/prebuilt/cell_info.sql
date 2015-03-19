@@ -8,7 +8,7 @@ CREATE TABLE cell_info (
   -- DIAG or Android
   mcc smallint DEFAULT NULL,		-- Mobile country code
   mnc smallint DEFAULT NULL,		-- Mobile network code
-  lac smallint DEFAULT NULL,		-- Location area code
+  lac int DEFAULT NULL,			-- Location area code
   cid int DEFAULT NULL,			-- Cell ID
   rat tinyint DEFAULT NULL,		-- Radio access technology (GSM=0, UMTS=1, LTE=2)
   bcch_arfcn int DEFAULT NULL,		-- Main ARFCN for this cell
