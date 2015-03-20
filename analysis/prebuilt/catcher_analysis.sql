@@ -135,7 +135,7 @@ WHERE
 	mcc > 0    AND
 	mnc > 0    AND
 	mcc < 1000 AND
-	cid < 1000 AND
+	mnc < 1000 AND
 	(lu_acc OR call_presence OR sms_presence) AND
 	timestamp > datetime('now', '-1 month');
 
@@ -199,7 +199,7 @@ SELECT
 	CASE
 		WHEN scp.perc > 0.9 THEN 2.0
 		WHEN scp.perc > 0.8 THEN 1.5
-		                    ELSE 1.0
+		                                      ELSE 1.0
 	END AS score
 FROM
 	session_info as si, sessions_ciphered_perc as scp
@@ -209,7 +209,8 @@ ON
 	si.rat    = scp.rat AND
 	si.lu_acc = scp.lu_acc
 WHERE
-	cipher = 0;
+	cipher = 0 AND
+	not lu_reject;
 
 --  Track
 DROP VIEW IF EXISTS t3;
