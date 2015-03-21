@@ -9,7 +9,7 @@ SELECT
 FROM
 	session_info
 WHERE
-	mcc > 0 AND mnc > 0 AND lac > 0 AND cid > 0 AND mcc < 1000 AND mnc < 1000
+	mcc > 0 AND mnc > 0 AND lac > 0 AND cid > 0 AND mcc < 1000 AND mnc < 1000 AND domain = 0
 GROUP BY
 	mcc, mnc, lac, cid;
 
