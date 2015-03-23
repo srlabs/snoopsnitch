@@ -481,7 +481,8 @@ SELECT DISTINCT
         c.bcch_arfcn as cell_arfcn,
         n.id as neig_id
 FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n
-ON c.neig_arfcn = n.bcch_arfcn;
+ON c.neig_arfcn = n.bcch_arfcn
+WHERE c.bcch_arfcn != c.neig_arfcn;
 
 --  Count the number of neighboring cells recorded for every cell
 --  in the table. Note, that this is the number of neighboring
