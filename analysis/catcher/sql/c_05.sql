@@ -85,4 +85,5 @@ ON
 	si.lu_acc = scp.lu_acc
 WHERE
 	cipher = 0 AND
-	not lu_reject;
+	NOT lu_reject AND
+	NOT (t_locupd AND NOT si.lu_acc);
