@@ -966,7 +966,7 @@ public class MsdService extends Service{
 						handleFatalError("SQLException " + e.getMessage() + " while running: " + sql);
 						return;
 					}
-					if(System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS){
+					if(System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS && !MsdService.this.shuttingDown.get()){
 						info("Starting analysis");
 						wl.acquire();
 						class AnalysisStackTraceLogRunnable implements Runnable{
