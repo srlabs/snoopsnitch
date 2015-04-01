@@ -29,6 +29,10 @@ public class Operator {
 		if(networkOperator.length() < 5) {
 			return;
 		}
+		// Some Dual SIM phones return a comma-separated list of network operators.
+		if(networkOperator.indexOf(',') > 0){
+			networkOperator = networkOperator.substring(0,networkOperator.indexOf(','));
+		}
 
 		mcc = Integer.parseInt(networkOperator.substring(0,3));
 		mnc = Integer.parseInt(networkOperator.substring(3));
