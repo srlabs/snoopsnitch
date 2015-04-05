@@ -133,24 +133,8 @@ private conversion with the SnoopSnitch team, please contact snoopsnitch@srlabs.
 Visit our  project website for source code and further information:\n
 \n
 https://opensource.srlabs.de/projects/snoopsnitch\n
-\n
-Copyright (C) 2014  Security Research Labs\n
-\n
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.\n
-\n
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.\n
-\n
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see http://www.gnu.org/licenses/.\n
 </string>
 
-    
     <!-- Dashboard Screen -->
     <string name="dashboard_lastanalysis">Last analysis: </string>
     <string name="dashboard_lastanalysis_time"></string>
@@ -392,4 +376,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="network_info_lu_reject_cause_value">unknown</string>
     <string name="network_info_lu_type_value">unknown</string>
     <string name="network_info_internal_id_value">unknown</string>
+
+	<string name="copyright_text">
+Copyright (C) 2014, 2015  Security Research Labs\n
+\n
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.\n
+\n
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.\n
+\n
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.\n
+</string>
+    
 </resources>
