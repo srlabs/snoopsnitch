@@ -74,7 +74,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dashboard);
 		
-		this.activeTestHelper = new ActiveTestHelper(this, this, false);
+		this.activeTestHelper = new ActiveTestHelper(this, this);
 				
 		txtSmsMonthCount = (TextView) findViewById(R.id.txtDashboardSilentSmsMonthCount);
 		txtSmsWeekCount = (TextView) findViewById(R.id.txtDashboardSilentSmsWeekCount);

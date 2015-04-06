@@ -36,26 +36,18 @@ public class MsdServiceHelper{
 	}
 	MyMsdServiceCallbackStub msdCallback = new MyMsdServiceCallbackStub();
 	private boolean connected = false;
-	private boolean dummy;
 	private AnalysisEventDataInterface data = null;
 	private StringBuffer logDataBuffer;
 
-	public MsdServiceHelper(Context context, MsdServiceCallback callback, boolean dummy){
+	public MsdServiceHelper(Context context, MsdServiceCallback callback){
 		this.context = context;
 		this.callback = callback;
-		this.dummy = dummy;
 		startService();
 	}
 	private void startService(){
-		if(dummy){
-			context.startService(new Intent(context, DummyMsdService.class));
-			context.bindService(new Intent(context, DummyMsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
-			data = new DummyAnalysisEventData(context);
-		} else{
-			context.startService(new Intent(context, MsdService.class));
-			context.bindService(new Intent(context, MsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
-			data = new AnalysisEventData(context);
-		}
+		context.startService(new Intent(context, MsdService.class));
+		context.bindService(new Intent(context, MsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
+		data = new AnalysisEventData(context);
 	}
 	public boolean isConnected(){
 		return connected ;
@@ -78,10 +70,6 @@ public class MsdServiceHelper{
 			result = mIMsdService.stopRecording();
 		} catch (RemoteException e) {
 			handleFatalError("RemoteException while calling mIMsdService.isRecording() in MsdServiceHelper.startRecording()", e);
-		}
-		if (data instanceof DummyAnalysisEventData) {
-			DummyAnalysisEventData dummyData = (DummyAnalysisEventData) data;
-			dummyData.clearDynamicEvents();
 		}
 		Log.i(TAG,"MsdServiceHelper.stopRecording() returns " + result);
 		return result;
@@ -110,11 +98,7 @@ public class MsdServiceHelper{
 				mIMsdService.registerCallback(msdCallback);
 				boolean recording = mIMsdService.isRecording();
 				Log.i(TAG,"Initial recording = " + recording);
-				if (data instanceof DummyAnalysisEventData) {
-					DummyAnalysisEventData dummyData = (DummyAnalysisEventData) data;
-					dummyData.clearDynamicEvents();
-					dummyData.addDynamicDummyEvents(mIMsdService.getServiceStartTime(), context);
-				}
+
 				// Write pending log data when the service is connected
 				if(logDataBuffer != null){
 					mIMsdService.writeLog("START Pending messages:\n");

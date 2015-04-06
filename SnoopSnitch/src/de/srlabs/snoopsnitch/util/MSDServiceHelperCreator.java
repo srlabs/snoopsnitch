@@ -23,7 +23,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 	// Methods
 	private MSDServiceHelperCreator (Context context, boolean autostartRecording) 
 	{
-		msdServiceHelper = new MsdServiceHelper(context, this, false);
+		msdServiceHelper = new MsdServiceHelper(context, this);
 		this.autostartRecordingPending = autostartRecording;
 	}
 	

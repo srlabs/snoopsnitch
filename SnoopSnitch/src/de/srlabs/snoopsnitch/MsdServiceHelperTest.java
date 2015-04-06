@@ -46,7 +46,7 @@ public class MsdServiceHelperTest extends Activity implements MsdServiceCallback
 		this.btnStop = (Button) findViewById(R.id.btnStop);
 		this.btnUpload = (Button) findViewById(R.id.btnUpload);
 		this.textView1 = (TextView)findViewById(R.id.textView1);
-		msdServiceHelper = new MsdServiceHelper(MsdServiceHelperTest.this, MsdServiceHelperTest.this, false); // The last parameter determines whether to use the dummy service or not.
+		msdServiceHelper = new MsdServiceHelper(MsdServiceHelperTest.this, MsdServiceHelperTest.this);
 		this.btnStart.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

@@ -87,21 +87,15 @@ public class ActiveTestHelper{
 			callback.deviceIncompatibleDetected();
 		}
 	}
-	public ActiveTestHelper(Activity activity, ActiveTestCallback callback, boolean dummy){
+	public ActiveTestHelper(Activity activity, ActiveTestCallback callback){
 		this.context = activity;
 		this.callback = callback;
-		this.dummy = dummy;
 		startService();
 	}
 
 	private void startService() {
-		if(dummy){
-			context.startService(new Intent(context, DummyActiveTestService.class));
-			context.bindService(new Intent(context, DummyActiveTestService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
-		} else{
-			context.startService(new Intent(context, ActiveTestService.class));
-			context.bindService(new Intent(context, ActiveTestService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
-		}
+		context.startService(new Intent(context, ActiveTestService.class));
+		context.bindService(new Intent(context, ActiveTestService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	public boolean startActiveTest(String ownNumber){

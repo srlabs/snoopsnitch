@@ -114,7 +114,7 @@ public class CrashUploadActivity extends Activity implements MsdServiceCallback
 		df.markForUpload(db);
 		MsdDatabaseManager.getInstance().closeDatabase();
 		triggerUploadingPending  = true;
-		helper = new MsdServiceHelper(this, this, false);
+		helper = new MsdServiceHelper(this, this);
 	}
 
 	@Override
