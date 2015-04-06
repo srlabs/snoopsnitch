@@ -27,14 +27,6 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/txtImsiRowScoreTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/listview_imsi_item_score"
-            android:textSize="@dimen/text_medium"
-            android:fontFamily="sans-serif-condensed" />
-
-        <TextView
             android:id="@+id/txtImsiRowTimeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,6 +50,14 @@
             android:textSize="@dimen/text_medium"
             android:fontFamily="sans-serif-condensed" />
 
+        <TextView
+            android:id="@+id/txtImsiRowScoreTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listview_imsi_item_score"
+            android:textSize="@dimen/text_medium"
+            android:fontFamily="sans-serif-condensed" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -66,15 +66,6 @@
         android:layout_marginLeft="5dp"
         android:layout_weight="5"
         android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/txtImsiRowScoreValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-"
-            android:textSize="@dimen/text_medium"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-condensed" />
 
         <TextView
             android:id="@+id/txtImsiRowTimeValue"
@@ -96,6 +87,15 @@
 
         <TextView
             android:id="@+id/txtImsiRowCellIdValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
+
+        <TextView
+            android:id="@+id/txtImsiRowScoreValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-"

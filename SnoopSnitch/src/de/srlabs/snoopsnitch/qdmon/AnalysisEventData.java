@@ -106,7 +106,35 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 	}
 
 	private static String[] catcher_cols =
-			new String[] {"strftime('%s',timestamp)", "strftime('%s',timestamp) + duration/1000", "id", "mcc", "mnc", "lac", "cid", "latitude", "longitude", "valid", "score"};
+			new String[]
+					{"strftime('%s',timestamp)",
+					 "strftime('%s',timestamp) + duration/1000",
+					 "id",
+					 "mcc",
+					 "mnc",
+					 "lac",
+					 "cid",
+					 "latitude",
+					 "longitude",
+					 "valid",
+					 "score",
+					 "a1",
+					 "a2",
+					 "a4",
+					 "a5",
+					 "k1",
+					 "k2",
+					 "c1",
+					 "c2",
+					 "c3",
+					 "c4",
+					 "c5",
+					 "t1",
+					 "t3",
+					 "t4",
+					 "r1",
+					 "r2",
+					 "f1"};
 
 	static private ImsiCatcher catcherFromCursor(Cursor c, Context context) {
 
@@ -122,6 +150,23 @@ public class AnalysisEventData implements AnalysisEventDataInterface{
 				 c.getDouble(8),		// longitude
 				 c.getShort(9) > 0,		// valid
 				 c.getDouble(10),		// score
+				 c.getDouble(11),		// a1
+				 c.getDouble(12),		// a2
+				 c.getDouble(13),		// a4
+				 c.getDouble(14),		// a5
+				 c.getDouble(15),		// k1
+				 c.getDouble(16),		// k2
+				 c.getDouble(17),		// c1
+				 c.getDouble(18),		// c2
+				 c.getDouble(19),		// c3
+				 c.getDouble(20),		// c4
+				 c.getDouble(21),		// c5
+				 c.getDouble(22),		// t1
+				 c.getDouble(23),		// t3
+				 c.getDouble(24),		// t4
+				 c.getDouble(25),		// r1
+				 c.getDouble(26),		// r2
+				 c.getDouble(27),		// f1
 				 context);
 	}
 

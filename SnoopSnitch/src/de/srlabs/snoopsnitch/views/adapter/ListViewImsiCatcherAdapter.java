@@ -33,6 +33,16 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 	    this.host = (DetailChartActivity) context;
 	}
 	
+	private String addScore(String text, String scoreName, double score)
+	{
+		if (score > 0.0)
+		{
+			String scoreText = String.format("%.1f", score);
+			return text + ", " + scoreName + "=" + scoreText;
+		}
+		return text;
+	}
+	
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) 
 	{
@@ -41,7 +51,27 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 		View rowView = inflater.inflate(R.layout.custom_row_layout_imsicatcher, parent, false);
 		
 		// Set score
-		String scoreText = String.format("%.2f", values.get(position).getScore());
+		ImsiCatcher catcher = values.get(position);
+
+		String scoreText = String.format("%.2f", catcher.getScore());
+		scoreText = addScore(scoreText, "a1", catcher.getA1());
+		scoreText = addScore(scoreText, "a2", catcher.getA2());
+		scoreText = addScore(scoreText, "a4", catcher.getA4());
+		scoreText = addScore(scoreText, "a5", catcher.getA5());
+		scoreText = addScore(scoreText, "k1", catcher.getK1());
+		scoreText = addScore(scoreText, "k2", catcher.getK2());
+		scoreText = addScore(scoreText, "c1", catcher.getC1());
+		scoreText = addScore(scoreText, "c2", catcher.getC2());
+		scoreText = addScore(scoreText, "c3", catcher.getC3());
+		scoreText = addScore(scoreText, "c4", catcher.getC4());
+		scoreText = addScore(scoreText, "c5", catcher.getC5());
+		scoreText = addScore(scoreText, "t1", catcher.getT1());
+		scoreText = addScore(scoreText, "t3", catcher.getT3());
+		scoreText = addScore(scoreText, "t4", catcher.getT4());
+		scoreText = addScore(scoreText, "r1", catcher.getR1());
+		scoreText = addScore(scoreText, "r2", catcher.getR2());
+		scoreText = addScore(scoreText, "f1", catcher.getF1());
+
 		((TextView) rowView.findViewById(R.id.txtImsiRowScoreValue)).setText(scoreText);
 		
 		// Set time
