@@ -7,8 +7,10 @@ SELECT
 	cell.mnc,
 	cell.lac,
 	cell.cid,
-	--  If none of the observed neighbors has the same LAC as this cell the score is 1.0
-	0.0 + ((count(*) - sum(case when cell.lac != neig.lac then 1 else 0 end)) = 0) as score
+	--  If none of the observed neighbors has the same LAC
+	--  as this cell the score is 0.5. Once ARFCN correlation
+	--  is more reliable/tested we could increase that to 1.0
+	((count(*) - sum(case when cell.lac != neig.lac then 1 else 0 end)) = 0) * 0.5 as score
 FROM
 	cell_info  AS cell,
 	arfcn_list AS al,
