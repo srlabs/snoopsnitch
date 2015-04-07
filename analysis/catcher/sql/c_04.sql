@@ -8,7 +8,12 @@ SELECT
         lac,
         cid,
         (CASE
-			WHEN auth = 0 THEN 2.0
+			--  We may observe rejected location updates with 'foreign'
+			--  operators if our own operator is not receivable but has
+			--  no roaming agreement with that foreign operator. Do not
+			--  treat this as an incident if previous MCC/MNC are known
+			--  (i.e. lu_mcc != 0 AND lu_mnc != 0) differ from MCC/MNC.
+			WHEN auth = 0 AND ((mcc = lu_mcc AND mnc = lu_mnc) OR lu_mcc = 0 OR lu_mnc = 0) THEN 2.0
 			WHEN auth = 1 THEN 0.5
 			ELSE 0.0
 		END) *
