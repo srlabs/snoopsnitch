@@ -161,11 +161,20 @@ public class NetworkInfoActivity extends BaseActivity {
 		}
 	}
 
-	private String toCipherString(int value) {
+	private String toCipherString(int rat, int value) {
 		if (value > 4) {
 			return "-";
 		}
-		return "A5/" + Integer.toString(value);
+		switch (rat) {
+			case 0: // 2G
+				return "A5/" + Integer.toString(value);
+			case 1: // 3G
+				return "UEA/" + Integer.toString(value);
+			case 2: // LTE
+				return "EEA/" + Integer.toString(value);
+			default:
+				return context.getResources().getString(R.string.common_invalid);
+		}
 	}
 
 	private String toIntegrityString(int rat, int ia) {
@@ -317,7 +326,7 @@ public class NetworkInfoActivity extends BaseActivity {
 			setTextView(R.id.networkInfoCurrentLAC, Integer.toString(lac));
 			setTextView(R.id.networkInfoCurrentCID, Integer.toString(cid));
 			setTextView(R.id.networkInfoCurrentAuth, toAuthString(auth));
-			setTextView(R.id.networkInfoCurrentCipher, toCipherString(cipher));
+			setTextView(R.id.networkInfoCurrentCipher, toCipherString(rat, cipher));
 			setTextView(R.id.networkInfoCurrentIntegrity, toIntegrityString(rat, integrity));
 			setTextView(R.id.networkInfoCurrentDuration, Integer.toString(duration) + " ms");
 			setTextView(R.id.networkInfoCurrentDirection, toDirectionString(mo, mt));
