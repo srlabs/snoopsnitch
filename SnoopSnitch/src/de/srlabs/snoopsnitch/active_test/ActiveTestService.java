@@ -180,6 +180,7 @@ public class ActiveTestService extends Service{
 			}
 		};
 		private ApiCall api;
+		private boolean forceSkipIncomingSms = false;
 		void handleIncomingSms(SmsMessage sms){
 			//debugInfo("handleIncomingSms() received in state " + state.name());
 			stateInfo("Received SMS in state " + state.name() + ": " + sms.getMessageBody());
@@ -327,6 +328,8 @@ public class ActiveTestService extends Service{
 				Operator operator = new Operator(ActiveTestService.this);
 				skipIncomingSms = GSMmap.dataSufficient(operator.getMcc(), operator.getMnc(), getCurrentNetworkRatGeneration());
 
+				if(forceSkipIncomingSms)
+					skipIncomingSms = true;
 				// Find the action with the lowest run count and then trigger this action
 				int numSmsMo = results.getCurrentNetworkOperatorRatTestResults().getNumRuns(TestType.SMS_MO);
 				int numCallMo = results.getCurrentNetworkOperatorRatTestResults().getNumRuns(TestType.CALL_MO);
@@ -495,10 +498,16 @@ public class ActiveTestService extends Service{
 				results.setOnlineMode(false);
 				iterate();
 			} else if(state == State.SMS_MT_API){
-				stateInfo("SMS API failed, switching to offline mode: " + errorStr);
-				results.getCurrentTest().failApiError(apiId, errorStr);
-				results.setOnlineMode(false);
-				iterate();
+				if(errorStr != null && errorStr.equals("SMS_SKIPPED")){
+					stateInfo("Received SMS_SKIPPED response from server");
+					forceSkipIncomingSms = true;
+					iterate();
+				} else{
+					stateInfo("SMS API failed, switching to offline mode: " + errorStr);
+					results.getCurrentTest().failApiError(apiId, errorStr);
+					results.setOnlineMode(false);
+					iterate();
+				}
 			} else{
 				handleFatalError("handleApiFail in unexpected state " + state.name());
 			}
