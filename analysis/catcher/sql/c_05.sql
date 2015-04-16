@@ -74,7 +74,7 @@ SELECT
 	CASE
 		WHEN scp.perc > 0.9 THEN 2.0
 		WHEN scp.perc > 0.8 THEN 1.5
-		                                      ELSE 1.0
+		ELSE 1.0
 	END AS score
 FROM
 	session_info as si, sessions_ciphered_perc as scp
