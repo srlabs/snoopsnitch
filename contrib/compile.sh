@@ -102,7 +102,7 @@ case ${target} in
 		;;
 	host)
 		export MSD_CONFIGURE_OPTS="--prefix=${MSD_DESTDIR}"
-		export GSM_PARSER_MAKE_ARGS="TARGET=host PREFIX=${MSD_DESTDIR}"
+		export GSM_PARSER_MAKE_ARGS="TARGET=host PCAP=1 PREFIX=${MSD_DESTDIR}"
 		;;
 	*)
 		# Shouldn't happen
