@@ -86,4 +86,5 @@ ON
 WHERE
 	cipher = 0 AND
 	NOT lu_reject AND
+	NOT paging_mi AND
 	NOT (t_locupd AND NOT si.lu_acc);

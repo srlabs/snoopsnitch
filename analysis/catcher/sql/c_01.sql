@@ -19,4 +19,4 @@ SELECT
         cipher < mc.max AS score
 FROM session_info AS si, max_cipher as mc
 ON si.mcc = mc.mcc AND si.mnc = mc.mnc AND si.lac = mc.lac AND si.cid = mc.cid AND si.lu_acc = mc.lu_acc
-WHERE domain = 0;
+WHERE domain = 0 AND (si.lu_acc OR si.call_presence OR si.sms_presence);
