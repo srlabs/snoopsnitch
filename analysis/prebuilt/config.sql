@@ -41,7 +41,11 @@ CREATE TABLE config
 
 		--  Maximum time delta of a cell_info entry in seconds to be
 		--  considered related to some session entry
-		cell_info_max_delta
+		cell_info_max_delta,
+
+		--  Maximum time delta of a neighbor info entry in seconds to be
+		--  considered related to some cell_info entry
+		neig_max_delta
 );
 
 INSERT INTO config VALUES
@@ -99,5 +103,8 @@ INSERT INTO config VALUES
 
 		-- cell_info_max_delta
 		-- Consider everything occuring within an hour (+/- 1800 seconds)
-		1800
+		1800,
+
+		-- neig_max_delta
+		600
 );

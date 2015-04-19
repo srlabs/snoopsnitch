@@ -364,7 +364,8 @@ SELECT
 FROM
 	cell_info  AS cell,
 	arfcn_list AS al,
-	cell_info  AS neig
+	cell_info  AS neig,
+	config
 ON
 	cell.id = al.id AND
 	al.arfcn = neig.bcch_arfcn AND
@@ -372,8 +373,8 @@ ON
 	cell.mcc = neig.mcc AND
 	cell.mnc = neig.mnc AND
 	--  Consider only neighboring information collected within the last
-	--  10 minutes as valid (ARFCNs are reused!).
-	abs(strftime('%s', cell.last_seen) - strftime('%s', neig.last_seen)) < 600
+	--  config.neig_max_delta seconds as valid (ARFCNs are reused!).
+	abs(strftime('%s', cell.last_seen) - strftime('%s', neig.last_seen)) < config.neig_max_delta
 WHERE
 	cell.mcc > 0 AND
 	cell.mnc > 0 AND
