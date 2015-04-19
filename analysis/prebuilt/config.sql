@@ -37,7 +37,11 @@ CREATE TABLE config
 
 		--  Maximum time delta of a location entry in seconds to be
 		--  considered related to some session entry
-		loc_max_delta
+		loc_max_delta,
+
+		--  Maximum time delta of a cell_info entry in seconds to be
+		--  considered related to some session entry
+		cell_info_max_delta
 );
 
 INSERT INTO config VALUES
@@ -88,9 +92,12 @@ INSERT INTO config VALUES
 		0.0,
 
 		-- catcher_min_score
-		-- TODO: Evaluate minimal score, show everything for now
 		2.0,
 
 		-- loc_max_delta
-		600
+		600,
+
+		-- cell_info_max_delta
+		-- Consider everything occuring within an hour (+/- 1800 seconds)
+		1800
 );

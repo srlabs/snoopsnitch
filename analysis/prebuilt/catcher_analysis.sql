@@ -723,7 +723,7 @@ ON
 	ci.mnc = si.mnc AND
 	ci.lac = si.lac AND
 	ci.cid = si.cid AND
-	abs(strftime('%s', ci.last_seen) - strftime('%s', si.timestamp)) < 10000
+	abs(strftime('%s', ci.last_seen) - strftime('%s', si.timestamp)) < config.cell_info_max_delta
 LEFT JOIN si_loc
 ON
 	si.id = si_loc.id,
