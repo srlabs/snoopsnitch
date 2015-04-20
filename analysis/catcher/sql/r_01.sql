@@ -6,6 +6,7 @@
 DROP VIEW IF EXISTS cells_with_neig_arfcn;
 CREATE VIEW cells_with_neig_arfcn AS
 SELECT
+        ci.last_seen,
         ci.id,
         ci.mcc,
         ci.mnc,
@@ -33,7 +34,9 @@ SELECT DISTINCT
         c.bcch_arfcn as cell_arfcn,
         n.id as neig_id
 FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n
-ON c.neig_arfcn = n.bcch_arfcn
+ON
+	c.neig_arfcn = n.bcch_arfcn AND
+	abs(strftime('%s', c.last_seen) - strftime('%s', n.last_seen)) < config.neig_max_delta
 WHERE c.bcch_arfcn != c.neig_arfcn;
 
 --  Count the number of neighboring cells recorded for every cell
@@ -69,7 +72,10 @@ SELECT DISTINCT
         c.bcch_arfcn as cell_arfcn,
         n.id as neig_id
 FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n
-ON c.neig_arfcn = n.bcch_arfcn AND c.bcch_arfcn = n.neig_arfcn;
+ON
+	c.neig_arfcn = n.bcch_arfcn AND
+	c.bcch_arfcn = n.neig_arfcn AND
+	abs(strftime('%s', c.last_seen) - strftime('%s', n.last_seen)) < config.neig_max_delta;
 
 --  Count by how many neigboring cells a cell is announced
 --  as neighboring cell.
