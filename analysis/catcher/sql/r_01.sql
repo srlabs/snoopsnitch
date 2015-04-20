@@ -15,7 +15,7 @@ SELECT
         al.arfcn as neig_arfcn
 FROM cell_info AS ci LEFT JOIN arfcn_list AS al
 ON ci.id = al.id
-WHERE ci.mcc > 0 AND ci.mnc > 0 AND ci.lac > 0 AND ci.cid > 0;
+WHERE ci.mcc > 0 AND ci.lac > 0 AND ci.cid > 0;
 
 --  Join the cells_with_neig_arfcn table above with itself, such
 --  that that for every cell in cell_info we get the respective 

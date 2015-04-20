@@ -2,7 +2,7 @@ DROP VIEW IF EXISTS max_cipher;
 CREATE VIEW max_cipher AS
 SELECT mcc, mnc, lac, cid, lu_acc, max(cipher) as max
 FROM session_info
-WHERE domain = 0 AND mcc > 0 AND mnc > 0 AND lac > 0 AND cid > 0 AND (lu_acc OR call_presence OR sms_presence)
+WHERE domain = 0 AND mcc > 0 AND lac > 0 AND cid > 0 AND (lu_acc OR call_presence OR sms_presence)
 GROUP BY mcc, mnc, lac, cid, lu_acc;
 
 DROP VIEW IF EXISTS c1;

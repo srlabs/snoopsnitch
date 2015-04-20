@@ -19,8 +19,8 @@ ON
         (strftime('%s', l.first_seen) - strftime('%s', r.last_seen)) >= 0 AND
         (strftime('%s', l.first_seen) - strftime('%s', r.last_seen)) < config.delta_arfcn
 WHERE
-        l.mcc > 0 AND l.mnc > 0 AND l.lac > 0 AND l.cid > 0 AND
-        r.mcc > 0 AND r.mnc > 0 AND r.lac > 0 AND r.cid > 0
+        l.mcc > 0 AND l.lac > 0 AND l.cid > 0 AND
+        r.mcc > 0 AND r.lac > 0 AND r.cid > 0
 GROUP BY l.bcch_arfcn;
 
 --  Associate a1 score
@@ -40,4 +40,4 @@ ON
         strftime('%s', ci.first_seen) >= strftime('%s', da.first_seen) AND
         strftime('%s', ci.last_seen)  <= strftime('%s', da.last_seen)
 WHERE
-        ci.mcc > 0 AND ci.mnc > 0 and ci.lac > 0 and ci.cid > 0;
+        ci.mcc > 0 AND ci.lac > 0 and ci.cid > 0;

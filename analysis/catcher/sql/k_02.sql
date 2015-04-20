@@ -10,4 +10,4 @@ select
         cro as value,
         (cro > config.cro_max) as score
 from cell_info, config
-where mcc > 0 and mnc > 0 and lac > 0 and cid > 0 and cro > 0;
+where mcc > 0 and lac > 0 and cid > 0 and cro > 0;

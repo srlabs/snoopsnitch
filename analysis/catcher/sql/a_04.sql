@@ -27,7 +27,6 @@ ON
         l.first_seen < r.first_seen
 WHERE
         l.mcc > 0 AND
-        l.mnc > 0 AND
         l.lac > 0 AND
         l.cid > 0 AND
         r.bcch_arfcn != null

@@ -27,11 +27,9 @@ ON
 	abs(strftime('%s', cell.last_seen) - strftime('%s', neig.last_seen)) < config.neig_max_delta
 WHERE
 	cell.mcc > 0 AND
-	cell.mnc > 0 AND
 	cell.lac > 0 AND
 	cell.cid > 0 AND
 	neig.mcc > 0 AND
-	neig.mnc > 0 AND
 	neig.lac > 0 AND
 	neig.cid > 0
 GROUP BY

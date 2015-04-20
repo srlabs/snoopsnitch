@@ -10,7 +10,6 @@ FROM
 	session_info
 WHERE
 	mcc > 0 AND
-	mnc > 0 AND
 	lac > 0 AND
 	cid > 0 AND
 	mcc < 1000 AND

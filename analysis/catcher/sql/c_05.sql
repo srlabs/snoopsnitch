@@ -8,7 +8,6 @@ SELECT * FROM session_info
 WHERE
 	domain = 0 AND
 	mcc > 0    AND
-	mnc > 0    AND
 	mcc < 1000 AND
 	mnc < 1000 AND
 	(lu_acc OR call_presence OR sms_presence) AND
