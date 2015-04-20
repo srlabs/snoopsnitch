@@ -416,6 +416,7 @@ ON
         l.mnc = r.mnc AND
         l.lac = r.lac AND
         l.cid = r.cid AND
+        l.rat = r.rat AND
         l.bcch_arfcn != r.bcch_arfcn AND
         l.first_seen < r.first_seen
 WHERE
