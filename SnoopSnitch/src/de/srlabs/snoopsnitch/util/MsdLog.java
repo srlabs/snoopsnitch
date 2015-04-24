@@ -16,10 +16,14 @@ public class MsdLog {
 	private static MsdServiceHelper msdServiceHelper;
 	private static MsdService msd;
 
-	private static String getTimePrefix(){
+	public static String getTime(){
 		Calendar c = Calendar.getInstance();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-		return format.format(c.getTime()) + " ";
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ", Locale.US);
+		return format.format(c.getTime());
+	}
+	
+	private static String getTimePrefix(){
+		return getTime() + " ";
 	}
 
 	public static void i(String tag, String msg) {
@@ -80,7 +84,13 @@ public class MsdLog {
 		StringBuffer result = new StringBuffer();
 		result.append("Log opened " + Utils.formatTimestamp(System.currentTimeMillis()) + "\n");
 		result.append("SnoopSnitch Version: " + context.getString(R.string.app_version) + "\n");
-		result.append("Running on model " + Build.MODEL + " Android version " + Build.VERSION.RELEASE + "\n");
+		result.append("Android version: " + Build.VERSION.RELEASE + "\n");
+		result.append("Manufacturer: " + Build.MANUFACTURER + "\n");
+		result.append("Board: "        + Build.BOARD + "\n");
+		result.append("Brand: "        + Build.BRAND + "\n");
+		result.append("Product: "      + Build.PRODUCT + "\n");
+		result.append("Model: "        + Build.MODEL + "\n");
+		result.append("Baseband: "     + Build.getRadioVersion() + "\n");
 		return result.toString();
 	}
 }
