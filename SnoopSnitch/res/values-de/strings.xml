@@ -190,7 +190,11 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
     <string name="settings_debuglogkeepduration_title">Säuberung von Debuglogs</string>
     <string name="settings_debuglogkeepduration_summary">Zeitraum nach dem Logdateien gelöscht werden</string>
     <string name="settings_debuglogkeepduration_dialogtitle">Intervall wählen:</string>
-    
+      
+    <string name="settings_metadatakeepduration_title">Säuberung von Metadaten</string>
+    <string name="settings_metadatakeepduration_summary">Zeitraum nach dem Catcher/SMS Metadaten gelöscht werden</string>
+    <string name="settings_metadatakeepduration_dialogtitle">Intervall wählen:</string>
+      
     <string name="settings_gpsrecording_title">GPS-basierte Position aufzeichnen</string>
     <string name="settings_gpsrecording_summary">Genaue GPS-basierte Position aufzeichnen um Ortsangaben für IMSI Catcher und Sicherheitsereignisse zu erhalten</string>
     

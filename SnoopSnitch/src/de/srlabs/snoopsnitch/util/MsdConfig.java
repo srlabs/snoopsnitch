@@ -26,6 +26,11 @@ public class MsdConfig {
 		return 24*Integer.parseInt(sharedPrefs(context).getString("settings_debugLogKeepDuration", "1"));
 	}
 
+	public static int getMetadataKeepDurationHours(Context context) {
+		return 24*Integer.parseInt(sharedPrefs(context).getString("settings_basebandMetadataKeepDuration", "1"));
+
+	}
+	
 	public static int getLocationLogKeepDurationHours(Context context)
 	{
 		return 24*Integer.parseInt(sharedPrefs(context).getString("settings_locationLogKeepDuration", "1"));
@@ -57,6 +62,13 @@ public class MsdConfig {
 		return sharedPrefs(context).getBoolean("settings_recordUnencryptedDumpfiles", false);
 	}
 
+
+	public static boolean dumpUnencryptedEvents(Context context)
+	{
+
+		return sharedPrefs(context).getBoolean("settings_dumpUnencryptedEvents", false);
+	}
+	
 	public static String getAppId(Context context)
 	{
 		return sharedPrefs(context).getString("settings_appId", "");
@@ -214,4 +226,5 @@ public class MsdConfig {
 		edit.putBoolean("settings_start_on_boot", startOnBoot);
 		edit.commit();
 	}
+
 }

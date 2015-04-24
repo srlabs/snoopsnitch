@@ -51,7 +51,14 @@
             android:entryValues="@array/settings_durations_values"
             android:key="settings_debugLogKeepDuration"
             android:summary="@string/settings_debuglogkeepduration_summary"
-            android:title="@string/settings_debuglogkeepduration_title" />
+            android:title="@string/settings_debuglogkeepduration_title" /><ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/settings_metadatakeepduration_dialogtitle"
+            android:entries="@array/settings_durations_entries"
+            android:entryValues="@array/settings_durations_values"
+            android:key="settings_metadataKeepDuration"
+            android:summary="@string/settings_metadatakeepduration_summary"
+            android:title="@string/settings_metadatakeepduration_title" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="cat_location"
@@ -121,7 +128,12 @@
                 android:dependency="settings_enable_devel_options"
                 android:key="settings_recordUnencryptedDumpfiles"
                 android:summary="@string/settings_unencrypteddumpfilesrecording_summary"
-                android:title="@string/settings_unencrypteddumpfilesrecording_title" />
+                android:title="@string/settings_unencrypteddumpfilesrecording_title" /><CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_dumpUnencryptedEvents"
+                android:summary="@string/settings_dumpunencryptedevents_summary"
+                android:title="@string/settings_dumpunencryptedevents_title" />
             <CheckBoxPreference
                 android:defaultValue="false"
                 android:dependency="settings_enable_devel_options"

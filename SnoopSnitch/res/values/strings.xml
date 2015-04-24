@@ -178,6 +178,10 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
     <string name="settings_debuglogkeepduration_title">Debug log clean interval</string>
     <string name="settings_debuglogkeepduration_summary">Debug logs are purged from the phone that often</string>
     <string name="settings_debuglogkeepduration_dialogtitle">Select interval:</string>
+        
+    <string name="settings_metadatakeepduration_title">Metadata clean interval</string>
+    <string name="settings_metadatakeepduration_summary">Catcher and event metadata is purged from the phone that often</string>
+    <string name="settings_metadatakeepduration_dialogtitle">Select interval:</string>
     
     <string name="settings_gpsrecording_title">Record GPS location</string>
     <string name="settings_gpsrecording_summary">Use fine-grained GPS-based location recording to get location information for IMSI catcher and security events</string>
@@ -193,6 +197,9 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
     
     <string name="settings_encrypteddumpfilesrecording_title">Encrypted radio data</string>
     <string name="settings_encrypteddumpfilesrecording_summary">Store radio data encrypted with our public key.</string>
+
+    <string name="settings_dumpunencryptedevents_title">Unencrypted event dumps</string>
+    <string name="settings_dumpunencryptedevents_summary">Store event dump files unencrypted on phone. Sensitive information is NOT removed from the device for you!</string>
     
     <string name="settings_applicationid_title">App ID</string>
     <string name="settings_applicationid_summary">Your can use your app ID to hint us at the files you uploaded. Refresh it anytime by tapping here.</string>
