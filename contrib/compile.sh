@@ -161,6 +161,7 @@ then
 	install -m 644 ${BASE_DIR}/gsm-parser/cell_info.sql ${PARSER_DIR}/cell_info.sql
 	install -m 644 ${BASE_DIR}/gsm-parser/si.sql        ${PARSER_DIR}/si.sql
 	install -m 644 ${BASE_DIR}/gsm-parser/sms.sql       ${PARSER_DIR}/sms.sql
+	install -m 644 ${BASE_DIR}/gsm-parser/anonymize.sql ${PARSER_DIR}/anonymize.sql
 	
 	# Put the smime crt into the library directory since it needs to be a physical 
 	# file on the Android system so that it can be accessed from the openssl binary. 
