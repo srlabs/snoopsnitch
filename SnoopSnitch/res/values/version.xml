@@ -2,6 +2,6 @@
 <resources>
     
      <!--  App version -->
-     <string name="app_version">0.9.6</string>
+     <string name="app_version">0.9.7beta1</string>
      
 </resources>
