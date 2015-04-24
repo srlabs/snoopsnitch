@@ -2102,7 +2102,8 @@ public class MsdService extends Service{
 			// Plaintext files are not deleted automatically.
 			boolean debug = filename.startsWith("debug") && filename.endsWith(".smime");
 			boolean qdmon = filename.startsWith("qdmon") && filename.endsWith(".smime");
-			if(debug || qdmon){
+			boolean meta  = filename.startsWith("meta") && filename.endsWith(".smime");
+			if(debug || qdmon || meta){
 				DumpFile df = filesByName.get(filename);
 				boolean containsEvent = false;
 				int keepDurationHours = 0;
@@ -2113,6 +2114,10 @@ public class MsdService extends Service{
 				} else if(qdmon){
 					keepDurationHours = MsdConfig.getBasebandLogKeepDurationHours(this);
 					if(df != null && (df.isSms() || df.isImsi_catcher()))
+						containsEvent = true;
+				} else if(meta){
+					keepDurationHours = MsdConfig.getMetadataKeepDurationHours(this);
+					if(df != null && (df.isImsi_catcher()))
 						containsEvent = true;
 				}
 				boolean delete = false;

@@ -3,11 +3,20 @@ package de.srlabs.snoopsnitch.analysis;
 import java.util.Vector;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.util.Log;
+import de.srlabs.snoopsnitch.EncryptedFileWriterError;
+import de.srlabs.snoopsnitch.qdmon.EncryptedFileWriter;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.upload.DumpFile;
 import de.srlabs.snoopsnitch.upload.FileState;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
+import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.R;
 
 
 public class ImsiCatcher implements AnalysisEvent{
@@ -40,6 +49,7 @@ public class ImsiCatcher implements AnalysisEvent{
 	private double r2;
 	private double f1;
 	SQLiteDatabase db;
+	Context context;
 
 	public ImsiCatcher(long startTime, long endTime, long id, int mcc,
 			int mnc, int lac, int cid, double latitude, double longitude, boolean valid, double score,
@@ -77,13 +87,147 @@ public class ImsiCatcher implements AnalysisEvent{
 		this.f1 = f1;
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
 		db = MsdDatabaseManager.getInstance().openDatabase();
+		this.context = context;
 	}
 
+	static String dumpRow (Cursor c)
+	{
+		String result = "VALUES(";
+		
+		for (int pos = 0; pos < c.getColumnCount(); pos++)
+		{
+			switch (c.getType(pos))
+			{
+				case Cursor.FIELD_TYPE_NULL:
+					result += "null";
+					break;
+				case Cursor.FIELD_TYPE_INTEGER:
+					result += Integer.toString(c.getInt(pos));
+					break;
+				case Cursor.FIELD_TYPE_FLOAT:
+					result += Float.toString(c.getFloat(pos));
+					break;
+				case Cursor.FIELD_TYPE_STRING:
+					result += DatabaseUtils.sqlEscapeString(c.getString(pos));
+					break;
+				case Cursor.FIELD_TYPE_BLOB:
+					result += "<<Blobs unsupported>>";
+					break;
+				default:
+					return "Invalid field type " + c.getType(pos) + " at position " + pos;
+			}
+			
+			if (pos < c.getColumnCount() - 1)
+			{
+				result += ", ";
+			}
+		}
+		return result + ")";
+	}
+	
+	void dumpRows (String table, EncryptedFileWriter outputFile, String query) throws EncryptedFileWriterError
+	{
+		Cursor c = db.rawQuery (query, null);
+		while (c.moveToNext())
+		{
+			outputFile.write("INSERT INTO '" + table + "' " + dumpRow(c) + ";\n");
+		}
+		c.close();
+	}
+	
+	/**
+	 * Dump data related to an event to file
+	 * @param id ID of an event
+	 * @param outputFile Target file
+	 * @throws EncryptedFileWriterError
+	 */
+	private void dumpDatabase(Long id, EncryptedFileWriter outputFile)
+			throws EncryptedFileWriterError {
+		
+		// Create view with all relevant session_info IDs
+		// query LU/SMS/call sessions of the last month
+		db.execSQL("DROP VIEW IF EXISTS si_dump");
+		db.execSQL(
+			"CREATE VIEW si_dump AS " +
+			"SELECT id FROM session_info WHERE " +
+			"(mcc > 0 AND lac > 0 AND cid > 0 AND domain = 0) AND " +				 
+			"((mcc = " + mcc + " AND mnc = " + mnc + " AND lac = " + lac + ") OR " +
+			"(lu_acc OR call_presence OR sms_presence) AND " + 
+			"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-1 day'))");
+
+		// session_info, sid_appid, paging_info
+		dumpRows("session_info", outputFile, "SELECT si.* FROM session_info as si, si_dump ON si_dump.id = si.id");
+		dumpRows("sid_appid", outputFile,    "SELECT sa.* FROM sid_appid as sa, si_dump    ON si_dump.id = sa.sid");
+		dumpRows("paging_info", outputFile,  "SELECT pi.* FROM paging_info as pi, si_dump  ON si_dump.id = pi.sid");
+		
+		// sms_meta and catcher entries (only for this event)
+		dumpRows("sms_meta", outputFile, "SELECT * FROM sms_meta WHERE id = " + Long.toString(id) + ";");
+		dumpRows("catcher", outputFile,  "SELECT * FROM catcher  WHERE id = " + Long.toString(id) + ";");
+
+		// create view with all relevant cell_info IDs
+		db.execSQL("DROP VIEW IF EXISTS ci_dump");
+		db.execSQL(
+			"CREATE VIEW ci_dump AS " +
+			"SELECT cell_info.* FROM cell_info, config WHERE " +
+			"(mcc = " + mcc + " AND mnc = " + mnc +
+			" AND lac = " + lac + " AND cid = " + cid + ") OR " +
+			"(abs(strftime('%s', first_seen) - " + Long.toString(startTime/1000) +
+			") < (cell_info_max_delta + (max(delta_arfcn, neig_max_delta))))");
+		
+		// cell_info, arfcn_list
+		dumpRows("cell_info", outputFile,  "SELECT ci.* FROM cell_info  as ci, ci_dump ON ci.id = ci_dump.id");
+		dumpRows("arfcn_list", outputFile, "SELECT al.* FROM arfcn_list as al, ci_dump ON al.id = ci_dump.id");
+		
+		// config
+		dumpRows("config", outputFile, "SELECT * FROM config;");
+		
+		// location_info (10 minutes before and after the event)
+		dumpRows("location_info", outputFile,
+			"SELECT * FROM location_info WHERE abs(strftime('%s', timestamp) - " + 
+			Long.toString(startTime/1000) + ") < 600");
+		
+		// info table
+		String info =
+			"INSERT INTO 'info' VALUES (\n" +
+			"'" + MsdConfig.getAppId(context) + "', -- App ID\n" +
+			"'" + context.getResources().getString(R.string.app_version) + "', -- App version\n" +
+			"'" + Build.VERSION.RELEASE +   "', -- Android version\n" +
+			"'" + Build.MANUFACTURER +      "', -- Phone manufacturer\n" +
+			"'" + Build.BOARD +             "', -- Phone board\n" +
+			"'" + Build.BRAND +             "', -- Phone brand\n" +
+			"'" + Build.PRODUCT +           "', -- Phone product\n" +
+			"'" + Build.MODEL +             "', -- Phone model\n" +
+			"'" + Build.getRadioVersion() + "', -- Baseband\n" +
+			"'" + MsdLog.getTime() +        "', -- Time of export\n" +
+			Long.toString(id) +             "   -- Offending ID\n" +
+			");";
+		
+		outputFile.write(info);
+	}
+	
 	/**
 	 * Mark raw data related to this IMSI catcher for upload
+	 * @throws EncryptedFileWriterError 
 	 */
-	public void upload() {
+	public void upload() throws EncryptedFileWriterError {
+		
+		final boolean encryptedDump = true;
+		final boolean plainDump = MsdConfig.dumpUnencryptedEvents(context);
+		
 		DumpFile.markForUpload(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);
+
+		String fileName = "meta-" + Long.toString(id) + ".gz";
+		EncryptedFileWriter outputFile =
+				new EncryptedFileWriter(context, fileName + ".smime", encryptedDump, fileName, plainDump);
+		
+		dumpDatabase(id, outputFile);
+		outputFile.close();
+		
+		DumpFile meta = new DumpFile(outputFile.getEncryptedFilename(), DumpFile.TYPE_METADATA, startTime, endTime);
+		meta.setImsi_catcher(true);
+		meta.recordingStopped();
+		meta.insert(db);
+		meta.markForUpload(db);
 	}
 
 	/**
@@ -91,7 +235,30 @@ public class ImsiCatcher implements AnalysisEvent{
 	 * @return
 	 */
 	public FileState getUploadState() {
-		return DumpFile.getState(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);
+		FileState rawState  = DumpFile.getState(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);
+		FileState metaState = DumpFile.getState(db, DumpFile.TYPE_METADATA, startTime, endTime, 0);
+		
+		// If any of the files are still available mark the event as available.
+		if (rawState == FileState.STATE_AVAILABLE || metaState == FileState.STATE_AVAILABLE)
+		{
+			return FileState.STATE_AVAILABLE;
+		}
+		
+		// If raw  and meta data has the same state, just return that
+		if (rawState == metaState)
+		{
+			return rawState;
+		}
+		
+		// Prefer uploaded over deleted
+		if (rawState == FileState.STATE_UPLOADED || metaState == FileState.STATE_UPLOADED)
+		{
+			return FileState.STATE_UPLOADED;
+		}
+		
+		// Must be deleted otherwise (we return STATE_INVALID only if both
+		// are invalid with is the second case)
+		return FileState.STATE_DELETED;
 	}
 
 	/**
