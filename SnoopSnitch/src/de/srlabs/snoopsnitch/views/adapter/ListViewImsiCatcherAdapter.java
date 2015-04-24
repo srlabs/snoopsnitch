@@ -118,7 +118,13 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 						{
 							try {
 								values.get(position).upload();
-							} catch (EncryptedFileWriterError | SQLException | IOException e) {
+							} catch (EncryptedFileWriterError e) {
+								// FIXME: Error dialog
+								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage());
+							} catch (SQLException e) {
+								// FIXME: Error dialog
+								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage());
+							} catch (IOException e) {
 								// FIXME: Error dialog
 								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage());
 							}
