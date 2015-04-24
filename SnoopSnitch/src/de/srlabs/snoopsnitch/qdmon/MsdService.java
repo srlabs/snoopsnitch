@@ -67,6 +67,7 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
+import de.srlabs.snoopsnitch.EncryptedFileWriterError;
 import de.srlabs.snoopsnitch.analysis.GSMmap;
 import de.srlabs.snoopsnitch.upload.DumpFile;
 import de.srlabs.snoopsnitch.upload.MsdServiceUploadThread;
@@ -131,7 +132,11 @@ public class MsdService extends Service{
 
 		@Override
 		public void writeLog(String logData) throws RemoteException {
-			MsdService.this.writeLog(logData);
+			try {
+				MsdService.this.writeLog(logData);
+			} catch (EncryptedFileWriterError e) {
+				throw new RemoteException(e.getMessage());
+			}
 		}
 
 		@Override
@@ -169,7 +174,12 @@ public class MsdService extends Service{
 
 		@Override
 		public long reopenAndUploadDebugLog() throws RemoteException {
-			return MsdService.this.reopenAndUploadDebugLog();
+			try {
+				return MsdService.this.reopenAndUploadDebugLog();
+			} catch (EncryptedFileWriterError e) {
+				handleFatalError("Exception in reopenAndUploadDebugLog:", e);
+				return -1;
+			}
 		}
 
 		@Override
@@ -325,13 +335,13 @@ public class MsdService extends Service{
 		}
 	}
 
-	public long reopenAndUploadDebugLog() {
+	public long reopenAndUploadDebugLog() throws EncryptedFileWriterError {
 		long result = openOrReopenDebugLog(true,true);
 		triggerUploading();
 		return result;
 	}
 
-	public boolean endExtraRecording(boolean markForUpload) {
+	public boolean endExtraRecording(boolean markForUpload) throws EncryptedFileWriterError {
 		if(extraRecordingRawFileWriter == null)
 			return false;
 		EncryptedFileWriter copyExtraRecordingRawFileWriter = extraRecordingRawFileWriter;
@@ -352,7 +362,7 @@ public class MsdService extends Service{
 		return true;
 	}
 
-	public boolean startExraRecording(String filename) {
+	public boolean startExraRecording(String filename) throws EncryptedFileWriterError {
 		if(!recording)
 			return false;
 		this.extraRecordingStartTime = System.currentTimeMillis();
@@ -367,7 +377,7 @@ public class MsdService extends Service{
 		return true;
 	}
 
-	public void writeLog(String logData) {
+	public void writeLog(String logData) throws EncryptedFileWriterError {
 		if(debugLogWriter == null){
 			if(logBuffer == null){
 				logBuffer = new StringBuffer();
@@ -393,7 +403,11 @@ public class MsdService extends Service{
 			if(shuttingDown.get())
 				return;
 			if(debugLogWriter != null)
-				debugLogWriter.flushIfUnflushedDataSince(10000);
+				try {
+					debugLogWriter.flushIfUnflushedDataSince(10000);
+				} catch (EncryptedFileWriterError e) {
+					handleFatalError("Uncaught Exception during flush", e);
+				}
 			mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(this), 5000);
 		}
 	}
@@ -427,7 +441,11 @@ public class MsdService extends Service{
 		MsdLog.init(this);
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 		cleanupIncompleteOldFiles();
-		openOrReopenDebugLog(false,false);
+		try {
+			openOrReopenDebugLog(false,false);
+		} catch (EncryptedFileWriterError e1) {
+			handleFatalError("Exception when opening debug logs", e1);
+		}
 		mainThreadHandler.post(new ExceptionHandlingRunnable(periodicFlushRunnable));
 		Thread.setDefaultUncaughtExceptionHandler(
 				new Thread.UncaughtExceptionHandler() {
@@ -703,7 +721,11 @@ public class MsdService extends Service{
 		} catch (Exception e) {
 			// Prevent data loss by making sure that rawWriter is always closed during shutdown
 			if(rawWriter != null){
-				rawWriter.close();
+				try {
+					rawWriter.close();
+				} catch (EncryptedFileWriterError e1) {
+					// Ignore
+				}
 				rawWriter = null;
 			}
 			handleFatalError("Received Exception during shutdown", e);
@@ -731,12 +753,19 @@ public class MsdService extends Service{
 						DiagMsgWrapper msg = new DiagMsgWrapper(buf);
 						diagMsgCount ++;
 						toParserMsgQueue.add(msg);
-						rawWriter.write(buf);
+						try {
+							rawWriter.write(buf);
+						} catch (EncryptedFileWriterError e1) {
+							handleFatalError("Error writing raw file", e1);
+						}
 						if(extraRecordingRawFileWriter != null){
 							try{
 								extraRecordingRawFileWriter.write(buf);
 							} catch(NullPointerException e){
 								// The check extraRecordingRawFileWriter != null is not thread safe, so let's just ignore a NullPointerException
+							} catch(EncryptedFileWriterError e1)
+							{
+								handleFatalError("Error writing extra raw file", e1);
 							}
 						}
 					}
@@ -1730,7 +1759,12 @@ public class MsdService extends Service{
 		// Terminate extra file recording if the ActiveTestService doesn't terminate it (e.g. because it disappears)		
 		if(extraRecordingRawFileWriter != null){
 			if(System.currentTimeMillis() > extraRecordingStartTime + 10*60*1000)
-				endExtraRecording(false);
+				try {
+					endExtraRecording(false);
+				} catch (EncryptedFileWriterError e) {
+					handleFatalError("Error ending extra recording", e);
+					ok = false;
+				}
 		}
 
 		// Check parser memory usage by evaluating the stack/heap size in /proc/pid/maps
@@ -1803,12 +1837,16 @@ public class MsdService extends Service{
 		}
 		// TODO: Maybe check memory usage of this Service process as well.
 		if(ok){
-			openOrReopenRawWriter();
-			openOrReopenDebugLog(false, false);
+			try {
+				openOrReopenRawWriter();
+				openOrReopenDebugLog(false, false);
+			} catch (EncryptedFileWriterError e) {
+				info("Error (re)opening files: " + e.getMessage());
+			}
 			cleanup();
 		}
 	}
-	private void openOrReopenRawWriter() {
+	private void openOrReopenRawWriter() throws EncryptedFileWriterError {
 		// Create a new dump file every 10 minutes, name it with the
 		// UTC time so that it does not reuse the same filename if
 		// the user	switches between different timezones.
@@ -1880,7 +1918,11 @@ public class MsdService extends Service{
 			return;
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
-		rawWriter.close();
+		try {
+			rawWriter.close();
+		} catch (EncryptedFileWriterError e) {
+			info("Error closing raw log: " + e.getMessage());
+		}
 		rawWriter = null;
 		currentRawWriterBaseFilename = null;
 		DumpFile df = DumpFile.get(db, rawLogFileId);
@@ -1905,7 +1947,11 @@ public class MsdService extends Service{
 		info("MsdService.closeDebugLog(" + crash + ") called, closing log " + debugLogWriter.getEncryptedFilename());
 		EncryptedFileWriter tmp = debugLogWriter; // Make sure there are no writes to debugLogWriter after the close()
 		debugLogWriter = null;
-		tmp.close();
+		try {
+			tmp.close();
+		} catch (EncryptedFileWriterError e) {
+			info("Could not close temporary log file: " + tmp.getEncryptedFilename());
+		}
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		DumpFile df = DumpFile.get(db, debugLogFileId);
@@ -1919,8 +1965,9 @@ public class MsdService extends Service{
 	/**
 	 * Opens or reopens the debug log so that it only contains e.g. 1 hour of
 	 * output (which should be enough to debug a crash).
+	 * @throws EncryptedFileWriterError 
 	 */
-	private long openOrReopenDebugLog(boolean forceReopen, boolean markForUpload){
+	private long openOrReopenDebugLog(boolean forceReopen, boolean markForUpload) throws EncryptedFileWriterError{
 		if(!forceReopen && debugLogFileStartTime + 3600 * 1000 > System.currentTimeMillis())
 			return 0; // No reopen needed
 		debugLogFileStartTime = System.currentTimeMillis();

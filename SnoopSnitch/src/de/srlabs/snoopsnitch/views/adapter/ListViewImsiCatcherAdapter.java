@@ -7,12 +7,14 @@ import java.util.Vector;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import de.srlabs.snoopsnitch.EncryptedFileWriterError;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.DetailChartActivity;
 import de.srlabs.snoopsnitch.analysis.ImsiCatcher;
@@ -112,7 +114,11 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 						@Override
 						public void onClick(DialogInterface dialog, int which) 
 						{
-							values.get(position).upload();
+							try {
+								values.get(position).upload();
+							} catch (EncryptedFileWriterError e) {
+								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage());
+							}
 							host.refreshView();
 						}
 					}, null, false).show();

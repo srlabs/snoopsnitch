@@ -7,6 +7,7 @@ import java.util.Locale;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import de.srlabs.snoopsnitch.EncryptedFileWriterError;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdService;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
@@ -63,7 +64,11 @@ public class MsdLog {
 		if(msdServiceHelper != null){
 			msdServiceHelper.writeLog(line + "\n");
 		} else if(msd != null){
-			msd.writeLog(line + "\n");
+			try {
+				msd.writeLog(line + "\n");
+			} catch (EncryptedFileWriterError e) {
+				throw new IllegalStateException("Error writing to log file: " + e.getMessage());
+			}
 		} else{
 			throw new IllegalStateException("Please use MsdLog.init(context) before logging anything");
 		}
