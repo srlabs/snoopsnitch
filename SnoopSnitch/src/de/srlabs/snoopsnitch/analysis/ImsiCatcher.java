@@ -1,10 +1,12 @@
 package de.srlabs.snoopsnitch.analysis;
 
+import java.io.IOException;
 import java.util.Vector;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.util.Log;
@@ -208,14 +210,20 @@ public class ImsiCatcher implements AnalysisEvent{
 	/**
 	 * Mark raw data related to this IMSI catcher for upload
 	 * @throws EncryptedFileWriterError 
+	 * @throws IOException 
+	 * @throws SQLException 
 	 */
-	public void upload() throws EncryptedFileWriterError {
+	public void upload() throws EncryptedFileWriterError, SQLException, IOException {
 		
 		final boolean encryptedDump = true;
 		final boolean plainDump = MsdConfig.dumpUnencryptedEvents(context);
 		
 		DumpFile.markForUpload(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);
-
+		
+		// Anonymize database before dumping
+		MsdSQLiteOpenHelper.readSQLAsset(context, db, "anonymize.sql", false);
+		
+		// Create (encrypted) output
 		String fileName = "meta-" + Long.toString(id) + ".gz";
 		EncryptedFileWriter outputFile =
 				new EncryptedFileWriter(context, fileName + ".smime", encryptedDump, fileName, plainDump);

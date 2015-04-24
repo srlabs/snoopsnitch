@@ -1,5 +1,6 @@
 package de.srlabs.snoopsnitch.views.adapter;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Vector;
@@ -7,6 +8,7 @@ import java.util.Vector;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.database.SQLException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,7 +118,8 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 						{
 							try {
 								values.get(position).upload();
-							} catch (EncryptedFileWriterError e) {
+							} catch (EncryptedFileWriterError | SQLException | IOException e) {
+								// FIXME: Error dialog
 								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage());
 							}
 							host.refreshView();

@@ -2155,7 +2155,7 @@ public class MsdService extends Service{
 			df.delete(db);
 		}
 	}
-	private void cleanupDatabase(SQLiteDatabase db) throws SQLException{
+	private void cleanupDatabase(SQLiteDatabase db) throws SQLException, IOException {
 		String sql;
 		int keepDuration = MsdConfig.getAnalysisInfoKeepDurationHours(MsdService.this);
 		if(keepDuration > 0){
@@ -2184,6 +2184,8 @@ public class MsdService extends Service{
 
 				sql = "DELETE FROM paging_info WHERE sid < ifnull((SELECT min(id) FROM session_info),1000000000);";
 				db.execSQL(sql);
+				
+				MsdSQLiteOpenHelper.readSQLAsset(MsdService.this, db, "anonymize.sql", false);
 
 				db.setTransactionSuccessful();
 			} finally {

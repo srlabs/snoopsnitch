@@ -1,6 +1,9 @@
 package de.srlabs.snoopsnitch.qdmon;
 
+import java.io.IOException;
+
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.PowerManager;
@@ -17,7 +20,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 		this.context = context;
 	}
 
-	public static void readSQLAsset(Context context, SQLiteDatabase db, String file, Boolean verbose) throws Exception {
+	public static void readSQLAsset(Context context, SQLiteDatabase db, String file, Boolean verbose) throws SQLException, IOException {
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, file);
 
@@ -46,8 +49,6 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 				}
 			}
 			db.setTransactionSuccessful();
-		} catch (Exception e) {
-			throw e;
 		} finally {
 			db.endTransaction();
 			wl.release();
