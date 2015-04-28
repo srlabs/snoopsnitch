@@ -85,7 +85,7 @@ public class NetworkInfoActivity extends BaseActivity {
 
 		Cursor query = db.rawQuery
 				("SELECT max(id), ifnull(ifnull(new_tmsi, tmsi), '???') FROM session_info " +
-		         "WHERE domain = 0 AND (tmsi NOT NULL OR new_tmsi NOT NULL)", null);
+		         "WHERE domain = 0 AND (tmsi NOT NULL OR new_tmsi NOT NULL) ORDER BY id", null);
 
 		if(query.moveToFirst())
 		{

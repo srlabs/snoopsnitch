@@ -33,7 +33,7 @@ SELECT DISTINCT
         c.cid as cell_cid,
         c.bcch_arfcn as cell_arfcn,
         n.id as neig_id
-FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n
+FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n, config
 ON
 	c.neig_arfcn = n.bcch_arfcn AND
 	abs(strftime('%s', c.last_seen) - strftime('%s', n.last_seen)) < config.neig_max_delta
@@ -71,7 +71,7 @@ SELECT DISTINCT
         c.cid as cell_cid,
         c.bcch_arfcn as cell_arfcn,
         n.id as neig_id
-FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n
+FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n, config
 ON
 	c.neig_arfcn = n.bcch_arfcn AND
 	c.bcch_arfcn = n.neig_arfcn AND
