@@ -46,6 +46,11 @@ CREATE TABLE events
 	valid SMALLINT,
 	smsc CHAR(32) NOT NULL,
 	msisdn CHAR(32) NOT NULL,
-	event_type integer,			-- type of event (0 - OTA/binary SMS, 1 - silent SMS, 2 - null paging)
+	-- type of event
+	--	0 - none/normal
+	--	1 - OTA/binary SMS
+	--	2 - silent SMS
+	--	3 - null paging
+	event_type integer,
 	PRIMARY KEY(id, sequence, event_type)
 );
