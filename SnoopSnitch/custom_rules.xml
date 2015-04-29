@@ -15,6 +15,7 @@
     <copy file="../contrib/prebuilt/libopenssl.so"       todir="${jar.libs.dir}/armeabi" />
     <copy file="../contrib/prebuilt/libsmime_crt.so"     todir="${jar.libs.dir}/armeabi" />
 
+    <copy file="../contrib/prebuilt/anonymize.sql"         todir="assets" />
     <copy file="../contrib/prebuilt/si.sql"                todir="assets" />
     <copy file="../contrib/sql/si_loc.sql"                 todir="assets" />
     <copy file="../contrib/prebuilt/cell_info.sql"         todir="assets" />
