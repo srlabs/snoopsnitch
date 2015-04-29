@@ -43,7 +43,7 @@ public class ListViewEventAdapter extends ArrayAdapter<Event> implements Filtera
 	{
 		LayoutInflater inflater = (LayoutInflater) context
 			.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.custom_row_layout_sms, parent, false);
+		final View rowView = inflater.inflate(R.layout.custom_row_layout_sms, parent, false);
 		
 		// Set type
 		if (values.get(position).getType().name().equals(Type.BINARY_SMS.name()))
@@ -76,7 +76,7 @@ public class ListViewEventAdapter extends ArrayAdapter<Event> implements Filtera
 		((TextView) rowView.findViewById(R.id.txtSmsRowSourceValue)).setText(values.get(position).getSender());
 		
 		// Check upload state and set button
-		Button btnUpload = (Button) rowView.findViewById(R.id.btnUploadSms);
+		final Button btnUpload = (Button) rowView.findViewById(R.id.btnUploadSms);
 		
 		switch (values.get(position).getUploadState()) 
 		{
@@ -104,6 +104,11 @@ public class ListViewEventAdapter extends ArrayAdapter<Event> implements Filtera
 						public void onClick(DialogInterface dialog, int which) 
 						{
 							values.get(position).upload();
+							btnUpload.setBackgroundResource(R.drawable.ic_content_checkmark);
+							btnUpload.setText("");
+							btnUpload.setEnabled(false);
+							btnUpload.setVisibility(View.VISIBLE);
+							rowView.setBackgroundColor(context.getResources().getColor(R.color.common_custom_row_background_disabled));
 							host.refreshView();
 						}
 					}, null, false).show();

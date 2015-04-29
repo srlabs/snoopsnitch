@@ -52,7 +52,7 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 	{
 		LayoutInflater inflater = (LayoutInflater) context
 			.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.custom_row_layout_imsicatcher, parent, false);
+		final View rowView = inflater.inflate(R.layout.custom_row_layout_imsicatcher, parent, false);
 		
 		// Set score
 		ImsiCatcher catcher = values.get(position);
@@ -89,7 +89,7 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 		((TextView) rowView.findViewById(R.id.txtImsiRowCellIdValue)).setText(String.valueOf(values.get(position).getFullCellID()));
 		
 		// Check upload state and set button
-		Button btnUpload = (Button) rowView.findViewById(R.id.btnUploadImsi);
+		final Button btnUpload = (Button) rowView.findViewById(R.id.btnUploadImsi);
 		
 		switch (values.get(position).getUploadState()) 
 		{
@@ -118,15 +118,20 @@ public class ListViewImsiCatcherAdapter extends ArrayAdapter<ImsiCatcher>
 						{
 							try {
 								values.get(position).upload();
+								btnUpload.setBackgroundResource(R.drawable.ic_content_checkmark);
+								btnUpload.setText("");
+								btnUpload.setEnabled(false);
+								btnUpload.setVisibility(View.VISIBLE);
+								rowView.setBackgroundColor(context.getResources().getColor(R.color.common_custom_row_background_disabled));
 							} catch (EncryptedFileWriterError e) {
 								// FIXME: Error dialog
-								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage());
+								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage(),e);
 							} catch (SQLException e) {
 								// FIXME: Error dialog
-								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage());
+								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage(),e);
 							} catch (IOException e) {
 								// FIXME: Error dialog
-								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage());
+								Log.i("MSD", "Upload for IMSI catcher event failed: " + e.getMessage(),e);
 							}
 							host.refreshView();
 						}
