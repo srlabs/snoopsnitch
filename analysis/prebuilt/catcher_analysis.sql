@@ -15,7 +15,6 @@ FROM
 	session_info
 WHERE
 	mcc > 0 AND
-	mnc > 0 AND
 	lac > 0 AND
 	cid > 0 AND
 	mcc < 1000 AND
@@ -63,7 +62,7 @@ DROP VIEW IF EXISTS max_cipher;
 CREATE VIEW max_cipher AS
 SELECT mcc, mnc, lac, cid, lu_acc, max(cipher) as max
 FROM session_info
-WHERE domain = 0 AND mcc > 0 AND mnc > 0 AND lac > 0 AND cid > 0 AND (lu_acc OR call_presence OR sms_presence)
+WHERE domain = 0 AND mcc > 0 AND lac > 0 AND cid > 0 AND (lu_acc OR call_presence OR sms_presence)
 GROUP BY mcc, mnc, lac, cid, lu_acc;
 
 DROP VIEW IF EXISTS c1;
@@ -144,7 +143,6 @@ SELECT * FROM session_info
 WHERE
 	domain = 0 AND
 	mcc > 0    AND
-	mnc > 0    AND
 	mcc < 1000 AND
 	mnc < 1000 AND
 	(lu_acc OR call_presence OR sms_presence);
@@ -324,8 +322,8 @@ ON
         (strftime('%s', l.first_seen) - strftime('%s', r.last_seen)) >= 0 AND
         (strftime('%s', l.first_seen) - strftime('%s', r.last_seen)) < config.delta_arfcn
 WHERE
-        l.mcc > 0 AND l.mnc > 0 AND l.lac > 0 AND l.cid > 0 AND
-        r.mcc > 0 AND r.mnc > 0 AND r.lac > 0 AND r.cid > 0
+        l.mcc > 0 AND l.lac > 0 AND l.cid > 0 AND
+        r.mcc > 0 AND r.lac > 0 AND r.cid > 0
 GROUP BY l.bcch_arfcn;
 
 --  Associate a1 score
@@ -345,7 +343,7 @@ ON
         strftime('%s', ci.first_seen) >= strftime('%s', da.first_seen) AND
         strftime('%s', ci.last_seen)  <= strftime('%s', da.last_seen)
 WHERE
-        ci.mcc > 0 AND ci.mnc > 0 and ci.lac > 0 and ci.cid > 0;
+        ci.mcc > 0 AND ci.lac > 0 and ci.cid > 0;
 --  A2
 DROP VIEW IF EXISTS a2;
 CREATE VIEW a2 AS
@@ -375,11 +373,9 @@ ON
 	abs(strftime('%s', cell.last_seen) - strftime('%s', neig.last_seen)) < config.neig_max_delta
 WHERE
 	cell.mcc > 0 AND
-	cell.mnc > 0 AND
 	cell.lac > 0 AND
 	cell.cid > 0 AND
 	neig.mcc > 0 AND
-	neig.mnc > 0 AND
 	neig.lac > 0 AND
 	neig.cid > 0
 GROUP BY
@@ -419,7 +415,6 @@ ON
         l.first_seen < r.first_seen
 WHERE
         l.mcc > 0 AND
-        l.mnc > 0 AND
         l.lac > 0 AND
         l.cid > 0 AND
         r.bcch_arfcn != null
@@ -453,7 +448,7 @@ select
         cro as value,
         (cro > config.cro_max) as score
 from cell_info, config
-where mcc > 0 and mnc > 0 and lac > 0 and cid > 0 and cro > 0;
+where mcc > 0 and lac > 0 and cid > 0 and cro > 0;
 
 --  Track
 DROP VIEW IF EXISTS t1;
@@ -482,6 +477,7 @@ WHERE t3212 > 0;
 DROP VIEW IF EXISTS cells_with_neig_arfcn;
 CREATE VIEW cells_with_neig_arfcn AS
 SELECT
+        ci.last_seen,
         ci.id,
         ci.mcc,
         ci.mnc,
@@ -491,7 +487,7 @@ SELECT
         al.arfcn as neig_arfcn
 FROM cell_info AS ci LEFT JOIN arfcn_list AS al
 ON ci.id = al.id
-WHERE ci.mcc > 0 AND ci.mnc > 0 AND ci.lac > 0 AND ci.cid > 0;
+WHERE ci.mcc > 0 AND ci.lac > 0 AND ci.cid > 0;
 
 --  Join the cells_with_neig_arfcn table above with itself, such
 --  that that for every cell in cell_info we get the respective 
@@ -508,8 +504,10 @@ SELECT DISTINCT
         c.cid as cell_cid,
         c.bcch_arfcn as cell_arfcn,
         n.id as neig_id
-FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n
-ON c.neig_arfcn = n.bcch_arfcn
+FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n, config
+ON
+	c.neig_arfcn = n.bcch_arfcn AND
+	abs(strftime('%s', c.last_seen) - strftime('%s', n.last_seen)) < config.neig_max_delta
 WHERE c.bcch_arfcn != c.neig_arfcn;
 
 --  Count the number of neighboring cells recorded for every cell
@@ -544,8 +542,11 @@ SELECT DISTINCT
         c.cid as cell_cid,
         c.bcch_arfcn as cell_arfcn,
         n.id as neig_id
-FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n
-ON c.neig_arfcn = n.bcch_arfcn AND c.bcch_arfcn = n.neig_arfcn;
+FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n, config
+ON
+	c.neig_arfcn = n.bcch_arfcn AND
+	c.bcch_arfcn = n.neig_arfcn AND
+	abs(strftime('%s', c.last_seen) - strftime('%s', n.last_seen)) < config.neig_max_delta;
 
 --  Count by how many neigboring cells a cell is announced
 --  as neighboring cell.
