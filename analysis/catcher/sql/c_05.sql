@@ -1,7 +1,6 @@
 --  Select all sessions with a valid cell ID that
 --  contain call data, SMS or a accepted location
---  update. Consider only values within the last
---  day.
+--  update.
 DROP VIEW IF EXISTS valid_sessions;
 CREATE VIEW valid_sessions AS
 SELECT * FROM session_info
@@ -10,8 +9,7 @@ WHERE
 	mcc > 0    AND
 	mcc < 1000 AND
 	mnc < 1000 AND
-	(lu_acc OR call_presence OR sms_presence) AND
-	datetime(timestamp, 'unixepoch') > datetime('now', '-1 day');
+	(lu_acc OR call_presence OR sms_presence);
 
 --  Count number of sessions, grouped by country,
 --  operator, RAT and location update
