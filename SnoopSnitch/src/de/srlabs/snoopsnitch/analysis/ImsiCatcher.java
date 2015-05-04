@@ -146,16 +146,13 @@ public class ImsiCatcher implements AnalysisEvent{
 	private void dumpDatabase(Long id, EncryptedFileWriter outputFile)
 			throws EncryptedFileWriterError {
 		
-		// Create view with all relevant session_info IDs
-		// query LU/SMS/call sessions of the last month
+		// Create view with recent session_info IDs (last day)
 		db.execSQL("DROP VIEW IF EXISTS si_dump");
 		db.execSQL(
 			"CREATE VIEW si_dump AS " +
 			"SELECT id FROM session_info WHERE " +
-			"(mcc > 0 AND lac > 0 AND cid > 0 AND domain = 0) AND " +				 
-			"((mcc = " + mcc + " AND mnc = " + mnc + " AND lac = " + lac + ") OR " +
-			"(lu_acc OR call_presence OR sms_presence) AND " + 
-			"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-1 day'))");
+			"(mcc > 0 AND lac > 0) AND " +				 
+			"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-1 day')");
 
 		// session_info, sid_appid, paging_info
 		dumpRows("session_info", outputFile, "SELECT si.* FROM session_info as si, si_dump ON si_dump.id = si.id");

@@ -89,9 +89,11 @@ SELECT
         si.mnc,
         si.lac,
         si.cipher_delta as value,
-        si.cipher_delta > config.delta_cmcp as score
+	CASE WHEN si.cipher_delta > config.delta_cmcp THEN
+		CASE WHEN cmc_imeisv THEN 2.0 ELSE 1.0 END
+	END as score
 FROM session_info AS si, config
-WHERE domain = 0 AND cipher = 1;
+WHERE domain = 0 AND (cipher = 1 OR cipher = 2);
 DROP VIEW IF EXISTS c3;
 CREATE VIEW c3 AS
 SELECT
@@ -100,7 +102,7 @@ SELECT
         mcc,
         mnc,
         lac,
-        (CASE WHEN cmc_imeisv > 0 THEN 0 ELSE 0.5 END) as score
+        0 as score
 FROM session_info
 WHERE domain = 0 AND cipher > 0;
 DROP VIEW IF EXISTS c4;
@@ -218,9 +220,8 @@ ON
 	si.lu_acc = scp.lu_acc
 WHERE
 	cipher = 0 AND
-	NOT lu_reject AND
-	NOT paging_mi AND
-	NOT (t_locupd AND NOT si.lu_acc);
+	((t_locupd AND si.lu_acc AND NOT lu_reject AND NOT paging_mi) OR
+	(t_call AND call_presence) OR (t_sms AND sms_presence));
 
 --  Track
 DROP VIEW IF EXISTS t3;

@@ -82,6 +82,5 @@ ON
 	si.lu_acc = scp.lu_acc
 WHERE
 	cipher = 0 AND
-	NOT lu_reject AND
-	NOT paging_mi AND
-	NOT (t_locupd AND NOT si.lu_acc);
+	((t_locupd AND si.lu_acc AND NOT lu_reject AND NOT paging_mi) OR
+	(t_call AND call_presence) OR (t_sms AND sms_presence));
