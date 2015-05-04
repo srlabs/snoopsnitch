@@ -12,7 +12,7 @@ import de.srlabs.snoopsnitch.util.Utils;
 
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "msd.db";
-	private static final int DATABASE_VERSION = 19;
+	private static final int DATABASE_VERSION = 20;
 	private static final boolean verbose = false;
 	private Context context;
 	public MsdSQLiteOpenHelper(Context context) {
@@ -129,6 +129,13 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
 				Log.e("MSD","Failed to update database",e);
 			}
 
+		}
+		if (oldVersion <= 19 && newVersion > oldVersion) {
+			try {
+				readSQLAsset(context, db, "config.sql", verbose);
+			} catch(Exception e){
+				Log.e("MSD","Failed to update database",e);
+			}
 		}
 	}
 }
