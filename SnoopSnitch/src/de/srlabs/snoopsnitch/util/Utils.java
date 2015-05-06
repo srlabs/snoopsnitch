@@ -234,18 +234,18 @@ public class Utils {
 				"CREATE VIEW si_dump AS " +
 						"SELECT id FROM session_info WHERE " +
 						"(mcc > 0 AND lac > 0) AND " +				 
-						"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-1 day')");
+						"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-1 hour') AND " +
+						"timestamp < datetime(" + Long.toString(endTime/1000) + ", 'unixepoch', '+1 hour')");
 
 		// session_info, paging_info
 		dumpRows(db, "session_info", outputFile, "SELECT si.* FROM session_info as si, si_dump ON si_dump.id = si.id");
 		dumpRows(db, "paging_info", outputFile,  "SELECT pi.* FROM paging_info as pi, si_dump  ON si_dump.id = pi.sid");
 
-		if(imsiCatcher != null){
-			// sms_meta, catcher and event entries (only for this event)
-			dumpRows(db, "sms_meta", outputFile, "SELECT * FROM sms_meta WHERE id = " + Long.toString(imsiCatcher.getId()) + ";");
-			dumpRows(db, "catcher", outputFile,  "SELECT * FROM catcher WHERE id = " + Long.toString(imsiCatcher.getId()) + ";");
-			dumpRows(db, "events", outputFile,  "SELECT * FROM events WHERE id = " + Long.toString(imsiCatcher.getId()) + ";");
-		}
+		// sms_meta, catcher and event entries
+		dumpRows(db, "sms_meta", outputFile, "SELECT sm.* FROM sms_meta sm, si_dump on si_dump.id = sm.id;");
+		dumpRows(db, "catcher", outputFile,  "SELECT c.* FROM catcher c, si_dump on si_dump.id = c.id;");
+		dumpRows(db, "events", outputFile,  "SELECT e.* FROM events e, si_dump on si_dump.id = e.id;");
+
 		// create view with all relevant cell_info IDs
 		db.execSQL("DROP VIEW IF EXISTS ci_dump");
 		String sql = "CREATE VIEW ci_dump AS " +
@@ -253,7 +253,7 @@ public class Utils {
 		if(imsiCatcher != null)
 			sql += "(mcc = " + imsiCatcher.getMcc() + " AND mnc = " + imsiCatcher.getMnc() + " AND lac = " + imsiCatcher.getLac() + " AND cid = " + imsiCatcher.getCid() + ") OR ";
 		sql += "(abs(strftime('%s', first_seen) - " + Long.toString(startTime/1000) +
-			") < (cell_info_max_delta + (max(delta_arfcn, neig_max_delta))))";
+				") < (cell_info_max_delta + (max(delta_arfcn, neig_max_delta))))";
 		db.execSQL(sql);
 
 		// cell_info, arfcn_list
@@ -265,8 +265,9 @@ public class Utils {
 
 		// location_info (30 minutes before and after the event)
 		dumpRows(db, "location_info", outputFile,
-				"SELECT * FROM location_info WHERE abs(strftime('%s', timestamp) - " + 
-						Long.toString(startTime/1000) + ") < 1800");
+				"SELECT * FROM location_info WHERE " +
+						"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-30 minutes') AND " +
+						"timestamp < datetime(" + Long.toString(endTime/1000) + ", 'unixepoch', '+30 minutes')");
 
 		// info table
 		String info =
@@ -300,17 +301,17 @@ public class Utils {
 	public static void uploadMetadata(Context context, SQLiteDatabase db, ImsiCatcher imsiCatcher, long startTime, long endTime)  throws EncryptedFileWriterError, SQLException, IOException {
 		final boolean encryptedDump = true;
 		final boolean plainDump = MsdConfig.dumpUnencryptedEvents(context);
-		
+
 		// Anonymize database before dumping
 		MsdSQLiteOpenHelper.readSQLAsset(context, db, "anonymize.sql", false);
-		
+
 		String fileName = "meta-" + (imsiCatcher == null ? ("suspicious-" + System.currentTimeMillis()) : Long.toString(imsiCatcher.getId())) + ".gz";
 		EncryptedFileWriter outputFile =
 				new EncryptedFileWriter(context, fileName + ".smime", encryptedDump, fileName, plainDump);
-		
+
 		Utils.dumpDatabase(context, db, imsiCatcher, startTime, endTime, outputFile);
 		outputFile.close();
-		
+
 		DumpFile meta = new DumpFile(outputFile.getEncryptedFilename(), DumpFile.TYPE_METADATA, startTime, endTime);
 		meta.setImsi_catcher(true);
 		meta.recordingStopped();
