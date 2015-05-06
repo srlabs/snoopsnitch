@@ -173,37 +173,46 @@ public class BaseActivity extends FragmentActivity
 		    	getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
 		    	break;
 		    case R.id.menu_action_upload_suspicious_dumps:
-		    	MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
-				SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
-		    	Vector<DumpFile> files = DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, System.currentTimeMillis() - 3600 * 1000, System.currentTimeMillis(), 0);
-		    	long firstStartTime = System.currentTimeMillis();
-		    	String reportId = "";
-		    	for(DumpFile file:files){
-		    		if(file.getStart_time() < firstStartTime){
-		    			firstStartTime = file.getStart_time();
-		    			reportId = file.getReportId();
-		    		}
-		    	}
-		    	if(reportId == null){
-		    		// TODO: Show error message, no file is available
-					MsdDatabaseManager.getInstance().closeDatabase();
-		    		return true;
-		    	}
-		    	// TODO: Show dialog for confirmation:
-		    	// * Inform user about uploading private data
-		    	// * Show report ID and encourage user to send context information to some email address
-		    	boolean confirmed = true;
-		    	if(confirmed){
+				SQLiteDatabase db = null;
+				try{
+			    	MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
+					db = MsdDatabaseManager.getInstance().openDatabase();
+			    	Vector<DumpFile> files = DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, System.currentTimeMillis() - 3600 * 1000, System.currentTimeMillis(), 0);
+			    	long firstStartTime = System.currentTimeMillis();
+			    	String reportId = "";
 			    	for(DumpFile file:files){
-			    		file.markForUpload(db);
+			    		if(file.getStart_time() < firstStartTime){
+			    			firstStartTime = file.getStart_time();
+			    			reportId = file.getReportId();
+			    		}
 			    	}
-					getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
-		    	}
-				MsdDatabaseManager.getInstance().closeDatabase();
+			    	if(reportId == null){
+			    		// TODO: Show error message, no file is available
+			    		return true;
+			    	}
+			    	// TODO: Show dialog for confirmation:
+			    	// * Inform user about uploading private data
+			    	// * Show report ID and encourage user to send context information to some email address
+			    	boolean confirmed = true;
+			    	if(confirmed){
+				    	for(DumpFile file:files){
+				    		file.markForUpload(db);
+				    	}
+						getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
+			    	}
+			    	Utils.uploadMetadata(this, db, null, System.currentTimeMillis(), System.currentTimeMillis());
+				} catch(Exception e){
+					String msg = "Exception while uploading suspicious activity: " + e.getClass().getName() + ":" + e.getMessage();
+					MsdLog.e("BaseActivity", msg,e);
+					internalError(msg);
+				} finally{
+					if(db != null)
+						MsdDatabaseManager.getInstance().closeDatabase();
+				}
 		    	break;
 		    case R.id.menu_action_upload_debug_logs:
 		    	// TODO: Show confirmation dialog
-		    	confirmed = true;
+		    	boolean confirmed = true;
 		    	if(confirmed){
 					long debugLogId = getMsdServiceHelperCreator().getMsdServiceHelper().reopenAndUploadDebugLog();
 					if(debugLogId == 0){
@@ -212,7 +221,7 @@ public class BaseActivity extends FragmentActivity
 						db = MsdDatabaseManager.getInstance().openDatabase();
 						DumpFile df = DumpFile.get(db, debugLogId);
 						MsdDatabaseManager.getInstance().closeDatabase();
-						reportId = df.getReportId();
+						String reportId = df.getReportId();
 						// TODO: Show dialog with reportId, encourage user to report additional info via email
 					}
 		    	}
