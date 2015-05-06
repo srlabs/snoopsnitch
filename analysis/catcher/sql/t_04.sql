@@ -9,7 +9,6 @@ SELECT
         duration,
         CASE WHEN
          ((assign_cmpl OR mobile_term) AND
-          t_release                    AND
           NOT auth                     AND
           NOT iden_imei_ac             AND
           NOT iden_imei_bc             AND

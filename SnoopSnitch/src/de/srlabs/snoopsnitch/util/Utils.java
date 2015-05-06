@@ -236,15 +236,15 @@ public class Utils {
 						"(mcc > 0 AND lac > 0) AND " +				 
 						"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-1 day')");
 
-		// session_info, sid_appid, paging_info
+		// session_info, paging_info
 		dumpRows(db, "session_info", outputFile, "SELECT si.* FROM session_info as si, si_dump ON si_dump.id = si.id");
-		dumpRows(db, "sid_appid", outputFile,    "SELECT sa.* FROM sid_appid as sa, si_dump    ON si_dump.id = sa.sid");
 		dumpRows(db, "paging_info", outputFile,  "SELECT pi.* FROM paging_info as pi, si_dump  ON si_dump.id = pi.sid");
 
 		if(imsiCatcher != null){
-			// sms_meta and catcher entries (only for this event)
+			// sms_meta, catcher and event entries (only for this event)
 			dumpRows(db, "sms_meta", outputFile, "SELECT * FROM sms_meta WHERE id = " + Long.toString(imsiCatcher.getId()) + ";");
-			dumpRows(db, "catcher", outputFile,  "SELECT * FROM catcher  WHERE id = " + Long.toString(imsiCatcher.getId()) + ";");
+			dumpRows(db, "catcher", outputFile,  "SELECT * FROM catcher WHERE id = " + Long.toString(imsiCatcher.getId()) + ";");
+			dumpRows(db, "events", outputFile,  "SELECT * FROM events WHERE id = " + Long.toString(imsiCatcher.getId()) + ";");
 		}
 		// create view with all relevant cell_info IDs
 		db.execSQL("DROP VIEW IF EXISTS ci_dump");
@@ -263,10 +263,10 @@ public class Utils {
 		// config
 		dumpRows(db, "config", outputFile, "SELECT * FROM config;");
 
-		// location_info (10 minutes before and after the event)
+		// location_info (30 minutes before and after the event)
 		dumpRows(db, "location_info", outputFile,
 				"SELECT * FROM location_info WHERE abs(strftime('%s', timestamp) - " + 
-						Long.toString(startTime/1000) + ") < 600");
+						Long.toString(startTime/1000) + ") < 1800");
 
 		// info table
 		String info =

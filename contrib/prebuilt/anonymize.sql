@@ -21,7 +21,8 @@ where	from_network and				-- message comes from network
 	length > 6;					-- not empty
 
 update sms_meta set msisdn = substr(msisdn,1,6)||"<ANON>"	-- Strip phone number if:
-        -- a number is stored
-        where	length(msisdn) > 0 and					
-        -- marked anon before
+	-- a number is stored
+where	length(msisdn) > 0 and
+	-- marked anon before
 	data = "<ANON>";
+
