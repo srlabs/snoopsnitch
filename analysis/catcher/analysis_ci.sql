@@ -1,7 +1,7 @@
 --  All cell_info-based criteria
 
 --  Attract
-.read sql/a_01.sql
+-- (disabled) .read sql/a_01.sql
 .read sql/a_02.sql
 .read sql/a_04.sql
 
@@ -17,7 +17,7 @@
 .read sql/r_02.sql
 
 --  Fingerprint
-.read sql/f_01.sql
+-- (disabled) .read sql/f_01.sql
 
 --  Result
 DROP VIEW IF EXISTS ci;
@@ -29,7 +29,7 @@ SELECT DISTINCT
         ci.mnc,
         ci.lac,
         ci.cid,
-        ifnull(a1.score, 0) as a1,
+        0 as a1,
         ifnull(a2.score, 0) as a2,
         ifnull(a4.score, 0) as a4,
         ifnull(k1.score, 0) as k1,
@@ -37,16 +37,14 @@ SELECT DISTINCT
         ifnull(t1.score, 0) as t1,
         ifnull(r1.score, 0) as r1,
         ifnull(r2.score, 0) as r2,
-        ifnull(f1.score, 0) as f1
+        0 as f1
 FROM cell_info as ci LEFT JOIN
- a1 ON ci.id = a1.id LEFT JOIN
  a2 ON ci.id = a2.id LEFT JOIN
  a4 ON ci.id = a4.id LEFT JOIN
  k1 ON ci.id = k1.id LEFT JOIN
  k2 ON ci.id = k2.id LEFT JOIN
  t1 ON ci.id = t1.id LEFT JOIN
  r1 ON ci.id = r1.id LEFT JOIN
- r2 ON ci.id = r2.id LEFT JOIN
- f1 ON ci.id = f1.id
+ r2 ON ci.id = r2.id
 WHERE
-	ci.mcc > 0 AND ci.mnc > 0 AND ci.lac > 0 AND ci.cid > 0;
+	ci.mcc > 0 AND ci.lac > 0 AND ci.cid > 0;

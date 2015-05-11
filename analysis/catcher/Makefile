@@ -39,7 +39,7 @@ IMEISV_SQL = \
         CREATE VIEW imeisv AS \
         SELECT count(*) as count, round(sum(CASE WHEN cmc_imeisv > 0 THEN 1.0 ELSE 0.0 END)/count(*),1) as no_imeisv \
         FROM session_info \
-        WHERE rat = 0 AND cipher > 0 AND mcc > 0 AND mnc > 0 \
+        WHERE rat = 0 AND cipher > 0 AND mcc > 0 \
         GROUP BY mcc, mnc \
         HAVING count > 20; \
         DROP VIEW IF EXISTS tot; \

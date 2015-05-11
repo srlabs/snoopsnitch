@@ -301,49 +301,7 @@ WHERE si.domain = 0;
 --  All cell_info-based criteria
 
 --  Attract
---  A1
-
---  Select all cell_info entries which have been observed within
---  'delta_arfcn' seconds broadcasting a different MCC/MNC/LAC/CID
-DROP VIEW IF EXISTS dup_arfcns;
-CREATE VIEW dup_arfcns AS
-SELECT
-        l.bcch_arfcn AS bcch_arfcn,
-        min(l.first_seen) AS first_seen,
-        max(l.last_seen) AS last_seen,
-        count(*) AS value
-FROM cell_info AS l, cell_info AS r, config
-ON
-        l.bcch_arfcn = r.bcch_arfcn AND
-        (l.mcc != r.mcc OR
-         l.mnc != r.mnc OR
-         l.lac != r.lac OR
-         l.cid != r.cid) AND
-        (strftime('%s', l.first_seen) - strftime('%s', r.last_seen)) >= 0 AND
-        (strftime('%s', l.first_seen) - strftime('%s', r.last_seen)) < config.delta_arfcn
-WHERE
-        l.mcc > 0 AND l.lac > 0 AND l.cid > 0 AND
-        r.mcc > 0 AND r.lac > 0 AND r.cid > 0
-GROUP BY l.bcch_arfcn;
-
---  Associate a1 score
-DROP VIEW IF EXISTS a1;
-CREATE VIEW a1 AS
-SELECT
-        ci.id,
-        ci.mcc,
-        ci.mnc,
-        ci.lac,
-        ci.cid,
-        ifnull(da.value, 0) as value,
-        CASE WHEN da.value > 1 THEN 1 ELSE 0 END as score
-FROM cell_info AS ci LEFT JOIN dup_arfcns AS da
-ON
-        ci.bcch_arfcn = da.bcch_arfcn AND
-        strftime('%s', ci.first_seen) >= strftime('%s', da.first_seen) AND
-        strftime('%s', ci.last_seen)  <= strftime('%s', da.last_seen)
-WHERE
-        ci.mcc > 0 AND ci.lac > 0 and ci.cid > 0;
+-- (disabled) .read sql/a_01.sql
 --  A2
 DROP VIEW IF EXISTS a2;
 CREATE VIEW a2 AS
@@ -594,41 +552,7 @@ SELECT
 FROM cell_info, config;
 
 --  Fingerprint
-DROP VIEW IF EXISTS f1;
--- CREATE VIEW f1 AS
--- SELECT
--- 	si.id,
--- 	min(si2.id),
--- 	si.mcc,
--- 	si.mnc,
--- 	si.lac,
--- 	si.cid,
--- 	count(pag1_rate) as count,
--- 	avg(pag1_rate) < config.min_pag1_rate as score
--- FROM
--- 	session_info AS si, session_info as si2, paging_info AS pi, config
--- ON
--- 	--  Join on the next location update…
--- 	si2.id > si.id AND
--- 	--  …all paging messages since the current location update started…
--- 	strftime('%s', pi.timestamp) - strftime('%s', si.timestamp - si.duration/1000) > 0 AND
--- 	--  …until the succeeding location update starts…
--- 	strftime('%s', si2.timestamp) - si2.duration/1000 - strftime('%s', pi.timestamp) > 0
--- WHERE
--- 	si.domain = 0 AND si2.domain = 0 AND si.lu_acc AND si2.lu_acc
--- GROUP BY
--- 	si.id
-
-CREATE VIEW f1 AS
-SELECT
-	0 as id,
-	0,
-	0 as mcc,
-	0 as mnc,
-	0 as lac,
-	0 as cid,
-	0 as count,
-	0 as score;
+-- (disabled) .read sql/f_01.sql
 
 --  Result
 DROP VIEW IF EXISTS ci;
@@ -640,7 +564,7 @@ SELECT DISTINCT
         ci.mnc,
         ci.lac,
         ci.cid,
-        ifnull(a1.score, 0) as a1,
+        0 as a1,
         ifnull(a2.score, 0) as a2,
         ifnull(a4.score, 0) as a4,
         ifnull(k1.score, 0) as k1,
@@ -648,19 +572,17 @@ SELECT DISTINCT
         ifnull(t1.score, 0) as t1,
         ifnull(r1.score, 0) as r1,
         ifnull(r2.score, 0) as r2,
-        ifnull(f1.score, 0) as f1
+        0 as f1
 FROM cell_info as ci LEFT JOIN
- a1 ON ci.id = a1.id LEFT JOIN
  a2 ON ci.id = a2.id LEFT JOIN
  a4 ON ci.id = a4.id LEFT JOIN
  k1 ON ci.id = k1.id LEFT JOIN
  k2 ON ci.id = k2.id LEFT JOIN
  t1 ON ci.id = t1.id LEFT JOIN
  r1 ON ci.id = r1.id LEFT JOIN
- r2 ON ci.id = r2.id LEFT JOIN
- f1 ON ci.id = f1.id
+ r2 ON ci.id = r2.id
 WHERE
-	ci.mcc > 0 AND ci.mnc > 0 AND ci.lac > 0 AND ci.cid > 0;
+	ci.mcc > 0 AND ci.lac > 0 AND ci.cid > 0;
 
 --  All unavailable criteria
 
