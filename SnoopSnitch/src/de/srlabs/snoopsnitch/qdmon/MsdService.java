@@ -1427,7 +1427,7 @@ public class MsdService extends Service{
 		String appID = MsdConfig.getAppId(MsdService.this);
 		String libdir = this.getApplicationInfo().nativeLibraryDir;
 		String parser_binary = libdir + "/libdiag_import.so";
-		long nextSessionInfoId = Math.max(getNextRowId("session_info"),getNextRowId("sms_meta"));
+		long nextSessionInfoId = Math.max(getNextValue("sid_appid","sid"), Math.max(getNextValue("session_info","id"),getNextValue("sms_meta","id")));
 		long nextCellInfoId = getNextRowId("cell_info");
 
 		String cmd[] = {parser_binary,
@@ -1493,6 +1493,28 @@ public class MsdService extends Service{
 			Cursor c = db.rawQuery("SELECT MAX(_ROWID_) FROM " + tableName, null);
 			if(!c.moveToFirst()){
 				handleFatalError("getNextRowId(" + tableName + ") failed because c.moveToFirst() returned false, this shouldn't happen");
+				return 0;
+			}
+			long result = c.getLong(0) + 1;
+			c.close();
+			return result;
+		} catch(SQLException e){
+			handleFatalError("SQLException in getNextRowId(" + tableName + "): ",e);
+			return 0;
+		}
+	}
+	/**
+	 * Gets the next row id for a given database table.
+	 * @param tableName
+	 * @return
+	 */
+	private long getNextValue(String tableName, String columnName) {
+		try{
+			MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
+			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+			Cursor c = db.rawQuery("SELECT MAX(" + columnName + ") FROM " + tableName, null);
+			if(!c.moveToFirst()){
+				handleFatalError("getNextValue(" + tableName + ", " + columnName + ") failed because c.moveToFirst() returned false, this shouldn't happen");
 				return 0;
 			}
 			long result = c.getLong(0) + 1;
