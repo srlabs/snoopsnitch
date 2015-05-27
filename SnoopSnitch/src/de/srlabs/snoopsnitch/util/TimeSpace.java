@@ -14,7 +14,7 @@ public class TimeSpace
 		// Attributes
 		private long startTime;
 
-		// End time, including all smaller time spaces
+		// End time, not including all smaller time spaces
 		private long endTime;
 		
 		// Constructor
@@ -42,7 +42,7 @@ public class TimeSpace
 	static Times getTimeSpaceMonth ()
 	{
 
-		Times.Month.setEndTime(getTimeSpaceWeek().getEndTime());
+		Times.Month.setEndTime(getTimeSpaceWeek().getStartTime());
 
 		Calendar calStart = Calendar.getInstance();
 		calStart.setTimeInMillis(Times.Month.getEndTime());
@@ -54,9 +54,9 @@ public class TimeSpace
 	
 	static Times getTimeSpaceWeek ()
 	{
-		//  Set end time of week period to end of this day
+		//  Set end time of week period to start of this day
 		Calendar endTime = Calendar.getInstance();
-		endTime.setTimeInMillis(getTimeSpaceDay().getEndTime());
+		endTime.setTimeInMillis(getTimeSpaceDay().getStartTime());
 		endTime.set(Calendar.HOUR_OF_DAY, 23);
 		endTime.set(Calendar.MINUTE, 59);
 		endTime.set(Calendar.SECOND, 59);
@@ -72,7 +72,7 @@ public class TimeSpace
 	
 	static Times getTimeSpaceDay ()
 	{
-		Times.Day.setEndTime(getTimeSpaceHour().getEndTime());
+		Times.Day.setEndTime(getTimeSpaceHour().getStartTime());
 
 		Calendar calStart = Calendar.getInstance();
 		calStart.setTimeInMillis(Times.Day.getEndTime());
