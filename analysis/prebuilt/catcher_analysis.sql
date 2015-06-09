@@ -3,27 +3,6 @@
 --  All session_info-based criteria
 
 --  Attract
---  All cells with a valid cell ID
-DROP VIEW IF EXISTS valid_cells;
-CREATE VIEW valid_cells AS
-SELECT
-	mcc,
-	mnc,
-	lac,
-	cid
-FROM
-	session_info
-WHERE
-	mcc > 0 AND
-	lac > 0 AND
-	cid > 0 AND
-	mcc < 1000 AND
-	mnc < 1000 AND
-	domain = 0 AND
-	cipher < 3
-GROUP BY
-	mcc, mnc, lac, cid;
-
 --  Query all LACs that have only a single cell. This
 --  can be a sign of a catcher, e.g. when the catchers
 --  invents a new LAC
@@ -32,13 +11,21 @@ CREATE VIEW lonesome_lacs AS
 SELECT
 	mcc,
 	mnc,
-	lac
+	lac,
+	count(distinct cid) as cells
 FROM
-	valid_cells
+	session_info
+WHERE
+	mcc > 0 AND
+	lac > 0 AND
+	cid > 0 AND
+	mcc < 1000 AND
+	mnc < 1000 AND
+	domain = 0
 GROUP BY
 	mcc, mnc, lac
 HAVING
-	count(*) = 1;
+	cells = 1;
 
 --  Match all sessions with 'lonesome LACs'
 DROP VIEW IF EXISTS a5;
@@ -55,7 +42,9 @@ FROM
 ON
 	si.mcc = ll.mcc AND
 	si.mnc = ll.mnc AND
-	si.lac = ll.lac;
+	si.lac = ll.lac
+WHERE
+	si.domain = 0;
 
 --  Collect
 DROP VIEW IF EXISTS max_cipher;
@@ -94,17 +83,7 @@ SELECT
 	END as score
 FROM session_info AS si, config
 WHERE domain = 0 AND (cipher = 1 OR cipher = 2);
-DROP VIEW IF EXISTS c3;
-CREATE VIEW c3 AS
-SELECT
-        id,
-        timestamp,
-        mcc,
-        mnc,
-        lac,
-        0 as score
-FROM session_info
-WHERE domain = 0 AND cipher > 0;
+-- (disabled) .read sql/c_03.sql
 DROP VIEW IF EXISTS c4;
 CREATE VIEW c4 AS
 SELECT
@@ -136,59 +115,25 @@ WHERE
 	t_locupd    AND
 	lu_reject   AND
 	iden_imsi_bc;
---  Select all sessions with a valid cell ID that
---  contain call data, SMS or a accepted location
---  update.
-DROP VIEW IF EXISTS valid_sessions;
-CREATE VIEW valid_sessions AS
-SELECT * FROM session_info
-WHERE
-	domain = 0 AND
-	mcc > 0    AND
-	mcc < 1000 AND
-	mnc < 1000 AND
-	(lu_acc OR call_presence OR sms_presence);
-
---  Count number of sessions, grouped by country,
---  operator, RAT and location update
---  Rationale: Location updates are often treated
---  differently than other transaction (e.g. they
---  may be unencrypted while other sessions use
---  A5/1)
---  We cases where do not have at least a sample
---  size of 10.
-DROP VIEW IF EXISTS sessions_total;
-CREATE VIEW sessions_total AS
-SELECT
-	mcc,
-	mnc,
-	lu_acc,
-	rat,
-	count(*) AS count
-FROM valid_sessions
-GROUP BY mcc, mnc, rat, lu_acc
-HAVING count > 10;
-
 --  Calculate the fraction of encrypted sessions
 --  to know whether encryption is to be expected
 --  for some MCC/MNC/RAT/lu_acc combination
 DROP VIEW IF EXISTS sessions_ciphered_perc;
 CREATE VIEW sessions_ciphered_perc AS
 SELECT
-	vs.mcc,
-	vs.mnc,
-	vs.rat,
-	vs.lu_acc,
-	st.count as samples,
-	(count(*)+0.0)/st.count AS perc
-FROM valid_sessions AS vs, sessions_total AS st
-ON
-	vs.mcc = st.mcc AND
-	vs.mnc = st.mnc AND
-	vs.rat = st.rat AND
-	vs.lu_acc = st.lu_acc
-WHERE cipher > 0
-GROUP BY vs.mcc, vs.mnc, vs.rat, vs.lu_acc;
+	mcc,
+	mnc,
+	rat,
+	lu_acc,
+	sum(CASE WHEN cipher > 0 THEN 1.0 ELSE 0.0 END)/count(*) as perc
+FROM session_info
+WHERE cipher > 0 AND
+	domain = 0 AND
+	mcc > 0    AND
+	mcc < 1000 AND
+	mnc < 1000 AND
+	(lu_acc OR call_presence OR sms_presence)
+GROUP BY mcc, mnc, rat, lu_acc;
 
 --  For every unencrypted session, check whether
 --  encryption can be expected and score them
@@ -219,7 +164,8 @@ ON
 	si.rat    = scp.rat AND
 	si.lu_acc = scp.lu_acc
 WHERE
-	cipher = 0 AND
+	si.cipher = 0 AND
+	si.domain = 0 AND
 	((t_locupd AND si.lu_acc AND NOT lu_reject AND NOT paging_mi) OR
 	(t_call AND call_presence) OR (t_sms AND sms_presence));
 
@@ -283,7 +229,7 @@ SELECT
         ifnull(a5.score, 0) as a5,
         ifnull(c1.score, 0) as c1,
         ifnull(c2.score, 0) as c2,
-        ifnull(c3.score, 0) as c3,
+        0 as c3,
         ifnull(c4.score, 0) as c4,
         ifnull(c5.score, 0) as c5,
         ifnull(t3.score, 0) as t3,
@@ -292,7 +238,6 @@ FROM session_info as si LEFT JOIN
     a5 ON si.id = a5.id LEFT JOIN
     c1 ON si.id = c1.id LEFT JOIN
     c2 ON si.id = c2.id LEFT JOIN
-    c3 ON si.id = c3.id LEFT JOIN
     c4 ON si.id = c4.id LEFT JOIN
     c5 ON si.id = c5.id LEFT JOIN
     t3 ON si.id = t3.id LEFT JOIN
@@ -344,6 +289,7 @@ GROUP BY
 HAVING
 	--  At least 3 neighbors should be known
 	count(*) > 2;
+-- (unavailable) .read sql/a_03.sql
 --  A4
 
 --  Join cell info with itself on all entries that have the same
@@ -425,6 +371,7 @@ SELECT
 		END AS score
 FROM cell_info
 WHERE t3212 > 0;
+-- (unavailable) .read sql/t_07.sql
 
 --  Reject
 -- R1
@@ -583,15 +530,6 @@ FROM cell_info as ci LEFT JOIN
  r2 ON ci.id = r2.id
 WHERE
 	ci.mcc > 0 AND ci.lac > 0 AND ci.cid > 0;
-
---  All unavailable criteria
-
---  Attract
---  A3: N/A
---  RAT not available
-
---  Track
---  Tx level not availble
 
 DELETE FROM catcher;
 INSERT INTO catcher

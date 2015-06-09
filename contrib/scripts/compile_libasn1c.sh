@@ -4,6 +4,7 @@ cd ${BASE_DIR}/libasn1c
 git reset --hard
 git clean -f
 patch -p1 < ${BASE_DIR}/patches/libasn1c_jakob.patch
+patch -p1 < ${BASE_DIR}/patches/libasn1c_luca.patch
 
 autoreconf -fi
 ./configure ${MSD_CONFIGURE_OPTS}

@@ -1,3 +1,4 @@
+-- Previously used for IMEISV in CMC evaluation
 DROP VIEW IF EXISTS c3;
 CREATE VIEW c3 AS
 SELECT

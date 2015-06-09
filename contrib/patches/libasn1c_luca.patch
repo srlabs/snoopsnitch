@@ -1,0 +1,30 @@
+diff --git a/include/asn1c/asn_internal.h b/include/asn1c/asn_internal.h
+index e6da3fe..249d7ef 100644
+--- a/include/asn1c/asn_internal.h
++++ b/include/asn1c/asn_internal.h
+@@ -15,8 +15,6 @@
+ #include <assert.h>		/* for assert() macro */
+ #endif
+ 
+-#include <osmocom/core/talloc.h>
+-
+ #ifdef	__cplusplus
+ extern "C" {
+ #endif
+@@ -25,12 +23,10 @@ extern "C" {
+ #define	ASN1C_ENVIRONMENT_VERSION	922	/* Compile-time version */
+ int get_asn1c_environment_version(void);	/* Run-time version */
+ 
+-extern void *talloc_asn1_ctx;
+-
+-#define	CALLOC(nmemb, size)	talloc_zero_size(talloc_asn1_ctx, (nmemb) * (size))
+-#define	MALLOC(size)		talloc_size(talloc_asn1_ctx, size)
+-#define	REALLOC(oldptr, size)	talloc_realloc_size(talloc_asn1_ctx, oldptr, size)
+-#define	FREEMEM(ptr)		talloc_free(ptr)
++#define	CALLOC(nmemb, size)	calloc(nmemb, size)
++#define	MALLOC(size)		malloc(size)
++#define	REALLOC(oldptr, size)	realloc(oldptr, size)
++#define	FREEMEM(ptr)		free(ptr)
+ 
+ /*
+  * A macro for debugging the ASN.1 internals.

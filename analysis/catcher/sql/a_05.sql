@@ -1,24 +1,3 @@
---  All cells with a valid cell ID
-DROP VIEW IF EXISTS valid_cells;
-CREATE VIEW valid_cells AS
-SELECT
-	mcc,
-	mnc,
-	lac,
-	cid
-FROM
-	session_info
-WHERE
-	mcc > 0 AND
-	lac > 0 AND
-	cid > 0 AND
-	mcc < 1000 AND
-	mnc < 1000 AND
-	domain = 0 AND
-	cipher < 3
-GROUP BY
-	mcc, mnc, lac, cid;
-
 --  Query all LACs that have only a single cell. This
 --  can be a sign of a catcher, e.g. when the catchers
 --  invents a new LAC
@@ -27,13 +6,21 @@ CREATE VIEW lonesome_lacs AS
 SELECT
 	mcc,
 	mnc,
-	lac
+	lac,
+	count(distinct cid) as cells
 FROM
-	valid_cells
+	session_info
+WHERE
+	mcc > 0 AND
+	lac > 0 AND
+	cid > 0 AND
+	mcc < 1000 AND
+	mnc < 1000 AND
+	domain = 0
 GROUP BY
 	mcc, mnc, lac
 HAVING
-	count(*) = 1;
+	cells = 1;
 
 --  Match all sessions with 'lonesome LACs'
 DROP VIEW IF EXISTS a5;
@@ -50,4 +37,6 @@ FROM
 ON
 	si.mcc = ll.mcc AND
 	si.mnc = ll.mnc AND
-	si.lac = ll.lac;
+	si.lac = ll.lac
+WHERE
+	si.domain = 0;

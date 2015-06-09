@@ -1,56 +1,22 @@
---  Select all sessions with a valid cell ID that
---  contain call data, SMS or a accepted location
---  update.
-DROP VIEW IF EXISTS valid_sessions;
-CREATE VIEW valid_sessions AS
-SELECT * FROM session_info
-WHERE
-	domain = 0 AND
-	mcc > 0    AND
-	mcc < 1000 AND
-	mnc < 1000 AND
-	(lu_acc OR call_presence OR sms_presence);
-
---  Count number of sessions, grouped by country,
---  operator, RAT and location update
---  Rationale: Location updates are often treated
---  differently than other transaction (e.g. they
---  may be unencrypted while other sessions use
---  A5/1)
---  We cases where do not have at least a sample
---  size of 10.
-DROP VIEW IF EXISTS sessions_total;
-CREATE VIEW sessions_total AS
-SELECT
-	mcc,
-	mnc,
-	lu_acc,
-	rat,
-	count(*) AS count
-FROM valid_sessions
-GROUP BY mcc, mnc, rat, lu_acc
-HAVING count > 10;
-
 --  Calculate the fraction of encrypted sessions
 --  to know whether encryption is to be expected
 --  for some MCC/MNC/RAT/lu_acc combination
 DROP VIEW IF EXISTS sessions_ciphered_perc;
 CREATE VIEW sessions_ciphered_perc AS
 SELECT
-	vs.mcc,
-	vs.mnc,
-	vs.rat,
-	vs.lu_acc,
-	st.count as samples,
-	(count(*)+0.0)/st.count AS perc
-FROM valid_sessions AS vs, sessions_total AS st
-ON
-	vs.mcc = st.mcc AND
-	vs.mnc = st.mnc AND
-	vs.rat = st.rat AND
-	vs.lu_acc = st.lu_acc
-WHERE cipher > 0
-GROUP BY vs.mcc, vs.mnc, vs.rat, vs.lu_acc;
+	mcc,
+	mnc,
+	rat,
+	lu_acc,
+	sum(CASE WHEN cipher > 0 THEN 1.0 ELSE 0.0 END)/count(*) as perc
+FROM session_info
+WHERE cipher > 0 AND
+	domain = 0 AND
+	mcc > 0    AND
+	mcc < 1000 AND
+	mnc < 1000 AND
+	(lu_acc OR call_presence OR sms_presence)
+GROUP BY mcc, mnc, rat, lu_acc;
 
 --  For every unencrypted session, check whether
 --  encryption can be expected and score them
@@ -81,6 +47,7 @@ ON
 	si.rat    = scp.rat AND
 	si.lu_acc = scp.lu_acc
 WHERE
-	cipher = 0 AND
+	si.cipher = 0 AND
+	si.domain = 0 AND
 	((t_locupd AND si.lu_acc AND NOT lu_reject AND NOT paging_mi) OR
 	(t_call AND call_presence) OR (t_sms AND sms_presence));

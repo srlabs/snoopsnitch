@@ -3,6 +3,7 @@
 --  Attract
 -- (disabled) .read sql/a_01.sql
 .read sql/a_02.sql
+-- (unavailable) .read sql/a_03.sql
 .read sql/a_04.sql
 
 --  Keep
@@ -11,6 +12,7 @@
 
 --  Track
 .read sql/t_01.sql
+-- (unavailable) .read sql/t_07.sql
 
 --  Reject
 .read sql/r_01.sql
