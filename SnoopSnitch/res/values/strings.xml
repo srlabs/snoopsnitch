@@ -356,6 +356,10 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="settings_debugging_dump_analysis_stacktraces_summary">Periodically dump start traces of catcher, security metrics and event analysis</string>
      <string name="settings_debugging_parser_logging">Extended parser logging</string>
      <string name="settings_debugging_parser_logging_summary">Output additional state information, RAT changes and SQL statements from parser. Warning: This option will create a lot of logs!</string>
+     <string name="settings_auto_upload_mode">Auto upload mode</string>
+     <string name="settings_auto_upload_mode_summary">Automatically upload detected events (and the corresponding GPS coordinates).</string>
+     <string name="settings_upload_daily_ping">Daily ping</string>
+     <string name="settings_upload_daily_ping_summary">Daily upload of a database dump and the current GPS coordinates.</string>
 
     <string name="alert_button_ok">@android:string/ok</string>
     <string name="alert_button_cancel">@android:string/cancel</string>

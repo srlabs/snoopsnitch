@@ -287,7 +287,6 @@ public class Utils {
 
 		outputFile.write(info);
 	}
-
 	/**
 	 * @param context
 	 * @param db
@@ -298,14 +297,14 @@ public class Utils {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static void uploadMetadata(Context context, SQLiteDatabase db, ImsiCatcher imsiCatcher, long startTime, long endTime)  throws EncryptedFileWriterError, SQLException, IOException {
+	public static void uploadMetadata(Context context, SQLiteDatabase db, ImsiCatcher imsiCatcher, long startTime, long endTime, String prefix)  throws EncryptedFileWriterError, SQLException, IOException {
 		final boolean encryptedDump = true;
 		final boolean plainDump = MsdConfig.dumpUnencryptedEvents(context);
 
 		// Anonymize database before dumping
 		MsdSQLiteOpenHelper.readSQLAsset(context, db, "anonymize.sql", false);
 
-		String fileName = "meta-" + (imsiCatcher == null ? ("suspicious-" + System.currentTimeMillis()) : Long.toString(imsiCatcher.getId())) + ".gz";
+		String fileName = prefix + (imsiCatcher == null ? ("" + System.currentTimeMillis()) : Long.toString(imsiCatcher.getId())) + ".gz";
 		EncryptedFileWriter outputFile =
 				new EncryptedFileWriter(context, fileName + ".smime", encryptedDump, fileName, plainDump);
 

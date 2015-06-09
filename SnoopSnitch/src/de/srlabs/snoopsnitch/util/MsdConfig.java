@@ -226,5 +226,11 @@ public class MsdConfig {
 		edit.putBoolean("settings_start_on_boot", startOnBoot);
 		edit.commit();
 	}
+	public static boolean getAutoUploadMode(Context context){
+		return sharedPrefs(context).getBoolean("settings_auto_upload_mode", false);
+	}
+	public static boolean getUploadDailyPing(Context context){
+		return sharedPrefs(context).getBoolean("settings_upload_daily_ping", false);
+	}
 
 }

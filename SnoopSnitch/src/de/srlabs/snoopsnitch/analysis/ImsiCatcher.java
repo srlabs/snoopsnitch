@@ -102,7 +102,7 @@ public class ImsiCatcher implements AnalysisEvent{
 	public void upload() throws EncryptedFileWriterError, SQLException, IOException {
 		DumpFile.markForUpload(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);		
 		// Upload encrypted metadata
-		Utils.uploadMetadata(context, db, this, startTime, endTime);
+		Utils.uploadMetadata(context, db, this, startTime, endTime,"meta-");
 	}
 
 	/**

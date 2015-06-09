@@ -68,14 +68,18 @@ import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
 import de.srlabs.snoopsnitch.EncryptedFileWriterError;
+import de.srlabs.snoopsnitch.analysis.Event;
 import de.srlabs.snoopsnitch.analysis.GSMmap;
+import de.srlabs.snoopsnitch.analysis.ImsiCatcher;
 import de.srlabs.snoopsnitch.upload.DumpFile;
+import de.srlabs.snoopsnitch.upload.FileState;
 import de.srlabs.snoopsnitch.upload.MsdServiceUploadThread;
 import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.Utils;
 
 public class MsdService extends Service{
 	public static final String    TAG                   = "msd-service";
@@ -287,6 +291,10 @@ public class MsdService extends Service{
 	private boolean deviceCompatibleDetected = false;
 
 	private boolean exitFlag;
+
+	private AtomicBoolean getAndUploadGpsLocationRunning = new AtomicBoolean(false);
+	private AnalysisEventData aed = null;
+	private long previousDailyPingTime = 0;
 
 	class QueueElementWrapper<T>{
 		T obj;
@@ -501,6 +509,90 @@ public class MsdService extends Service{
 		myLocationListener = null;
 		locationManager = null;
 	}
+	private void getAndUploadGpsLocation(){
+		// Only allow one pending location upload at a time
+		if(!this.getAndUploadGpsLocationRunning.compareAndSet(false, true))
+			return;
+		mainThreadHandler.post(new Runnable(){
+			@Override
+			public void run() {
+				info("getAndUploadGpsLocation(): Requesting GPS location");
+				final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+				try{
+					lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 1000, 0, new LocationListener() {
+						@Override
+						public void onStatusChanged(String provider, int status, Bundle extras) {
+						}
+
+						@Override
+						public void onProviderEnabled(String provider) {
+						}
+
+						@Override
+						public void onProviderDisabled(String provider) {
+						}
+
+						@Override
+						public void onLocationChanged(Location location) {
+							try{
+								info("getAndUploadGpsLocation(): callback onLocationChanged() called");
+								String json = "{\"latitude\": " + location.getLatitude() + " , \"longitude\": " + location.getLongitude();
+								TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+								CellLocation cellLoc = tm.getCellLocation();
+								if (cellLoc != null && cellLoc instanceof GsmCellLocation) {
+									GsmCellLocation gsmLoc = (GsmCellLocation) cellLoc;
+									String networkOperator = telephonyManager.getNetworkOperator();
+									if(networkOperator.length() < 5){
+										warn("Invalid networkOperator: " + networkOperator);
+										return;
+									}
+									String mcc = networkOperator.substring(0,3);
+									String mnc = networkOperator.substring(3);
+									json += ", \"mcc\": " + mcc;
+									json += ", \"mnc\": " + mnc;
+									json += ", \"lac\": " + gsmLoc.getLac();
+									json += ", \"cid\": " + gsmLoc.getCid();
+									json += ", \"psc\": " + gsmLoc.getPsc();
+									json += ", \"phone_rat\": " + Utils.networkTypeToNetworkGeneration(telephonyManager.getNetworkType());
+									json += ", \"parser_rat\": " + parserRatGeneration;
+									json += ", \"timestamp\":" + (System.currentTimeMillis() / 1000);
+								}
+								json += "}";
+								info("Uploading location json: " + json);
+								Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+								String filename = String.format(Locale.US, "location_%04d-%02d-%02d_%02d-%02d-%02d.%03dUTC",
+										c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),
+										c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE) / 10, c.get(Calendar.SECOND),
+										c.get(Calendar.MILLISECOND));
+
+								try{
+									EncryptedFileWriter eff = new EncryptedFileWriter(MsdService.this, filename + ".gz.smime", true, null, true);
+									eff.write(json);
+									eff.close();
+								} catch(EncryptedFileWriterError e){
+									MsdLog.e(TAG, "getAndUploadGpsLocation() received EncryptedFileWriterError",e);
+								}
+								MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
+								SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+								DumpFile df = new DumpFile(filename + ".gz.smime",DumpFile.TYPE_LOCATION_INFO);
+								df.insert(db);
+								df.endRecording(db);
+								df.markForUpload(db);
+								MsdDatabaseManager.getInstance().closeDatabase();
+								triggerUploading();
+							} finally{ // Make sure this is really called even if there are Exceptions.
+								// Stop GPS Recording after first received position.
+								lm.removeUpdates(this);
+								getAndUploadGpsLocationRunning.set(false);
+							}
+						}
+					});
+				} catch(IllegalArgumentException e){
+					info("GPS location recording not available");
+				}
+			}
+		});
+	}
 	private void startPhoneStateRecording(){
 		myPhoneStateListener = new MyPhoneStateListener();
 		telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CELL_INFO|PhoneStateListener.LISTEN_CELL_LOCATION);
@@ -692,7 +784,7 @@ public class MsdService extends Service{
 			if(sqliteThread != null){
 				sqliteThread.shuttingDown = true;
 				// Add finish marker at end of pendingSqlStatements so that sqliteThread shuts down
-				pendingSqlStatements.add(new PendingSqliteStatement(null));
+				pendingSqlStatements.add(new ShutdownMarkerPendingSqliteStatement());
 				sqliteThread.join(3000);
 				if(sqliteThread.isAlive()){
 					handleFatalError("Failed to stop sqliteThread");
@@ -997,32 +1089,33 @@ public class MsdService extends Service{
 					}
 					if(System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS && !MsdService.this.shuttingDown.get()){
 						info("Starting analysis");
-						wl.acquire();
-						class AnalysisStackTraceLogRunnable implements Runnable{
-							Thread t = Thread.currentThread();
-							boolean stopped = false;
-							@Override
-							public void run() {
-								if(stopped)
-									return;
-								StackTraceElement stackTrace[] = t.getStackTrace();
-								info("Analysis Stack trace:");
-								for(StackTraceElement e:stackTrace){
-									info("  " + e);
-								}
-								mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(this),100);
-							}
-						}
-						AnalysisStackTraceLogRunnable analysisStackTraceLogRunnable = null;
-
-						// For debugging delays in the analysis, we can dump a Stack Trace of this Thread every 100 ms.
-						boolean dumpAnalysisStackTraces = MsdConfig.getDumpAnalysisStackTraces(MsdService.this);
-
-						if(dumpAnalysisStackTraces){
-							analysisStackTraceLogRunnable = new AnalysisStackTraceLogRunnable();
-							mainThreadHandler.post(new ExceptionHandlingRunnable(analysisStackTraceLogRunnable));
-						}
 						try{
+							wl.acquire();
+							class AnalysisStackTraceLogRunnable implements Runnable{
+								Thread t = Thread.currentThread();
+								boolean stopped = false;
+								@Override
+								public void run() {
+									if(stopped)
+										return;
+									StackTraceElement stackTrace[] = t.getStackTrace();
+									info("Analysis Stack trace:");
+									for(StackTraceElement e:stackTrace){
+										info("  " + e);
+									}
+									mainThreadHandler.postDelayed(new ExceptionHandlingRunnable(this),100);
+								}
+							}
+							AnalysisStackTraceLogRunnable analysisStackTraceLogRunnable = null;
+
+							// For debugging delays in the analysis, we can dump a Stack Trace of this Thread every 100 ms.
+							boolean dumpAnalysisStackTraces = MsdConfig.getDumpAnalysisStackTraces(MsdService.this);
+
+							if(dumpAnalysisStackTraces){
+								analysisStackTraceLogRunnable = new AnalysisStackTraceLogRunnable();
+								mainThreadHandler.post(new ExceptionHandlingRunnable(analysisStackTraceLogRunnable));
+							}
+
 							long analysisStartCpuTimeNanos = android.os.Debug.threadCpuTimeNanos();
 							Calendar start = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 							String time = String.format(Locale.US, "%02d:%02d:%02d",
@@ -1039,12 +1132,32 @@ public class MsdService extends Service{
 									msdServiceNotifications.showImsiCatcherNotification(numCatchers);
 								}
 								sendStateChanged(StateChangedReason.CATCHER_DETECTED);
+								if(MsdConfig.getAutoUploadMode(MsdService.this)){
+									if(aed == null)
+										aed = new AnalysisEventData(MsdService.this);
+									for(ImsiCatcher catcher: aed.getImsiCatchers(System.currentTimeMillis() - 3600*1000, System.currentTimeMillis() + 3600*1000)){
+										if(catcher.getUploadState() == FileState.STATE_AVAILABLE){
+											catcher.upload();
+											getAndUploadGpsLocation();
+										}
+									}
+								}
 							};
-							
+
 							int numEvents = MsdServiceAnalysis.runEventAnalysis(MsdService.this, db);
 							if (numEvents > 0) {
 								msdServiceNotifications.showSmsNotification(numEvents);
 								sendStateChanged(StateChangedReason.SMS_DETECTED);
+								if(MsdConfig.getAutoUploadMode(MsdService.this)){
+									if(aed == null)
+										aed = new AnalysisEventData(MsdService.this);
+									for(Event event:aed.getEvent(System.currentTimeMillis()-3600*1000,System.currentTimeMillis()+3600*1000)){
+										if(event.getUploadState() == FileState.STATE_AVAILABLE){
+											event.upload();
+											getAndUploadGpsLocation();
+										}
+									}
+								}
 							};
 							if (MsdServiceAnalysis.runSecurityAnalysis(MsdService.this, db)) {
 								sendStateChanged(StateChangedReason.SEC_METRICS_CHANGED);
@@ -1064,8 +1177,9 @@ public class MsdService extends Service{
 						} catch(Exception e){
 							// Terminate the service with a fatal error if there is a any uncaught Exception in the Analysis
 							handleFatalError("Exception during analysis",e);
+						} finally{
+							wl.release();
 						}
-						wl.release();
 					}
 				} catch (InterruptedException e) {
 					if(!pendingSqlStatements.isEmpty()){
@@ -1151,6 +1265,8 @@ public class MsdService extends Service{
 		String table = null;
 		ContentValues values = null;
 		String sql = null;
+		public PendingSqliteStatement() {
+		}
 		public PendingSqliteStatement(String sql) {
 			this.sql = sql;
 		}
@@ -1158,12 +1274,8 @@ public class MsdService extends Service{
 			this.table = table;
 			this.values = values;
 		}
-		/**
-		 * SqliteThread will terminate when encountering an object with neither a table name nor an SQL statement set.
-		 * @return
-		 */
 		public boolean isShutdownMarker(){
-			return sql == null && table == null;
+			return false;
 		}
 		public void run(SQLiteDatabase db) throws SQLException{
 			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -1210,6 +1322,27 @@ public class MsdService extends Service{
 		 * This method is run directly after executing the SQL statement.
 		 */
 		void postRunHook(){}
+	}
+	class DailyPingSqliteStatement extends PendingSqliteStatement{
+		@Override
+		public void run(SQLiteDatabase db) throws SQLException {
+			long dailyPingTime = System.currentTimeMillis();
+			try{
+				if(previousDailyPingTime == 0)
+					previousDailyPingTime = System.currentTimeMillis() - 24*3600*1000;
+				Utils.uploadMetadata(MsdService.this, db, null, previousDailyPingTime, dailyPingTime,"daily-");
+				previousDailyPingTime = dailyPingTime;
+				getAndUploadGpsLocation();
+			} catch(Exception e){
+				handleFatalError("Exception during daily ping",e);
+			}
+		}
+	}
+	class ShutdownMarkerPendingSqliteStatement extends DailyPingSqliteStatement{
+		@Override
+		public boolean isShutdownMarker() {
+			return true;
+		}
 	}
 	class MyLocationListener implements LocationListener{
 		@Override
@@ -1434,7 +1567,7 @@ public class MsdService extends Service{
 				"-s", "" + nextSessionInfoId,
 				"-c", "" + nextCellInfoId,
 				"-a", "" + "0x" + appID,
-				"-"};
+		"-"};
 
 		info("Launching parser: " + TextUtils.join(" ",cmd));
 		// Warning: /data/local/tmp is not accessible by default, must be manually changed to 755 (including parent directories)
@@ -1866,6 +1999,10 @@ public class MsdService extends Service{
 				info("Error (re)opening files: " + e.getMessage());
 			}
 			cleanup();
+			if(MsdConfig.getUploadDailyPing(this) && previousDailyPingTime + 24*3600*1000 < System.currentTimeMillis()){
+				info("Triggering daily database dump and location upload");
+				pendingSqlStatements.add(new DailyPingSqliteStatement());
+			}
 		}
 	}
 	private void openOrReopenRawWriter() throws EncryptedFileWriterError {
@@ -1913,7 +2050,7 @@ public class MsdService extends Service{
 			Log.e(TAG, "Couldn't find a non-existing filename for raw qdmon dump, baseFilename=" + baseFilename);
 			return;
 		}
-		
+
 		rawWriter = new EncryptedFileWriter(this, encryptedFilename, true, MsdConfig.recordUnencryptedDumpfiles(this) ? plaintextFilename : null,
 				true);
 
@@ -2206,7 +2343,7 @@ public class MsdService extends Service{
 
 				sql = "DELETE FROM paging_info WHERE sid < ifnull((SELECT min(id) FROM session_info),1000000000);";
 				db.execSQL(sql);
-				
+
 				MsdSQLiteOpenHelper.readSQLAsset(MsdService.this, db, "anonymize.sql", false);
 
 				db.setTransactionSuccessful();

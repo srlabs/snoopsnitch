@@ -25,6 +25,7 @@ public class DumpFile {
 	public static final int TYPE_DEBUG_LOG = 1;
 	public static final int TYPE_ENCRYPTED_QDMON = 2;
 	public static final int TYPE_METADATA = 3;
+	public static final int TYPE_LOCATION_INFO = 4;
 	private boolean sms = false;
 	private boolean imsi_catcher = false;
 	private boolean crash = false;
@@ -119,6 +120,8 @@ public class DumpFile {
 			return "Encrypted qdmon dump";
 		else if(type == TYPE_METADATA)
 			return "Metadata";
+		else if(type == TYPE_LOCATION_INFO)
+			return "Location info";
 		else
 			return "Invalid Dumpfile type " + type;
 	}

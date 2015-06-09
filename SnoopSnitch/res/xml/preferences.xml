@@ -152,6 +152,18 @@
                 android:key="settings_parser_logging"
                 android:summary="@string/settings_debugging_parser_logging_summary"
                 android:title="@string/settings_debugging_parser_logging" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_auto_upload_mode"
+                android:summary="@string/settings_auto_upload_mode_summary"
+                android:title="@string/settings_auto_upload_mode" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_upload_daily_ping"
+                android:summary="@string/settings_upload_daily_ping_summary"
+                android:title="@string/settings_upload_daily_ping" />
         </PreferenceCategory>
     </PreferenceScreen>
 
