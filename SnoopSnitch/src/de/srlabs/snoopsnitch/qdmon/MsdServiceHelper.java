@@ -215,4 +215,12 @@ public class MsdServiceHelper{
 			handleFatalError("Exception in MsdServiceHelper.stopService()", e);
 		}
 	}
+	public long getLastAnalysisTimeMs(){
+		try {
+			return mIMsdService.getLastAnalysisTimeMs();
+		} catch (Exception e) {
+			handleFatalError("Exception in MsdServiceHelper.getLastAnalysisTimeMs()", e);
+			return 0;
+		}
+	}
 }

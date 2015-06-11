@@ -172,6 +172,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		
 		// Update RAT
 		updateInterseptionImpersonation();
+		updateLastAnalysis();
 	}
 	
 	public void openDetailView (View view)
@@ -324,9 +325,19 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	private void updateLastAnalysis ()
 	{
 		// Set time of last measurement
-		txtLastAnalysisTime.setText(String.valueOf(DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime())));
-		txtLastAnalysisTime.setTextColor(getResources().getColor(R.color.common_text));
-		txtDashboardLastAnalysis.setVisibility(View.VISIBLE);
+		long lastAnalysisTime = 0;
+		if(msdServiceHelperCreator.getMsdServiceHelper().isConnected()){
+			lastAnalysisTime = msdServiceHelperCreator.getMsdServiceHelper().getLastAnalysisTimeMs();
+		}
+		if(lastAnalysisTime > 0){
+			Calendar c = Calendar.getInstance();
+			c.setTimeInMillis(lastAnalysisTime);
+			txtLastAnalysisTime.setText(String.valueOf(DateFormat.getDateTimeInstance().format(c.getTime())));
+			txtLastAnalysisTime.setTextColor(getResources().getColor(R.color.common_text));
+			txtDashboardLastAnalysis.setVisibility(View.VISIBLE);
+		} else{
+			txtDashboardLastAnalysis.setVisibility(View.GONE);
+		}
 	}
 	
 	private void updateInterseptionImpersonation ()

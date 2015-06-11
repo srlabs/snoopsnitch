@@ -28,4 +28,6 @@ interface IMsdService {
 	// Returns the number of recorded diag messages since the last startRecording().
 	// Required for verifying that the device is actually recording baseband messages during the active test.
 	int getDiagMsgCount();
+	// Gets the last analysis time (or 0) of the currently running MsdServer instance
+	long getLastAnalysisTimeMs();
 }

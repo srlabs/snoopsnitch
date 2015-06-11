@@ -91,6 +91,8 @@ public class MsdService extends Service{
 
 	private  long activeTestTimestamp = 0;
 	private boolean recordingStartedForActiveTest = false;
+
+	public long lastAnalysisTimeMs = 0;
 	class MyMsdServiceStub extends IMsdService.Stub {
 
 		private Vector<IMsdServiceCallback> callbacks = new Vector<IMsdServiceCallback>();
@@ -222,6 +224,11 @@ public class MsdService extends Service{
 			// Just set an exit flag so that the service is terminated directly
 			// after the UI terminates (and closes its ServiceConnection)
 			exitFlag = true;
+		}
+
+		@Override
+		public long getLastAnalysisTimeMs() throws RemoteException {
+			return lastAnalysisTimeMs ;
 		}
 	};
 	AtomicBoolean shuttingDown = new AtomicBoolean(false);
@@ -1163,6 +1170,7 @@ public class MsdService extends Service{
 								sendStateChanged(StateChangedReason.SEC_METRICS_CHANGED);
 							};
 							lastAnalysisTime = System.currentTimeMillis();
+							lastAnalysisTimeMs = System.currentTimeMillis();
 
 							info(time + ": Analysis took " + (lastAnalysisTime - start.getTimeInMillis()) + "ms" + " CPU=" + (android.os.Debug.threadCpuTimeNanos()-analysisStartCpuTimeNanos)/1000000 + "ms");
 							if(dumpAnalysisStackTraces){
