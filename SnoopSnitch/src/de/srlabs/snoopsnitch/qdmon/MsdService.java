@@ -302,6 +302,7 @@ public class MsdService extends Service{
 	private AtomicBoolean getAndUploadGpsLocationRunning = new AtomicBoolean(false);
 	private AnalysisEventData aed = null;
 	private long previousDailyPingTime = 0;
+	private long previousRestartDiagTime = 0;
 
 	class QueueElementWrapper<T>{
 		T obj;
@@ -1704,6 +1705,7 @@ public class MsdService extends Service{
 		for(byte[] singleCmd:SetupLoggingCmds.cmds){
 			this.toDiagMsgQueue.add(new QueueElementWrapper<byte[]>(singleCmd));
 		}
+		previousRestartDiagTime = System.currentTimeMillis();
 	}
 
 	private static final int USER_SPACE_LOG_TYPE = 32;
@@ -2010,6 +2012,17 @@ public class MsdService extends Service{
 			if(MsdConfig.getUploadDailyPing(this) && previousDailyPingTime + 24*3600*1000 < System.currentTimeMillis()){
 				info("Triggering daily database dump and location upload");
 				pendingSqlStatements.add(new DailyPingSqliteStatement());
+			}
+			// Reinitialize diag device once an hour:
+			if(previousRestartDiagTime + 60*60*1000 < System.currentTimeMillis()){
+				info("Restarting diag");
+				for(byte[] singleCmd:DisableLoggingCmds.cmds){
+					this.toDiagMsgQueue.add(new QueueElementWrapper<byte[]>(singleCmd));
+				}
+				for(byte[] singleCmd:SetupLoggingCmds.cmds){
+					this.toDiagMsgQueue.add(new QueueElementWrapper<byte[]>(singleCmd));
+				}
+				previousRestartDiagTime = System.currentTimeMillis();
 			}
 		}
 	}

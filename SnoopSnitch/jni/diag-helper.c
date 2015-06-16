@@ -144,11 +144,13 @@ data_pump_app(void *arg)
 
                 uint32_t be_len;
                 ssize_t read_len = read(from_app_fd, &be_len, sizeof(be_len));
+		// Retry once in case of a short read
+		if(read_len > 0 && read_len != sizeof(be_len)){
+		        read_len += read(from_app_fd, ((char*)&be_len)+read_len,sizeof(be_len)-read_len);
+		}
 
                 if (read_len != sizeof(be_len)) {
-                        /* failed to read length */
-                        if (read_len != -1)
-                                short_read = 1;
+		        short_read = 1;
                 } else {
                         /* success, now read data */
                         uint32_t data_len = ntohl(be_len);
@@ -156,18 +158,25 @@ data_pump_app(void *arg)
                                 logmsg(ANDROID_LOG_ERROR, "data length %d exceeds buffer", data_len);
                                 goto error;
                         }
-                        read_len = read(from_app_fd, from_sock_buf, data_len);
-
+			size_t tmp;
+			read_len = 0;
+			// Retry
+			while(read_len < data_len){
+			        tmp = read(from_app_fd, from_sock_buf, data_len);
+				if(tmp == -1){
+				       logmsg(ANDROID_LOG_ERROR, "cannot read from app: %s", strerror(errno));
+				       goto error;
+				}
+				read_len += tmp;
+				if(tmp == 0)
+				       break;
+			}
                         if (read_len > 0 && read_len != data_len)
                                 short_read = 1;
                 }
-                if (read_len == -1) {
-                        logmsg(ANDROID_LOG_ERROR, "cannot read from app: %s", strerror(errno));
-                        goto error;
-                }
                 if (short_read) {
-                        logmsg(ANDROID_LOG_INFO, "app read side closed the connection");
-                        goto exit;
+			logmsg(ANDROID_LOG_INFO, "app read side closed the connection");
+			goto exit;
                 }
 
                 /* loghex("data from app", from_sock_buf, read_len); */
