@@ -48,17 +48,16 @@ SELECT
 	ifnull(max(ci.r1), 0.0) +
 	ifnull(max(ci.r2), 0.0) +
 	ifnull(max(ci.f1), 0.0) as score
-FROM si LEFT JOIN ci
+FROM config, si LEFT OUTER JOIN ci
 ON
 	ci.mcc = si.mcc AND
 	ci.mnc = si.mnc AND
 	ci.lac = si.lac AND
 	ci.cid = si.cid AND
 	abs(strftime('%s', ci.last_seen) - strftime('%s', si.timestamp)) < config.cell_info_max_delta
-LEFT JOIN si_loc
+LEFT OUTER JOIN si_loc
 ON
-	si.id = si_loc.id,
-config
+	si.id = si_loc.id
 GROUP BY
 	si.id
 HAVING
