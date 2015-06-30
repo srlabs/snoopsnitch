@@ -100,7 +100,7 @@ public class NetworkInfoActivity extends BaseActivity {
 		TextView usim = (TextView) findViewById(R.id.networkInfoCurrentUSIM);
 
 		Cursor query = db.rawQuery
-				("SELECT ifnull(max(auth), 0) FROM session_info WHERE domain = 0 AND auth > 0 AND rat = 1", null);
+				("SELECT ifnull(max(auth), 0) FROM session_info WHERE domain = 0 AND auth > 0 AND (rat = 1 OR auth > 1)", null);
 
 		if(query.moveToFirst())
 		{

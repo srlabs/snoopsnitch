@@ -1,27 +1,3 @@
-diff --git a/include/osmocom/core/gsmtap.h b/include/osmocom/core/gsmtap.h
-index 69bd108..67f027c 100644
---- a/include/osmocom/core/gsmtap.h
-+++ b/include/osmocom/core/gsmtap.h
-@@ -219,6 +219,19 @@ enum {
- 	GSMTAP_RRC_SUB_MAX
- };
- 
-+enum {
-+        GSMTAP_LTE_RRC_SUB_DL_CCCH = 0,
-+        GSMTAP_LTE_RRC_SUB_DL_DCCH,
-+        GSMTAP_LTE_RRC_SUB_UL_CCCH,
-+        GSMTAP_LTE_RRC_SUB_UL_DCCH,
-+        GSMTAP_LTE_RRC_SUB_BCCH_BCH,
-+        GSMTAP_LTE_RRC_SUB_BCCH_DL_SCH,
-+        GSMTAP_LTE_RRC_SUB_PCCH,
-+        GSMTAP_LTE_RRC_SUB_MCCH,
-+
-+        GSMTAP_LTE_RRC_SUB_MAX
-+};
-+
- /* ====== DO NOT MAKE UNAPPROVED MODIFICATIONS HERE ===== */
- struct gsmtap_hdr {
- 	uint8_t version;	/* version, set to 0x01 currently */
 diff --git a/include/osmocom/gsm/gsm0808.h b/include/osmocom/gsm/gsm0808.h
 index a7e102c..facbdc4 100644
 --- a/include/osmocom/gsm/gsm0808.h

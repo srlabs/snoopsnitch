@@ -1,16 +1,3 @@
-diff --git a/src/ctrl/control_if.c b/src/ctrl/control_if.c
-index c20c1e0..305ca4d 100644
---- a/src/ctrl/control_if.c
-+++ b/src/ctrl/control_if.c
-@@ -34,7 +34,7 @@
- #include <netinet/tcp.h>
- #include <netinet/in.h>
- 
--#include <sys/fcntl.h>
-+#include <fcntl.h>
- #include <sys/ioctl.h>
- #include <sys/socket.h>
- #include <sys/types.h>
 diff --git a/src/macaddr.c b/src/macaddr.c
 index 7bc4401..3cd3541 100644
 --- a/src/macaddr.c

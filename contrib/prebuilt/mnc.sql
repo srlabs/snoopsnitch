@@ -200,7 +200,7 @@ INSERT INTO mnc VALUES (238,12,2,'Denmark','Lycamobile','#C1EBD2');
 INSERT INTO mnc VALUES (238,20,2,'Denmark','Telia','#632A84');
 INSERT INTO mnc VALUES (238,30,2,'Denmark','TeliaSonera','#632A84');
 INSERT INTO mnc VALUES (238,40,2,'Denmark','Ericsson Danmark','#002561');
-INSERT INTO mnc VALUES (238,66,2,'Denmark','Telenor','#22BEF1');
+INSERT INTO mnc VALUES (238,66,2,'Denmark','TT-Netvaerket','#22BEF1');
 INSERT INTO mnc VALUES (238,77,2,'Denmark','Telenor','#22BEF1');
 INSERT INTO mnc VALUES (240,1,2,'Sweden','Telia','#632A84');
 INSERT INTO mnc VALUES (240,2,2,'Sweden','Three','#000000');
