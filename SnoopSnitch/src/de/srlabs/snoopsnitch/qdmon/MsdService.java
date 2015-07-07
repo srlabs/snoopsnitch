@@ -2351,6 +2351,12 @@ public class MsdService extends Service{
 				sql = "DELETE FROM paging_info WHERE sid < ifnull((SELECT min(id) FROM session_info),1000000000);";
 				db.execSQL(sql);
 
+				sql = "delete from cell_info where mcc=0 or lac=0 or cid=0;";
+				db.execSQL(sql);
+
+				sql = "delete from arfcn_list where id not in (select id from cell_info);";
+				db.execSQL(sql);
+
 				MsdSQLiteOpenHelper.readSQLAsset(MsdService.this, db, "anonymize.sql", false);
 
 				db.setTransactionSuccessful();
