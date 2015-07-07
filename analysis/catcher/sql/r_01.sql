@@ -33,10 +33,11 @@ SELECT DISTINCT
         c.cid as cell_cid,
         c.bcch_arfcn as cell_arfcn,
         n.id as neig_id
-FROM cells_with_neig_arfcn as c, cells_with_neig_arfcn as n, config
+FROM cells_with_neig_arfcn as c, cell_info as n, config
 ON
+	n.mcc>0 AND n.lac>0 AND n.cid>0 AND
 	c.neig_arfcn = n.bcch_arfcn AND
-	abs(strftime('%s', c.last_seen) - strftime('%s', n.last_seen)) < config.neig_max_delta
+	abs(julianday(c.last_seen)-julianday(n.last_seen)) < (config.neig_max_delta / 86400.0)
 WHERE c.bcch_arfcn != c.neig_arfcn;
 
 --  Count the number of neighboring cells recorded for every cell
