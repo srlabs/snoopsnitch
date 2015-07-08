@@ -365,6 +365,10 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
     <string name="alert_button_cancel">@android:string/cancel</string>
     <string name="alert_dialog_refreshappid_button_cancel">@android:string/cancel</string>
 
+    <!-- Enable Auto-Upload Mode from Catcher/Event Notification -->
+    <string name="notification_enable_auto_upload_mode">Enable Auto-Upload mode</string>
+    <string name="notification_enable_auto_upload_mode_confirm">Do you want to automatically upload all detected Events?</string>
+
     <!-- Replaced on create -->
     <string name="network_info_timestamp">timestamp</string>
     <string name="network_info_tmsi_value">unknown</string>
