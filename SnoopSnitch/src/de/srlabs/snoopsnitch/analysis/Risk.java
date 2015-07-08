@@ -118,19 +118,17 @@ public class Risk {
 
 		Cursor c = db.query
 				(tableName,
-				 new String[] {"month", "avg(" + scoreName + ")" },
+				 new String[] {"month", "avg(" + scoreName + ") as score" },
 				 "mcc = ? AND mnc = ?",
 				 new String[] {Integer.toString(currentMCC), Integer.toString(currentMNC)},
-				 "mcc, mnc, lac", null, null);
+				 "month", "score is not null", "month");
 
-		if (c.moveToFirst()){
-			do {
-				String[] monthString = c.getString(0).split("-");
-				int year  = Integer.parseInt(monthString[0]);
-				int month = Integer.parseInt(monthString[1]);
-				double value = c.getDouble(1);
-				result.add(new Score(year, month, value));
-			} while (c.moveToNext());
+		while (c.moveToNext()) {
+			String[] monthString = c.getString(0).split("-");
+			int year  = Integer.parseInt(monthString[0]);
+			int month = Integer.parseInt(monthString[1]);
+			double value = c.getDouble(1);
+			result.add(new Score(year, month, value));
 		}
 
 		c.close();
