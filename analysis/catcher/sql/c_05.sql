@@ -8,10 +8,9 @@ SELECT
 	mnc,
 	rat,
 	lu_acc,
-	sum(CASE WHEN cipher > 0 THEN 1.0 ELSE 0.0 END)/count(*) as perc
+	avg(CASE WHEN cipher > 0 THEN 1.0 ELSE 0.0 END) as perc
 FROM session_info
-WHERE cipher > 0 AND
-	domain = 0 AND
+WHERE	domain = 0 AND
 	mcc > 0    AND
 	mcc < 1000 AND
 	mnc < 1000 AND
