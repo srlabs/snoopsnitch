@@ -107,6 +107,12 @@
             android:title="@string/settings_active_test_sms_mo_number_title" />
     </PreferenceCategory>
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="settings_auto_upload_mode"
+        android:summary="@string/settings_auto_upload_mode_summary"
+        android:title="@string/settings_auto_upload_mode" />
+
     <PreferenceScreen android:title="@string/settings_cat_debugging" >
         <PreferenceCategory
             android:key="cat_debugging"
@@ -152,12 +158,6 @@
                 android:key="settings_parser_logging"
                 android:summary="@string/settings_debugging_parser_logging_summary"
                 android:title="@string/settings_debugging_parser_logging" />
-            <CheckBoxPreference
-                android:defaultValue="false"
-                android:dependency="settings_enable_devel_options"
-                android:key="settings_auto_upload_mode"
-                android:summary="@string/settings_auto_upload_mode_summary"
-                android:title="@string/settings_auto_upload_mode" />
             <CheckBoxPreference
                 android:defaultValue="false"
                 android:dependency="settings_enable_devel_options"

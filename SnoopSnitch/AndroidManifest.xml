@@ -123,6 +123,15 @@
             android:screenOrientation="portrait"
             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
         </activity>
+
+        <!-- Dialog for enabling Auto-Upload Mode from Notification -->
+        <activity
+            android:name="de.srlabs.snoopsnitch.EnableAutoUploadModeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
+        </activity>
+
         <service android:name="de.srlabs.snoopsnitch.qdmon.MsdService" android:exported="false" android:process=".snoopsnitch_service" />
     	<service android:name="de.srlabs.snoopsnitch.active_test.ActiveTestService" android:exported="false" />
     </application>

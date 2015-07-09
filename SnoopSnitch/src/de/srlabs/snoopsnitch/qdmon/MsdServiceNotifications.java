@@ -9,10 +9,12 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.CrashUploadActivity;
 import de.srlabs.snoopsnitch.DashboardActivity;
+import de.srlabs.snoopsnitch.EnableAutoUploadModeActivity;
+import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.util.Constants;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 
 public class MsdServiceNotifications {
 	Service service;
@@ -47,15 +49,22 @@ public class MsdServiceNotifications {
 		
 		Intent intent = new Intent(service, DashboardActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		Notification n = new NotificationCompat.Builder(service)
+		NotificationCompat.Builder nc = new NotificationCompat.Builder(service)
 		.setContentTitle(service.getString(R.string.no_catcher_title))
 		.setTicker(service.getString(R.string.no_catcher_ticker))
 		.setContentText(numCatchers + " " + service.getString(R.string.no_catcher_events_detected))
 		.setSmallIcon(R.drawable.ic_content_imsi_event)
 		.setOngoing(false)
 		.setContentIntent(pendingIntent)
-		.setAutoCancel(true)
-		.build();
+		.setAutoCancel(true);
+		// Add a button to enable Auto-Upload Mode when it is not yet enabled
+		if(!MsdConfig.getAutoUploadMode(service)){
+			Intent autoUploadIntent = new Intent(service, EnableAutoUploadModeActivity.class);
+			autoUploadIntent.putExtra(EnableAutoUploadModeActivity.NOTIFICATION_ID, Constants.NOTIFICATION_ID_IMSI);
+			PendingIntent autoUploadPendingIntent = PendingIntent.getActivity(service, 0, autoUploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			nc.addAction(R.drawable.ic_content_imsi_event,service.getString(R.string.notification_enable_auto_upload_mode),autoUploadPendingIntent);
+		}
+		Notification n = nc.build();
 		
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
 		notificationManager.notify(Constants.NOTIFICATION_ID_IMSI, n);
@@ -66,15 +75,22 @@ public class MsdServiceNotifications {
 
 		Intent intent = new Intent(service, DashboardActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		Notification n = new NotificationCompat.Builder(service)
+		NotificationCompat.Builder nc = new NotificationCompat.Builder(service)
 		.setContentTitle(service.getString(R.string.no_events_title))
 		.setTicker(service.getString(R.string.no_events_ticker))
 		.setContentText(numEvents + " " + service.getString(R.string.no_events_detected))
 		.setSmallIcon(R.drawable.ic_content_sms_event)
 		.setOngoing(false)
 		.setContentIntent(pendingIntent)
-		.setAutoCancel(true)
-		.build();
+		.setAutoCancel(true);
+		// Add a button to enable Auto-Upload Mode when it is not yet enabled
+		if(!MsdConfig.getAutoUploadMode(service)){
+			Intent autoUploadIntent = new Intent(service, EnableAutoUploadModeActivity.class);
+			autoUploadIntent.putExtra(EnableAutoUploadModeActivity.NOTIFICATION_ID, Constants.NOTIFICATION_ID_SMS);
+			PendingIntent autoUploadPendingIntent = PendingIntent.getActivity(service, 0, autoUploadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			nc.addAction(R.drawable.ic_content_sms_event,service.getString(R.string.notification_enable_auto_upload_mode),autoUploadPendingIntent);
+		}
+		Notification n = nc.build();
 		
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
 		notificationManager.notify(Constants.NOTIFICATION_ID_SMS, n);
