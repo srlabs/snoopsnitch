@@ -754,10 +754,11 @@ public class ActiveTestService extends Service{
 		String IMSI = telephonyManager.getSubscriberId();
 		String SIM_MCC_MNC = (IMSI == null || IMSI.length() < 6) ? "NOIMSI" : IMSI.substring(0, 6);
 
+		String modelAndAndroidVersion = Build.MODEL.replace('.', '_') + "_Android_" + Build.VERSION.RELEASE.replace('.', '_');
 		String filename = String.format(Locale.US,
 				"%s.%s.%s.%04d%02d%02d-%02d%02d%02d.%s.%s.log",
 				"qdmon",
-				Build.MODEL,
+				modelAndAndroidVersion,
 				SIM_MCC_MNC,
 				calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH) + 1,
