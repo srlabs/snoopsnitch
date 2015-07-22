@@ -98,7 +98,7 @@ case ${target} in
 		export CPPFLAGS="-I${NDK_DIR}/platforms/android-19/arch-arm/usr/include/"
 		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/,-L${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/"
 		export LIBS="-lc -lm"
-		export GSM_PARSER_MAKE_ARGS="TARGET=android PREFIX=${MSD_DESTDIR} DESTDIR=${MSD_DESTDIR}/gsm-parser SYSROOT=${SYSROOT} install"
+		export GSM_PARSER_MAKE_ARGS="TARGET=android PCAP=1 PREFIX=${MSD_DESTDIR} DESTDIR=${MSD_DESTDIR}/gsm-parser SYSROOT=${SYSROOT} install"
 		;;
 	host)
 		export MSD_CONFIGURE_OPTS="--prefix=${MSD_DESTDIR}"
