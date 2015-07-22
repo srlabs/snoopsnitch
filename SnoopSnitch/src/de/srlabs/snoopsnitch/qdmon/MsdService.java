@@ -1042,7 +1042,16 @@ public class MsdService extends Service{
 						}
 						return;
 					}
-					handleFatalError("Parser Error: " + line);
+					if(line.contains("unused DT entry")){
+						// For some phones starting the parser results in lines like this on stderr:
+						// WARNING: linker: libosmogsm.so: unused DT entry: type 0x1d arg 0x14b8
+						//
+						// Since it is only a warning and the parser still works, we can ignore this
+						// error here.
+						info("Ignoring \"unused DT entry\" error from parser: " + line);
+					} else{
+						handleFatalError("Parser Error: " + line);
+					}
 				}
 			} catch(EOFException e){
 				if(shuttingDown.get()){
