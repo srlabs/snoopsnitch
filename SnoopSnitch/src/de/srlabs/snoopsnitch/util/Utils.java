@@ -200,7 +200,11 @@ public class Utils {
 				result += DatabaseUtils.sqlEscapeString(c.getString(pos));
 				break;
 			case Cursor.FIELD_TYPE_BLOB:
-				result += "<<Blobs unsupported>>";
+				result += "X'";
+				for(byte b:c.getBlob(pos)){
+					result += String.format("%02X",b);
+				}
+				result += "'";
 				break;
 			default:
 				return "Invalid field type " + c.getType(pos) + " at position " + pos;
