@@ -10,6 +10,7 @@ CREATE TABLE mnc (
   color char(8) DEFAULT NULL,
   PRIMARY KEY (mcc,country,mnc,network)
 );
+INSERT INTO mnc VALUES (1,1,2,'TEST','TEST','#000000');
 INSERT INTO mnc VALUES (202,1,2,'Greece','Cosmote','#E2F5B3');
 INSERT INTO mnc VALUES (202,5,2,'Greece','Vodafone','#EF4123');
 INSERT INTO mnc VALUES (202,9,2,'Greece','Wind','#FF9966');
