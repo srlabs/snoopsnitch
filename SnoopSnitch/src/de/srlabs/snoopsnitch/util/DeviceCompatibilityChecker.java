@@ -40,7 +40,7 @@ public class DeviceCompatibilityChecker {
 		String suBinary;
 		File diagDevice = new File("/dev/diag");
 
-		if(!diagDevice.exists()) {
+		if(!diagDevice.exists() && Utils.getDiagDeviceNodeMajor() == null) {
 			return context.getResources().getString(R.string.compat_no_diag);
 		}
 
@@ -54,6 +54,10 @@ public class DeviceCompatibilityChecker {
 			}
 		}
 
+		String createDiagError = Utils.createDiagDevice();
+		if(createDiagError != null){
+			return "Failed to create diag device: " + createDiagError;
+		}
 		if(!testRunOK(context,suBinary)) {
 			return context.getResources().getString(R.string.compat_broken_diag);
 		}

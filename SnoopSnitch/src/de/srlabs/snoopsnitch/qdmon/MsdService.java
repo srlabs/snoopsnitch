@@ -1672,6 +1672,12 @@ public class MsdService extends Service{
 		if(suBinary == null){
 			shutdownDueToExpectedError(MsdServiceNotifications.ERROR_ROOT_PRIVILEGES_DENIED);
 		}
+		File diagDevice = new File("/dev/diag");
+		if(!diagDevice.exists()){
+			String createDiagError = Utils.createDiagDevice();
+			if(createDiagError != null)
+				handleFatalError("Failed to create diag device: " + createDiagError);
+		}
 		String cmd[] = { suBinary, "-c", "exec " + diag_helper + " run"};
 
 		info("Launching helper: " + TextUtils.join(" ",cmd));

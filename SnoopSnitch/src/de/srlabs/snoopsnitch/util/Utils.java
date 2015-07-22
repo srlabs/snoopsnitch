@@ -1,9 +1,13 @@
 package de.srlabs.snoopsnitch.util;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -316,5 +320,71 @@ public class Utils {
 		meta.recordingStopped();
 		meta.insert(db);
 		meta.markForUpload(db);
+	}
+
+	/**
+	 * Gets the device major number of the diag device from /proc/devices (or
+	 * null if the Kernel does not contain a diag driver).
+	 *
+	 * @return
+	 */
+	@SuppressLint("DefaultLocale")
+	public static Integer getDiagDeviceNodeMajor() {
+		BufferedReader r = null;
+		try {
+			r = new BufferedReader(new InputStreamReader(new FileInputStream("/proc/devices")));
+			while(true){
+				String line = r.readLine();
+				if(line == null) // EOF
+					return null;
+				line = line.trim();
+				String[] line_elements = line.split("\\s+");
+				if(line_elements.length != 2)
+					continue;
+				if(line_elements[1].trim().toLowerCase().equals("dia")){
+					return Integer.parseInt(line_elements[0].trim());
+				}
+			}
+		} catch (IOException e) {
+			return null;
+		} finally{
+			try {
+				if(r != null)
+					r.close();
+			} catch (IOException e) {}
+		}
+	}
+	/**
+	 * Create the diag device (if it doesn't already exist).
+	 * @return
+	 * Error message as String or null if successful
+	 */
+	public static String createDiagDevice(){
+		File diagDevice = new File("/dev/diag");
+		if(diagDevice.exists())
+			return null;
+		Integer diagDeviceMajor = Utils.getDiagDeviceNodeMajor();
+		if(diagDeviceMajor == null){
+			return "Diag device does not exist and /proc/devices does not contain entry for 'dia'";
+		}
+		// Try both standard mknod and busybox mknod
+		String mknodCmd = "mknod /dev/diag c " + diagDeviceMajor + " 0 || busybox mknod /dev/diag c " + diagDeviceMajor + " 0";
+		String suBinary = DeviceCompatibilityChecker.getSuBinary();
+		String cmd[] = { suBinary, "-c", mknodCmd};
+		Process mknod;
+		try {
+			mknod = Runtime.getRuntime().exec(cmd);
+		} catch (IOException e1) {
+			return e1.getMessage();
+		}
+		try {
+			mknod.waitFor();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		if(!diagDevice.exists()){
+			return "Failed to create diag device: " + mknodCmd;
+		}
+		return null;
 	}
 }
