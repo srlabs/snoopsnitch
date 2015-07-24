@@ -109,6 +109,7 @@ public class ImsiCatcher implements AnalysisEvent{
 	 * Return upload state of IMSI catcher object
 	 * @return
 	 */
+	@Override
 	public FileState getUploadState() {
 		FileState rawState  = DumpFile.getState(db, DumpFile.TYPE_ENCRYPTED_QDMON, startTime, endTime, 0);
 		FileState metaState = DumpFile.getState(db, DumpFile.TYPE_METADATA, startTime, endTime, 0);

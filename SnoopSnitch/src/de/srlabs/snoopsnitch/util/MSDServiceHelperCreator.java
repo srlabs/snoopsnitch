@@ -5,10 +5,12 @@ import java.util.Vector;
 import android.app.Activity;
 import android.content.Context;
 import de.srlabs.snoopsnitch.BaseActivity;
+import de.srlabs.snoopsnitch.analysis.AnalysisEvent;
 import de.srlabs.snoopsnitch.analysis.Event;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceCallback;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
+import de.srlabs.snoopsnitch.upload.FileState;
 
 
 public class MSDServiceHelperCreator implements MsdServiceCallback
@@ -52,15 +54,21 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 		return msdServiceHelper;
 	}
 	
-	public int getThreatsSmsMonthSum ()
+	private boolean[] vectorToUploadedBooleanArray(Vector<? extends AnalysisEvent> events){
+		boolean[] result = new boolean[events.size()];
+		for(int i=0;i<events.size();i++)
+			result[i] = events.get(i).getUploadState() == FileState.STATE_UPLOADED;
+		return result;
+	}
+	public boolean[] getThreatsSmsMonthSum ()
 	{
-		return msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceMonth().getStartTime(), 
-				TimeSpace.getTimeSpaceMonth().getEndTime()).size();
+		return vectorToUploadedBooleanArray(msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceMonth().getStartTime(),
+				TimeSpace.getTimeSpaceMonth().getEndTime()));
 	}
 	
-	public int[] getThreatsSmsMonth ()
+	public boolean[][] getThreatsSmsMonth ()
 	{
-		int[] smsMonth = new int[4];
+		boolean[][] smsMonth = new boolean[4][];
 		long calStart = TimeSpace.getTimeSpaceMonth().getStartTime();
 		long calEnd = TimeSpace.getTimeSpaceMonth().getEndTime();
 		
@@ -68,158 +76,158 @@ public class MSDServiceHelperCreator implements MsdServiceCallback
 		
 		for (int i=0; i<smsMonth.length; i++)
 		{
-			smsMonth[i] = msdServiceHelper.getData().getEvent(calEnd - timeSpan,  calEnd).size();
+			smsMonth[i] = vectorToUploadedBooleanArray(msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd));
 			calEnd -= timeSpan;
 		}
 		
 		return smsMonth;
 	}
 	
-	public int getThreatsSmsWeekSum ()
+	public boolean[] getThreatsSmsWeekSum ()
 	{
-		return msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceWeek().getStartTime(), 
-				TimeSpace.getTimeSpaceWeek().getEndTime()).size();
+		return vectorToUploadedBooleanArray(msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceWeek().getStartTime(),
+				TimeSpace.getTimeSpaceWeek().getEndTime()));
 	}
 	
-	public int[] getThreatsSmsWeek ()
+	public boolean[][] getThreatsSmsWeek ()
 	{
-		int[] smsWeek = new int[7];
+		boolean[][] smsWeek = new boolean[7][];
 		long calEnd = TimeSpace.getTimeSpaceWeek().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceWeek().getEndTime() - TimeSpace.getTimeSpaceWeek().getStartTime()) / 7;
 		
 		for (int i=0; i<smsWeek.length; i++)
 		{
-			smsWeek[i] = msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd).size();
+			smsWeek[i] = vectorToUploadedBooleanArray(msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd));
 			calEnd = (calEnd - timeSpan);
 		}
 		
 		return smsWeek;
 	}
 	
-	public int[] getThreatsSmsDay ()
+	public boolean[][] getThreatsSmsDay ()
 	{		
-		int[] smsDay = new int[6];
+		boolean[][] smsDay = new boolean[6][];
 		long calEnd = TimeSpace.getTimeSpaceDay().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceDay().getEndTime() - TimeSpace.getTimeSpaceDay().getStartTime()) / 6;
 		
 		for (int i=0; i<smsDay.length; i++)
 		{
-			smsDay[i] = msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd).size();
+			smsDay[i] = vectorToUploadedBooleanArray(msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd));
 			calEnd = (calEnd - timeSpan);
 		}
 		
 		return smsDay;
 	}
 	
-	public int getThreatsSmsDaySum ()
+	public boolean[] getThreatsSmsDaySum ()
 	{	
-		return msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceDay().getStartTime(), 
-				TimeSpace.getTimeSpaceDay().getEndTime()).size();
+		return vectorToUploadedBooleanArray(msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceDay().getStartTime(),
+				TimeSpace.getTimeSpaceDay().getEndTime()));
 	}
 	
-	public int[] getThreatsSmsHour ()
+	public boolean[][] getThreatsSmsHour ()
 	{
-		int[] smsHour = new int[12];
+		boolean[][] smsHour = new boolean[12][];
 		long calEnd = TimeSpace.getTimeSpaceHour().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceHour().getEndTime() - TimeSpace.getTimeSpaceHour().getStartTime()) / 12;
 		
 		for (int i=0; i<smsHour.length; i++)
 		{
-			smsHour[i] = msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd).size();
+			smsHour[i] = vectorToUploadedBooleanArray(msdServiceHelper.getData().getEvent(calEnd - timeSpan, calEnd));
 			calEnd -= timeSpan;
 		}
 		
 		return smsHour;
 	}
 	
-	public int getThreatsSmsHourSum ()
+	public boolean[] getThreatsSmsHourSum ()
 	{
-		return msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceHour().getStartTime(), 
-				TimeSpace.getTimeSpaceHour().getEndTime()).size();
+		return vectorToUploadedBooleanArray(msdServiceHelper.getData().getEvent(TimeSpace.getTimeSpaceHour().getStartTime(),
+				TimeSpace.getTimeSpaceHour().getEndTime()));
 	}
 	
-	public int getThreatsImsiMonthSum ()
+	public boolean[] getThreatsImsiMonthSum ()
 	{	
-		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceMonth().getStartTime(), 
-				TimeSpace.getTimeSpaceMonth().getEndTime()).size();
+		return vectorToUploadedBooleanArray(msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceMonth().getStartTime(),
+				TimeSpace.getTimeSpaceMonth().getEndTime()));
 	}
 	
-	public int[] getThreatsImsiMonth ()
+	public boolean[][] getThreatsImsiMonth ()
 	{
-		int[] imsiMonth = new int[4];
+		boolean[][] imsiMonth = new boolean[4][];
 		long calEnd = TimeSpace.getTimeSpaceMonth().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceMonth().getEndTime() - TimeSpace.getTimeSpaceMonth().getStartTime()) / 4;
 		
 		for (int i=0; i<imsiMonth.length; i++)
 		{
-			imsiMonth[i] = msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd).size();
+			imsiMonth[i] = vectorToUploadedBooleanArray(msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd));
 			calEnd -= timeSpan;
 		}
 		
 		return imsiMonth;
 	}
 	
-	public int getThreatsImsiWeekSum ()
+	public boolean[] getThreatsImsiWeekSum ()
 	{		
-		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceWeek().getStartTime(), 
-				TimeSpace.getTimeSpaceWeek().getEndTime()).size();
+		return vectorToUploadedBooleanArray(msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceWeek().getStartTime(),
+				TimeSpace.getTimeSpaceWeek().getEndTime()));
 	}
 	
-	public int[] getThreatsImsiWeek ()
+	public boolean[][] getThreatsImsiWeek ()
 	{
-		int[] imsiWeek = new int[7];
+		boolean[][] imsiWeek = new boolean[7][];
 		long calEnd = TimeSpace.getTimeSpaceWeek().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceWeek().getEndTime() - TimeSpace.getTimeSpaceWeek().getStartTime()) / 7;
 		
 		for (int i=0; i<imsiWeek.length; i++)
 		{
-			imsiWeek[i] = msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd).size();
+			imsiWeek[i] = vectorToUploadedBooleanArray(msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd));
 			calEnd -= timeSpan;
 		}
 		
 		return imsiWeek;
 	}
 	
-	public int[] getThreatsImsiDay ()
+	public boolean[][] getThreatsImsiDay ()
 	{		
-		int[] imsiDay = new int[6];
+		boolean[][] imsiDay = new boolean[6][];
 		long calEnd = TimeSpace.getTimeSpaceDay().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceDay().getEndTime() - TimeSpace.getTimeSpaceDay().getStartTime()) / 6;
 		
 		for (int i=0; i<imsiDay.length; i++)
 		{
-			imsiDay[i] = msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd).size();
+			imsiDay[i] = vectorToUploadedBooleanArray(msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd));
 			calEnd = (calEnd - timeSpan);
 		}
 		
 		return imsiDay;
 	}
 	
-	public int getThreatsImsiDaySum ()
+	public boolean[] getThreatsImsiDaySum ()
 	{		
-		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceDay().getStartTime(), 
-				TimeSpace.getTimeSpaceDay().getEndTime()).size();
+		return vectorToUploadedBooleanArray(msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceDay().getStartTime(),
+				TimeSpace.getTimeSpaceDay().getEndTime()));
 	}
 	
-	public int[] getThreatsImsiHour ()
+	public boolean[][] getThreatsImsiHour ()
 	{
-		int[] imsiHour = new int[12];
+		boolean[][] imsiHour = new boolean[12][];
 		long calEnd = TimeSpace.getTimeSpaceHour().getEndTime();
 		long timeSpan = (TimeSpace.getTimeSpaceHour().getEndTime() - TimeSpace.getTimeSpaceHour().getStartTime()) / 12;
 		
 		for (int i=0; i<imsiHour.length; i++)
 		{
-			imsiHour[i] = msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd).size();
+			imsiHour[i] = vectorToUploadedBooleanArray(msdServiceHelper.getData().getImsiCatchers(calEnd - timeSpan, calEnd));
 			calEnd = (calEnd - timeSpan);
 		}
 		
 		return imsiHour;
 	}
 	
-	public int getThreatsImsiHourSum ()
+	public boolean[] getThreatsImsiHourSum ()
 	{
-		return msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceHour().getStartTime(), 
-				TimeSpace.getTimeSpaceHour().getEndTime()).size();
+		return vectorToUploadedBooleanArray(msdServiceHelper.getData().getImsiCatchers(TimeSpace.getTimeSpaceHour().getStartTime(),
+				TimeSpace.getTimeSpaceHour().getEndTime()));
 	}
 	
 	public Vector<Event> getEventOfType (Event.Type type, long startTime, long endTime)

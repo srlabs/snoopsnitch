@@ -61,6 +61,7 @@ public class Event implements AnalysisEvent{
 	 * Return upload state of Event object
 	 * @return
 	 */
+	@Override
 	public FileState getUploadState() {
 		return DumpFile.getState(db, DumpFile.TYPE_ENCRYPTED_QDMON, timestamp, null, 0);
 	}

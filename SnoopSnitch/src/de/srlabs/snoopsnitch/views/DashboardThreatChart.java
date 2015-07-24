@@ -19,6 +19,7 @@ public class DashboardThreatChart extends View
 	int _amount;	
 	int _rectWidth;
 	int _color;
+	int _color_uploaded;
 	private DashboardActivity _activity;
 	
 	public DashboardThreatChart(Context context, AttributeSet attrs) 
@@ -56,7 +57,7 @@ public class DashboardThreatChart extends View
 			if (_timePeriod == 0)
 			{
 				int offsetX = (this.getMeasuredWidth() - (12 * _rectWidth) - (11 * _rectSpace)) / 2;
-				int _smsHour[] = _activity.getMsdServiceHelperCreator().getThreatsSmsHour();
+				boolean _smsHour[][] = _activity.getMsdServiceHelperCreator().getThreatsSmsHour();
 				
 				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _smsHour[11], canvas);
 				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _smsHour[10], canvas);
@@ -74,7 +75,7 @@ public class DashboardThreatChart extends View
 			else if (_timePeriod == 1)
 			{
 				int offsetX = (this.getMeasuredWidth() - (6 * _rectWidth) - (5 * _rectSpace)) / 2;
-				int _smsDay[] = _activity.getMsdServiceHelperCreator().getThreatsSmsDay();
+				boolean _smsDay[][] = _activity.getMsdServiceHelperCreator().getThreatsSmsDay();
 				
 				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _smsDay[5], canvas);
 				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _smsDay[4], canvas);
@@ -99,7 +100,7 @@ public class DashboardThreatChart extends View
 			if (_timePeriod == 0)
 			{
 				int offsetX = (this.getMeasuredWidth() - (12 * _rectWidth) - (11 * _rectSpace)) / 2;
-				int _imsiHour[] = _activity.getMsdServiceHelperCreator().getThreatsImsiHour();
+				boolean _imsiHour[][] = _activity.getMsdServiceHelperCreator().getThreatsImsiHour();
 				
 				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _imsiHour[11], canvas);
 				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _imsiHour[10], canvas);
@@ -117,7 +118,7 @@ public class DashboardThreatChart extends View
 			else if (_timePeriod == 1)
 			{
 				int offsetX = (this.getMeasuredWidth() - (6 * _rectWidth) - (5 * _rectSpace)) / 2;
-				int _imsiDay[] = _activity.getMsdServiceHelperCreator().getThreatsImsiDay();
+				boolean _imsiDay[][] = _activity.getMsdServiceHelperCreator().getThreatsImsiDay();
 				
 				drawChartColumn(offsetX, offsetX + (1 * _rectWidth), _rectWidth, _imsiDay[5], canvas);
 				drawChartColumn(offsetX + (1 * _rectWidth) + (1 * _rectSpace), offsetX + (2 * _rectWidth) + (1 * _rectSpace), _rectWidth, _imsiDay[4], canvas);
@@ -145,7 +146,7 @@ public class DashboardThreatChart extends View
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 	
-	private void drawChartColumn (int startX, int endX, int elementWidth, int numberOfElements, Canvas canvas)
+	private void drawChartColumn (int startX, int endX, int elementWidth, boolean[] _smsDay, Canvas canvas)
 	{
 		Paint myPaint = new Paint();
 		myPaint.setStyle(Paint.Style.FILL);
@@ -158,29 +159,33 @@ public class DashboardThreatChart extends View
 		
 		int _columnSpace = 2;
 		
-		if (numberOfElements == 0)
+		if (_smsDay.length == 0)
 		{
 			myPaint.setColor(Color.rgb(133, 180, 65));
 			canvas.drawRect(left, top+(elementWidth*0.75f), right, bottom, myPaint);
 		}
 		else
 		{
-			for (int i=1; i<=numberOfElements; i++)
+			for (int i=1; i<=_smsDay.length; i++)
 			{
+				if(i < _smsDay.length && _smsDay[i])
+					myPaint.setColor(_color_uploaded);
+				else
+					myPaint.setColor(_color);
 				if (i<5)
 				{
 					canvas.drawRect(left, top, right, bottom, myPaint);
 					top -= (elementWidth + _columnSpace);
 					bottom -= (elementWidth + _columnSpace);
 				}
-				else if (i==5 && numberOfElements>5)
+				else if (i==5 && _smsDay.length>5)
 				{
 					canvas.drawRect(left, top+(_rectWidth * 0.85f), right, bottom, myPaint);
 					canvas.drawRect(left, top+(_rectWidth * 0.5875f), right, bottom-(_rectWidth * 0.2625f), myPaint);
 					canvas.drawRect(left, top+(_rectWidth * 0.33f), right, bottom-(_rectWidth * 0.525f), myPaint);
 					canvas.drawRect(left, top+(_rectWidth * 0.063f), right, bottom-(_rectWidth * 0.783f), myPaint);
 				}
-				else if (i==5 && numberOfElements<=5)
+				else if (i==5 && _smsDay.length<=5)
 				{
 					canvas.drawRect(left, top, right, bottom, myPaint);
 					top -= left*2.1f;
@@ -195,9 +200,11 @@ public class DashboardThreatChart extends View
 		switch (_threatType) {
 		case 0:
 			this._color = getResources().getColor(R.color.common_chartYellow);
+			this._color_uploaded = getResources().getColor(R.color.common_chartYellow_uploaded);
 			break;
 		case 1:
 			this._color = getResources().getColor(R.color.common_chartRed);
+			this._color_uploaded = getResources().getColor(R.color.common_chartRed_uploaded);
 			break;
 		default:
 			break;
