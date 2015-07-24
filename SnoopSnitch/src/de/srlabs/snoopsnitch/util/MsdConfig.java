@@ -232,5 +232,11 @@ public class MsdConfig {
 	public static boolean getUploadDailyPing(Context context){
 		return sharedPrefs(context).getBoolean("settings_upload_daily_ping", false);
 	}
-
+	public static boolean getPcapRecordingEnabled(Context context){
+		return sharedPrefs(context).getBoolean("settings_enable_pcap_recording", false);
+	}
+	public static String getPcapFilenamePrefix(Context context)
+	{
+		return sharedPrefs(context).getString("settings_pcap_filename_prefix", "/sdcard/snoopsnitch");
+	}
 }

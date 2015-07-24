@@ -16,6 +16,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1582,8 +1583,19 @@ public class MsdService extends Service{
 		String cmd[] = {parser_binary,
 				"-s", "" + nextSessionInfoId,
 				"-c", "" + nextCellInfoId,
-				"-a", "" + "0x" + appID,
-		"-"};
+				"-a", "" + "0x" + appID};
+		Vector<String> vCmd = new Vector<String>();
+		vCmd.addAll(Arrays.asList(cmd));
+		if(MsdConfig.getPcapRecordingEnabled(this) && MsdConfig.getPcapFilenamePrefix(this).length() > 0){
+			String pcapBaseFileName = MsdConfig.getPcapFilenamePrefix(this);
+			vCmd.add("-g");
+			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			// Calendar.MONTH starts counting with 0
+			String filename = pcapBaseFileName + "_" + String.format(Locale.US, "%04d-%02d-%02d_%02d-%02d-%02dUTC",c.get(Calendar.YEAR),c.get(Calendar.MONTH)+1,c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND)) + ".pcap";
+			vCmd.add(filename);
+		}
+		vCmd.add("-");
+		cmd = vCmd.toArray(cmd);
 
 		info("Launching parser: " + TextUtils.join(" ",cmd));
 		// Warning: /data/local/tmp is not accessible by default, must be manually changed to 755 (including parent directories)
@@ -1608,10 +1620,17 @@ public class MsdService extends Service{
 			info("Parser handshake OK");
 		} else{
 			this.parser = null;
+			String stderrMsg = "";
+			for(int i=0;i<100;i++){
+				String line = this.parserStderr.readLine();
+				if(line == null)
+					break;
+				stderrMsg += line + "\n";
+			}
 			this.parserStdout = null;
 			this.parserStdin = null;
 			this.parserStderr = null;
-			throw new IOException("handshake from parser not successful");
+			throw new IOException("handshake from parser not successful, stderr: " + stderrMsg);
 		}
 		try {
 			int ret = parser.exitValue();

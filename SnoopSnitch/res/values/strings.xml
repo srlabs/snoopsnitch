@@ -361,6 +361,12 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="settings_upload_daily_ping">Daily ping</string>
      <string name="settings_upload_daily_ping_summary">Daily upload of a database dump and the current GPS coordinates.</string>
 
+     <string name="settings_enable_pcap_recording">PCAP Recording</string>
+     <string name="settings_enable_pcap_recording_summary">Sniff radio packets to pcap file (for analysis in wireshark)</string>
+
+     <string name="settings_pcap_filename_prefix">PCAP file location</string>
+     <string name="settings_pcap_filename_prefix_summary">Path and filename prefix for sniffing pcap files, SnoopSnitch will append a timestamp to the prefix. Defaults to /sdcard/snoopsnitch</string>
+
     <string name="alert_button_ok">@android:string/ok</string>
     <string name="alert_button_cancel">@android:string/cancel</string>
     <string name="alert_dialog_refreshappid_button_cancel">@android:string/cancel</string>

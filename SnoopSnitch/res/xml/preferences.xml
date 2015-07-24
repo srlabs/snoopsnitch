@@ -164,6 +164,18 @@
                 android:key="settings_upload_daily_ping"
                 android:summary="@string/settings_upload_daily_ping_summary"
                 android:title="@string/settings_upload_daily_ping" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_enable_pcap_recording"
+                android:summary="@string/settings_enable_pcap_recording_summary"
+                android:title="@string/settings_enable_pcap_recording" />
+            <EditTextPreference
+	            android:defaultValue="/sdcard/snoopsnitch"
+	            android:dependency="settings_enable_pcap_recording"
+	            android:key="settings_pcap_filename_prefix"
+	            android:summary="@string/settings_pcap_filename_prefix_summary"
+	            android:title="@string/settings_pcap_filename_prefix" />
         </PreferenceCategory>
     </PreferenceScreen>
 
