@@ -168,7 +168,7 @@ public class DashboardThreatChart extends View
 		{
 			for (int i=1; i<=_smsDay.length; i++)
 			{
-				if(i < _smsDay.length && _smsDay[i])
+				if(_smsDay[i-1])
 					myPaint.setColor(_color_uploaded);
 				else
 					myPaint.setColor(_color);

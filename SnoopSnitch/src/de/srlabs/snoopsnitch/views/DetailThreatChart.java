@@ -68,7 +68,7 @@ public class DetailThreatChart extends View
 		{
 			for (int i=1; i<=items_upload_state.length; i++)
 			{
-				if(i < items_upload_state.length && items_upload_state[i])
+				if(items_upload_state[i-1])
 					myPaint.setColor(_color_uploaded);
 				else
 					myPaint.setColor(_color);
