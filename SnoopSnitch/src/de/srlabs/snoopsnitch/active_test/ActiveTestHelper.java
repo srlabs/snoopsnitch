@@ -175,9 +175,13 @@ public class ActiveTestHelper{
 		if(msg != null)
 			dialog.setMessage(msg);
 		dialog.setView(editText);
-		dialog.setPositiveButton("Run", new DialogInterface.OnClickListener() {	
+		dialog.setPositiveButton("Run", new DialogInterface.OnClickListener() {
+			private boolean alreadyClicked = false;
 			@Override
 			public void onClick(final DialogInterface dialog, final int which) {
+				if(alreadyClicked)
+					return;
+				alreadyClicked = true;
 				String confirmedOwnNumber = editText.getText().toString().trim();
 				if(!( confirmedOwnNumber.startsWith("+") || confirmedOwnNumber.startsWith("00"))){
 					queryPhoneNumberAndStart("Please enter an international number (with '+' or '00' in the beginning)");
