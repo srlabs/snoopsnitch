@@ -345,6 +345,7 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="network_info_lac_text">LAC:</string>
      <string name="network_info_cid_text">CID:</string>
      <string name="network_info_rnc_text">RNC:</string>
+     <string name="network_info_arfcn_text">ARFCN:</string>
      <string name="network_info_msisdn_text">MSISDN:</string>
      <string name="network_info_paging_text">Paging:</string>
 
@@ -387,6 +388,7 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
     <string name="network_info_lac_value">unknown</string>
     <string name="network_info_cid_value">unknown</string>
     <string name="network_info_rnc_value">unknown</string>
+    <string name="network_info_arfcn_value">unknown</string>
     <string name="network_info_auth_value">unknown</string>
     <string name="network_info_cipher_value">unknown</string>
     <string name="network_info_integrity_value">unknown</string>

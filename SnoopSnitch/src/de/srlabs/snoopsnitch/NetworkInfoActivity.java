@@ -269,7 +269,7 @@ public class NetworkInfoActivity extends BaseActivity {
 	private void setTransaction(SQLiteDatabase db) {
 		
 		long timestamp;
-		int rat, mcc, mnc, lac, cid, rnc;
+		int rat, mcc, mnc, lac, cid, rnc, arfcn;
 		int auth, cipher, integrity, duration;
 		int mo, mt, paging_mi, t_locupd, lu_acc, lu_type, lu_reject, rej_cause;
 		int lu_mcc, lu_mnc, lu_lac, t_abort, t_call, t_sms, id;
@@ -278,7 +278,7 @@ public class NetworkInfoActivity extends BaseActivity {
 
 		String q =
 				"SELECT max(id) as id, strftime('%s', timestamp) as timestamp, " +
-				"rat, mcc, mnc, lac, cid, auth, cipher, integrity, " +
+				"rat, mcc, mnc, lac, cid, arfcn, auth, cipher, integrity, " +
 				"duration, mobile_orig, mobile_term, paging_mi, " +
 				"t_locupd, lu_acc, lu_type, lu_reject, lu_rej_cause, " +
 				"lu_mcc, lu_mnc, lu_lac, t_abort, cipher, t_call, " +
@@ -298,6 +298,7 @@ public class NetworkInfoActivity extends BaseActivity {
 			lac       = query.getInt(query.getColumnIndexOrThrow("lac"));
 			cid       = query.getInt(query.getColumnIndexOrThrow("cid"));
 			rnc = cid >> 16;
+			arfcn       = query.getInt(query.getColumnIndexOrThrow("arfcn"));
 			auth      = query.getInt(query.getColumnIndexOrThrow("auth"));
 			cipher    = query.getInt(query.getColumnIndexOrThrow("cipher"));
 			integrity = query.getInt(query.getColumnIndexOrThrow("integrity"));
@@ -327,6 +328,7 @@ public class NetworkInfoActivity extends BaseActivity {
 			setTextView(R.id.networkInfoCurrentLAC, Integer.toString(lac));
 			setTextView(R.id.networkInfoCurrentCID, Integer.toString(cid));
 			setTextView(R.id.networkInfoCurrentRNC, Integer.toString(rnc));
+			setTextView(R.id.networkInfoCurrentARFCN, Integer.toString(arfcn));
 			setTextView(R.id.networkInfoCurrentAuth, toAuthString(auth));
 			setTextView(R.id.networkInfoCurrentCipher, toCipherString(rat, cipher));
 			setTextView(R.id.networkInfoCurrentIntegrity, toIntegrityString(rat, integrity));
@@ -368,6 +370,7 @@ public class NetworkInfoActivity extends BaseActivity {
 			setVisibility2(lac > 0,    						R.id.txtLAC, R.id.networkInfoCurrentLAC);
 			setVisibility2(cid > 0,    						R.id.txtCID, R.id.networkInfoCurrentCID);
 			setVisibility2(rnc > 0,    						R.id.txtRNC, R.id.networkInfoCurrentRNC);
+			setVisibility2(arfcn > 0,  						R.id.txtARFCN, R.id.networkInfoCurrentARFCN);
 
 			// Duration may be 0
 			setVisibility2(duration > 0,    				R.id.txtDuration, R.id.networkInfoCurrentDuration);
