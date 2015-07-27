@@ -247,6 +247,15 @@
                     android:textStyle="normal" />
 
                 <TextView
+                    android:id="@+id/txtRNC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/network_info_rnc_text"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="normal" />
+
+                <TextView
                     android:id="@+id/txtAuth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -377,6 +386,15 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"
                     android:text="@string/network_info_cid_value"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/networkInfoCurrentRNC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/network_info_rnc_value"
                     android:textSize="@dimen/text_medium"
                     android:textStyle="normal" />
 

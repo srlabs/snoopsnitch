@@ -269,7 +269,7 @@ public class NetworkInfoActivity extends BaseActivity {
 	private void setTransaction(SQLiteDatabase db) {
 		
 		long timestamp;
-		int rat, mcc, mnc, lac, cid;
+		int rat, mcc, mnc, lac, cid, rnc;
 		int auth, cipher, integrity, duration;
 		int mo, mt, paging_mi, t_locupd, lu_acc, lu_type, lu_reject, rej_cause;
 		int lu_mcc, lu_mnc, lu_lac, t_abort, t_call, t_sms, id;
@@ -297,6 +297,7 @@ public class NetworkInfoActivity extends BaseActivity {
 			mnc       = query.getInt(query.getColumnIndexOrThrow("mnc"));
 			lac       = query.getInt(query.getColumnIndexOrThrow("lac"));
 			cid       = query.getInt(query.getColumnIndexOrThrow("cid"));
+			rnc = cid >> 16;
 			auth      = query.getInt(query.getColumnIndexOrThrow("auth"));
 			cipher    = query.getInt(query.getColumnIndexOrThrow("cipher"));
 			integrity = query.getInt(query.getColumnIndexOrThrow("integrity"));
@@ -325,6 +326,7 @@ public class NetworkInfoActivity extends BaseActivity {
 			setTextView(R.id.networkInfoCurrentMNC, Integer.toString(mnc));
 			setTextView(R.id.networkInfoCurrentLAC, Integer.toString(lac));
 			setTextView(R.id.networkInfoCurrentCID, Integer.toString(cid));
+			setTextView(R.id.networkInfoCurrentRNC, Integer.toString(rnc));
 			setTextView(R.id.networkInfoCurrentAuth, toAuthString(auth));
 			setTextView(R.id.networkInfoCurrentCipher, toCipherString(rat, cipher));
 			setTextView(R.id.networkInfoCurrentIntegrity, toIntegrityString(rat, integrity));
@@ -365,6 +367,7 @@ public class NetworkInfoActivity extends BaseActivity {
 			setVisibility2(mnc > 0,    						R.id.txtMNC, R.id.networkInfoCurrentMNC);
 			setVisibility2(lac > 0,    						R.id.txtLAC, R.id.networkInfoCurrentLAC);
 			setVisibility2(cid > 0,    						R.id.txtCID, R.id.networkInfoCurrentCID);
+			setVisibility2(rnc > 0,    						R.id.txtRNC, R.id.networkInfoCurrentRNC);
 
 			// Duration may be 0
 			setVisibility2(duration > 0,    				R.id.txtDuration, R.id.networkInfoCurrentDuration);
