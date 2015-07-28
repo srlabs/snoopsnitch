@@ -365,7 +365,7 @@ public class MsdService extends Service{
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		DumpFile df = DumpFile.get(db, extraRecordingFileId);
-		df.endRecording(db);
+		df.endRecording(db, this);
 		if(markForUpload){
 			df.updateState(db, DumpFile.STATE_AVAILABLE, DumpFile.STATE_PENDING, null);
 		}
@@ -583,7 +583,7 @@ public class MsdService extends Service{
 								SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 								DumpFile df = new DumpFile(filename + ".gz.smime",DumpFile.TYPE_LOCATION_INFO);
 								df.insert(db);
-								df.endRecording(db);
+								df.endRecording(db, MsdService.this);
 								df.markForUpload(db);
 								MsdDatabaseManager.getInstance().closeDatabase();
 								triggerUploading();
@@ -2108,7 +2108,7 @@ public class MsdService extends Service{
 			// There is an open debug logfile already, so let's close it and set the end time in the database
 			oldRawWrite.close();
 			df = DumpFile.get(db, oldRawLogFileId);
-			df.endRecording(db);
+			df.endRecording(db, this, 20*60*1000L);
 		}
 		MsdDatabaseManager.getInstance().closeDatabase();
 		triggerUploading();
@@ -2126,7 +2126,7 @@ public class MsdService extends Service{
 		rawWriter = null;
 		currentRawWriterBaseFilename = null;
 		DumpFile df = DumpFile.get(db, rawLogFileId);
-		df.endRecording(db);
+		df.endRecording(db, this, 20*60*1000L);
 		rawLogFileId = 0;
 		MsdDatabaseManager.getInstance().closeDatabase();
 	}
@@ -2155,7 +2155,7 @@ public class MsdService extends Service{
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
 		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
 		DumpFile df = DumpFile.get(db, debugLogFileId);
-		df.endRecording(db);
+		df.endRecording(db, this);
 		if(crash){
 			df.updateCrash(db, true);
 		}
@@ -2221,7 +2221,7 @@ public class MsdService extends Service{
 			df = DumpFile.get(db, oldDebugLogId);
 			if(markForUpload)
 				df.markForUpload(db);
-			df.endRecording(db);
+			df.endRecording(db, this);
 		}
 		MsdDatabaseManager.getInstance().closeDatabase();
 		return oldDebugLogId;

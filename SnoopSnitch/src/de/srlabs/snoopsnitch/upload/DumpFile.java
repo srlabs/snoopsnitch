@@ -7,9 +7,11 @@ import java.util.Locale;
 import java.util.Vector;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.Utils;
 
 /**
@@ -293,9 +295,23 @@ public class DumpFile {
 		//  Should not happen
 		return FileState.STATE_INVALID;
 	}
-
-	public void endRecording(SQLiteDatabase db){
+	public void endRecording(SQLiteDatabase db, Context ctx){
+		endRecording(db, ctx, null);
+	}
+	public void endRecording(SQLiteDatabase db, Context ctx, Long maxDurationMillis){
 		this.end_time = System.currentTimeMillis();
+		long duration = this.end_time - this.start_time;
+		if(duration < 0 || (maxDurationMillis != null && duration > maxDurationMillis)){
+			// We need a maximum duration since the system time may be changed
+			// while SnoopSnitch is recording. Without a limit, this can result
+			// in files with a period of several days (according to start_time
+			// and end_time), which then confuses the detection whether an Event
+			// is already uploaded or not.
+			MsdLog.w("DumpFile", "Discarding dumpfile " + filename + " because the duration " + duration + " is negative or larger than the specified maximum of " + maxDurationMillis + " millis");
+			ctx.deleteFile(filename);
+			db.delete("files", "_id=" + this.id,  null);
+			return;
+		}
 		ContentValues values = new ContentValues();
 		values.put("end_time", (new Timestamp(end_time)).toString());
 		if(state == STATE_RECORDING){
