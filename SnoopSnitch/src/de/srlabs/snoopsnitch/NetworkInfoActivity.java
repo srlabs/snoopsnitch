@@ -177,6 +177,10 @@ public class NetworkInfoActivity extends BaseActivity {
 		}
 	}
 
+	private String toGprsCipherString(int value){
+		return "GEA/" + value;
+	}
+
 	private String toIntegrityString(int rat, int ia) {
 		switch (rat) {
 			case 0: // 2G
@@ -273,6 +277,8 @@ public class NetworkInfoActivity extends BaseActivity {
 		int auth, cipher, integrity, duration;
 		int mo, mt, paging_mi, t_locupd, lu_acc, lu_type, lu_reject, rej_cause;
 		int lu_mcc, lu_mnc, lu_lac, t_abort, t_call, t_sms, id;
+		int cipher_gprs=0;
+		boolean gprs_cipher_info_available = false;
 		String msisdn, IMSI;
 		TelephonyManager telephonyManager;
 
@@ -319,6 +325,21 @@ public class NetworkInfoActivity extends BaseActivity {
 			lu_mnc    = query.getInt(query.getColumnIndexOrThrow("lu_mnc"));
 			lu_lac    = query.getInt(query.getColumnIndexOrThrow("lu_lac"));
 
+			if(rat == 0){ // Query GPRS Cipher when using 2G
+				String q_gprs =
+						"SELECT max(id) as id, strftime('%s', timestamp) as timestamp, " +
+						"rat, mcc, mnc, lac, cid, arfcn, auth, cipher, integrity, " +
+						"duration, mobile_orig, mobile_term, paging_mi, " +
+						"t_locupd, lu_acc, lu_type, lu_reject, lu_rej_cause, " +
+						"lu_mcc, lu_mnc, lu_lac, t_abort, cipher, t_call, " +
+						"t_sms, msisdn from session_info where domain = 1";
+				Cursor query_gprs = db.rawQuery (q_gprs, null);
+				if(query_gprs.moveToFirst()){
+					cipher_gprs = query_gprs.getInt(query_gprs.getColumnIndexOrThrow("cipher"));
+					gprs_cipher_info_available = true;
+				}
+			}
+
 			// Set timestamp
 			setTextView(R.id.networkInfoTimestamp, String.valueOf(DateFormat.getDateTimeInstance().format(timestamp * 1000L)));
 			setTextView(R.id.networkInfoCurrentInternalID, Integer.toString(id));
@@ -331,6 +352,13 @@ public class NetworkInfoActivity extends BaseActivity {
 			setTextView(R.id.networkInfoCurrentARFCN, Integer.toString(arfcn));
 			setTextView(R.id.networkInfoCurrentAuth, toAuthString(auth));
 			setTextView(R.id.networkInfoCurrentCipher, toCipherString(rat, cipher));
+
+			// GPRS cipher
+			setVisibility2(gprs_cipher_info_available, R.id.networkInfoCurrentCipherGprs,R.id.txtCipherGprs);
+			if(gprs_cipher_info_available){
+				setTextView(R.id.networkInfoCurrentCipherGprs, toGprsCipherString(cipher_gprs));
+			}
+
 			setTextView(R.id.networkInfoCurrentIntegrity, toIntegrityString(rat, integrity));
 			setTextView(R.id.networkInfoCurrentDuration, Integer.toString(duration) + " ms");
 			setTextView(R.id.networkInfoCurrentDirection, toDirectionString(mo, mt));

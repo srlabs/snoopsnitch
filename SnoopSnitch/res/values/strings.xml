@@ -306,6 +306,7 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="network_info_title">Network Info</string>
      <string name="network_info_auth_text">Auth:</string>
      <string name="network_info_cipher_text">Cipher:</string>
+     <string name="network_info_cipher_gprs_text">Cipher (GPRS):</string>
      <string name="network_info_integrity_text">Integrity:</string>
      <string name="network_info_duration_text">Duration:</string>
      <string name="network_info_direction_text">Direction:</string>
