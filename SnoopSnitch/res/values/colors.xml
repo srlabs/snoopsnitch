@@ -2,9 +2,9 @@
 <resources>
     <!-- General -->
     <item name="common_chartRed" type="color">#d36031</item>
-    <item name="common_chartRed_uploaded" type="color">#B04520</item>
+    <item name="common_chartRed_uploaded" type="color">#7f3a1d</item>
     <item name="common_chartYellow" type="color">#d5c402</item>
-    <item name="common_chartYellow_uploaded" type="color">#baaa02</item>
+    <item name="common_chartYellow_uploaded" type="color">#807601</item>
     <item name="common_chartGreen" type="color">#84b538</item>    
     <item name="common_chartSeparator" type="color">#A9A9A9</item>
     <item name="common_applicationBackground" type="color">#eeeeee</item>
