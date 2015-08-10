@@ -305,4 +305,19 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
 
      <string name="common_none">geen</string>
      <string name="common_invalid">invalide</string>
+
+     <!-- Debug Uploads -->
+     <string name="debug_what_to_report">Beschrijf het probleem waarover je de melding maakt:</string>
+     <string name="debug_contact_info">Geef aub je emailadres zodat we je kunnen bereiken:</string>
+     <string name="debug_upload_snoopsnitch_debug_logs">SnoopSnitch debug logs uploaden</string>
+     <string name="debug_upload_radio_traces"> radio traces (vorige uur) uploaden</string>
+     <string name="debug_upload_metadata">Database metadata uploaden</string>
+     <string name="debug_upload">Uploaden</string>
+     <string name="debug_cancel">Annuleren</string>
+
+     <string name="upload_debug_please_select">Kies aub tenminste een item om te uploaden!</string>
+     <string name="upload_debug_confirm_no_contact">Ben je zeker dat je dat de melding wilt verzenden zonder je contact informatie?</string>
+     <string name="upload_debug_confirm_no_description">Ben je zeker dat je dat de melding wilt verzenden zonder een beschrijving van het probleem?</string>
+     <string name="upload_debug_confirmation_msg">De meldingID is %s. Stuur graag verdere details naar snoopsnitch@srlabs.de</string>
+
 </resources>

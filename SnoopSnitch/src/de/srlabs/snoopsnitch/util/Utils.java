@@ -305,7 +305,7 @@ public class Utils {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static void uploadMetadata(Context context, SQLiteDatabase db, ImsiCatcher imsiCatcher, long startTime, long endTime, String prefix)  throws EncryptedFileWriterError, SQLException, IOException {
+	public static DumpFile uploadMetadata(Context context, SQLiteDatabase db, ImsiCatcher imsiCatcher, long startTime, long endTime, String prefix)  throws EncryptedFileWriterError, SQLException, IOException {
 		final boolean encryptedDump = true;
 		final boolean plainDump = MsdConfig.dumpUnencryptedEvents(context);
 
@@ -324,6 +324,7 @@ public class Utils {
 		meta.recordingStopped();
 		meta.insert(db);
 		meta.markForUpload(db);
+		return meta;
 	}
 
 	/**
