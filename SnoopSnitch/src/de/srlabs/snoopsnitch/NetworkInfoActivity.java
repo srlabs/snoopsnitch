@@ -287,8 +287,8 @@ public class NetworkInfoActivity extends BaseActivity {
 				"rat, mcc, mnc, lac, cid, arfcn, auth, cipher, integrity, " +
 				"duration, mobile_orig, mobile_term, paging_mi, " +
 				"t_locupd, lu_acc, lu_type, lu_reject, lu_rej_cause, " +
-				"lu_mcc, lu_mnc, lu_lac, t_abort, cipher, t_call, " +
-				"t_sms, msisdn from session_info where domain = 0";
+				"lu_mcc, lu_mnc, lu_lac, t_abort, t_call, t_sms, msisdn " +
+				"from session_info where domain = 0 order by timestamp";
 
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		IMSI = telephonyManager.getSubscriberId();
@@ -328,11 +328,8 @@ public class NetworkInfoActivity extends BaseActivity {
 			if(rat == 0){ // Query GPRS Cipher when using 2G
 				String q_gprs =
 						"SELECT max(id) as id, strftime('%s', timestamp) as timestamp, " +
-						"rat, mcc, mnc, lac, cid, arfcn, auth, cipher, integrity, " +
-						"duration, mobile_orig, mobile_term, paging_mi, " +
-						"t_locupd, lu_acc, lu_type, lu_reject, lu_rej_cause, " +
-						"lu_mcc, lu_mnc, lu_lac, t_abort, cipher, t_call, " +
-						"t_sms, msisdn from session_info where domain = 1";
+						"cipher from session_info where rat = 0 and domain = 1 " +
+						"and t_attach and att_acc order by timestamp";
 				Cursor query_gprs = db.rawQuery (q_gprs, null);
 				if(query_gprs.moveToFirst()){
 					cipher_gprs = query_gprs.getInt(query_gprs.getColumnIndexOrThrow("cipher"));

@@ -96,7 +96,7 @@ INSERT INTO config VALUES
 		0.0,
 
 		-- catcher_min_score
-		3.5,
+		3.1,
 
 		-- loc_max_delta
 		600,
