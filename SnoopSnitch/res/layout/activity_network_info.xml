@@ -283,6 +283,15 @@
                     android:textStyle="normal" />
 
                 <TextView
+                    android:id="@+id/txtCipherGprs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/network_info_cipher_gprs_text"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="normal" />
+
+                <TextView
                     android:id="@+id/txtIntegrity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -427,6 +436,15 @@
 
                 <TextView
                     android:id="@+id/networkInfoCurrentCipher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/network_info_cipher_value"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/networkInfoCurrentCipherGprs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-condensed"

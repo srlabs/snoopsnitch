@@ -107,6 +107,14 @@
             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
         </activity>
 
+        <!-- Upload Debug Activity -->
+        <activity
+            android:name="de.srlabs.snoopsnitch.UploadDebugActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
+        </activity>
+
         <!-- Crash Upload Activity-->
         <activity
             android:name="de.srlabs.snoopsnitch.CrashUploadActivity"

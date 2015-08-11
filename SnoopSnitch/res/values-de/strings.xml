@@ -333,4 +333,16 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="common_none">keine</string>
      <string name="common_invalid">ungültig</string>
 
+     <!-- Debug Uploads -->
+     <string name="debug_what_to_report">Bitte beschreiben Sie das Problem:</string>
+     <string name="debug_contact_info">Bitte geben Sie Ihre Emailadresse ein damit wir Sie erreichen können:</string>
+     <string name="debug_upload_snoopsnitch_debug_logs">SnoopSnitch debug logs hochladen</string>
+     <string name="debug_upload_radio_traces">Den Radiomitschnitt (letzte Stunde) hochladen</string>
+     <string name="debug_upload_metadata">Metadaten hochladen</string>
+     <string name="debug_upload">Hochladen</string>
+     <string name="debug_cancel">Zurück</string>
+     <string name="upload_debug_please_select">Bitte wählen Sie zumindest einen Eintrag zum hochladen aus!</string>
+     <string name="upload_debug_confirm_no_contact">Möchten Sie Ihre Bericht ohne Ihre Kontaktdaten versenden?</string>
+     <string name="upload_debug_confirm_no_description">Möchten Sie Ihre Bericht versenden ohne eine Problembeschreibung?</string>
+     <string name="upload_debug_confirmation_msg">Ihre BerichtID ist %s. Schicken Sie gerne weitere Informationen an snoopsnitch@srlabs.de</string>
 </resources>
