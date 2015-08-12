@@ -44,6 +44,7 @@ ON
 	si.mcc    = scp.mcc AND
 	si.mnc    = scp.mnc AND
 	si.rat    = scp.rat AND
+	si.rat	  = 0 AND
 	si.lu_acc = scp.lu_acc
 WHERE
 	si.cipher = 0 AND
