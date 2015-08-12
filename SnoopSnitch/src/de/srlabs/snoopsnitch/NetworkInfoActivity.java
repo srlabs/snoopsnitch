@@ -5,6 +5,7 @@ import java.util.Calendar;
 
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
+import de.srlabs.snoopsnitch.util.MsdLog;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -332,8 +333,12 @@ public class NetworkInfoActivity extends BaseActivity {
 						"and t_attach and att_acc order by timestamp";
 				Cursor query_gprs = db.rawQuery (q_gprs, null);
 				if(query_gprs.moveToFirst()){
-					cipher_gprs = query_gprs.getInt(query_gprs.getColumnIndexOrThrow("cipher"));
-					gprs_cipher_info_available = true;
+					long gprs_timestamp = query_gprs.getLong(query_gprs.getColumnIndexOrThrow("timestamp"));
+					// Only show GPRS session if time difference between GSM session and GPRS session is below 24h
+					if(Math.abs(timestamp - gprs_timestamp) < 24*3600){
+						cipher_gprs = query_gprs.getInt(query_gprs.getColumnIndexOrThrow("cipher"));
+						gprs_cipher_info_available = true;
+					}
 				}
 			}
 

@@ -20,7 +20,7 @@
     <string name="action_upload_pending_files">Ausstehende Dateien hochladen</string>
     <string name="action_active_test_advanced">Aktiver Test (Details)</string>
     <string name="action_upload_suspicious_dumps">Verdächtige Aktivitäten hochladen</string>
-    <string name="action_upload_debug_logs">Debug Logs hochladen</string>
+    <string name="action_upload_debug_logs">Feedback/Fragen</string>
     <string name="action_network_info">Netzwerkinfo</string>
     <string name="action_settings">Einstellungen</string>
     <string name="action_about">Über</string>
