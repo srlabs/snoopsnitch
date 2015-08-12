@@ -76,7 +76,7 @@ SELECT
         (si.timestamp > bc.upgraded_since) AND (si.cipher < bc.max) AS score
 FROM session_info AS si, best_cipher as bc
 ON si.mcc = bc.mcc AND si.mnc = bc.mnc AND si.lac = bc.lac AND si.cid = bc.cid AND si.lu_acc = bc.lu_acc
-WHERE domain = 0 AND (si.lu_acc OR si.call_presence OR si.sms_presence);
+WHERE rat = 0 AND domain = 0 AND (si.lu_acc OR si.call_presence OR si.sms_presence);
 DROP VIEW IF EXISTS c2;
 CREATE VIEW c2 AS
 SELECT
@@ -169,6 +169,7 @@ ON
 	si.mcc    = scp.mcc AND
 	si.mnc    = scp.mnc AND
 	si.rat    = scp.rat AND
+	si.rat	  = 0 AND
 	si.lu_acc = scp.lu_acc
 WHERE
 	si.cipher = 0 AND
