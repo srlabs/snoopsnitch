@@ -21,7 +21,7 @@
     <string name="action_upload_pending_files">Upload pending files</string>
     <string name="action_active_test_advanced">Active test (advanced mode)</string>
     <string name="action_upload_suspicious_dumps">Upload suspicious activity</string>
-    <string name="action_upload_debug_logs">Upload debug logs</string>
+    <string name="action_upload_debug_logs">Submit feedback/questions</string>
     <string name="action_network_info">Network Info</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
