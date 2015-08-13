@@ -356,6 +356,7 @@ public class NetworkInfoActivity extends BaseActivity {
 			setTextView(R.id.networkInfoCurrentCipher, toCipherString(rat, cipher));
 
 			// GPRS cipher
+			gprs_cipher_info_available = false; // Disable display of Cipher (GPRS) for now
 			setVisibility2(gprs_cipher_info_available, R.id.networkInfoCurrentCipherGprs,R.id.txtCipherGprs);
 			if(gprs_cipher_info_available){
 				setTextView(R.id.networkInfoCurrentCipherGprs, toGprsCipherString(cipher_gprs));
