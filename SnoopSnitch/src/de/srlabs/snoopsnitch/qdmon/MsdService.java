@@ -828,6 +828,7 @@ public class MsdService extends Service{
 				rawWriter = null;
 			}
 			handleFatalError("Received Exception during shutdown", e);
+			System.exit(0);
 			return false;
 		} finally{
 			if(wl != null)
@@ -2117,18 +2118,22 @@ public class MsdService extends Service{
 		if(rawWriter == null)
 			return;
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
-		SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
-		try {
-			rawWriter.close();
-		} catch (EncryptedFileWriterError e) {
-			info("Error closing raw log: " + e.getMessage());
+		try{
+			SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
+			try {
+				rawWriter.close();
+			} catch (EncryptedFileWriterError e) {
+				info("Error closing raw log: " + e.getMessage());
+			}
+			rawWriter = null;
+			currentRawWriterBaseFilename = null;
+			DumpFile df = DumpFile.get(db, rawLogFileId);
+			if(df != null)
+				df.endRecording(db, this, 20*60*1000L);
+			rawLogFileId = 0;
+		} finally{
+			MsdDatabaseManager.getInstance().closeDatabase();
 		}
-		rawWriter = null;
-		currentRawWriterBaseFilename = null;
-		DumpFile df = DumpFile.get(db, rawLogFileId);
-		df.endRecording(db, this, 20*60*1000L);
-		rawLogFileId = 0;
-		MsdDatabaseManager.getInstance().closeDatabase();
 	}
 
 	/**
