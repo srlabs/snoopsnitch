@@ -1701,6 +1701,26 @@ public class MsdService extends Service{
 		if(suBinary == null){
 			shutdownDueToExpectedError(MsdServiceNotifications.ERROR_ROOT_PRIVILEGES_DENIED);
 		}
+		// Some LG Devices (e.g. the LG G4 H815) do have a /dev/diag device but
+		// it does not deliver any baseband messages unless it is enabled via
+		// /sys/devices/platform/lg_diag_cmd/diag_enable
+		File lgDiagEnable = new File("/sys/devices/platform/lg_diag_cmd/diag_enable");
+		if(lgDiagEnable.exists()){
+			String cmd[] = { suBinary, "-c", "echo 1 > /sys/devices/platform/lg_diag_cmd/diag_enable" };
+			info("Enabling LG diag device: " + TextUtils.join(" ",cmd));
+			Process lgDiagEnableProcess;
+			try {
+				lgDiagEnableProcess = Runtime.getRuntime().exec(cmd);
+			} catch (Exception e) {
+				handleFatalError("Exception while launching lgDiagEnableProcess", e);
+				return;
+			}
+			try {
+				lgDiagEnableProcess.waitFor();
+			} catch (Exception e) {
+				handleFatalError("Exception during lgDiagEnableProcess.waitFor()", e);
+			}
+		}
 		File diagDevice = new File("/dev/diag");
 		if(!diagDevice.exists()){
 			String createDiagError = Utils.createDiagDevice();
