@@ -11,6 +11,10 @@ import android.preference.PreferenceManager;
  */
 public class MsdConfig {
 	
+	// The version suffix should be counted up when there is a solution for the
+	// "No baseband messages" problem (so that phones detected to be
+	// incompatible with a previous version can used again)
+	private static final String DEVICE_INCOMPATIBLE_DETECTED_FLAG = "device_incompatible_detected_2";
 	private static SharedPreferences sharedPrefs(Context context)
 	{
 		return context.getSharedPreferences("de.srlabs.snoopsnitch_preferences", Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
@@ -88,13 +92,13 @@ public class MsdConfig {
 
 	public static boolean getDeviceIncompatible(Context context)
 	{
-		return sharedPrefs(context).getBoolean("device_incompatible_detected", false);
+		return sharedPrefs(context).getBoolean(DEVICE_INCOMPATIBLE_DETECTED_FLAG, false);
 	}
 
 	public static void setDeviceIncompatible(Context context, boolean incompatible)
 	{
 		Editor editor = sharedPrefs(context).edit();
-		editor.putBoolean("device_incompatible_detected", incompatible);
+		editor.putBoolean(DEVICE_INCOMPATIBLE_DETECTED_FLAG, incompatible);
 		editor.commit();
 	}
 
