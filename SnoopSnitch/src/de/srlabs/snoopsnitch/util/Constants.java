@@ -7,7 +7,7 @@ public class Constants {
 	public static final String MULTIPART_BOUNDARY = "**********";
 	public static final String CRLF = "\r\n";
 	public static final long CONNECT_TIMEOUT = 20 * DateUtils.SECOND_IN_MILLIS;
-	public static final long READ_TIMEOUT = 20 * DateUtils.SECOND_IN_MILLIS;
+	public static final long READ_TIMEOUT = 30 * DateUtils.SECOND_IN_MILLIS;
 	public static final int NOTIFICATION_ID_FOREGROUND_SERVICE = 1;
 	public static final int NOTIFICATION_ID_INTERNAL_ERROR = 2;
 	public static final int NOTIFICATION_ID_ERROR = 3;
