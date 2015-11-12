@@ -60,7 +60,10 @@ public class Utils {
 		sslContext.init(null, tmf.getTrustManagers(), null);
 
 		// TODO: Handle pinning errors with an appropriate error message/Notification
-		connection.setSSLSocketFactory(sslContext.getSocketFactory());
+		// The parameter "TLSv1.2" in SSLContext.getInstance() does *not* force
+		// it to use only TLSv1.2 and it will still fall back to SSLv3, which is
+		// rather insecure and leads to Exceptions on certain phones.
+		connection.setSSLSocketFactory(new ForceTLSSocketFactory(sslContext.getSocketFactory()));
 		return connection;
 	}
 
