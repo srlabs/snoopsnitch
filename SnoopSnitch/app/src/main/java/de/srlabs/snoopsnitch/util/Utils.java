@@ -35,6 +35,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+
+import de.srlabs.snoopsnitch.BuildConfig;
 import de.srlabs.snoopsnitch.EncryptedFileWriterError;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.analysis.ImsiCatcher;
@@ -44,8 +47,14 @@ import de.srlabs.snoopsnitch.upload.DumpFile;
 
 
 public class Utils {
-	public static HttpsURLConnection openUrlWithPinning(Context context, String strUrl) throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, KeyManagementException{
-		URL url = new URL(strUrl);
+
+    private final static String TAG = "SNOOP";
+    private final static String mTAG = "Utils";
+
+	public static HttpsURLConnection openUrlWithPinning(Context context, String strUrl) throws
+			IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, KeyManagementException {
+
+        URL url = new URL(strUrl);
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		final InputStream keystoreInputStream = context.getAssets().open("keystore.bks");
 
@@ -85,7 +94,39 @@ public class Utils {
 		Date date = new Date(millis);
 		return dateFormat.format(date);
 	}
-	/**
+
+    /*
+    // ----------------------------------------------------------------------
+    // Here we are interested in the technology and not the speed, so we
+    // consider everything with 2,2.5,2.75 as "2G". Same for 3G.
+    // The following were extracted from Google sources in getNetworkClass(),
+    // from TelephonyManager.java.
+    // ----------------------------------------------------------------------
+			//2G
+			NETWORK_TYPE_1xRTT      *       // This is labelled by Google as 2G, but is really a 3G technology
+			NETWORK_TYPE_CDMA               // CDMA: Either IS95A or IS95B
+			NETWORK_TYPE_EDGE
+			NETWORK_TYPE_GPRS
+			NETWORK_TYPE_GSM        *       // API >24
+			NETWORK_TYPE_IDEN       *
+			//3G
+			NETWORK_TYPE_EHRPD      *       // CDMA: eHRPD
+			NETWORK_TYPE_EVDO_0     *
+			NETWORK_TYPE_EVDO_A     *
+			NETWORK_TYPE_EVDO_B     *
+			NETWORK_TYPE_HSDPA
+			NETWORK_TYPE_HSPA
+			NETWORK_TYPE_HSPAP              // API >12
+			NETWORK_TYPE_HSUPA
+			NETWORK_TYPE_TD_SCDMA   *       // API >24
+			NETWORK_TYPE_UMTS
+			//4G
+			NETWORK_TYPE_IWLAN      *       // API >24
+			NETWORK_TYPE_LTE                // API >11
+    // ----------------------------------------------------------------------
+    // Where * has been added 2016-12-13.
+    // ----------------------------------------------------------------------
+
 	 * Determines the network generation based on the networkType retrieved via telephonyManager.getNetworkType()
 	 * @param networkType
 	 * @return
@@ -97,17 +138,31 @@ public class Utils {
 	public static int networkTypeToNetworkGeneration(int networkType) {
 		if (networkType == 0)
 			return 0;
-		else if (networkType == TelephonyManager.NETWORK_TYPE_UMTS || networkType == TelephonyManager.NETWORK_TYPE_HSDPA
-				|| networkType == TelephonyManager.NETWORK_TYPE_HSPA
-				|| networkType == TelephonyManager.NETWORK_TYPE_HSPAP
-				|| networkType == TelephonyManager.NETWORK_TYPE_HSUPA)
+        else if (  // networkType == TelephonyManager.NETWORK_TYPE_1xRTT // Moved to 3G !!
+                   networkType == TelephonyManager.NETWORK_TYPE_CDMA     // CDMA: Either IS95A or IS95B
+                || networkType == TelephonyManager.NETWORK_TYPE_EDGE
+                || networkType == TelephonyManager.NETWORK_TYPE_GPRS
+                || networkType == TelephonyManager.NETWORK_TYPE_GSM      // API >24
+                || networkType == TelephonyManager.NETWORK_TYPE_IDEN)
+            return 2;
+        else if (  networkType == TelephonyManager.NETWORK_TYPE_1xRTT    // This is labelled by Google as 2G, but is really a 3G technology
+                || networkType == TelephonyManager.NETWORK_TYPE_EHRPD    // CDMA: eHRPD
+				|| networkType == TelephonyManager.NETWORK_TYPE_EVDO_0
+                || networkType == TelephonyManager.NETWORK_TYPE_EVDO_A
+                || networkType == TelephonyManager.NETWORK_TYPE_EVDO_B
+                || networkType == TelephonyManager.NETWORK_TYPE_HSDPA
+                || networkType == TelephonyManager.NETWORK_TYPE_HSPA
+                || networkType == TelephonyManager.NETWORK_TYPE_HSPAP    // API >12
+				|| networkType == TelephonyManager.NETWORK_TYPE_HSUPA
+				|| networkType == TelephonyManager.NETWORK_TYPE_TD_SCDMA // API >24
+				|| networkType == TelephonyManager.NETWORK_TYPE_UMTS)
 			return 3;
-		else if (networkType == TelephonyManager.NETWORK_TYPE_GPRS || networkType == TelephonyManager.NETWORK_TYPE_EDGE
-				|| networkType == TelephonyManager.NETWORK_TYPE_CDMA)
-			return 2;
-		else if(networkType == TelephonyManager.NETWORK_TYPE_LTE){
+		else if (  networkType == TelephonyManager.NETWORK_TYPE_IWLAN    // API >24
+                || networkType == TelephonyManager.NETWORK_TYPE_LTE)     // API >11
+                // ToDo: ?? IWLAN may be considered prone to other type of MiTM attack and might
+                //          need to be treated differently...
 			return 4;
-		} else{
+		else {
 			return 0;
 		}
 	}
@@ -119,17 +174,17 @@ public class Utils {
 		int i;
 		try {
 			i = inputStream.read();
-			while (i != -1)
-			{
+			while (i != -1)	{
 				byteArrayOutputStream.write(i);
 				i = inputStream.read();
 			}
 			inputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ee) {
+            Log.e(TAG, mTAG + ": IOException in readFromAssets():\n"+ ee.toString());
 		}
 		return byteArrayOutputStream.toString();
 	}
+
 	public static String readFromFileInput(Context context, String fileName) throws IOException {
 
 		InputStream inputStream = context.openFileInput(fileName);
@@ -137,14 +192,13 @@ public class Utils {
 		int i;
 		try {
 			i = inputStream.read();
-			while (i != -1)
-			{
+			while (i != -1)	{
 				byteArrayOutputStream.write(i);
 				i = inputStream.read();
 			}
 			inputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ee) {
+            Log.e(TAG, mTAG + ": IOException in readFromFileInput():\n"+ ee.toString());
 		}
 		return byteArrayOutputStream.toString();
 	}
@@ -159,11 +213,11 @@ public class Utils {
 		}
 		return jsonData;
 	}
+
 	public static void showDeviceIncompatibleDialog(Activity activity, String incompatibilityReason, final Runnable callback){
 		String dialogMessage =
-				activity.getResources().getString(R.string.alert_deviceCompatibility_header) + " " +
-						incompatibilityReason + " " +
-						activity.getResources().getString(R.string.alert_deviceCompatibility_message);
+				activity.getResources().getString(R.string.alert_deviceCompatibility_header) + " " +	incompatibilityReason + " " +
+				activity.getResources().getString(R.string.alert_deviceCompatibility_message);
 
 		MsdDialog.makeFatalConditionDialog(activity, dialogMessage, new OnClickListener()
 		{
@@ -182,57 +236,49 @@ public class Utils {
 				).show();
 	}
 
-	private static String dumpRow (Cursor c)
-	{
+	private static String dumpRow (Cursor c) {
 		String result = "VALUES(";
-
-		for (int pos = 0; pos < c.getColumnCount(); pos++)
-		{
-			switch (c.getType(pos))
-			{
-			case Cursor.FIELD_TYPE_NULL:
-				result += "null";
-				break;
-			case Cursor.FIELD_TYPE_INTEGER:
-				result += Integer.toString(c.getInt(pos));
-				break;
-			case Cursor.FIELD_TYPE_FLOAT:
-				result += Float.toString(c.getFloat(pos));
-				break;
-			case Cursor.FIELD_TYPE_STRING:
-				result += DatabaseUtils.sqlEscapeString(c.getString(pos));
-				break;
-			case Cursor.FIELD_TYPE_BLOB:
-				result += "X'";
-				for(byte b:c.getBlob(pos)){
-					result += String.format("%02X",b);
-				}
-				result += "'";
-				break;
-			default:
-				return "Invalid field type " + c.getType(pos) + " at position " + pos;
+		for (int pos = 0; pos < c.getColumnCount(); pos++) {
+			switch (c.getType(pos))	{
+                case Cursor.FIELD_TYPE_NULL:
+                    result += "null";
+                    break;
+                case Cursor.FIELD_TYPE_INTEGER:
+                    result += Integer.toString(c.getInt(pos));
+                    break;
+                case Cursor.FIELD_TYPE_FLOAT:
+                    result += Float.toString(c.getFloat(pos));
+                    break;
+                case Cursor.FIELD_TYPE_STRING:
+                    result += DatabaseUtils.sqlEscapeString(c.getString(pos));
+                    break;
+                case Cursor.FIELD_TYPE_BLOB:
+                    result += "X'";
+                    for(byte b:c.getBlob(pos)) {
+                        result += String.format("%02X",b);
+                    }
+                    result += "'";
+                    break;
+                default:
+                    return "Invalid field type " + c.getType(pos) + " at position " + pos;
 			}
-
-			if (pos < c.getColumnCount() - 1)
-			{
+			if (pos < c.getColumnCount() - 1) {
 				result += ", ";
 			}
 		}
 		return result + ")";
 	}
 
-	private static void dumpRows (SQLiteDatabase db, String table, EncryptedFileWriter outputFile, String query) throws EncryptedFileWriterError
-	{
+	private static void dumpRows (SQLiteDatabase db, String table, EncryptedFileWriter outputFile,
+								  String query) throws EncryptedFileWriterError {
 		Cursor c = db.rawQuery (query, null);
-		while (c.moveToNext())
-		{
+		while (c.moveToNext()) {
 			outputFile.write("INSERT INTO '" + table + "' " + dumpRow(c) + ";\n");
 		}
 		c.close();
 	}
 	/**
 	 * Dump data related to an event to file
-	 * @param id ID of an event
 	 * @param outputFile Target file
 	 * @throws EncryptedFileWriterError
 	 */
@@ -243,10 +289,10 @@ public class Utils {
 		db.execSQL("DROP VIEW IF EXISTS si_dump");
 		db.execSQL(
 				"CREATE VIEW si_dump AS " +
-						"SELECT id FROM session_info WHERE " +
-						"(mcc > 0 AND lac > 0) AND " +				 
-						"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-1 hour') AND " +
-						"timestamp < datetime(" + Long.toString(endTime/1000) + ", 'unixepoch', '+1 hour')");
+				"SELECT id FROM session_info WHERE " +
+				"(mcc > 0 AND lac > 0) AND " +
+				"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-1 hour') AND " +
+				"timestamp < datetime(" + Long.toString(endTime/1000) + ", 'unixepoch', '+1 hour')");
 
 		// session_info, paging_info
 		dumpRows(db, "session_info", outputFile, "SELECT si.* FROM session_info as si, si_dump ON si_dump.id = si.id");
@@ -277,25 +323,24 @@ public class Utils {
 		// location_info (30 minutes before and after the event)
 		dumpRows(db, "location_info", outputFile,
 				"SELECT * FROM location_info WHERE " +
-						"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-30 minutes') AND " +
-						"timestamp < datetime(" + Long.toString(endTime/1000) + ", 'unixepoch', '+30 minutes')");
+				"timestamp > datetime(" + Long.toString(startTime/1000) + ", 'unixepoch', '-30 minutes') AND " +
+				"timestamp < datetime(" + Long.toString(endTime/1000) + ", 'unixepoch', '+30 minutes')");
 
 		// info table
 		String info =
 				"INSERT INTO 'info' VALUES (\n" +
-						"'" + MsdConfig.getAppId(context) + "', -- App ID\n" +
-						"'" + context.getResources().getString(R.string.app_version) + "', -- App version\n" +
-						"'" + Build.VERSION.RELEASE +   "', -- Android version\n" +
-						"'" + Build.MANUFACTURER +      "', -- Phone manufacturer\n" +
-						"'" + Build.BOARD +             "', -- Phone board\n" +
-						"'" + Build.BRAND +             "', -- Phone brand\n" +
-						"'" + Build.PRODUCT +           "', -- Phone product\n" +
-						"'" + Build.MODEL +             "', -- Phone model\n" +
-						"'" + Build.getRadioVersion() + "', -- Baseband\n" +
-						"'" + MsdLog.getTime() +        "', -- Time of export\n" +
-						(imsiCatcher == null ? "0" : Long.toString(imsiCatcher.getId())) + "   -- Offending ID\n" +
-						");";
-
+                "'" + MsdConfig.getAppId(context) + "', -- App ID\n" +
+                "'" + BuildConfig.VERSION_NAME + 	"', -- App version\n" +
+                "'" + Build.VERSION.RELEASE +    	"', -- Android version\n" +
+                "'" + Build.MANUFACTURER +       	"', -- Phone manufacturer\n" +
+                "'" + Build.BOARD +              	"', -- Phone board\n" +
+                "'" + Build.BRAND +              	"', -- Phone brand\n" +
+                "'" + Build.PRODUCT +            	"', -- Phone product\n" +
+                "'" + Build.MODEL +              	"', -- Phone model\n" +
+                "'" + Build.getRadioVersion() +  	"', -- Baseband\n" +
+                "'" + MsdLog.getTime() +         	"', -- Time of export\n" +
+                (imsiCatcher == null ? "0" : Long.toString(imsiCatcher.getId())) + "   -- Offending ID\n" +
+                ");";
 		outputFile.write(info);
 	}
 	/**
@@ -308,7 +353,10 @@ public class Utils {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static DumpFile uploadMetadata(Context context, SQLiteDatabase db, ImsiCatcher imsiCatcher, long startTime, long endTime, String prefix)  throws EncryptedFileWriterError, SQLException, IOException {
+	public static DumpFile uploadMetadata(Context context, SQLiteDatabase db, ImsiCatcher imsiCatcher,
+                long startTime, long endTime, String prefix)
+                throws EncryptedFileWriterError, SQLException, IOException {
+
 		final boolean encryptedDump = true;
 		final boolean plainDump = MsdConfig.dumpUnencryptedEvents(context);
 
@@ -359,7 +407,9 @@ public class Utils {
 			try {
 				if(r != null)
 					r.close();
-			} catch (IOException e) {}
+			} catch (IOException ee) {
+                Log.e(TAG, mTAG + ": IOException in getDiagDeviceNodeMajor():\n"+ ee.toString());
+            }
 		}
 	}
 	/**
@@ -373,7 +423,7 @@ public class Utils {
 			return null;
 		Integer diagDeviceMajor = Utils.getDiagDeviceNodeMajor();
 		if(diagDeviceMajor == null){
-			return "Diag device does not exist and /proc/devices does not contain entry for 'dia'";
+			return "Diag device does not exist and /proc/devices does not contain any entry for 'dia'";
 		}
 		// Try both standard mknod and busybox mknod
 		String mknodCmd = "mknod /dev/diag c " + diagDeviceMajor + " 0 || busybox mknod /dev/diag c " + diagDeviceMajor + " 0";
@@ -383,12 +433,13 @@ public class Utils {
 		try {
 			mknod = Runtime.getRuntime().exec(cmd);
 		} catch (IOException e1) {
+            Log.e(TAG, mTAG + ": IOException in createDiagDevice():\n"+ e1.toString());
 			return e1.getMessage();
 		}
 		try {
 			mknod.waitFor();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		} catch (InterruptedException ee) {
+            Log.e(TAG, mTAG + ": InterruptedException in createDiagDevice():\n"+ ee.toString());
 		}
 		if(!diagDevice.exists()){
 			return "Failed to create diag device: " + mknodCmd;
