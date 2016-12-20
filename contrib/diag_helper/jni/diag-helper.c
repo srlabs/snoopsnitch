@@ -45,6 +45,12 @@ loghex(const char *desc, char *buf, size_t len)
         free(hexbuf);
 }
 
+struct diag_logging_mode_param_t {
+	uint32_t req_mode;
+	uint32_t peripheral_mask;
+	uint8_t mode_param;
+} __packed;
+
 static int
 open_diag_dev(void)
 {
@@ -63,13 +69,17 @@ open_diag_dev(void)
         const unsigned long DIAG_IOCTL_SWITCH_LOGGING = 7;
         const int MEMORY_DEVICE_MODE = 2;
 
+        struct diag_logging_mode_param_t stMode = {
+			MEMORY_DEVICE_MODE, 0, 1
+		};
+
         //  In commit ae92f0b2 of the MSM kernel this ioctl was changed to
         //  have its parameter passed as a pointer. I don't know how to detect
         //  that reliably, so I brute-force the right method.
         rv = ioctl(diag_fd, DIAG_IOCTL_SWITCH_LOGGING, MEMORY_DEVICE_MODE);
         if (rv < 0) {
             olderrno = errno;
-            rv = ioctl(diag_fd, DIAG_IOCTL_SWITCH_LOGGING, (void *)&MEMORY_DEVICE_MODE);
+            rv = ioctl(diag_fd, DIAG_IOCTL_SWITCH_LOGGING, (void *)&stMode);
         }
 
         if (rv < 0) {
