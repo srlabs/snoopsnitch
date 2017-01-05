@@ -1,0 +1,79 @@
+diff --git a/l3_handler.c b/l3_handler.c
+index 28eabd4..1895e34 100644
+--- a/l3_handler.c
++++ b/l3_handler.c
+@@ -804,6 +804,10 @@ void handle_gmm(struct session_info *s, struct gsm48_hdr *dtap, unsigned len)
+ 		break;
+ 	case 0x04:
+ 		SET_MSG_INFO(s, "ATTACH REJECT");
++		// Added by Emi
++		s->att_rej = 1;
++		s->att_rej_cause = dtap->data[0];
++		// end
+ 		break;
+ 	case 0x05:
+ 		SET_MSG_INFO(s, "DETACH REQUEST");
+@@ -830,7 +834,12 @@ void handle_gmm(struct session_info *s, struct gsm48_hdr *dtap, unsigned len)
+ 		s->raupd = 1;
+ 		break;
+ 	case 0x0b:
+-		SET_MSG_INFO(s, "RA UPDATE REJECT");
++		//SET_MSG_INFO(s, "RA UPDATE REJECT");
++		// Added by Emi
++		SET_MSG_INFO(s, "RA UPDATE REJECT cause=%d", dtap->data[0]);
++		s->rau_rej = 1;
++		s->rau_rej_cause = dtap->data[0];
++		//s->mo = 1;
+ 		break;
+ 	case 0x0c:
+ 		session_reset(s, 1);
+@@ -882,6 +891,16 @@ void handle_gmm(struct session_info *s, struct gsm48_hdr *dtap, unsigned len)
+ 	case 0x16:
+ 		handle_id_resp(s, dtap->data, len - 2);
+ 		break;
++	// Added by EMi
++	case 0x1c:
++		SET_MSG_INFO(s, "AUTH AND CIPHER FAILURE");
++		if (!s->auth) {
++			s->auth = 1;
++			s->auth_fail = 1;
++		}
++		s->auth_fail_cause = dtap->data[0];
++		break;
++	// end
+ 	case 0x20:
+ 		SET_MSG_INFO(s, "GMM STATUS");
+ 		break;
+diff --git a/session.h b/session.h
+index ab9752c..df3323e 100644
+--- a/session.h
++++ b/session.h
+@@ -96,8 +96,17 @@ struct session_info {
+ 	uint8_t ssa;
+ 	uint8_t abort;
+ 	uint8_t raupd;
++	// Added by Emi
++	uint8_t rau_acc;
++	uint8_t rau_rej;
++	uint8_t rau_rej_cause;
++	// end
+ 	uint8_t attach;
+ 	uint8_t att_acc;
++	// Added by Emi
++	uint8_t att_rej;
++	uint8_t att_rej_cause;
++	// end
+ 	uint8_t pdp_activate;
+ 	char pdp_ip[16];
+ 	uint8_t tmsi_realloc;
+@@ -106,6 +115,10 @@ struct session_info {
+ 	uint8_t have_gprs;
+ 	uint8_t have_ims;
+ 	uint8_t auth;
++	// Added by Emi
++	uint8_t auth_fail;
++	uint8_t auth_fail_cause;
++	// end
+ 	uint8_t iden_imsi_bc;
+ 	uint8_t iden_imei_bc;
+ 	uint8_t iden_imsi_ac;
