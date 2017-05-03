@@ -91,7 +91,7 @@ case ${target} in
 	android)
 		export SYSROOT="${NDK_DIR}/platforms/android-19/arch-arm"
 		export MSD_CONFIGURE_OPTS="--host arm-linux-androideabi --prefix=${MSD_DESTDIR}"
-		export PATH=${PATH}:${NDK_DIR}/toolchains/arm-linux-androideabi-4.8/prebuilt/${HOST}/bin/
+		export PATH=${PATH}:${NDK_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/${HOST}/bin/
 		export CROSS_COMPILE=arm-linux-androideabi
 		export RANLIB=arm-linux-androideabi-ranlib
 		export CFLAGS="--sysroot=${SYSROOT} -nostdlib"
@@ -118,10 +118,10 @@ then
 	TARGETS="libosmocore libasn1c libosmo-asn1-rrc"
 fi
 
-# Build OpenSSL only for Android
+# Build OpenSSL and diag helper only for Android
 if [ "x${target}" = "xandroid" -a "x${fast}" = "x" ];
 then
-	TARGETS="${TARGETS} openssl"
+	TARGETS="${TARGETS} openssl diag_helper"
 fi
 
 TARGETS="${TARGETS} gsm-parser"
@@ -187,6 +187,7 @@ ln -sf ${BUILD_DIR} ../${LATEST}
 if [ "x${update}" = "x1" ];
 then
 	cp ${PARSER_DIR}/* ${BASE_DIR}/prebuilt/
+	cp ${BASE_DIR}/diag_helper/libs/armeabi/libdiag-helper.so ${BASE_DIR}/prebuilt/
 fi
 
 echo DONE

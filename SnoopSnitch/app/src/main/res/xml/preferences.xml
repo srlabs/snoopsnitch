@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <CheckBoxPreference android:key="settings_start_on_boot" android:title="@string/settings_start_on_boot_title" android:summary="@string/settings_start_on_boot_summary" android:defaultValue="true"/><PreferenceCategory
+        android:key="cat_privacy"
+        android:title="@string/settings_cat_privacy" >
+        <Preference
+            android:key="settings_appId"
+            android:summary="@string/settings_applicationid_summary"
+            android:title="@string/settings_applicationid_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="settings_active_test_disable_upload"
+            android:summary="@string/settings_active_test_disable_upload_summary"
+            android:title="@string/settings_active_test_disable_upload_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="cat_cleanup"
+        android:title="@string/settings_cat_cleanup" >
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/settings_basebandlogkeepduration_dialogtitle"
+            android:entries="@array/settings_durations_entries"
+            android:entryValues="@array/settings_durations_values"
+            android:key="settings_basebandLogKeepDuration"
+            android:summary="@string/settings_basebandlogkeepduration_summary"
+            android:title="@string/settings_basebandlogkeepduration_title" />
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/settings_locationlogkeepduration_dialogtitle"
+            android:entries="@array/settings_durations_entries"
+            android:entryValues="@array/settings_durations_values"
+            android:key="settings_locationLogKeepDuration"
+            android:summary="@string/settings_locationlogkeepduration_summary"
+            android:title="@string/settings_locationlogkeepduration_title" />
+        <ListPreference
+            android:defaultValue="30"
+            android:dialogTitle="@string/settings_analysiskeepduration_dialogtitle"
+            android:entries="@array/settings_durations_entries"
+            android:entryValues="@array/settings_durations_values"
+            android:key="settings_analysisInfoKeepDuration"
+            android:summary="@string/settings_analysiskeepduration_summary"
+            android:title="@string/settings_analysiskeepduration_title" />
+        <ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/settings_debuglogkeepduration_dialogtitle"
+            android:entries="@array/settings_durations_entries"
+            android:entryValues="@array/settings_durations_values"
+            android:key="settings_debugLogKeepDuration"
+            android:summary="@string/settings_debuglogkeepduration_summary"
+            android:title="@string/settings_debuglogkeepduration_title" /><ListPreference
+            android:defaultValue="1"
+            android:dialogTitle="@string/settings_metadatakeepduration_dialogtitle"
+            android:entries="@array/settings_durations_entries"
+            android:entryValues="@array/settings_durations_values"
+            android:key="settings_metadataKeepDuration"
+            android:summary="@string/settings_metadatakeepduration_summary"
+            android:title="@string/settings_metadatakeepduration_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="cat_location"
+        android:title="@string/settings_cat_location" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="settings_gpsRecording"
+            android:summary="@string/settings_gpsrecording_summary"
+            android:title="@string/settings_gpsrecording_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="settings_networkLocationRecording"
+            android:summary="@string/settings_networklocationrecording_summary"
+            android:title="@string/settings_networklocationrecording_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="cat_active_test"
+        android:title="@string/settings_cat_active_test" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="settings_active_test_force_offline"
+            android:summary="@string/settings_active_test_force_offline_summary"
+            android:title="@string/settings_active_test_force_offline_title" />
+
+        <ListPreference
+            android:defaultValue="3"
+            android:dialogTitle="@string/settings_active_test_num_iterations_dialogtitle"
+            android:entries="@array/settings_active_test_num_iterations_entries"
+            android:entryValues="@array/settings_active_test_num_iterations_values"
+            android:key="settings_active_test_num_iterations"
+            android:summary="%s"
+            android:title="@string/settings_active_test_num_iterations_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:key="settings_active_test_sms_mo_disabled"
+            android:summary="@string/settings_active_test_sms_mo_disabled_summary"
+            android:title="@string/settings_active_test_sms_mo_disabled_title" />
+
+        <EditTextPreference
+            android:defaultValue="*4*"
+            android:dependency="settings_active_test_sms_mo_disabled"
+            android:key="settings_active_test_sms_mo_number"
+            android:summary="@string/settings_active_test_sms_mo_number_summary"
+            android:title="@string/settings_active_test_sms_mo_number_title" />
+    </PreferenceCategory>
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="settings_auto_upload_mode"
+        android:summary="@string/settings_auto_upload_mode_summary"
+        android:title="@string/settings_auto_upload_mode" />
+
+    <PreferenceScreen android:title="@string/settings_cat_debugging" >
+        <PreferenceCategory
+            android:key="cat_debugging"
+            android:selectable="false"
+            android:title="@string/settings_cat_debugging" >
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="settings_enable_devel_options"
+                android:summary="@string/settings_cat_debugging_summary"
+                android:title="@string/settings_enable_devel_options" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_recordUnencryptedLogfiles"
+                android:summary="@string/settings_unencryptedlogfilesrecording_summary"
+                android:title="@string/settings_unencryptedlogfilesrecording_title" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_recordUnencryptedDumpfiles"
+                android:summary="@string/settings_unencrypteddumpfilesrecording_summary"
+                android:title="@string/settings_unencrypteddumpfilesrecording_title" /><CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_dumpUnencryptedEvents"
+                android:summary="@string/settings_dumpunencryptedevents_summary"
+                android:title="@string/settings_dumpunencryptedevents_title" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_crash"
+                android:summary="@string/settings_debugging_crash_summary"
+                android:title="@string/settings_debugging_crash" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_debugging_dump_analysis_stacktraces"
+                android:summary="@string/settings_debugging_dump_analysis_stacktraces_summary"
+                android:title="@string/settings_debugging_dump_analysis_stacktraces" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_parser_logging"
+                android:summary="@string/settings_debugging_parser_logging_summary"
+                android:title="@string/settings_debugging_parser_logging" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_upload_daily_ping"
+                android:summary="@string/settings_upload_daily_ping_summary"
+                android:title="@string/settings_upload_daily_ping" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:dependency="settings_enable_devel_options"
+                android:key="settings_enable_pcap_recording"
+                android:summary="@string/settings_enable_pcap_recording_summary"
+                android:title="@string/settings_enable_pcap_recording" />
+            <EditTextPreference
+	            android:defaultValue="/sdcard/snoopsnitch"
+	            android:dependency="settings_enable_pcap_recording"
+	            android:key="settings_pcap_filename_prefix"
+	            android:summary="@string/settings_pcap_filename_prefix_summary"
+	            android:title="@string/settings_pcap_filename_prefix" />
+        </PreferenceCategory>
+    </PreferenceScreen>
+
+</PreferenceScreen>

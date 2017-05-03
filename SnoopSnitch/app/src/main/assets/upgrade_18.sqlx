@@ -1,0 +1,30 @@
+-- Upgrade script to DB version 18
+-- Additionally, a the new mcc/mnc tables need to be loaded
+
+--  Paging info is not really used for analysis right now,
+--  so it's safe to just drop the content without disturbing
+--  the analysis
+DROP TABLE IF EXISTS paging_info;
+CREATE TABLE paging_info (
+  sid integer NOT NULL,			-- Linked session ID
+  pag1_count float NOT NULL,		-- Paging1 count
+  pag2_count float NOT NULL,		-- Paging2 count
+  pag3_count float NOT NULL,		-- Paging3 count
+  imsi_count float NOT NULL,		-- Paged IMSI count
+  tmsi_count float NOT NULL,		-- Paged TMSI count
+  PRIMARY KEY(sid)
+);
+
+--  New table used in security metrics
+DROP TABLE IF EXISTS rand_check;
+CREATE TABLE rand_check (
+  sid integer NOT NULL,			-- Linked session ID
+  si5 float DEFAULT NULL,		-- Content randomization ratio for SI5
+  si5bis float DEFAULT NULL,		-- Content randomization ratio for SI5bis
+  si5ter float DEFAULT NULL,		-- Content randomization ratio for SI5ter
+  si6 float DEFAULT NULL,		-- Content randomization ratio for SI6
+  nullframe float DEFAULT NULL,		-- Padding randomization for NULL frames
+  sdcch_padding float DEFAULT NULL,	-- Padding randomization for non-NULL SDCCH messages
+  sacch_padding float DEFAULT NULL,	-- Padding randomization for non-NULL SDCCH messages
+  PRIMARY KEY(sid)
+);

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- General -->
+	<string name="app_name">SnoopSnitch</string>
+    <string name="common_events">Ereignisse</string>
+    <string name="common_silent_sms">Stille SMS</string>
+    <string name="common_binary_sms">Binäre SMS</string>
+    <string name="common_imsi_catcher">IMSI Catcher</string>
+    <string name="common_3g_title">3G</string>
+    <string name="common_2g_title">2G</string>
+    
+    <!-- Action Bar Titles -->
+    <string name="actionBar_title">SnoopSnitch</string>
+    <string name="actionBar_subTitle">App ID:</string>
+   	
+   	<!-- Action Bar Buttons -->
+    <string name="action_map">Karte</string>
+    <string name="action_info">Info</string>
+    <string name="action_upload_pending_files">Ausstehende Dateien hochladen</string>
+    <string name="action_active_test_advanced">Aktiver Test (Details)</string>
+    <string name="action_upload_suspicious_dumps">Verdächtige Aktivitäten hochladen</string>
+    <string name="action_upload_debug_logs">Feedback/Fragen</string>
+    <string name="action_network_info">Netzwerkinfo</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_about">Über</string>
+    
+    <!-- Common Buttons -->
+    <string name="common_button_upload">Hochladen</string>
+    <string name="common_button_nodata">Keine Daten</string>
+    <string name="common_button_networktest_start">Test starten</string> 
+    <string name="common_button_networktest_stop">Test abbrechen</string> 
+    
+    <!-- Messages -->
+    <string name="message_smsDetected">Neues Ereignis erkannt&#8230;</string>
+    <string name="message_imsiCatcherDetected">Neuer IMSI Catcher erkannt&#8230;</string>
+    <string name="message_recordingStarted">Aufnahme gestartet&#8230;</string>
+    <string name="message_recordingStopped">Aufnahme angehalten&#8230;</string>
+    
+    <!-- Alerts -->
+    <string name="alert_button_quit">Schließen</string>
+    <string name="alert_confirmation_title">Bestätigung</string>
+    <string name="alert_fatal_condition_title">Fehler</string>
+    <string name="alert_notification_title">Meldung</string>
+
+	<!-- Device compatibility check failure -->
+    <string name="alert_deviceCompatibility_title">Kompatibilitätsprüfung nicht erfolgreich.</string>
+
+<string name="alert_deviceCompatibility_header">Ihr Gerät ist inkompatibel.\n\nGRUND:</string>
+
+<string name="alert_deviceCompatibility_message">\n\nDetails finden Sie auf der Projektwebsite (https://opensource.srlabs.de/projects/snoopsnitch).</string>
+
+<string name="alert_upload_message">
+Danke, dass Sie die zu diesem Ereignis gehörenden Radiodaten hochladen und
+damit die Forschung und Weiterentwicklung von SnoopSnitch unterstützen.\n
+\n
+Bitte senden Sie eine E-Mail mit Details zu diesem Ereignis an
+snoopsnitch@srlabs.de (PGP fingerprint 9728 A7F9 D457 1FBB 746F  5381 D52C AC10
+634A 9561). Bitte vergessen Sie Ihre App ID und den Zeitpunkt des
+Ereignisses nicht. Vielen Dank!\n
+\n
+Dieser Upload ist verschlüsselt. Bitte beachten Sie, dass die hochgeladenen Dateien
+privaten Daten und Positionsinformationen enthalten können.\n
+</string>
+
+<string name="alert_networktest_message">
+Der aktive Netzwerktest sammelt Informationen zur Sicherheit des aktuellen
+Mobilfunknetzes indem eine Reihe von SMS versandt und empfangen und
+automatische Anrufe getätigt und entgegen genommen werden.\n
+\n
+LEHNEN SIE DIE ANRUFE DES SERVERS WEDER AB NOCH NEHMEN SIE SIE AN. FALLS
+ANRUFE ANGENOMMEN ODER ABGELEHNT WERDEN, WIRD IHRE NUMMER VON DIESEM DIENST
+AUSGESCHLOSSEN.\n
+\n
+Fehlermeldungen Ihres Netzbetreibers per SMS sind während des Tests normal.
+Dennoch sollte Sie der aktive Netzwerktest nichts kosten. EINIGE
+NETZBETREIBER KÖNNTEN JEDOCH GEBÜHREN ERHEBEN, OBWOHL AUSGEHENDE SMS AN
+EINE UNGÜLTIGE NUMMER GESENDET WERDEN.\n
+\n
+IM NÄCHSTEN DIALOG DÜRFEN SIE AUSSCHLIEßLICH IHRE EIGENE TELEFONNUMMER
+EINGEBEN!\n
+</string>
+
+<string name="alert_networktest_privacy_disclaimer">
+Im Anschluss an diesen Test werden die aufgezeichneten Radiodaten
+automatisch auf unsere Server hochgeladen. Falls Sie damit nicht einverstanden
+sind, brechen Sie den Test jetzt ab und deaktivieren Sie in den Einstellungen
+die Aufzeichnung von Radiodaten für den aktiven Test. Beachten Sie, dass die
+aufgezeichneten Daten persönliche Informationen und Positionsdaten enthalten
+können.\n
+</string>
+
+<string name="alert_first_app_start_message">
+Willkommen! Sie führen SnoopSnitch zum ersten Mal aus.\n
+\n
+BITTE LESEN SIE DIESEN TEXT GRÜNDLICH BEVOR SIE BESTÄTIGEN!\n
+\n
+SnoopSnitch sammelt und analysiert Radiodaten um die Sicherheit Ihres
+Mobilfunknetzes zu bewerten und Sie auf Gefahren wie IMSI Catcher, Ortung Ihres
+Telefons oder Fernupdates hinzuweisen.\n
+\n
+Diese Anwendung verwendet Daten die durch andere Nutzer gesammelt wurden.
+Indem auch Sie Ihre Messergebnisse oder Ereignisse hochladen, helfen Sie die
+Qualität dieser Datenbasis zu verbessern und ermöglichen weiterführende
+Forschung.\n
+\n
+SnoopSnitch wird für sämtliche Uploads auf unsere Server Ihr Einverständnis
+einholen. Alle Uploads sind verschlüsselt. Beachten Sie, dass die
+aufgezeichneten Daten auch persönliche Informationen und Positionsdaten
+enthalten können.\n
+\n
+Radiodaten werden verschlüsselt auf dem Gerät abgelegt. Für die kontinuierliche
+Sicherheitsanalyse im Hintergrund muss SnoopSnitch jedoch eine Datenbank
+anlegen die dazu geeignet ist Ihre Bewegungen und möglicherweise
+Nachrichteninhalte zu rekonstruieren. Diese Informationen werden regelmäßig
+bereinigt - stellen Sie sicher, dass Sie einen für sich geeigneten Intervall
+konfiguriert haben.\n
+\n
+Falls Sie Bedenken bezüglich der Wirkungsweise von SnoopSnitch haben, brechen
+Sie jetzt ab!
+</string>
+
+<string name="about_text">
+SnoopSnitch sammelt und analysiert Radiodaten um die Sicherheit Ihres
+Mobilfunknetzes zu bewerten und Sie auf Gefahren wie IMSI Catcher, Ortung Ihres
+Telefons oder Fernupdate hinzuweisen.\n
+\n
+Diese Anwendung verwendet Daten die durch andere Nutzer gesammelt wurden.
+Indem auch Sie Ihre Messergebnisse oder Ereignisse hochladen, helfen Sie die
+Qualität dieser Datenbasis zu verbessern und ermöglichen weitere Forschung.\n
+\n
+SnoopSnitch wird für sämtliche Uploads auf unsere Server Ihr Einverständnis
+einholen. Alle Uploads sind verschlüsselt. Beachten Sie, dass die
+aufgezeichneten Daten als Nebeneffekt persönliche Informationen und
+Positionsdaten enthalten können.\n
+\n
+Falls Sie Fragen zu SnoopSnitch haben oder bei der Entwicklung mithelfen
+möchten, schreiben Sie bitte an unsere Mailingliste:
+https://lists.srlabs.de/cgi-bin/mailman/listinfo/gsmmap. Für vertrauliche
+Nachrichten an das SnoopSnitch Team verwenden Sie bitte snoopsnitch@srlabs.de
+(PGP Fingerprint 9728 A7F9 D457 1FBB 746F  5381 D52C AC10 634A 9561).\n
+\n
+Für weitere Informationen und Quellcode der Anwendung besuchen Sie bitte
+unsere Website:\n
+\n
+https://opensource.srlabs.de/projects/snoopsnitch\n
+</string>
+
+    
+    <!-- Dashboard Screen -->
+    <string name="dashboard_lastanalysis">Letzte Analyse: </string>
+    <string name="dashboard_lastanalysis_time"></string>
+    <string name="dashboard_sms_description">SMS &amp; SS7 Angriffe</string>
+    <string name="dashboard_imsi_description">IMSI Catcher</string>
+    <string name="dashboard_timeline_month">m</string>
+    <string name="dashboard_timeline_week">w</string>
+    <string name="dashboard_timeline_lasthour">Letzte Stunde</string>
+    <string name="dashboard_timeline_today">24 Stunden</string>
+    <string name="dashboard_network_security_title">Netzwerk Sicherheit</string>
+    <string name="dashboard_network_security_provider_scrollview_header">Provider im Vergleich:</string>
+    <string name="dashboard_network_security_interception_title">Intercept</string>
+    <string name="dashboard_network_security_impersonation_title">Impersonation</string>
+    <string name="dashboard_network_security_protectionLevel_high">hoher\nSchutz</string>
+    <string name="dashboard_network_security_protectionLevel_low">niedriger\nSchutz</string>
+    
+    <!-- Detail Screen -->
+    <string name="detailChart_title_month">Letzte Wochen</string>
+    <string name="detailChart_title_week">Letzte 7 Tage</string>
+    <string name="detailChart_title_day">Letzte 24 Stunden</string>
+    <string name="detailChart_title_hour">Letzte Stunde</string>
+    
+    <!-- Preferences Screen -->
+  	<string name="settings_actionBar_title">Einstellungen</string>
+    
+    <string name="settings_start_on_boot_title">Beim Booten ausführen</string>
+    <string name="settings_start_on_boot_summary">SnoopSnitch Hintergrunddienst automatisch ausführen wenn das Geräte gebootet wird</string>
+ 
+    <string name="settings_basebandlogkeepduration_title">Säuberung von Basebandlogs</string>
+    <string name="settings_basebandlogkeepduration_summary">Zeitraum nach dem Radiodaten gelöscht werden</string>
+    <string name="settings_basebandlogkeepduration_dialogtitle">Intervall wählen:</string>
+    
+    <string name="settings_locationlogkeepduration_title">Säuberung von Ortsdaten</string>
+    <string name="settings_locationlogkeepduration_summary">Zeitraum nach dem Ortsdaten gelöscht werden</string>
+    <string name="settings_locationlogkeepduration_dialogtitle">Intervall wählen:</string>
+    
+    <string name="settings_analysiskeepduration_title">Säuberung von Analysedaten</string>
+    <string name="settings_analysiskeepduration_summary">Zeitraum nach dem Daten der Hintergrundanalyse gelöscht werden</string>
+    <string name="settings_analysiskeepduration_dialogtitle">Intervall wählen:</string>
+    
+    <string name="settings_debuglogkeepduration_title">Säuberung von Debuglogs</string>
+    <string name="settings_debuglogkeepduration_summary">Zeitraum nach dem Logdateien gelöscht werden</string>
+    <string name="settings_debuglogkeepduration_dialogtitle">Intervall wählen:</string>
+      
+    <string name="settings_metadatakeepduration_title">Säuberung von Metadaten</string>
+    <string name="settings_metadatakeepduration_summary">Zeitraum nach dem Catcher/SMS Metadaten gelöscht werden</string>
+    <string name="settings_metadatakeepduration_dialogtitle">Intervall wählen:</string>
+      
+    <string name="settings_gpsrecording_title">GPS-basierte Position aufzeichnen</string>
+    <string name="settings_gpsrecording_summary">Genaue GPS-basierte Position aufzeichnen um Ortsangaben für IMSI Catcher und Sicherheitsereignisse zu erhalten</string>
+    
+    <string name="settings_networklocationrecording_title">Netzwerkbasierte Position aufzeichnen</string>
+    <string name="settings_networklocationrecording_summary">Ungenaue netzwerkbasierte Position aufzeichnen um Ortsangaben für IMSI Catcher und Sicherheitsereignisse zu erhalten</string>
+    
+    <string name="settings_applicationid_title">App ID</string>
+    <string name="settings_applicationid_summary">Die App ID wird verwendet um hochgeladene Dateien zu referenzieren. Mit diesem Menüpunkt kann jederzeit eine neue App ID erzeugt werden.</string>
+    
+    <string name="settings_active_test_force_offline_title">Offlinetest erzwingen</string>
+    <string name="settings_active_test_force_offline_summary">Verwende ausschließlich den Offlinemodus im aktiven Test. Dafür ist keine Datenverbindung notwendig.</string>
+    
+    <string name="settings_active_test_sms_mo_disabled_title">Keine ausgehenden SMS</string>
+    <string name="settings_active_test_sms_mo_disabled_summary">Einige Provider erheben Gebühren für SMS die an ungültige Nummern versandt werden.</string>
+
+    <string name="settings_active_test_sms_mo_number_title">Outgoing SMS number</string>
+    <string name="settings_active_test_sms_mo_number_summary">Bitte geben Sie eine Nummer ein, an die Sie kostenlos SMS versenden können. Die Voreinstellung \"*4*\" ist eine ungültige Nummer. Die meisten Provider erheben keine Gebühren für SMS die an diese Nummer versandt werden.</string>
+    
+    <string name="settings_active_test_num_iterations_title">Durchläufe beim aktiven Test</string>
+    <string name="settings_active_test_num_iterations_dialogtitle">Anzahl der Testrunden beim aktiven Test</string>
+    
+    <string name="settings_active_test_disable_upload_title">Testergebnisse nicht hochladen</string>
+    <string name="settings_active_test_disable_upload_summary">Ergebnisse werden ausschließlich auf dem Telefon ausgewertet. Dabei werden keine Radiodaten auf unsere Server hochgeladen.</string>
+
+    <!-- Settings categories -->
+    <string name="settings_cat_location">Position</string>
+    <string name="settings_cat_cleanup">Logdateien</string>
+    <string name="settings_cat_log_encryption">Verschlüsselung</string>
+    <string name="settings_cat_privacy">Datenschutz</string>
+    <string name="settings_cat_active_test">Aktiver Test</string>
+    
+     <!-- List view row -->
+     <string name="listview_sms_item_type">Typ:</string>
+     <string name="listview_sms_item_Time">Zeit:</string>
+     <string name="listview_sms_item_position">Ort:</string>
+     <string name="listview_sms_item_cellid">Zell-ID:</string>
+     <string name="listview_sms_item_smsc">SMSC:</string>
+     <string name="listview_sms_item_source">Quelle:</string>
+     <string name="listview_imsi_item_score">Score:</string>
+     <string name="listview_imsi_item_time">Zeit:</string>   
+     <string name="listview_imsi_item_position">Ort:</string>
+     <string name="listview_imsi_item_cellid">Zell-ID:</string>
+     <string name="listview_provider_item_ownprovider_text">Ihr Netzwerk</string>
+     <string name="listview_provider_item_testresult">Ihr Testergebnis</string>
+     
+     <!-- Alert Dialog (to Refresh App ID) -->
+     <string name="alert_dialog_refreshappid_button_refresh">Erneuern</string>
+     <string name="alert_dialog_refreshappid_title">App ID erneuern</string>
+     <string name="alert_dialog_refreshappid_message">Ihre App ID wird jetzt neu erzeugt. Sind Sie sicher?</string>
+     
+     <!-- Error notification -->
+     <string name="error_notification_title">hatte ein Problem</string>
+     <string name="error_notification_ticker">hatte einen internen Fehler</string>
+     <string name="error_notification_text">Bitte senden Sie einen Fehlerbericht!</string>
+     <string name="common_null_paging">Null Paging</string>
+     <string name="error_root_privileges_denied">Rootzugriff verweigert!</string>
+
+     <!-- Operator or country is unknown -->
+     <string name="operator_not_found">
+		Das aktuelle Netzwerk oder Land ist nicht in userer Datenbank.
+		Sie können trotzdem den aktiven Test ausführen und Daten hochladen.\n\n
+		Bitte schicken Sie eine E-Mail an snoopsnitch@srlabs.de mit dem Namen
+		Ihres aktuellen Landes, Ihres aktuellen Mobilfunknetzes und der MCC/MNC.
+     </string>
+
+     <!-- Active test -->
+     <string name="test_and_upload">Testen und Hochladen</string>
+     <string name="at_invalid">UNGÜLTIG</string>
+     <string name="at_running">Test läuft</string>
+     <string name="at_dialing">Wählt</string>
+     <string name="at_wait_incoming_sms">Warten auf eingehende SMS</string>
+     <string name="at_wait_incoming_call">Warten auf eingehenden Anruf</string>
+     <string name="at_send_sms">Sende SMS an ungültige Nummer</string>
+     <string name="at_outgoing_call_ringing">Ausgehender Anruf klingelt</string>
+     <string name="at_incoming_call_ringing">Eingehender Anruf klingelt</string>
+     <string name="at_banned">GESPERRT. Gehen Sie auf banned.srlabs.de</string>
+     <string name="at_invalid_number">Ungültige Nummer</string>
+     <string name="at_update">Bitte aktualisieren Sie SnoopSnitch</string>
+     <string name="at_done">Fertig - Bitte Testen Sie 2G und 3G</string>
+     <string name="at_idle"></string>
+     <string name="at_progress">Test läuft</string>
+     <string name="at_fatal">Test abgebrochen</string>
+     <string name="at_lte_not_supported">Bitte deaktivieren Sie LTE.</string>
+
+     <!-- Compat check -->
+     <string name="compat_no_diag">Kein Qualcomm Chipsatz oder ungeeignetes ROM (Gerät /dev/diag existiert nicht)</string>
+     <string name="compat_broken_diag">DIAG Schnittstelle konnte nicht initialisiert werden</string>
+
+     <string name="compat_su_not_working">Ihr Gerät ist nicht richtig gerootet (su Binary funktioniert nicht).</string>
+     <string name="compat_su_not_present">Ihr Gerät ist nicht gerootet (kein su Binary gefunden).</string>
+     <string name="compat_root_denied">Rootzugang durch su verweigert. Bitte Berechtigungen prüfen.</string>
+     <string name="compat_no_root">Rootzugang fehlgeschlagen.</string>
+
+     <string name="compat_no_baseband_messages_in_active_test">Fehler, keine Basebandnachrichten während aktivem Test.</string>
+     <string name="compat_no_baseband_messages">Fehler, keine Basebandnachrichten.</string>
+
+     <!-- Settings-->
+     <string name="no_service_running">Dienst läuft</string>
+     <string name="no_catcher_title">IMSI Catcher Ereignisse</string>
+     <string name="no_catcher_ticker">IMSI Catcher Ereignisse erkannt</string>
+     <string name="no_catcher_events_detected"> IMSI Catcher Ereignisse erkannt</string>
+
+     <string name="no_events_title">Ereignisse</string>
+     <string name="no_events_ticker">Ereignisse erkannt</string>
+     <string name="no_events_detected"> Ereignisse erkannt</string>
+
+     <!-- Netzwerk Info -->
+     <string name="network_info_title">Netzwerkinfo</string>
+     <string name="network_info_auth_text">Auth:</string>
+     <string name="network_info_cipher_text">Verschlüsselung:</string>
+     <string name="network_info_integrity_text">Integritätsschutz:</string>
+     <string name="network_info_duration_text">Dauer:</string>
+     <string name="network_info_direction_text">Richtung:</string>
+     <string name="network_info_type_text">Typ:</string>
+     <string name="network_info_previous_mcc_text">Letzter MCC:</string>
+     <string name="network_info_previous_mnc_text">Letzter MNC:</string>
+     <string name="network_info_previous_lac_text">Letzter LAC:</string>
+     <string name="network_info_lu_result_text">LU Resultat:</string>
+     <string name="network_info_lu_reject_cause_text">LU Reject Cause:</string>
+     <string name="network_info_lu_type_text">LU Typ:</string>
+     <string name="network_info_internal_id_text">Interne ID:</string>
+
+     <string name="network_info_identity">Identität</string>
+     <string name="network_info_lupd">Location Update</string>
+     <string name="network_info_session">Session</string>
+
+     <string name="network_info_usim_unknown">unbekannt</string>
+     <string name="network_info_usim_not_present">nicht vorhanden</string>
+     <string name="network_info_usim_present">vorhanden</string>
+
+     <string name="network_info_mobile_originated">vom Gerät</string>
+     <string name="network_info_mobile_terminated">vom Netzwerk</string>
+     <string name="network_info_lu_rejected">abgewiesen</string>
+     <string name="network_info_lu_accepted">akzeptiert</string>
+
+     <string name="common_none">keine</string>
+     <string name="common_invalid">ungültig</string>
+
+     <!-- Debug Uploads -->
+     <string name="debug_what_to_report">Bitte beschreiben Sie das Problem:</string>
+     <string name="debug_contact_info">Bitte geben Sie Ihre Emailadresse ein damit wir Sie erreichen können:</string>
+     <string name="debug_upload_snoopsnitch_debug_logs">SnoopSnitch debug logs hochladen</string>
+     <string name="debug_upload_radio_traces">Den Radiomitschnitt (letzte Stunde) hochladen</string>
+     <string name="debug_upload_metadata">Metadaten hochladen</string>
+     <string name="debug_upload">Hochladen</string>
+     <string name="debug_cancel">Zurück</string>
+     <string name="upload_debug_please_select">Bitte wählen Sie zumindest einen Eintrag zum hochladen aus!</string>
+     <string name="upload_debug_confirm_no_contact">Möchten Sie Ihre Bericht ohne Ihre Kontaktdaten versenden?</string>
+     <string name="upload_debug_confirm_no_description">Möchten Sie Ihre Bericht versenden ohne eine Problembeschreibung?</string>
+     <string name="upload_debug_confirmation_msg">Ihre BerichtID ist %s. Schicken Sie gerne weitere Informationen an snoopsnitch@srlabs.de</string>
+</resources>

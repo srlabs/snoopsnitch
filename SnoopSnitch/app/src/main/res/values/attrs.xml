@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- Custom view of Dashboard -->
+	<declare-styleable name="DashboardThreatChart">
+    	<attr name="timePeriodDashboard" format="enum">
+    		<enum name="hour" value="0"/>
+    		<enum name="day" value="1"/>
+    		<enum name="week" value="2"/>
+    		<enum name="month" value="3"/>
+    	</attr>
+       	<attr name="typeOfThreatDashboard" format="enum">
+        	<enum name="silentSMS" value="0"/>
+           	<enum name="imsiCatcher" value="1"/>
+       	</attr>
+	</declare-styleable>
+	
+	<!-- Custom view of detail screen -->
+	<declare-styleable name="DetailThreatChart">
+    	<attr name="timePeriodDetail" format="enum">
+    		<enum name="hour" value="0"/>
+    		<enum name="day" value="1"/>
+    		<enum name="week" value="2"/>
+    		<enum name="month" value="3"/>
+    	</attr>
+       	<attr name="typeOfThreatDetail" format="enum">
+        	<enum name="silentSMS" value="0"/>
+           	<enum name="imsiCatcher" value="1"/>
+       	</attr>
+	</declare-styleable>
+	
+	<!-- Timespace Position (Fragemnt Hour) -->
+	<declare-styleable name="DetailThreatChartHour">
+	    <attr name="TimeSpacePositionHour" format="enum">
+	        <enum name="One" value="0"/>
+	        <enum name="Two" value="1"/>
+	        <enum name="Three" value="2"/>
+	        <enum name="Four" value="3"/>
+	        <enum name="Five" value="4"/>
+	        <enum name="Six" value="5"/>
+	        <enum name="Seven" value="6"/>
+	        <enum name="Eight" value="7"/>
+	        <enum name="Nine" value="8"/>
+	        <enum name="Ten" value="9"/>
+	        <enum name="Eleven" value="10"/>
+	        <enum name="Twelve" value="11"/>
+	    </attr>
+	</declare-styleable>
+	
+	<!-- Timespace Position (Fragemnt Day) -->
+	<declare-styleable name="DetailThreatChartDay">
+	    <attr name="TimeSpacePositionDay" format="enum">
+	        <enum name="One" value="0"/>
+	        <enum name="Two" value="1"/>
+	        <enum name="Three" value="2"/>
+	        <enum name="Four" value="3"/>
+	        <enum name="Five" value="4"/>
+	        <enum name="Six" value="5"/>
+	    </attr>
+	</declare-styleable>
+	
+	<!-- Timespace Position (Fragemnt Week) -->
+	<declare-styleable name="DetailThreatChartWeek">
+	    <attr name="TimeSpacePositionWeek" format="enum">
+	        <enum name="One" value="0"/>
+	        <enum name="Two" value="1"/>
+	        <enum name="Three" value="2"/>
+	        <enum name="Four" value="3"/>
+	        <enum name="Five" value="4"/>
+	        <enum name="Six" value="5"/>
+	        <enum name="Seven" value="6"/>
+	    </attr>
+	</declare-styleable>
+	
+	<!-- Timespace Position (Fragemnt Month) -->
+	<declare-styleable name="DetailThreatChartMonth">
+	    <attr name="TimeSpacePositionMonth" format="enum">
+	        <enum name="One" value="0"/>
+	        <enum name="Two" value="1"/>
+	        <enum name="Three" value="2"/>
+	        <enum name="Four" value="3"/>
+	    </attr>
+	</declare-styleable>
+	
+	<!-- Dashboard Provider Charts -->
+   	<declare-styleable name="DashboardProviderChart">
+       	<attr name="type" format="enum">
+           	<enum name="interception" value="0"/>
+           	<enum name="impersonation" value="1"/>
+       	</attr>
+   	</declare-styleable>
+	
+</resources>

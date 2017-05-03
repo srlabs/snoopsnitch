@@ -1,7 +1,0 @@
-<resources>
-
-    <dimen name="text_small">10sp</dimen>
-    <dimen name="text_medium">11sp</dimen>
-    <dimen name="text_large">13sp</dimen>
-
-</resources>
