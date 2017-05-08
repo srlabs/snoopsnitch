@@ -1996,7 +1996,8 @@ public class MsdService extends Service{
 		// data like the process id). However, the actual class of the
 		// process does contain a pid field (declared as private), which can be
 		// accessed via reflection.
-		if(parser.getClass().getName().equals("java.lang.ProcessManager$ProcessImpl")) {
+		String parserProcessClassName = parser.getClass().getName();
+		if(parserProcessClassName.equals("java.lang.ProcessManager$ProcessImpl") || parserProcessClassName.equals("java.lang.UNIXProcess")) {
 			try {
 				Field f = parser.getClass().getDeclaredField("pid");
 				f.setAccessible(true);
@@ -2053,7 +2054,7 @@ public class MsdService extends Service{
 				ok = false;
 			}
 		} else{
-			handleFatalError("Failed to get parser pid, parser class name is " + parser.getClass().getName() + " instead of java.lang.ProcessManager$ProcessImpl");
+			handleFatalError("Failed to get parser pid, parser class name is " + parser.getClass().getName() + " instead of java.lang.ProcessManager$ProcessImpl or java.lang.UNIXProcess");
 			ok = false;
 		}
 		// TODO: Maybe check memory usage of this Service process as well.

@@ -114,11 +114,19 @@ public class EncryptedFileWriter{
 						if(closeOutputRunning){
 							info("opensslStderr.readLine() returned null while closeOutputRunning is set, OK");
 						} else{
-							throw new RuntimeException(new EncryptedFileWriterError("opensslStderr.readLine()u retrned null for file " + encryptedFilename));
+							throw new RuntimeException(new EncryptedFileWriterError("opensslStderr.readLine() returned null for file " + encryptedFilename));
 						}
 						return;
 					}
-					throw new RuntimeException(new EncryptedFileWriterError("Openssl Error for " + encryptedFilename + ": " + line));
+					else{
+						//ignoring unused DT entry (Dynamic Array Tags) warnings
+						if(line.contains("unused DT entry")){
+							info("Ignoring \"unused DT entry\" warning received by OpensslErrorThread.");
+						}
+						else{
+							throw new RuntimeException(new EncryptedFileWriterError("Openssl Error for " + encryptedFilename + ": " + line));
+						}
+					}
 				}
 			} catch(EOFException e){
 				if(closeOutputRunning){
