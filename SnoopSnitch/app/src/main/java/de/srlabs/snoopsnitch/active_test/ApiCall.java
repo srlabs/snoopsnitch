@@ -46,9 +46,9 @@ public abstract class ApiCall extends Thread {
 
 		try {
 			final URL url = new URL(Constants.API_URL + "&client_MSISDN="
-					+ URLEncoder.encode(number)
+					+ URLEncoder.encode(number,"UTF-8")
 					+ "&requested_action="
-					+ action.name().toLowerCase(Locale.US) + "&appid=" + URLEncoder.encode(this.appId));
+					+ action.name().toLowerCase(Locale.US) + "&appid=" + URLEncoder.encode(this.appId,"UTF-8"));
 
 			MsdLog.i(TAG, "invoking api: " + url);
 			final long start = System.currentTimeMillis();
