@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -231,12 +232,12 @@ public class BaseActivity extends FragmentActivity
 			{
 				if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
 				{
-					menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_record_disable));
+					menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_menu_record_disable,null));
 					showMessage(getResources().getString(R.string.message_recordingStarted));
 				}
 				else
 				{
-					menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
+					menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_menu_notrecord_disable,null));
 					showMessage(getResources().getString(R.string.message_recordingStopped));
 				}	
 			}
@@ -272,11 +273,11 @@ public class BaseActivity extends FragmentActivity
 		{
 			if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
 			{
-				menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_record_disable));
+				menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_menu_record_disable,null));
 			}
 			else
 			{
-				menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
+				menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_menu_notrecord_disable,null));
 			}	
 		}
 	}

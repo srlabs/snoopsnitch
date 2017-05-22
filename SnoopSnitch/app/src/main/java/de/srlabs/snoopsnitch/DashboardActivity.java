@@ -10,6 +10,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -131,11 +132,11 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 	    
 		if (msdServiceHelperCreator.getMsdServiceHelper().isRecording())
 		{
-			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_record_disable));
+			menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_menu_record_disable,null));
 		}
 		else
 		{
-			menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_menu_notrecord_disable));
+			menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_menu_notrecord_disable,null));
 		}
 		
 	    return super.onCreateOptionsMenu(menu);
@@ -215,7 +216,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		else if (reason.equals(StateChangedReason.NO_BASEBAND_DATA))
 		{
 			txtLastAnalysisTime.setText(getString(R.string.compat_no_baseband_messages));
-			txtLastAnalysisTime.setTextColor(getResources().getColor(R.color.common_chartRed));
+			txtLastAnalysisTime.setTextColor(ResourcesCompat.getColor(getResources(),R.color.common_chartRed,null));
 			txtDashboardLastAnalysis.setVisibility(View.GONE);
 		}
 		
@@ -272,11 +273,11 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		{
 			if (Integer.valueOf(tv.getText().toString()) > 0)
 			{
-				tv.setTextColor(getResources().getColor(R.color.common_chartYellow));
+				tv.setTextColor(ResourcesCompat.getColor(getResources(),R.color.common_chartYellow,null));
 			}
 			else
 			{
-				tv.setTextColor(getResources().getColor(R.color.common_chartGreen));
+				tv.setTextColor(ResourcesCompat.getColor(getResources(),R.color.common_chartGreen,null));
 			}
 		}
 		
@@ -284,11 +285,11 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		{
 			if (Integer.valueOf(tv.getText().toString()) > 0)
 			{
-				tv.setTextColor(getResources().getColor(R.color.common_chartRed));
+				tv.setTextColor(ResourcesCompat.getColor(getResources(),R.color.common_chartRed,null));
 			}
 			else
 			{
-				tv.setTextColor(getResources().getColor(R.color.common_chartGreen));
+				tv.setTextColor(ResourcesCompat.getColor(getResources(),R.color.common_chartGreen,null));
 			}
 		}
 	}
@@ -333,7 +334,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 			Calendar c = Calendar.getInstance();
 			c.setTimeInMillis(lastAnalysisTime);
 			txtLastAnalysisTime.setText(String.valueOf(DateFormat.getDateTimeInstance().format(c.getTime())));
-			txtLastAnalysisTime.setTextColor(getResources().getColor(R.color.common_text));
+			txtLastAnalysisTime.setTextColor(ResourcesCompat.getColor(getResources(),R.color.common_text,null));
 			txtDashboardLastAnalysis.setVisibility(View.VISIBLE);
 		} else{
 			txtDashboardLastAnalysis.setVisibility(View.GONE);

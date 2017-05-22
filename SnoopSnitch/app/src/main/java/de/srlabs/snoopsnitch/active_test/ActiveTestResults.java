@@ -362,7 +362,7 @@ public class ActiveTestResults implements Serializable {
 			return "undefined";
 		return "\"" + input.replace("\\","\\\\").replace("\"", "\\\"").replace("\n","\\n") + "\"";
 	}
-	@SuppressLint("DefaultLocale")
+	
 	public String getUpdateJavascript(Context context){
 		StringBuffer result = new StringBuffer();
 		NetworkOperatorTestResults currentNetworkOperator = getCurrentNetworkOperator();
@@ -394,7 +394,7 @@ public class ActiveTestResults implements Serializable {
 				else if(generation == 4)
 					prefix = "lte_";
 				for(TestType test:TestType.values()){
-					String bucketPrefix = prefix + test.name().toLowerCase();
+					String bucketPrefix = prefix + test.name().toLowerCase(Locale.US);
 					result.append("\"" + bucketPrefix + "_success\":" + currentNetworkOperator.getGeneration(generation).getNumSuccess(test) + ",");
 					result.append("\"" + bucketPrefix + "_fail\":" + currentNetworkOperator.getGeneration(generation).getNumFailures(test) + ",");	
 				}
@@ -409,7 +409,7 @@ public class ActiveTestResults implements Serializable {
 				currentTest = "3g_";
 			else if(getCurrentNetworkOperatorRatTestResults().generation == 4)
 				currentTest = "lte_";
-			currentTest += getCurrentTest().type.name().toLowerCase();
+			currentTest += getCurrentTest().type.name().toLowerCase(Locale.US);
 			result.append("setCurrentTest(" + escape(currentTest) + ");\n");
 		} else{
 			result.append("setCurrentTest(\"\");\n");

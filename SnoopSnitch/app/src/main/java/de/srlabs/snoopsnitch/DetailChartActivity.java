@@ -1,6 +1,7 @@
 package de.srlabs.snoopsnitch;
 
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
@@ -211,13 +212,13 @@ public class DetailChartActivity extends BaseActivity
 	{
 		if (_threatType == R.id.IMSICatcherCharts)
 		{
-			_imgThreatType.setBackground(getResources().getDrawable(R.drawable.ic_content_imsi_event));
+			_imgThreatType.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_content_imsi_event,null));
 			_llThreatTypeImsiCatcher.setVisibility(View.VISIBLE);
 			_llThreatTypeSms.setVisibility(View.GONE);
 		}
 		else
 		{
-			_imgThreatType.setBackground(getResources().getDrawable(R.drawable.ic_content_sms_event));
+			_imgThreatType.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_content_sms_event,null));
 			_llThreatTypeSms.setVisibility(View.VISIBLE);
 			_llThreatTypeImsiCatcher.setVisibility(View.GONE);
 		}
