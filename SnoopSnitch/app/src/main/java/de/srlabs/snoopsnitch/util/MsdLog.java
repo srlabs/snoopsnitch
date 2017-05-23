@@ -1,5 +1,8 @@
 package de.srlabs.snoopsnitch.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -7,12 +10,19 @@ import java.util.Locale;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+
+import de.srlabs.snoopsnitch.BuildConfig;
 import de.srlabs.snoopsnitch.EncryptedFileWriterError;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdService;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 
 public class MsdLog {
+
+	private static final String TAG = "SNSN";
+	private static final String mTAG = "MsdLog";
+
+	// TODO: We should use .getApplicationContext() when something points to a context
 	private static MsdServiceHelper msdServiceHelper;
 	private static MsdService msd;
 
@@ -78,19 +88,78 @@ public class MsdLog {
 		}
 	}
 	/**
+	 * Getting system properties using OS command getprop, instead of using reflection.
+	 *
+	 * Reflection would require:
+	 * import com.android.internal.telephony.TelephonyProperties;
+	 * import android.os.SystemProperties;
+	 * 	//public static final String USER = Settings.System.getString("ro.build.user");
+	 *
+	 * @param key
+	 * @return property
+	 */
+	public static String osgetprop(String key) {
+		Process process = null;
+		String property = null;
+		try {
+				String cmd[] = {"getprop",key};
+				process = Runtime.getRuntime().exec(cmd);
+				BufferedReader bis = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				property = bis.readLine();
+			} catch (IOException ee) {
+				Log.e(TAG, mTAG + ": osgetprop(): Error executing getprop:\n" + ee.toString());
+			}
+		if(process != null)
+			process.destroy();
+		return property;
+	}
+
+	/**
+	 * Collecting HW specific properties for global use/re-use without having to run
+	 * shell command every time.
+	 *
+	 * @return prop
+     */
+	public static String getDeviceProps() {
+		// TODO: make this as an array, access once and make sure to refill when garbage collector removes MsdLog object
+		String prop = "";
+		try {
+            prop =  "Kernel version:        " + System.getProperty("os.version") + "\n"
+                  + "gsm.version.baseband:  " + osgetprop("gsm.version.baseband") + "\n"
+                  + "gsm.version.ril-impl:  " + osgetprop("gsm.version.ril-impl") + "\n"
+                  + "ril.hw_ver:            " + osgetprop("ril.hw_ver") + "\n"
+                  + "ril.modem.board:       " + osgetprop("ril.modem.board") + "\n"
+                  + "ro.arch:               " + osgetprop("ro.arch") + "\n"
+                  + "ro.board.platform:     " + osgetprop("ro.board.platform") + "\n\n";
+        } catch (Exception ee) {
+            Log.e(TAG, mTAG + "Exception in getDeviceProps(): Unable to retrieve system properties: " + ee);
+            return "";
+        }
+		return prop;
+	}
+
+	/**
 	 * Gets some information about phone model, Android version etc.
 	 */
 	public static String getLogStartInfo(Context context) {
 		StringBuffer result = new StringBuffer();
-		result.append("Log opened " + Utils.formatTimestamp(System.currentTimeMillis()) + "\n");
-		result.append("SnoopSnitch Version: " + context.getString(R.string.app_version) + "\n");
-		result.append("Android version: " + Build.VERSION.RELEASE + "\n");
-		result.append("Manufacturer: " + Build.MANUFACTURER + "\n");
-		result.append("Board: "        + Build.BOARD + "\n");
-		result.append("Brand: "        + Build.BRAND + "\n");
-		result.append("Product: "      + Build.PRODUCT + "\n");
-		result.append("Model: "        + Build.MODEL + "\n");
-		result.append("Baseband: "     + Build.getRadioVersion() + "\n");
+		result.append("Log opened:          " + Utils.formatTimestamp(System.currentTimeMillis()) + "\n");
+		result.append("SnoopSnitch Version: " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")" + "\n");
+		result.append("Android version:     " + Build.VERSION.RELEASE + "\n");
+		result.append("Kernel version:      " + System.getProperty("os.version") + "\n");
+		result.append("Manufacturer:        " + Build.MANUFACTURER + "\n");
+		result.append("Board:               " + Build.BOARD + "\n");
+		result.append("Brand:               " + Build.BRAND + "\n");
+		result.append("Product:             " + Build.PRODUCT + "\n");
+		result.append("Model:               " + Build.MODEL + "\n");
+		result.append("Baseband:            " + Build.getRadioVersion() + "\n"); // Extra \n ?
+		/*TODO: Each of the following lines call the shell...this can take time and is inefficient. Instead, all this should be put in some static parcel somewhere...*/
+		result.append("gsm.version.baseband:  " + osgetprop("gsm.version.baseband") + "\n");
+		result.append("gsm.version.ril-impl:  " + osgetprop("gsm.version.ril-impl") + "\n");
+		result.append("ril.hw_ver:            " + osgetprop("ril.hw_ver") + "\n");
+		result.append("ril.modem.board:       " + osgetprop("ril.modem.board") + "\n");
+		result.append("ro.arch:               " + osgetprop("ro.arch") + "\n");
+		result.append("ro.board.platform:     " + osgetprop("ro.board.platform") + "\n");
 		return result.toString();
 	}
 }
