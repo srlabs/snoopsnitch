@@ -1,5 +1,6 @@
 package de.srlabs.snoopsnitch.active_test;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,10 +11,12 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
@@ -218,6 +221,12 @@ public class ActiveTestHelper{
 	}
 
 	public void showConfirmDialogAndStart(final boolean clearResults){
+
+		if(isAirplaneModeOn(context)){
+			MsdDialog.makeNotificationDialog(context,context.getResources().getString(R.string.alert_airplanemode_on),null,false).show();
+			return;
+		}
+
 		if(confirmDialog != null && confirmDialog.isShowing())
 			return;
 
@@ -266,4 +275,16 @@ public class ActiveTestHelper{
 			handleFatalError("Exception in ActiveTestHelper.applySettings()",e);
 		}
 	}
+
+	@SuppressWarnings("deprecation")
+	public static boolean isAirplaneModeOn(Context context) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			  return Settings.System.getInt(context.getContentResolver(),
+									 Settings.System.AIRPLANE_MODE_ON, 0) != 0;
+		} else {
+			  return Settings.Global.getInt(context.getContentResolver(),
+									   Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
+		}
+	}
+
 }

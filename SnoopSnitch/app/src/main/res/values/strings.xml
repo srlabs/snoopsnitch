@@ -112,6 +112,12 @@ configure a cleanup interval that suits your needs.\n
 If SnoopSnitch\'s way of functioning concerns you, press Cancel now!
 </string>
 
+<string name="alert_airplanemode_on">
+SnoopSnitch will not be able to perform any tests, as long as the Airplane Mode is turned on.\n
+\n
+Please turn the Airplane Mode off and retry this test.
+</string>
+
 <string name="about_text">
 SnoopSnitch collects and analyzes mobile radio data to make you aware
 of your mobile network security and to warn you about threats like fake base

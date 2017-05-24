@@ -120,6 +120,12 @@ Falls Sie Bedenken bezüglich der Wirkungsweise von SnoopSnitch haben, brechen
 Sie jetzt ab!
 </string>
 
+<string name="alert_airplanemode_on">
+SnoopSnitch kann keine Tests durchführen, solange der Flugzeugmodus aktiviert ist.\n
+\n
+Bitte schalten Sie den Flugzeugmodus ab, und starten Sie diesen Test erneut.
+</string>
+
 <string name="about_text">
 SnoopSnitch sammelt und analysiert Radiodaten um die Sicherheit Ihres
 Mobilfunknetzes zu bewerten und Sie auf Gefahren wie IMSI Catcher, Ortung Ihres
