@@ -2,6 +2,6 @@
 
     <dimen name="text_small">10sp</dimen>
     <dimen name="text_medium">10sp</dimen>
-    <dimen name="text_large">20sp</dimen>
+    <dimen name="text_large">13sp</dimen>
 
 </resources>
