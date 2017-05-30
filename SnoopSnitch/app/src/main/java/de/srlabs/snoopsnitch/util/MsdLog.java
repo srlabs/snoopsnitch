@@ -87,6 +87,17 @@ public class MsdLog {
 			throw new IllegalStateException("Please use MsdLog.init(context) before logging anything");
 		}
 	}
+
+	/**
+	 * Check if a string is null or empty
+	 * @param string
+	 * @return
+	 */
+	private static boolean isBlank(String string) {
+		return string == null || string.trim().length() == 0;
+	}
+
+
 	/**
 	 * Getting system properties using OS command getprop, instead of using reflection.
 	 *
@@ -111,6 +122,10 @@ public class MsdLog {
 			}
 		if(process != null)
 			process.destroy();
+
+		if (isBlank(property))
+			return "<n/a>";
+
 		return property;
 	}
 
@@ -130,7 +145,7 @@ public class MsdLog {
                   + "ril.hw_ver:            " + osgetprop("ril.hw_ver") + "\n"
                   + "ril.modem.board:       " + osgetprop("ril.modem.board") + "\n"
                   + "ro.arch:               " + osgetprop("ro.arch") + "\n"
-                  + "ro.board.platform:     " + osgetprop("ro.board.platform") + "\n\n";
+                  + "ro.board.platform:     " + osgetprop("ro.board.platform") + "\n";
         } catch (Exception ee) {
             Log.e(TAG, mTAG + "Exception in getDeviceProps(): Unable to retrieve system properties: " + ee);
             return "";
