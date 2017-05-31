@@ -351,4 +351,17 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="upload_debug_confirm_no_contact">Möchten Sie Ihre Bericht ohne Ihre Kontaktdaten versenden?</string>
      <string name="upload_debug_confirm_no_description">Möchten Sie Ihre Bericht versenden ohne eine Problembeschreibung?</string>
      <string name="upload_debug_confirmation_msg">Ihre BerichtID ist %s. Schicken Sie gerne weitere Informationen an snoopsnitch@srlabs.de</string>
+
+
+
+    <string name="settings_cat_notifications">Notifications</string>
+    <string name="settings_imsi_catcher_event">IMSI-Catcher erkannt</string>
+    <string name="settings_sms_event">SMS/SS7 Attacke erkannt</string>
+    <string name="notification_silent">keine</string>
+    <string name="notification_vibrate">Vibration</string>
+    <string name="notification_ring">Sound</string>
+    <string name="notification_vibrate_and_ring">Vibration und Sound</string>
+    <string name="settings_imsi_catcher_notification_summary">Hier können Sie einstellen, wie Sie benachrichtigt werden wollen, wenn ein IMSI-Catcher erkannt wurde.</string>
+    <string name="settings_sms_event_notification_summary">Hier können Sie einstellen, wie Sie benachrichtigt werden wollen, wenn ein SMS/SS7-Attacke erkannt wurde.</string>
+
 </resources>

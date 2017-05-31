@@ -37,5 +37,23 @@
         <item>4</item>
         <item>5</item>
     </string-array>
-      
+    <string-array name="imsi_catcher_notification_strings">
+        <item>@string/notification_silent</item>
+        <item>@string/notification_vibrate</item>
+        <item>@string/notification_ring</item>
+        <item>@string/notification_vibrate_and_ring</item>
+    </string-array>
+    <string-array name="sms_notification_strings">
+        <item>@string/notification_silent</item>
+        <item>@string/notification_vibrate</item>
+        <item>@string/notification_ring</item>
+        <item>@string/notification_vibrate_and_ring</item>
+    </string-array>
+    <string-array name="notification_options_internal">
+        <item>none</item>
+        <item>vibrate</item>
+        <item>ring</item>
+        <item>vibrate+ring</item>
+    </string-array>
+
 </resources>

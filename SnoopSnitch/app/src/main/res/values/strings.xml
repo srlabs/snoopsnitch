@@ -439,5 +439,16 @@ GNU General Public License for more details.\n
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.\n
 </string>
-    
+
+<string name="settings_cat_notifications">Notifications</string>
+<string name="settings_imsi_catcher_event">IMSI catcher detected</string>
+<string name="settings_sms_event">SMS/SS7 attack detected</string>
+<string name="notification_silent">none</string>
+<string name="notification_vibrate">Vibration</string>
+<string name="notification_ring">Sound notification</string>
+<string name="notification_vibrate_and_ring">Vibration and Sound notification</string>
+<string name="settings_imsi_catcher_notification_summary">You can choose how you want to get alarmed, when an IMSI catcher is detected.</string>
+<string name="settings_sms_event_notification_summary">You can choose how you want to get alarmed, when a SMS/SS7 attack is detected.</string>
+
+
 </resources>

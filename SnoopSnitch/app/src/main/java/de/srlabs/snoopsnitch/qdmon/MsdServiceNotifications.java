@@ -3,9 +3,14 @@ package de.srlabs.snoopsnitch.qdmon;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -46,6 +51,11 @@ public class MsdServiceNotifications {
 
 	public void showImsiCatcherNotification(int numCatchers){
 		Log.i("MsdServiceNotifications","Showing IMSI Catcher notification for " + numCatchers + " catchers");
+
+		//vibrate and/or play sound or none
+		String notificationSetting = MsdConfig.getIMSICatcherNotificationSetting(service.getApplicationContext());
+		triggerSenseableNotification(notificationSetting);
+
 		
 		Intent intent = new Intent(service, DashboardActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -72,6 +82,10 @@ public class MsdServiceNotifications {
 
 	public void showSmsNotification(int numEvents){
 		Log.i("MsdServiceNotifications","Showing Event notification for " + numEvents + " events");
+
+		//vibrate and/or play sound or none
+		String notificationSetting = MsdConfig.getSMSandSS7NotificationSetting(service.getApplicationContext());
+		triggerSenseableNotification(notificationSetting);
 
 		Intent intent = new Intent(service, DashboardActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -133,5 +147,55 @@ public class MsdServiceNotifications {
 		Notification n = notificationBuilder.build();
 		NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
 		notificationManager.notify(Constants.NOTIFICATION_ID_EXPECTED_ERROR, n);
+	}
+
+
+	/**
+	 * Decide which notification shall be triggered.
+	 * For the different options please take a look at @array/notification_options_internal
+	 * @param notificationSetting
+	 */
+	public void triggerSenseableNotification(String notificationSetting){
+
+		switch (notificationSetting){
+			case "vibrate":
+				triggerVibrateNotification();
+				break;
+			case "ring":
+				triggerSoundNotification();
+				break;
+			case "vibrate+ring":
+				triggerVibrateNotification();
+				triggerSoundNotification();
+				break;
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * Play a sound notification
+	 * Can be used to make the user notice / signal status changes.
+	 */
+	public void triggerSoundNotification() {
+		try {
+			Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+			Ringtone r = RingtoneManager.getRingtone(service.getApplicationContext(), notification);
+			if (r != null)
+				r.play();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Vibrate to notify user
+	 */
+	public void triggerVibrateNotification(){
+		Vibrator v = (Vibrator) service.getSystemService(Context.VIBRATOR_SERVICE);
+		long[] pattern = {0, 400, 500, 400}; // vibrate 2 times with 0.5s interval
+		if (v.hasVibrator()) {
+			v.vibrate(pattern, -1);          // "-1" = vibrate exactly as pattern, no repeat
+		}
 	}
 }

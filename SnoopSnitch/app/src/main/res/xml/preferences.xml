@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <CheckBoxPreference android:key="settings_start_on_boot" android:title="@string/settings_start_on_boot_title" android:summary="@string/settings_start_on_boot_summary" android:defaultValue="true"/><PreferenceCategory
+    <CheckBoxPreference android:key="settings_start_on_boot" android:title="@string/settings_start_on_boot_title" android:summary="@string/settings_start_on_boot_summary" android:defaultValue="true"/>
+    <PreferenceCategory
         android:key="cat_privacy"
         android:title="@string/settings_cat_privacy" >
         <Preference
@@ -16,6 +17,24 @@
             android:key="settings_active_test_disable_upload"
             android:summary="@string/settings_active_test_disable_upload_summary"
             android:title="@string/settings_active_test_disable_upload_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="cat_notifications"
+        android:title="@string/settings_cat_notifications">
+        <ListPreference
+            android:key="settings_imsi_catcher_event"
+            android:title="@string/settings_imsi_catcher_event"
+            android:summary="@string/settings_imsi_catcher_notification_summary"
+            android:defaultValue="vibrate+ring"
+            android:entries="@array/imsi_catcher_notification_strings"
+            android:entryValues="@array/notification_options_internal"/>
+        <ListPreference
+            android:key="settings_sms_event"
+            android:title="@string/settings_sms_event"
+            android:summary="@string/settings_sms_event_notification_summary"
+            android:defaultValue="vibrate+ring"
+            android:entries="@array/sms_notification_strings"
+            android:entryValues="@array/notification_options_internal"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="cat_cleanup"

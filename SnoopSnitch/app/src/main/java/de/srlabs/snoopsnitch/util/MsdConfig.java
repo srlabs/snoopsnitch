@@ -214,4 +214,13 @@ public class MsdConfig {
 	public static String getPcapFilenamePrefix(Context context) {
         return sharedPrefs(context).getString("settings_pcap_filename_prefix", Environment.getExternalStorageDirectory().getPath() + "/snoopsnitch");
 	}
+
+	public static String getIMSICatcherNotificationSetting(Context context){
+		return sharedPrefs(context).getString("settings_imsi_catcher_event","vibrate+ring");
+	}
+
+	public static String getSMSandSS7NotificationSetting(Context context){
+		return sharedPrefs(context).getString("settings_sms_event","vibrate+ring");
+	}
+
 }
