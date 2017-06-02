@@ -1,13 +1,9 @@
 package de.srlabs.snoopsnitch;
 
-import java.util.Vector;
-
 import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -16,26 +12,24 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
+
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
-import de.srlabs.snoopsnitch.upload.DumpFile;
-import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdConfig;
-import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.PermissionChecker;
 import de.srlabs.snoopsnitch.util.Utils;
 
 public class BaseActivity extends FragmentActivity
-{	
-	// Attributes
+{
+    private static final String TAG = "SNSN: BaseActivity";
+    // Attributes
 	protected MSDServiceHelperCreator msdServiceHelperCreator;
 	protected TextView messageText;
 	protected View messageLayout;
@@ -58,7 +52,8 @@ public class BaseActivity extends FragmentActivity
 		messageToast = new Toast(getApplicationContext());
 
 		// Get MsdService Helper
-		msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext(), true);
+		boolean autoStartRecording = PermissionChecker.isAccessingFineLocationAllowed(this) || PermissionChecker.isAccessingCoarseLocationAllowed(this);
+		msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext(), autoStartRecording);
 		MsdLog.init(msdServiceHelperCreator.getMsdServiceHelper());
 		MsdLog.i("MSD","MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 
@@ -129,8 +124,14 @@ public class BaseActivity extends FragmentActivity
 
 	protected void showNetworkInfo()
 	{
-		Intent intent = new Intent(this, NetworkInfoActivity.class);
-		startActivity(intent);
+        if(!PermissionChecker.isAccessingPhoneStateAllowed(this)) {
+            MsdLog.w(TAG,"Showing only partial NetworkInfo allowed.");
+            PermissionChecker.checkAndRequestPermissionsForNetworkActivity(this);
+        }
+        else {
+			Intent intent = new Intent(this, NetworkInfoActivity.class);
+			startActivity(intent);
+		}
 	}
 
 	protected void toggleRecording ()
@@ -139,12 +140,21 @@ public class BaseActivity extends FragmentActivity
 
 		if (isRecording)
 		{
-			msdServiceHelperCreator.getMsdServiceHelper().stopRecording();
+			stopRecording();
 		}
 		else
 		{
-			msdServiceHelperCreator.getMsdServiceHelper().startRecording();
+			if(PermissionChecker.checkAndRequestPermissionForMsdService(this))
+				startRecording();
 		}
+	}
+
+	protected void startRecording(){
+		msdServiceHelperCreator.getMsdServiceHelper().startRecording();
+	}
+
+	protected void stopRecording(){
+		msdServiceHelperCreator.getMsdServiceHelper().stopRecording();
 	}
 
 	public MSDServiceHelperCreator getMsdServiceHelperCreator ()
@@ -299,4 +309,7 @@ public class BaseActivity extends FragmentActivity
 			System.exit(0);
 		}
 	}
+
+
+
 }

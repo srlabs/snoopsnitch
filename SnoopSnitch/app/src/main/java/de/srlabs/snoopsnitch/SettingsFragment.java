@@ -4,18 +4,24 @@ import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
+import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.PermissionChecker;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
+import android.widget.Toast;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener
 {
+	private final String TAG ="SNSN:Settings";
 	private boolean settingsChanged = false;
 
 	@Override
@@ -38,6 +44,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 				return true;
 			}
 		});
+
+
 	}
 	
 	@Override
@@ -55,6 +63,26 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 			MsdConfig.setLastCleanupTime(sharedPreferences, 0);
 		}
 
+
+		if(key.equals("settings_enable_pcap_recording")){
+			if(sharedPreferences.getBoolean("settings_enable_pcap_recording",false)){
+				MsdLog.d(TAG,"PCAP export enabled");
+				if(this.getActivity() != null && !PermissionChecker.isWritingToExternalStorageAllowed(this.getActivity()))
+					PermissionChecker.checkAndRequestPermissionForPCAPExport(this.getActivity());
+				/*else
+					PermissionChecker.checkAndRequestPermissionForPCAPExport(getContext());*/ //only possible in API>=23
+			}
+			else{
+				MsdLog.d(TAG,"PCAP export disabled");
+			}
+		}
+
+		settingsChanged = true;
+	}
+
+	public void disablePCAPExport() {
+		CheckBoxPreference pcapExportPref = (CheckBoxPreference) findPreference("settings_enable_pcap_recording");
+		pcapExportPref.setChecked(false);
 		settingsChanged = true;
 	}
 	
@@ -113,5 +141,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 		}
 		super.onDestroyView();
 	}
+
 }
 	

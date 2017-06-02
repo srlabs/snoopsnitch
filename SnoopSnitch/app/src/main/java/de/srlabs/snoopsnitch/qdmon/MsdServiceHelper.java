@@ -2,6 +2,8 @@ package de.srlabs.snoopsnitch.qdmon;
 
 import de.srlabs.snoopsnitch.qdmon.IMsdService;
 import de.srlabs.snoopsnitch.qdmon.IMsdServiceCallback;
+import de.srlabs.snoopsnitch.util.PermissionChecker;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +56,12 @@ public class MsdServiceHelper{
 	}
 	public boolean startRecording(){
 		Log.i(TAG,"MsdServiceHelper.startRecording() called");
+
+		/*if(!PermissionChecker.isAccessingCoarseLocationAllowed(context)){
+			Log.w(TAG,"MsdServiceHelper.startRecording() not allowed - User did not grant ACCESS_COARSE_LOCATION permission");
+			return false;
+		}*/
+
 		boolean result = false;
 		try {
 			result = mIMsdService.startRecording();

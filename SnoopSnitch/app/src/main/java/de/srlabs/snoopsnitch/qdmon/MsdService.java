@@ -80,6 +80,7 @@ import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.PermissionChecker;
 import de.srlabs.snoopsnitch.util.Utils;
 
 public class MsdService extends Service{
@@ -491,17 +492,25 @@ public class MsdService extends Service{
 		// Make sure that the process of this service is actually closed
 		System.exit(0);
 	}
+
+
+	/**
+	 * REQUIRED PERMISSION:
+	 * 	depends on settings:
+	 * 		ACCESS_COARSE_LOCATION (network_provider)
+	 * 		ACCESS_FINE_LOCATION (gps_provider)
+	 */
 	private void startLocationRecording(){
 		myLocationListener = new MyLocationListener();
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		if(MsdConfig.gpsRecordingEnabled(MsdService.this)){
+		if(MsdConfig.gpsRecordingEnabled(MsdService.this) && PermissionChecker.isAccessingFineLocationAllowed(MsdService.this)){
 			try{
 				locationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 10000, 0, myLocationListener);
 			} catch(IllegalArgumentException e){
 				info("GPS location recording not available");
 			}
 		}
-		if(MsdConfig.networkLocationRecordingEnabled(MsdService.this)){
+		if(MsdConfig.networkLocationRecordingEnabled(MsdService.this) && PermissionChecker.isAccessingCoarseLocationAllowed(MsdService.this)){
 			try{
 				locationManager.requestLocationUpdates( LocationManager.NETWORK_PROVIDER, 10000, 0, myLocationListener);
 			} catch(IllegalArgumentException e){
@@ -509,6 +518,12 @@ public class MsdService extends Service{
 			}
 		}
 	}
+
+    /**
+     * REQUIRED PERMISSION:
+     *  ACCESS_FINE_LOCATION || ACCESS_COARSE_LOCATION
+     *
+     */
 	private void stopLocationRecording(){
 		if(locationManager == null)
 			return;
@@ -516,9 +531,16 @@ public class MsdService extends Service{
 		myLocationListener = null;
 		locationManager = null;
 	}
+
+    /**
+     * REQUIRED PERMISSION:
+     *  ACCESS_FINE_LOCATION
+     */
 	private void getAndUploadGpsLocation(){
 		// Only allow one pending location upload at a time
 		if(!this.getAndUploadGpsLocationRunning.compareAndSet(false, true))
+			return;
+		if(!MsdConfig.gpsRecordingEnabled(MsdService.this) && PermissionChecker.isAccessingFineLocationAllowed(MsdService.this))
 			return;
 		mainThreadHandler.post(new Runnable(){
 			@Override
@@ -589,6 +611,7 @@ public class MsdService extends Service{
 								triggerUploading();
 							} finally{ // Make sure this is really called even if there are Exceptions.
 								// Stop GPS Recording after first received position.
+                                // REQUIRED PERMISSION: ACCESS_FINE_LOCATION
 								lm.removeUpdates(this);
 								getAndUploadGpsLocationRunning.set(false);
 							}
@@ -600,19 +623,39 @@ public class MsdService extends Service{
 			}
 		});
 	}
+
+	/** REQUIRED PERMISSION:
+	 * 		PhonestateListener.LISTEN_CELL_LOCATION -> ACCESS_COARSE_LOCATION
+	 */
 	private void startPhoneStateRecording(){
-		myPhoneStateListener = new MyPhoneStateListener();
-		telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CELL_INFO|PhoneStateListener.LISTEN_CELL_LOCATION);
+		if(PermissionChecker.isAccessingCoarseLocationAllowed(MsdService.this)) {
+			myPhoneStateListener = new MyPhoneStateListener();
+			telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_CELL_INFO | PhoneStateListener.LISTEN_CELL_LOCATION);
+		}
+		else{
+			Log.w(TAG, "Starting PhoneStateRecording not allowed! User did not grant ACCESS_COARSE_LOCATION permission.");
+		}
 	}
 	private void stopPhoneStateRecording(){
 		telephonyManager.listen(myPhoneStateListener, PhoneStateListener.LISTEN_NONE);
 		myPhoneStateListener = null;
 	}
 	private synchronized boolean startRecording() {
+		if(!PermissionChecker.isAccessingCoarseLocationAllowed(MsdService.this) && !PermissionChecker.isAccessingFineLocationAllowed(MsdService.this))
+		{
+			Log.w(TAG,"startRecording not allowed - User did not grant access to location information!");
+			readyForStartRecording.set(false);//FIXME: not really neccessary here, or?
+			return false;
+		}
+		else{
+			readyForStartRecording.set(true); //FIXME: careful here! Is this ok?
+		}
+
 		if(!readyForStartRecording.compareAndSet(true, false)){
 			handleFatalError("MsdService.startRecording called but readyForStartRecording is not true. Probably there was an error during the last shutdown");
 			return false;
 		}
+
 		try {
 			info("startRecording() called");
 			this.shuttingDown.set(false);
@@ -1914,7 +1957,7 @@ public class MsdService extends Service{
 			return;
 		if(!recording)
 			return;
-		if(!deviceCompatibleDetected && System.currentTimeMillis() - recordingStartTime > 5*60*1000 && telephonyManager.getNetworkType() != 0){
+		if(!deviceCompatibleDetected && (System.currentTimeMillis() - recordingStartTime > 5*60*1000) && (telephonyManager.getNetworkType() != 0)){
 			sendStateChanged(StateChangedReason.NO_BASEBAND_DATA);
 		}
 		boolean ok = true;

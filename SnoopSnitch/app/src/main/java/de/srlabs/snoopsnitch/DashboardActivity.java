@@ -2,14 +2,17 @@ package de.srlabs.snoopsnitch;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +22,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import de.srlabs.snoopsnitch.R;
+
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
@@ -27,6 +30,8 @@ import de.srlabs.snoopsnitch.analysis.Risk;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdDialog;
+import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.PermissionChecker;
 import de.srlabs.snoopsnitch.util.Utils;
 import de.srlabs.snoopsnitch.views.DashboardProviderChart;
 import de.srlabs.snoopsnitch.views.DashboardThreatChart;
@@ -405,7 +410,9 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 		}
 		else
 		{
-			activeTestHelper.showConfirmDialogAndStart(true);
+			if(PermissionChecker.checkAndRequestPermissionsForActiveTest(this)){
+				activeTestHelper.showConfirmDialogAndStart(true);
+			}
 		}
 	}
 
@@ -420,4 +427,184 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 			}
 		});
 	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+		MsdLog.d("DashboardActivity","Received Permission request result; code: "+requestCode);
+		if(requestCode == PermissionChecker.REQUEST_ACTIVE_TEST_PERMISSIONS){
+			if(grantResults.length > 0){
+				//find all neccessary permissions not granted
+				List<String> notGrantedPermissions = new LinkedList<>();
+				for(int i=0; i < permissions.length; i++){
+					if(grantResults[i] == PackageManager.PERMISSION_DENIED){
+						notGrantedPermissions.add(permissions[i]);
+					}
+				}
+
+				if(notGrantedPermissions.isEmpty()){
+					//Success: All neccessary permissions granted
+					// -> start Active Test!
+					//Log.i(TAG, "Active Test PERMISSIONS: ALL granted!");
+					activeTestHelper.showConfirmDialogAndStart(true);
+				}
+				else{
+
+					//ask again for all not granted permissions
+					boolean showDialog = false;
+					for(String notGrantedPermission : notGrantedPermissions){
+						showDialog = showDialog || ActivityCompat.shouldShowRequestPermissionRationale(this,notGrantedPermission);
+					}
+
+					if(showDialog){
+						showDialogAskingForAllPermissionsActiveTest(getResources().getString(R.string.alert_active_test_permissions_not_granted));
+					}
+					else {
+						// IF permission is denied (and "never ask again" is checked)
+						// Log.e(TAG, mTAG + ": Permission FAILURE: some permissions are not granted. Asking again.");
+					   showDialogPersistentDeniedPermissions(getResources().getString(R.string.alert_active_test_permissions_not_granted_persistent));
+					}
+
+				}
+
+			}
+		}
+		else if(requestCode == PermissionChecker.REQUEST_NETWORK_ACTIVITY_PERMISSIONS){
+				if(grantResults.length > 0){
+					//find all neccessary permissions not granted
+					List<String> notGrantedPermissions = new LinkedList<>();
+					for(int i=0; i < permissions.length; i++){
+						if(grantResults[i] == PackageManager.PERMISSION_DENIED){
+							notGrantedPermissions.add(permissions[i]);
+						}
+					}
+
+					if(notGrantedPermissions.isEmpty()){
+						//Success: All neccessary permissions granted
+						Intent intent = new Intent(this, NetworkInfoActivity.class);
+						startActivity(intent);
+					}
+					else{
+						//ask again for all not granted permissions
+						boolean showDialog = false;
+						for(String notGrantedPermission : notGrantedPermissions){
+							showDialog = showDialog || ActivityCompat.shouldShowRequestPermissionRationale(this,notGrantedPermission);
+						}
+
+						if(showDialog){
+							showDialogAskingForAllPermissionsNetworkInfo(getResources().getString(R.string.alert_network_activity_permissions_not_granted));
+						}
+						else {
+							// IF permission is denied (and "never ask again" is checked)
+							// Log.e(TAG, mTAG + ": Permission FAILURE: some permissions are not granted. Asking again.");
+							showDialogPersistentDeniedPermissionsNetworkInfo(getResources().getString(R.string.alert_network_activity_permissions_not_granted_persistent));
+						}
+
+					}
+
+				}
+		}
+		else if(requestCode == PermissionChecker.REQUEST_MSDSERVICE_PERMISSIONS){
+			if(grantResults.length > 0){
+				//find all neccessary permissions not granted
+				List<String> notGrantedPermissions = new LinkedList<>();
+				for(int i=0; i < permissions.length; i++){
+					if(grantResults[i] == PackageManager.PERMISSION_DENIED){
+						notGrantedPermissions.add(permissions[i]);
+					}
+				}
+
+				if(notGrantedPermissions.isEmpty()){
+					//Success: All neccessary permissions granted
+					startRecording();
+				}
+				else{
+
+					//ask again for all not granted permissions
+					boolean showDialog = false;
+					for(String notGrantedPermission : notGrantedPermissions){
+						showDialog = showDialog || ActivityCompat.shouldShowRequestPermissionRationale(this,notGrantedPermission);
+					}
+
+					if(showDialog){
+						showDialogAskingForAllPermissionsMsdService(getResources().getString(R.string.alert_msdservice_permissions_not_granted));
+					}
+					else {
+						// IF permission is denied (and "never ask again" is checked)
+						// Log.e(TAG, mTAG + ": Permission FAILURE: some permissions are not granted. Asking again.");
+						showDialogPersistentDeniedPermissions(getResources().getString(R.string.alert_msdservice_permissions_not_granted_persistent));
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+	private void showDialogAskingForAllPermissionsMsdService(String message) {
+		MsdDialog.makeConfirmationDialog(this, message,
+			new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					PermissionChecker.checkAndRequestPermissionForMsdService(DashboardActivity.this);
+				}
+			}, null, false).show();
+	}
+
+
+	private void showDialogAskingForAllPermissionsActiveTest(String message) {
+		MsdDialog.makeConfirmationDialog(this, message,
+				new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						PermissionChecker.checkAndRequestPermissionsForActiveTest(DashboardActivity.this);
+					}
+		}, null, false).show();
+	}
+
+	private void showDialogPersistentDeniedPermissions(String message){
+		/*TODO: Send user to permission settings for SNSN directly? Adapt message accordingly
+					 startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+							 Uri.parse("package:de.srlabs.snoopsnitch")));*/
+		MsdDialog.makeConfirmationDialog(this, message,null,null,false).show();
+
+	 }
+
+	private void showDialogAskingForAllPermissionsNetworkInfo(String message) {
+		MsdDialog.makeConfirmationDialog(this, message,
+				new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						PermissionChecker.checkAndRequestPermissionsForNetworkActivity(DashboardActivity.this);
+					}
+				},
+				new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(DashboardActivity.this, NetworkInfoActivity.class);
+						startActivity(intent);
+					}
+				}, false).show();
+	}
+
+	private void showDialogPersistentDeniedPermissionsNetworkInfo(String message){
+		MsdDialog.makeConfirmationDialog(this, message,
+				new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(DashboardActivity.this, NetworkInfoActivity.class);
+						startActivity(intent);
+					}
+				},
+				new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(DashboardActivity.this, NetworkInfoActivity.class);
+						startActivity(intent);
+					}
+				}, false).show();
+	}
+
+
+
 }

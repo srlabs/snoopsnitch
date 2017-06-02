@@ -6,6 +6,7 @@ import java.util.Calendar;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.PermissionChecker;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -19,7 +20,8 @@ import android.view.View;
 import android.widget.TextView;
 
 public class NetworkInfoActivity extends BaseActivity {
-	
+
+	private final String TAG="SNSN: NetworkActivity";
 	protected final int refreshInterval = 60 * 1000;
 	private Context context;
 	private Handler handler = new Handler();
@@ -62,6 +64,7 @@ public class NetworkInfoActivity extends BaseActivity {
 		}
 	};
 
+
 	private void updateNetworkInfo() {
 
 		MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
@@ -74,7 +77,12 @@ public class NetworkInfoActivity extends BaseActivity {
 		setUSIM(db);
 		
 		//  Set transaction
-		setTransaction(db);
+		if(PermissionChecker.isAccessingPhoneStateAllowed(context)) {
+			setTransaction(db);
+		}
+		else{
+			MsdLog.w(TAG,"Setting Transaction information not allowed - User did not grant READ_PHONE_STATE permission.");
+		}
 		
 		MsdDatabaseManager.getInstance().closeDatabase();
 	}
@@ -271,6 +279,10 @@ public class NetworkInfoActivity extends BaseActivity {
 		}
 	}
 
+	/**
+	 * REQUIRED PERMISSION:
+	 * 	READ_PHONE_STATE
+	 */
 	private void setTransaction(SQLiteDatabase db) {
 		
 		long timestamp;

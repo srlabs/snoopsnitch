@@ -41,6 +41,7 @@ import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.PermissionChecker;
 import de.srlabs.snoopsnitch.util.Utils;
 
 public class ActiveTestService extends Service{
@@ -68,6 +69,12 @@ public class ActiveTestService extends Service{
 	private int numSuccessfulTests;
 
 	class MyPhoneStateListener extends PhoneStateListener{
+		/**
+		 * REQUIRED PERMISSION:
+		 * 	READ_PHONE_STATE (if not granted: incomingNumber will be empty string)
+		 * @param phoneState
+		 * @param incomingNumber
+		 */
 		@Override
 		public void onCallStateChanged(final int phoneState, final String incomingNumber) {
 			if(!testRunning)
@@ -799,27 +806,48 @@ public class ActiveTestService extends Service{
 			currentExtraRecordingFilename = null;
 		}
 	}
+
+	/**
+	 * REQUIRED PERMISSION:
+	 * 	CALL_PHONE
+	 * @param online
+	 */
 	private void triggerCallMo(final boolean online) {
-		final Uri telUri = Uri.parse("tel:" + (online ? Constants.CALL_NUMBER : Constants.CALLBACK_NUMBER));
-		MsdLog.i(TAG, "calling out to " + telUri);
-		final Intent intent = new Intent(Intent.ACTION_CALL, telUri);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(intent);
+		if(PermissionChecker.isAccessingPhoneStateAllowed(ActiveTestService.this)) {
+			final Uri telUri = Uri.parse("tel:" + (online ? Constants.CALL_NUMBER : Constants.CALLBACK_NUMBER));
+			MsdLog.i(TAG, "calling out to " + telUri);
+			final Intent intent = new Intent(Intent.ACTION_CALL, telUri);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+		}
+		else{
+			MsdLog.w(TAG,"Triggering call is not allowed. User did not grant CALL_PHONE permission.");
+		}
 	}
+
+	/**
+	 * REQUIRED PERMISSION:
+	 * 	SEND_SMS
+	 */
 	private void triggerSmsMo() {
-		final PendingIntent sentIntent = PendingIntent.getService(this, 0, new Intent(ACTION_SMS_SENT,
-				null,
-				this,
-				ActiveTestService.class), 0);
-		MsdLog.i(TAG, "Sending sms to invalid destination");
-		try{
-			SmsManager.getDefault().sendTextMessage(smsMoNumber, null, "This is a test SMS", sentIntent, null);
-		} catch(Exception e){
-			results.getCurrentTest().fail("Failed to send SMS to " + smsMoNumber);
-			stateMachine.setState(State.END, "Invalid SMS MO number", 0);
-			stateInfo("Invalid Number: " + smsMoNumber + ", aborting test");
-			results.setInvalidSmsMoNumber(true);
-			ActiveTestService.this.stopTest();
+		if(PermissionChecker.isSendingSMSAllowed(ActiveTestService.this)) {
+			final PendingIntent sentIntent = PendingIntent.getService(this, 0, new Intent(ACTION_SMS_SENT,
+					null,
+					this,
+					ActiveTestService.class), 0);
+			MsdLog.i(TAG, "Sending sms to invalid destination");
+			try {
+				SmsManager.getDefault().sendTextMessage(smsMoNumber, null, "This is a test SMS", sentIntent, null);
+			} catch (Exception e) {
+				results.getCurrentTest().fail("Failed to send SMS to " + smsMoNumber);
+				stateMachine.setState(State.END, "Invalid SMS MO number", 0);
+				stateInfo("Invalid Number: " + smsMoNumber + ", aborting test");
+				results.setInvalidSmsMoNumber(true);
+				ActiveTestService.this.stopTest();
+			}
+		}
+		else{
+			MsdLog.w(TAG,"Sendind SMS is not allowed. User did not grant SEND_SMS permission.");
 		}
 	}
 	private void broadcastTestResults() {

@@ -3,7 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <CheckBoxPreference android:key="settings_start_on_boot" android:title="@string/settings_start_on_boot_title" android:summary="@string/settings_start_on_boot_summary" android:defaultValue="true"/>
+    <CheckBoxPreference android:key="settings_start_on_boot"
+        android:title="@string/settings_start_on_boot_title"
+        android:summary="@string/settings_start_on_boot_summary"
+        android:defaultValue="true"/>
     <PreferenceCategory
         android:key="cat_privacy"
         android:title="@string/settings_cat_privacy" >

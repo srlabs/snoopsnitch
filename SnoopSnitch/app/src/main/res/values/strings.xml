@@ -449,6 +449,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="notification_vibrate_and_ring">Vibration and Sound notification</string>
 <string name="settings_imsi_catcher_notification_summary">You can choose how you want to get alarmed, when an IMSI catcher is detected.</string>
 <string name="settings_sms_event_notification_summary">You can choose how you want to get alarmed, when a SMS/SS7 attack is detected.</string>
+<string name="alert_active_test_permissions_not_granted">Please grant ALL requested permissions to run an Active Test.</string>
+<string name="alert_active_test_permissions_not_granted_persistent"> You have to grant ALL requested permissions to be able to run an Active Test with SnoopSnitch</string>
+<string name="alert_msdservice_permissions_not_granted">Please grant ALL requested permissions to enable running SnoopSnitch\'s background service.</string>
+<string name="alert_msdservice_permissions_not_granted_persistent">You have to grant ALL requested permissions to enable SnoopSnitch\'s background service.</string>
+<string name="alert_pcap_export_permissions_not_granted">Please grant the access to the storage for PCAP exports.</string>
+<string name="alert_pcap_export_permissions_not_granted_persistent">You have to grant access to the storage to use the PCAP export feature.</string>
+<string name="alert_msdservice_recording_not_possible">You have not granted the access to the location information, so Recording will not be possible.</string>
+<string name="alert_network_activity_permissions_not_granted">Please grant ALL requested information, to get all available Network <information class=""></information></string>
+<string name="alert_network_activity_permissions_not_granted_persistent">You have to grant ALL requested permissions, to get further Network information.</string>
 
 
 </resources>
