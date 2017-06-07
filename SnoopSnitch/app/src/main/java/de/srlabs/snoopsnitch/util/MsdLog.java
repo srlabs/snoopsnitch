@@ -175,6 +175,7 @@ public class MsdLog {
 		result.append("ril.modem.board:       " + osgetprop("ril.modem.board") + "\n");
 		result.append("ro.arch:               " + osgetprop("ro.arch") + "\n");
 		result.append("ro.board.platform:     " + osgetprop("ro.board.platform") + "\n");
+		result.append("/dev/diag info:\n	  " + Utils.checkDiag()+"\n");
 		return result.toString();
 	}
 }

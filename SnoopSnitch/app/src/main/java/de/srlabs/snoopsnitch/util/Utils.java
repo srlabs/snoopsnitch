@@ -446,4 +446,52 @@ public class Utils {
 		}
 		return null;
 	}
+
+	/**
+	 * Check the status of /dev/diag with:
+	 *   # \ls -alZ /dev/diag
+	 *   # crw-rw---- system   qcom_diag   u:object_r:diag_device:s0 diag
+	 *
+	 * @return string
+	 */
+	public static String checkDiag() {
+		Process checkdiag;
+		String result;
+		String checkCmd = "/system/bin/ls -alZ /dev/diag";
+		String suBinary = DeviceCompatibilityChecker.getSuBinary();
+		String cmd[] = { suBinary, "-c", checkCmd};
+
+		try {
+			checkdiag = Runtime.getRuntime().exec(cmd);
+			BufferedReader bis = new BufferedReader(new InputStreamReader(checkdiag.getInputStream()));
+			result = bis.readLine();
+			checkdiag.destroy();
+		} catch (Exception ee) {
+			Log.e(TAG, mTAG + ":checkDiag() Exception: "+ ee);
+			return "Error: no diag info";
+		}
+		Log.i(TAG, "DIAG: " + "\"" + result + "\"");
+		return result;
+	}
+
+
+	/**
+	 * Check if device comes with a Qualcomm MSM chip
+	 * @return
+	 */
+	public static boolean isDeviceMSM() {
+		String msms;
+		try {
+			msms =  MsdLog.osgetprop("ro.baseband") +
+					MsdLog.osgetprop("ro.board.platform") +
+					MsdLog.osgetprop("ro.boot.baseband");
+		} catch (Exception e) {
+			Log.e(TAG, mTAG + "Exception in isDeviceMSM(): " + e);
+			return true; // We are friendly to bad properties of unknown devices...
+		}
+		msms = msms.toLowerCase(Locale.US);
+		CharSequence cs1 = "msm";
+		return msms.contains(cs1);
+	}
+
 }
