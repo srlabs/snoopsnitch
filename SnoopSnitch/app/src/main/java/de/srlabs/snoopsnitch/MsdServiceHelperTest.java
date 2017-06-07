@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -15,7 +16,11 @@ import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 
 public class MsdServiceHelperTest extends Activity implements MsdServiceCallback{
-	private Button btnStart;
+
+	private static final String TAG = "SNSN";
+    private static final String mTAG = "MsdServiceHelperTest";
+
+    private Button btnStart;
 	private Button btnStop;
 	private Button btnUpload;
 	private TextView textView1;
@@ -35,7 +40,9 @@ public class MsdServiceHelperTest extends Activity implements MsdServiceCallback
 				textView1.scrollTo(0, scrollAmount);
 			else
 				textView1.scrollTo(0, 0);
-		} catch(NullPointerException e){}
+		} catch(NullPointerException ee) {
+			Log.e(TAG, mTAG + ": NPE in appendLogMsg(): " + ee);
+		}
 	}
 
 	@Override

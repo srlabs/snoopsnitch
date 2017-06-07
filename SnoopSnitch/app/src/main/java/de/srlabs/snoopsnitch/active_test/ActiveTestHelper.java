@@ -29,6 +29,11 @@ import de.srlabs.snoopsnitch.util.MsdLog;
 
 public class ActiveTestHelper{
 	private static String TAG = "msd-active-test-helper";
+
+	//referring to: https://en.wikipedia.org/wiki/E.164 the following thresholds are defined
+	public static final int PHONE_NUMBER_MIN_LENGTH = 7;
+	public static final int PHONE_NUMBER_MAX_LENGTH = 16;
+
 	private Activity context;
 	private ActiveTestCallback callback;
 	private boolean dummy;
@@ -165,10 +170,12 @@ public class ActiveTestHelper{
 		queryPhoneNumberAndStart(null);
 	}
 	private void queryPhoneNumberAndStart(String msg){
+
 		final String lastConfirmedOwnNumber = MsdConfig.getOwnNumber(context);
 		final EditText editText = new EditText(context);
 		editText.setHint("intl. notation, start with '+'");
 		editText.setInputType(InputType.TYPE_CLASS_PHONE);
+
 		final String text = lastConfirmedOwnNumber.isEmpty() ? "+" : lastConfirmedOwnNumber;
 		editText.setText(text);
 		editText.setSelection(text.length());
@@ -179,6 +186,7 @@ public class ActiveTestHelper{
 			dialog.setMessage(msg);
 		dialog.setView(editText);
 		dialog.setPositiveButton("Run", new DialogInterface.OnClickListener() {
+
 			private boolean alreadyClicked = false;
 			@Override
 			public void onClick(final DialogInterface dialog, final int which) {
@@ -186,10 +194,31 @@ public class ActiveTestHelper{
 					return;
 				alreadyClicked = true;
 				String confirmedOwnNumber = editText.getText().toString().trim();
-				if(!( confirmedOwnNumber.startsWith("+") || confirmedOwnNumber.startsWith("00"))){
+
+				// normalize: replace "00" in beginning with "+"
+				if(confirmedOwnNumber.startsWith("00")){
+					confirmedOwnNumber = confirmedOwnNumber.replaceFirst("00","+");
+				}
+
+                // Check for international prefix: + || 00 and disallow single 0 (heuristic for mobile number) in beginning
+				if(!(confirmedOwnNumber.startsWith("+")) || confirmedOwnNumber.startsWith("+0")){
 					queryPhoneNumberAndStart("Please enter an international number (with '+' or '00' in the beginning)");
 					return;
 				}
+
+                // Check min number length (with "+"): 7 chars
+                if(confirmedOwnNumber.length() < PHONE_NUMBER_MIN_LENGTH) {
+                    queryPhoneNumberAndStart("Your number is too short");
+                    return;
+                }
+
+				// check max number length (with "+"): 16 chars
+				if(confirmedOwnNumber.length() > PHONE_NUMBER_MAX_LENGTH){
+					queryPhoneNumberAndStart("Your number is too long");
+					return;
+				}
+
+                // Check number for garbage
 				String tmp = "";
 				for(int i=0;i<confirmedOwnNumber.length();i++){
 					char c = confirmedOwnNumber.charAt(i);
@@ -204,9 +233,12 @@ public class ActiveTestHelper{
 						return;
 					}
 				}
+
+                // Check if number is empty
 				confirmedOwnNumber = tmp;
 				if(confirmedOwnNumber.isEmpty())
 					return;
+
 				MsdConfig.setOwnNumber(context, confirmedOwnNumber);
 				startActiveTest(confirmedOwnNumber);
 			}
