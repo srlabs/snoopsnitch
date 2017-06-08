@@ -9,201 +9,201 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class Risk {
 
-	private Vector<Score> inter = null;
-	private Vector<Score> imper = null;
-	private Vector<Score> track = null;
-	private Vector<Score> inter3G = null;
-	private Vector<Score> imper3G = null;
-	private String operatorName = null;
-	private String operatorColor = null;
-	private Operator op = null;
-	private int mcc = 0;
-	private int mnc = 0;
-	private boolean valid = false;
+    private Vector<Score> inter = null;
+    private Vector<Score> imper = null;
+    private Vector<Score> track = null;
+    private Vector<Score> inter3G = null;
+    private Vector<Score> imper3G = null;
+    private String operatorName = null;
+    private String operatorColor = null;
+    private Operator op = null;
+    private int mcc = 0;
+    private int mnc = 0;
+    private boolean valid = false;
 
-	private Vector<Risk> serverData = null;
+    private Vector<Risk> serverData = null;
 
-	public Risk(SQLiteDatabase db, Operator currentOperator) {
+    public Risk(SQLiteDatabase db, Operator currentOperator) {
 
-		op = currentOperator;
-		mcc = op.getMcc();
-		mnc = op.getMnc();
+        op = currentOperator;
+        mcc = op.getMcc();
+        mnc = op.getMnc();
 
-		//  Set inter, imper and track values
-		this.inter = query2GScores(db, mcc, mnc, "intercept");
-		this.imper = query2GScores(db, mcc, mnc, "impersonation");
-		this.track = query2GScores(db, mcc, mnc, "tracking");
-		this.inter3G = query3GScores(db, mcc, mnc, "intercept3G");
+        //  Set inter, imper and track values
+        this.inter = query2GScores(db, mcc, mnc, "intercept");
+        this.imper = query2GScores(db, mcc, mnc, "impersonation");
+        this.track = query2GScores(db, mcc, mnc, "tracking");
+        this.inter3G = query3GScores(db, mcc, mnc, "intercept3G");
 
-		//  Impersonation makes no sense for 3G in its current form
-		//  this.imper3G = query3GScores(db, mcc, mnc, "impersonation3G");
-		this.imper3G = new Vector<Score>();
+        //  Impersonation makes no sense for 3G in its current form
+        //  this.imper3G = query3GScores(db, mcc, mnc, "impersonation3G");
+        this.imper3G = new Vector<Score>();
 
-		queryOperatorData(db, mcc, mnc);
- 
-		// Set other operators
-		serverData = new Vector<Risk>();
-		Cursor c = db.rawQuery
-			("select go.id, go.name, go.color from gsmmap_operators AS go, gsmmap_codes AS gc ON go.id = gc.id WHERE mcc=? GROUP BY gc.id",
-			new String[] {Integer.toString(mcc)});
+        queryOperatorData(db, mcc, mnc);
 
-		if (c.moveToFirst()){
-			do {
-				serverData.add(new Risk(db, c.getLong(0), c.getString(1), c.getString(2), mcc));
-			} while (c.moveToNext());
-		}
-		c.close();
+        // Set other operators
+        serverData = new Vector<Risk>();
+        Cursor c = db.rawQuery
+                ("select go.id, go.name, go.color from gsmmap_operators AS go, gsmmap_codes AS gc ON go.id = gc.id WHERE mcc=? GROUP BY gc.id",
+                        new String[]{Integer.toString(mcc)});
 
-	}
+        if (c.moveToFirst()) {
+            do {
+                serverData.add(new Risk(db, c.getLong(0), c.getString(1), c.getString(2), mcc));
+            } while (c.moveToNext());
+        }
+        c.close();
 
-	public Risk(SQLiteDatabase db, long id, String operatorName, String operatorColor, int mcc) {
+    }
 
-		this.mcc = mcc;
-		this.operatorName = operatorName;
-		this.operatorColor = operatorColor;
+    public Risk(SQLiteDatabase db, long id, String operatorName, String operatorColor, int mcc) {
 
-		this.inter = retrieveValues(db, id, "gsmmap_inter");
-		this.imper = retrieveValues(db, id, "gsmmap_imper");
-		this.track = retrieveValues(db, id, "gsmmap_track");
-		this.inter3G = retrieveValues(db, id, "gsmmap_inter3G");
-		//  this.imper3G = retrieveValues(db, id, "gsmmap_imper3G");
-		this.imper3G = new Vector<Score>();
-	}
+        this.mcc = mcc;
+        this.operatorName = operatorName;
+        this.operatorColor = operatorColor;
 
-	private Vector<Score> retrieveValues(SQLiteDatabase db, long id, String table) {
+        this.inter = retrieveValues(db, id, "gsmmap_inter");
+        this.imper = retrieveValues(db, id, "gsmmap_imper");
+        this.track = retrieveValues(db, id, "gsmmap_track");
+        this.inter3G = retrieveValues(db, id, "gsmmap_inter3G");
+        //  this.imper3G = retrieveValues(db, id, "gsmmap_imper3G");
+        this.imper3G = new Vector<Score>();
+    }
 
-		Vector<Score> result = new Vector<Score>();
-		Cursor c = db.rawQuery
-			("select year, month, value from " + table + " where id=? order by year, month",
-			new String[] {Long.toString(id)});
+    private Vector<Score> retrieveValues(SQLiteDatabase db, long id, String table) {
 
-		if (c.moveToFirst()){
-			do {
-				int year = c.getInt(0);
-				int month = c.getInt(1);
-				double score = c.getDouble(2);
-				result.add(new Score(year, month, score));
-			} while (c.moveToNext());
-		}
-		c.close();
-		return result;
-	}
+        Vector<Score> result = new Vector<Score>();
+        Cursor c = db.rawQuery
+                ("select year, month, value from " + table + " where id=? order by year, month",
+                        new String[]{Long.toString(id)});
 
-	private void queryOperatorData(SQLiteDatabase db, int currentMCC, int currentMNC) {
+        if (c.moveToFirst()) {
+            do {
+                int year = c.getInt(0);
+                int month = c.getInt(1);
+                double score = c.getDouble(2);
+                result.add(new Score(year, month, score));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return result;
+    }
 
-		Cursor c = db.rawQuery
-			("SELECT go.name, go.color FROM gsmmap_operators AS go, gsmmap_codes AS gc ON go.id = gc.id WHERE mcc=? and mnc=? GROUP BY gc.id",
-			new String[] {Integer.toString(currentMCC), Integer.toString(currentMNC)});
+    private void queryOperatorData(SQLiteDatabase db, int currentMCC, int currentMNC) {
 
-		if (!c.moveToFirst()){
-			return;
-		}
+        Cursor c = db.rawQuery
+                ("SELECT go.name, go.color FROM gsmmap_operators AS go, gsmmap_codes AS gc ON go.id = gc.id WHERE mcc=? and mnc=? GROUP BY gc.id",
+                        new String[]{Integer.toString(currentMCC), Integer.toString(currentMNC)});
 
-		this.valid = true;
-		this.operatorName  = c.getString(0);
-		this.operatorColor = c.getString(1);
-		c.close();
-	}
+        if (!c.moveToFirst()) {
+            return;
+        }
 
-	private Vector<Score> query2GScores(SQLiteDatabase db, int currentMCC, int currentMNC, String scoreName) {
-		return queryScores(db, currentMCC, currentMNC, "risk_category", scoreName);
-	}
+        this.valid = true;
+        this.operatorName = c.getString(0);
+        this.operatorColor = c.getString(1);
+        c.close();
+    }
 
-	private Vector<Score> query3GScores(SQLiteDatabase db, int currentMCC, int currentMNC, String scoreName) {
-		return queryScores(db, currentMCC, currentMNC, "risk_3G", scoreName);
-	}
+    private Vector<Score> query2GScores(SQLiteDatabase db, int currentMCC, int currentMNC, String scoreName) {
+        return queryScores(db, currentMCC, currentMNC, "risk_category", scoreName);
+    }
 
-	private Vector<Score> queryScores(SQLiteDatabase db, int currentMCC, int currentMNC, String tableName, String scoreName) {
-		Vector<Score> result = new Vector<Score>();
+    private Vector<Score> query3GScores(SQLiteDatabase db, int currentMCC, int currentMNC, String scoreName) {
+        return queryScores(db, currentMCC, currentMNC, "risk_3G", scoreName);
+    }
 
-		Cursor c = db.query
-				(tableName,
-				 new String[] {"month", "avg(" + scoreName + ") as score" },
-				 "mcc = ? AND mnc = ?",
-				 new String[] {Integer.toString(currentMCC), Integer.toString(currentMNC)},
-				 "month", "score is not null", "month");
+    private Vector<Score> queryScores(SQLiteDatabase db, int currentMCC, int currentMNC, String tableName, String scoreName) {
+        Vector<Score> result = new Vector<Score>();
 
-		while (c.moveToNext()) {
-			String[] monthString = c.getString(0).split("-");
-			int year  = Integer.parseInt(monthString[0]);
-			int month = Integer.parseInt(monthString[1]);
-			double value = c.getDouble(1);
-			result.add(new Score(year, month, value));
-		}
+        Cursor c = db.query
+                (tableName,
+                        new String[]{"month", "avg(" + scoreName + ") as score"},
+                        "mcc = ? AND mnc = ?",
+                        new String[]{Integer.toString(currentMCC), Integer.toString(currentMNC)},
+                        "month", "score is not null", "month");
 
-		c.close();
-		return result;
-	}
+        while (c.moveToNext()) {
+            String[] monthString = c.getString(0).split("-");
+            int year = Integer.parseInt(monthString[0]);
+            int month = Integer.parseInt(monthString[1]);
+            double value = c.getDouble(1);
+            result.add(new Score(year, month, value));
+        }
 
-	public Vector<Score> getInter() {
-		return inter;
-	}
+        c.close();
+        return result;
+    }
 
-	public Vector<Score> getImper() {
-		return imper;
-	}
+    public Vector<Score> getInter() {
+        return inter;
+    }
 
-	public Vector<Score> getTrack() {
-		return track;
-	}
+    public Vector<Score> getImper() {
+        return imper;
+    }
 
-	public Vector<Score> getInter3G() {
-		return inter3G;
-	}
+    public Vector<Score> getTrack() {
+        return track;
+    }
 
-	public Vector<Score> getImper3G() {
-		return imper3G;
-	}
+    public Vector<Score> getInter3G() {
+        return inter3G;
+    }
 
-	public String getOperatorName() {
-		return operatorName;
-	}
+    public Vector<Score> getImper3G() {
+        return imper3G;
+    }
 
-	public String getOperatorColor() {
-		if (operatorColor == null) {
-			return "#111111";
-		}
-		return operatorColor;
-	}
+    public String getOperatorName() {
+        return operatorName;
+    }
 
-	public Vector<Risk> getServerData() {
-		return serverData;
-	}
+    public String getOperatorColor() {
+        if (operatorColor == null) {
+            return "#111111";
+        }
+        return operatorColor;
+    }
 
-	public int getMcc() {
-		return mcc;
-	}
+    public Vector<Risk> getServerData() {
+        return serverData;
+    }
 
-	public int getMnc() {
-		return mnc;
-	}
+    public int getMcc() {
+        return mcc;
+    }
 
-	public boolean operatorUnknown() {
-		return op.isValid() && !valid;
-	}
+    public int getMnc() {
+        return mnc;
+    }
 
-	public boolean changed(Risk previous) {
+    public boolean operatorUnknown() {
+        return op.isValid() && !valid;
+    }
 
-		// result list changed
-		if (this.imper.size() != previous.imper.size() ||
-			this.inter.size() != previous.inter.size() ||
-			this.track.size() != previous.track.size() ||
-			this.inter3G.size() != previous.inter3G.size() ||
-			this.imper3G.size() != previous.imper3G.size()) return true;
+    public boolean changed(Risk previous) {
 
-		return
-			lastScoreChanged(this.imper, previous.imper) ||
-			lastScoreChanged(this.inter, previous.inter) ||
-			lastScoreChanged(this.track, previous.track) ||
-			lastScoreChanged(this.imper3G, previous.imper3G) ||
-			lastScoreChanged(this.inter3G, previous.inter3G);
-	}
+        // result list changed
+        if (this.imper.size() != previous.imper.size() ||
+                this.inter.size() != previous.inter.size() ||
+                this.track.size() != previous.track.size() ||
+                this.inter3G.size() != previous.inter3G.size() ||
+                this.imper3G.size() != previous.imper3G.size()) return true;
 
-	private boolean lastScoreChanged(Vector<Score> current, Vector<Score> previous) {
-		// last result changed
-		if (!current.isEmpty() && !previous.isEmpty()) {
-			return current.lastElement() != previous.lastElement();
-		}
-		return false;
-	}
+        return
+                lastScoreChanged(this.imper, previous.imper) ||
+                        lastScoreChanged(this.inter, previous.inter) ||
+                        lastScoreChanged(this.track, previous.track) ||
+                        lastScoreChanged(this.imper3G, previous.imper3G) ||
+                        lastScoreChanged(this.inter3G, previous.inter3G);
+    }
+
+    private boolean lastScoreChanged(Vector<Score> current, Vector<Score> previous) {
+        // last result changed
+        if (!current.isEmpty() && !previous.isEmpty()) {
+            return current.lastElement() != previous.lastElement();
+        }
+        return false;
+    }
 }

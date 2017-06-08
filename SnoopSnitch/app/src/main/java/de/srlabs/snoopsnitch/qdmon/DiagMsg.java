@@ -8,11 +8,11 @@ import java.util.List;
 import android.util.Log;
 
 public class DiagMsg {
-    final static byte ESC_MASK     = 0x20;
-    final static byte ESC_CHAR     = 0x7d;
+    final static byte ESC_MASK = 0x20;
+    final static byte ESC_CHAR = 0x7d;
     final static byte CONTROL_CHAR = 0x7e;
 
-    byte[]            data;
+    byte[] data;
 
     DiagMsg(byte[] data) {
         this.data = data;
@@ -26,7 +26,7 @@ public class DiagMsg {
             de_escaped.mark();
             buf.mark();
 
-            for (;;) {
+            for (; ; ) {
                 byte b = buf.get();
                 if (b == CONTROL_CHAR) {
                     break;
@@ -96,9 +96,9 @@ public class DiagMsg {
 
 class Crc16 {
     final static int INITIAL = 0x84cf;
-    final static int POLY    = 0x1021;
+    final static int POLY = 0x1021;
 
-    int              crc     = INITIAL;
+    int crc = INITIAL;
 
     static public int crc16(byte[] ary) {
         return (new Crc16(ary)).getCrc();

@@ -3,6 +3,7 @@ package de.srlabs.snoopsnitch.util;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.database.sqlite.SQLiteDatabase;
+
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 
 // Class for concurrent database access.
@@ -32,7 +33,7 @@ public class MsdDatabaseManager {
     }
 
     public synchronized SQLiteDatabase openDatabase() {
-        if(mOpenCounter.incrementAndGet() == 1) {
+        if (mOpenCounter.incrementAndGet() == 1) {
             // Opening new database
             mDatabase = mDatabaseHelper.getWritableDatabase();
         }
@@ -40,7 +41,7 @@ public class MsdDatabaseManager {
     }
 
     public synchronized void closeDatabase() {
-        if(mOpenCounter.decrementAndGet() == 0) {
+        if (mOpenCounter.decrementAndGet() == 0) {
             // Closing database
             mDatabase.close();
 
