@@ -169,7 +169,7 @@ then
 	# system and therefore can only be used from the Android java code but not from 
 	# native binaries.
 
-	install -m 755 openssl-1.0.1i/apps/openssl                 ${PARSER_DIR}/libopenssl.so
+	install -m 755 openssl-1.1.0f/apps/openssl                 ${PARSER_DIR}/libopenssl.so
 	install -m 755 $BASE_DIR/smime.crt                         ${PARSER_DIR}/libsmime_crt.so
 
 	# Really dirty hack: The Android build system and package installer require 
