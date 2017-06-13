@@ -28,22 +28,55 @@ public class DeviceCompatibilityChecker {
      * /system/xbin/su. Since there is no standard Android/Java API to retrieve
      * the POSIX filesystem permissions for a file, it will instead run 'su -c
      * "id"' and check whether the id command reports UID 0 (root).
+     * <p>
+     * New logic; three cases :
+     * <p>
+     * 1.     No diag device   +   no MSM Qualcomm chip -> for sure not compatible, and never will be
+     * 2.     No diag device   +   is MSM Qualcomm chip -> not compatible for now, relate to firmware changes
+     * 3.     Diag device      +   no baseband messages -> check again on next boot
      *
      * @return Returns null if everything is OK or a textual description of the
      * Error if the phone is not compatible.
      */
     public static String checkDeviceCompatibility(Context context) {
         boolean deviceIncompatibleDetected = MsdConfig.getDeviceIncompatible(context);
-        if (deviceIncompatibleDetected) {
-            return context.getResources().getString(R.string.compat_no_baseband_messages_in_active_test);
-        }
-
+        boolean deviceCompatibleDetected = MsdConfig.getDeviceCompatibleDetected(context);
+        String lastFirmwareInfo = MsdConfig.getLastFirmwareInformation(context);
+        String currentFirmwareInfo = Utils.getFirmwareInformation();
         String suBinary;
         File diagDevice = new File("/dev/diag");
 
-        if (!diagDevice.exists() && Utils.getDiagDeviceNodeMajor() == null) {
-            return context.getResources().getString(R.string.compat_no_diag);
+        if (deviceCompatibleDetected) {
+            if (lastFirmwareInfo != null && lastFirmwareInfo.equals(currentFirmwareInfo)) {
+                // we know, that device was working and there was no firmware update
+                return null;
+            }
         }
+
+        if (!diagDevice.exists() && Utils.getDiagDeviceNodeMajor() == null) {
+            if (!Utils.isDeviceMSM()) {
+                //case 1: no /dev/diag + no MSM chip -> will never be compatible
+                MsdConfig.setDeviceIncompatible(context, true);
+                return context.getResources().getString(R.string.device_never_compatible);
+            } else {
+                // case 2: no /dev/diag + MSM chip -> not compatible for now, check again after firmware changed
+                if (lastFirmwareInfo != null && !lastFirmwareInfo.equals(currentFirmwareInfo)) {
+                    // firmware change detected, be optimistic and give it a try
+                    MsdConfig.setLastFirmwareInformation(context, currentFirmwareInfo);
+                    return null;
+                }
+
+                MsdConfig.setLastFirmwareInformation(context, currentFirmwareInfo);
+                return context.getResources().getString(R.string.device_not_compatible_now_no_diag);
+            }
+        } else {
+            if (deviceIncompatibleDetected) {
+                //case 3: diag device + no baseband messages
+                return context.getResources().getString(R.string.compat_no_baseband_messages_in_active_test);
+            }
+        }
+
+        MsdConfig.setLastFirmwareInformation(context, currentFirmwareInfo);
 
         suBinary = getSuBinary();
         if (suBinary == null) {

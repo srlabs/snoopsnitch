@@ -216,4 +216,13 @@ public class MsdConfig {
         return sharedPrefs(context).getString("settings_sms_event", "vibrate+ring");
     }
 
+    public static String getLastFirmwareInformation(Context context) {
+        return sharedPrefs(context).getString("firmware_info", null);
+    }
+
+    public static void setLastFirmwareInformation(Context context, String firmwareInfo) {
+        Editor edit = sharedPrefs(context).edit();
+        edit.putString("firmware_info", firmwareInfo);
+        edit.commit();
+    }
 }

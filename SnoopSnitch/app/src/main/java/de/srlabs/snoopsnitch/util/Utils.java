@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -496,6 +497,53 @@ public class Utils {
         msms = msms.toLowerCase(Locale.US);
         CharSequence cs1 = "msm";
         return msms.contains(cs1);
+    }
+
+    /**
+     * Get the epoch time of the firmware build date
+     *
+     * @return
+     */
+    private static String getFirmwareBuildDate() {
+        String epochBuildTime;
+        try {
+            epochBuildTime = MsdLog.osgetprop("ro.build.date.utc");
+        } catch (Exception e) {
+            Log.e(TAG, mTAG + " Exception in getFirmwareBuildDate(): " + e);
+            return null;
+        }
+        return epochBuildTime;
+    }
+
+    /**
+     * Get the output of cat /proc/version
+     *
+     * @return
+     */
+    private static String getProcVersionInfo() {
+        String result;
+        String infoFile = "/proc/version";
+
+        try {
+            FileReader reader = new FileReader(infoFile);
+            BufferedReader bis = new BufferedReader(reader);
+            result = bis.readLine();
+        } catch (Exception ee) {
+            Log.e(TAG, mTAG + ":getProcVersionInfo() Exception: " + ee);
+            return null;
+        }
+        Log.i(TAG, "/proc/version: " + "\"" + result + "\"");
+        return result;
+    }
+
+    /**
+     * Create a string containing lots of information about the current firmware
+     * This can be used to check, whether the firmware changed
+     *
+     * @return
+     */
+    public static String getFirmwareInformation() {
+        return "" + getFirmwareBuildDate() + " | " + getProcVersionInfo();
     }
 
 }

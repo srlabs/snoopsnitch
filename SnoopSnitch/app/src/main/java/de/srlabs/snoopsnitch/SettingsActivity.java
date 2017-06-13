@@ -96,7 +96,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     private void showDialogPersistentDeniedPermissions(String message) {
         /*TODO: Send user to permission settings for SNSN directly? Adapt message accordingly
-		 startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+         startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
 				 Uri.parse("package:de.srlabs.snoopsnitch")));*/
         MsdDialog.makeConfirmationDialog(this, message, null, null, false).show();
     }

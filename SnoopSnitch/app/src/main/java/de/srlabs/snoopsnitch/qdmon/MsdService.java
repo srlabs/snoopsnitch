@@ -465,6 +465,7 @@ public class MsdService extends Service {
     public void onCreate() {
         super.onCreate();
         MsdLog.init(this);
+
         MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
         cleanupIncompleteOldFiles();
         try {

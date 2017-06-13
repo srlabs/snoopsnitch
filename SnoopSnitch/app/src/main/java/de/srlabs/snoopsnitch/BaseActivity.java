@@ -237,7 +237,7 @@ public class BaseActivity extends FragmentActivity {
         public void run() {
             /* do what you need to do */
             refreshView();
-			/* and here comes the "trick" */
+            /* and here comes the "trick" */
             handler.postDelayed(runnable, refresh_intervall);
         }
     };

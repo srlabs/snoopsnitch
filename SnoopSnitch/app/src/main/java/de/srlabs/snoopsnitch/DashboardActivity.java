@@ -145,6 +145,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     protected void onStart() {
         super.onStart();
 
+
         layout = (DashboardThreatChart) findViewById(R.id.SilentSMSChartMonth);
         vto = layout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
@@ -169,6 +170,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         // Update RAT
         updateInterseptionImpersonation();
         updateLastAnalysis();
+
     }
 
     public void openDetailView(View view) {
@@ -507,7 +509,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
     private void showDialogPersistentDeniedPermissions(String message) {
         /*TODO: Send user to permission settings for SNSN directly? Adapt message accordingly
-					 startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                     startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
 							 Uri.parse("package:de.srlabs.snoopsnitch")));*/
         MsdDialog.makeConfirmationDialog(this, message, null, null, false).show();
 
@@ -547,6 +549,5 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
                     }
                 }, false).show();
     }
-
 
 }

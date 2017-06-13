@@ -64,7 +64,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                 if (this.getActivity() != null && !PermissionChecker.isWritingToExternalStorageAllowed(this.getActivity()))
                     PermissionChecker.checkAndRequestPermissionForPCAPExport(this.getActivity());
                 /*else
-					PermissionChecker.checkAndRequestPermissionForPCAPExport(getContext());*/ //only possible in API>=23
+                    PermissionChecker.checkAndRequestPermissionForPCAPExport(getContext());*/ //only possible in API>=23
             } else {
                 MsdLog.d(TAG, "PCAP export disabled");
             }

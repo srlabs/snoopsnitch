@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import de.srlabs.snoopsnitch.BuildConfig;
 import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.Utils;
 
 
 public class AboutActivity extends BaseActivity {
@@ -25,6 +26,7 @@ public class AboutActivity extends BaseActivity {
                         "\n------------------------------------------------------------" +
                         "\n" +
                         MsdLog.getDeviceProps() +
+                        "Firmware: " + Utils.getFirmwareInformation() + "\n" +
                         "------------------------------------------------------------" +
                         "\n\n" +
                         this.getString(R.string.about_text) +
