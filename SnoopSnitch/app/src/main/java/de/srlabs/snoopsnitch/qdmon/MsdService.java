@@ -1060,8 +1060,8 @@ public class MsdService extends Service {
                     }
                     if (line.trim().length() == 0)
                         continue; // Ignore empty lines
-                    // Mark the device as compatible after the first SQL or RAT line from the parser.
-                    if (!deviceCompatibleDetected && (line.startsWith("SQL:") || line.startsWith("RAT:"))) {
+                    // Mark the device as compatible after the first SQL or RAT or DIAG_OK line from the parser.
+                    if (!deviceCompatibleDetected && (line.startsWith("SQL:") || line.startsWith("RAT:") || line.equals("DIAG_OK"))) {
                         deviceCompatibleDetected = true;
                         MsdConfig.setDeviceCompatibleDetected(MsdService.this, true);
                     }
