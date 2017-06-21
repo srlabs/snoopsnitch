@@ -302,6 +302,8 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
 
      <string name="compat_no_baseband_messages_in_active_test">Fehler, keine Basebandnachrichten während aktivem Test.</string>
      <string name="compat_no_baseband_messages">Fehler, keine Basebandnachrichten.</string>
+     <string name="device_never_compatible">Ihr Gerät besitzt keinen MSM Qualcomm-Chip, und unterstützt deshalb SnoopSnitch\'s Kernfunktionalität nicht.</string>
+     <string name="device_not_compatible_now_no_diag">Ihr Gerät wird momentan nicht unterstützt. Dies kann sich durch ein Firmware-Update ändern.</string>
 
      <!-- Settings-->
      <string name="no_service_running">Dienst läuft</string>
