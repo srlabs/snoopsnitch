@@ -15,6 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import de.srlabs.snoopsnitch.BuildConfig;
 import de.srlabs.snoopsnitch.CrashUploadActivity;
 import de.srlabs.snoopsnitch.DashboardActivity;
 import de.srlabs.snoopsnitch.EnableAutoUploadModeActivity;
@@ -39,7 +40,7 @@ public class MsdServiceNotifications {
         Notification n = new NotificationCompat.Builder(service)
                 .setContentTitle(service.getString(R.string.app_name))
                 .setTicker(service.getString(R.string.app_name) + " " + service.getString(R.string.no_service_running))
-                .setContentText(service.getString(R.string.no_service_running) + " [" + service.getString(R.string.app_version) + "]")
+                .setContentText(service.getString(R.string.no_service_running) + " [" + BuildConfig.VERSION_NAME + "]")
                 .setSmallIcon(R.drawable.ic_content_imsi_ok)
                 .setLargeIcon(icon)
                 .setOngoing(true)

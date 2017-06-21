@@ -110,7 +110,7 @@ public class UploadDebugActivity extends BaseActivity {
             String json = "{\n\"APPID\":\"" + MsdConfig.getAppId(this) + "\",\n";
             json += "\"REPORT_CONTACT\":" + escape(contactInfo) + ",\n";
             json += "\"REPORT_TEXT\":" + escape(whatToReport) + ",\n";
-            json += "\"SNOOPSNITCH_VERSION\":" + escape(getString(R.string.app_version)) + ",\n";
+            json += "\"SNOOPSNITCH_VERSION\":" + escape(BuildConfig.VERSION_NAME) + ",\n";
             json += "\"REPORT_FILES\": [ ";
             for (int i = 0; i < files.size(); i++) {
                 DumpFile df = files.get(i);

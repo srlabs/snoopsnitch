@@ -430,7 +430,7 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
     <string name="upload_debug_confirmation_msg">Your report ID is %s. Feel free to send additional information to snoopsnitch@srlabs.de</string>
 
 	<string name="copyright_text">
-Copyright (C) 2014, 2015  Security Research Labs\n
+Copyright (C) 2014 - 2017  Security Research Labs\n
 \n
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
