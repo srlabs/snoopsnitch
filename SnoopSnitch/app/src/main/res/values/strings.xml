@@ -66,18 +66,24 @@ private data and location information.\n
 </string>
 
 <string name="alert_networktest_message">
+DO NOT PICK UP THE PHONE AND DO NOT REJECT THE CALL WHEN THE SERVER CALLS. IF
+YOU DO SO, YOUR NUMBER WILL GET BLACKLISTED AND BANNED FROM OUR SERVICE.\n
+\n
 The active network test collects security information about your current
 mobile network by sending and receiving a number of SMS and by placing and
 receiving a number of automatic calls.\n
-\n
-DO NOT PICK UP THE PHONE AND DO NOT REJECT THE CALL WHEN THE SERVER CALLS. IF
-YOU DO SO, YOUR NUMBER WILL GET BLACKLISTED AND BANNED FROM OUR SERVICE.
 \n
 It is normal to receive error status SMS from your operator during that test.
 The test should be free of charge. HOWEVER, YOUR OPERATOR MAY CHARGE YOU FOR
 OUTGOING SMS EVEN IF SENT TO AN INVALID DESTINATION!\n
 \n
 YOU MUST ONLY ENTER YOUR OWN PHONE NUMBER IN THE NEXT DIALOG.\n
+Also make sure to enter your number in international format prefixed by your country code as follows:\n
+\n
++[country-code][your-number]\n
+\n
+For example, a German (+49) number of 12345678 would be written:\n
++4912345678\n
 </string>
 
 <string name="alert_networktest_privacy_disclaimer">

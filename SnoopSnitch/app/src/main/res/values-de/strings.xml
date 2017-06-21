@@ -64,13 +64,13 @@ privaten Daten und Positionsinformationen enthalten können.\n
 </string>
 
 <string name="alert_networktest_message">
-Der aktive Netzwerktest sammelt Informationen zur Sicherheit des aktuellen
-Mobilfunknetzes indem eine Reihe von SMS versandt und empfangen und
-automatische Anrufe getätigt und entgegen genommen werden.\n
-\n
-LEHNEN SIE DIE ANRUFE DES SERVERS WEDER AB NOCH NEHMEN SIE SIE AN. FALLS
+LEHNEN SIE DIE ANRUFE DES SERVERS WEDER AB NOCH NEHMEN SIE DIESE AN. FALLS
 ANRUFE ANGENOMMEN ODER ABGELEHNT WERDEN, WIRD IHRE NUMMER VON DIESEM DIENST
 AUSGESCHLOSSEN.\n
+\n
+Der aktive Netzwerktest sammelt Informationen zur Sicherheit des aktuellen
+Mobilfunknetzes, indem eine Reihe von SMS versandt und empfangen und
+automatische Anrufe getätigt und entgegen genommen werden.\n
 \n
 Fehlermeldungen Ihres Netzbetreibers per SMS sind während des Tests normal.
 Dennoch sollte Sie der aktive Netzwerktest nichts kosten. EINIGE
@@ -79,6 +79,12 @@ EINE UNGÜLTIGE NUMMER GESENDET WERDEN.\n
 \n
 IM NÄCHSTEN DIALOG DÜRFEN SIE AUSSCHLIEßLICH IHRE EIGENE TELEFONNUMMER
 EINGEBEN!\n
+Bitte geben Sie Ihre Telefonnummer im internationalen Format, beginnend mit dem Ländercode, an:\n
+\n
++[Ländercode][Ihre Telefonnummer]\n
+\n
+Zum Beispiel, eine deutsche (+49) Telefonnummer "12345678" soll wie folgt eingegeben werden:\n
++4912345678\n
 </string>
 
 <string name="alert_networktest_privacy_disclaimer">

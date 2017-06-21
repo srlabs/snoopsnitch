@@ -137,7 +137,6 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
 
     
     <!-- Dashboard Screen -->
-    <string name="dashboard_upload_description"> scans zijn gereed voor upload</string>
     <string name="dashboard_lastanalysis">Laatste analyse: </string>
     <string name="dashboard_lastanalysis_time"></string>
     <string name="dashboard_sms_description">SMS &amp; SS7 attacks</string>
