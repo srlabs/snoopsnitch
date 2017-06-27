@@ -11,10 +11,27 @@ android {
         versionName "1.0.2-rc1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    //signing release apk
+    if(project.hasProperty("RELEASE_STORE_FILE")) {
+	    signingConfigs {
+	       release {
+		   storeFile file(RELEASE_STORE_FILE)
+		   storePassword RELEASE_STORE_PASSWORD
+		   keyAlias RELEASE_KEY_ALIAS
+		   keyPassword RELEASE_KEY_PASSWORD
+	       }
+	    }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
+	    //signing release apk
+	    if(project.hasProperty("RELEASE_STORE_FILE")) {
+		signingConfig signingConfigs.release
+	    }
         }
     }
     lintOptions {
