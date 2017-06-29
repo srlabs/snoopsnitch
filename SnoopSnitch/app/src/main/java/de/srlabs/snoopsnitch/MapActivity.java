@@ -1,6 +1,7 @@
 package de.srlabs.snoopsnitch;
 
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.qdmon.Operator;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +21,12 @@ public class MapActivity extends BaseActivity {
 
             // We have to set margin/padding to zero to avoid
             // a white border around the web view
-            String customHtml = "<html><head><style>* {margin:0;padding:0;}</style></head><body><iframe src=\"https://gsmmap.org/?n=0\" width=\"100%\" height=\"100%\" scrolling=\"auto\" frameborder=\"0\" ></iframe></body></html>";
+
+            Operator currentOperator = new Operator(this);
+            String mcc = ""+currentOperator.getMcc();
+            Log.i("SNSN: "+getLocalClassName(), "Showing gsmmap for MCC: "+mcc);
+
+            String customHtml = "<html><head><style>* {margin:0;padding:0;}</style></head><body><iframe src=\"https://gsmmap.org/?n="+mcc+"\" width=\"100%\" height=\"100%\" scrolling=\"auto\" frameborder=\"0\" ></iframe></body></html>";
             webview.loadData(customHtml, "text/html", "UTF-8");
         } catch (Exception e) {
             Log.e(getLocalClassName(), e.getMessage());
