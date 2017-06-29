@@ -546,4 +546,18 @@ public class Utils {
         return "" + getFirmwareBuildDate() + " | " + getProcVersionInfo();
     }
 
+    /**
+     * Check if the SIM card is ready for proper usage
+     * @return
+     */
+    public static boolean isSIMCardReady(Context context){
+        TelephonyManager telMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        //check default SIM card
+        int simState = telMgr.getSimState();
+        if (simState == TelephonyManager.SIM_STATE_READY)
+            return true;
+        return false;
+    }
+
 }

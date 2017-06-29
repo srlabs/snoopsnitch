@@ -263,6 +263,7 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="error_notification_text">Please submit a problem report!</string>
      <string name="common_null_paging">Null Paging</string>
      <string name="error_root_privileges_denied">Root privileges denied!</string>
+     <string name="error_sim_card_not_ready">Your SIM card is not ready to use.\nPlease make sure that you inserted a SIM card and unlocked it.</string>
 
      <!-- Operator or country is unknown -->
      <string name="operator_not_found">
@@ -466,6 +467,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="alert_network_activity_permissions_not_granted_persistent">You have to grant ALL requested permissions, to get further Network information.</string>
 <string name="device_never_compatible">Your device does not have a MSM Qualcomm chip, and is therefore not able to run SnoopSnitch main features.</string>
 <string name="device_not_compatible_now_no_diag">Your device is not compatible currently. This might change with an upcoming firmware update.</string>
+
 
 
 </resources>

@@ -27,6 +27,7 @@ import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.Utils;
 
 public class ActiveTestHelper {
     private static String TAG = "msd-active-test-helper";
@@ -268,6 +269,11 @@ public class ActiveTestHelper {
 
     public void showConfirmDialogAndStart(final boolean clearResults) {
 
+        if(!Utils.isSIMCardReady(context)){
+            MsdDialog.makeNotificationDialog(context,context.getResources().getString(R.string.error_sim_card_not_ready), null, false).show();
+            return;
+        }
+
         if (isAirplaneModeOn(context)) {
             MsdDialog.makeNotificationDialog(context, context.getResources().getString(R.string.alert_airplanemode_on), null, false).show();
             return;
@@ -331,5 +337,4 @@ public class ActiveTestHelper {
                     Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
         }
     }
-
 }

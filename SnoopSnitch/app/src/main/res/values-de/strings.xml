@@ -263,6 +263,7 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      <string name="error_notification_text">Bitte senden Sie einen Fehlerbericht!</string>
      <string name="common_null_paging">Null Paging</string>
      <string name="error_root_privileges_denied">Rootzugriff verweigert!</string>
+     <string name="error_sim_card_not_ready">Die SIM-Karte kann nicht verwendet werden.\nBitte stellen Sie sicher, dass eine SIM-Karte im Telefon vorhanden ist, und diese entsperrt ist.</string>
 
      <!-- Operator or country is unknown -->
      <string name="operator_not_found">
