@@ -123,12 +123,21 @@ public class ActiveTestAdvanced extends BaseActivity {
                 startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
             }
         });
-        this.btnNetwork.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS));
-            }
-        });
+
+        final Intent operatorSettingsIntent = new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+        if(operatorSettingsIntent.resolveActivity(getPackageManager()) == null){
+            //intent not available, so hide Network button
+            this.btnNetwork.setVisibility(View.GONE);
+        }
+        else {
+            this.btnNetwork.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(operatorSettingsIntent);
+                }
+            });
+        }
+
         updateButtons();
         getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
