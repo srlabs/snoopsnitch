@@ -458,7 +458,7 @@ public class ActiveTestService extends Service {
                 try {
                     telephonyService.endCall();
                 } catch (RemoteException e) {
-                    handleFatalError("RemoteException in telephonyService.endCall()");
+                    stateInfo("RemoteException in telephonyService.endCall: "+e);
                 }
             } else if (state == State.CALL_MT_API) {
                 if (api != null)
