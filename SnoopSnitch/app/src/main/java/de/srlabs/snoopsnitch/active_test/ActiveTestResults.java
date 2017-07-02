@@ -12,6 +12,7 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.Utils;
 
@@ -408,6 +409,9 @@ public class ActiveTestResults implements Serializable {
         StringBuffer result = new StringBuffer();
         NetworkOperatorTestResults currentNetworkOperator = getCurrentNetworkOperator();
         String currentOperatorName = "Not connected";
+
+        numIterations = MsdConfig.getActiveTestNumIterations(context);
+
         if (currentNetworkOperator != null)
             currentOperatorName = currentNetworkOperator.operatorName;
         result.append("setNetworkOperatorName(" + escape(currentOperatorName) + ");\n");

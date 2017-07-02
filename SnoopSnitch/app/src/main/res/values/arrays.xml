@@ -28,6 +28,8 @@
         <item>3</item>
         <item>4</item>
         <item>5</item>
+        <item>10</item>
+        <item>20</item>
     </string-array>
 
     <string-array name="settings_active_test_num_iterations_values">
@@ -36,6 +38,8 @@
         <item>3</item>
         <item>4</item>
         <item>5</item>
+        <item>10</item>
+        <item>20</item>
     </string-array>
     <string-array name="imsi_catcher_notification_strings">
         <item>@string/notification_silent</item>

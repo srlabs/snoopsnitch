@@ -97,8 +97,10 @@ public class ActiveTestAdvanced extends BaseActivity {
         this.btnMode = (Button) findViewById(R.id.btnMode);
         this.btnNetwork = (Button) findViewById(R.id.btnNetwork);
         this.activeTestWebView = (WebView) findViewById(R.id.activeTestWebView);
-        loadWebView();
+
         activeTestHelper = new ActiveTestHelper(this, activeTestCallback);
+        loadWebView();
+
         this.btnStartStop.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
