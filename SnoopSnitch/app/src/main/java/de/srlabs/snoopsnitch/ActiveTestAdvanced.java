@@ -2,6 +2,7 @@ package de.srlabs.snoopsnitch;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -127,11 +128,10 @@ public class ActiveTestAdvanced extends BaseActivity {
         });
 
         final Intent operatorSettingsIntent = new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
-        if(operatorSettingsIntent.resolveActivity(getPackageManager()) == null){
-            //intent not available, so hide Network button
-            this.btnNetwork.setVisibility(View.GONE);
-        }
-        else {
+        ActivityInfo activityInfo = operatorSettingsIntent.resolveActivityInfo(getPackageManager(),operatorSettingsIntent.getFlags());
+        if(activityInfo != null && activityInfo.enabled && activityInfo.exported){
+            //intent available and usable, so show Network button
+            this.btnNetwork.setVisibility(View.VISIBLE);
             this.btnNetwork.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

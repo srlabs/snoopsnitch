@@ -30,7 +30,8 @@
             android:id="@+id/btnNetwork"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Network" />
+            android:text="Network"
+            android:visibility="invisible" />
     </LinearLayout>
 <ScrollView
 android:layout_width="fill_parent"
