@@ -21,7 +21,7 @@
 						}
 					],
 					"name": "Telekom.al",
-					"color": "",
+					"color": "#E2007A",
 					"values": {
 						"inter3G": [
 							{
@@ -1175,7 +1175,7 @@
 						}
 					],
 					"name": "Ucom",
-					"color": "",
+					"color": "#78B406",
 					"values": {
 						"inter3G": [
 							{
@@ -5024,7 +5024,7 @@
 						}
 					],
 					"name": "Belaruslife",
-					"color": "",
+					"color": "#CF2930",
 					"values": {
 						"inter": [
 							{
@@ -7035,7 +7035,7 @@
 						}
 					],
 					"name": "Brasil Telecom",
-					"color": "",
+					"color": "#2084CE",
 					"values": {
 						"inter": [
 							{
@@ -7225,7 +7225,7 @@
 						}
 					],
 					"name": "Algar",
-					"color": "",
+					"color": "#0268A9",
 					"values": {
 						"inter": [
 							{
@@ -8309,7 +8309,7 @@
 						}
 					],
 					"name": "Rogers Wireless",
-					"color": "",
+					"color": "#EE141B",
 					"values": {
 						"inter": [
 							{
@@ -8780,7 +8780,7 @@
 						}
 					],
 					"name": "Freedom",
-					"color": "",
+					"color": "#F37100",
 					"values": {
 						"inter": [
 							{
@@ -11215,7 +11215,7 @@
 						}
 					],
 					"name": "CUBACEL",
-					"color": "",
+					"color": "#51559B",
 					"values": {
 						"inter": [
 							{
@@ -12848,7 +12848,7 @@
 						}
 					],
 					"name": "TT-Netværket",
-					"color": "",
+					"color": "#680090",
 					"values": {
 						"inter": [
 							{
@@ -17698,7 +17698,7 @@
 						}
 					],
 					"name": "Omea Telecom",
-					"color": "",
+					"color": "#721C7E",
 					"values": {
 						"usim": [
 							{
@@ -23727,7 +23727,7 @@
 						}
 					],
 					"name": "tiGO",
-					"color": "",
+					"color": "#396BB4",
 					"values": {
 						"inter": [
 							{
@@ -24668,7 +24668,7 @@
 						}
 					],
 					"name": "CSL",
-					"color": "",
+					"color": "#FAA61A",
 					"values": {
 						"inter": [
 							{
@@ -28444,7 +28444,7 @@
 						}
 					],
 					"name": "Dolphin",
-					"color": "",
+					"color": "#058AC4",
 					"values": {
 						"inter": [
 							{
@@ -29314,7 +29314,7 @@
 						}
 					],
 					"name": "XL",
-					"color": "",
+					"color": "#00C89F",
 					"values": {
 						"inter": [
 							{
@@ -29562,7 +29562,7 @@
 						}
 					],
 					"name": "MCCI",
-					"color": "",
+					"color": "#53C6CE",
 					"values": {
 						"inter": [
 							{
@@ -29825,7 +29825,7 @@
 						}
 					],
 					"name": "Rightel",
-					"color": "",
+					"color": "#AC006B",
 					"values": {
 						"inter": [
 							{
@@ -30220,7 +30220,7 @@
 						}
 					],
 					"name": "Asia Cell",
-					"color": "",
+					"color": "#D9014F",
 					"values": {
 						"inter": [
 							{
@@ -30976,7 +30976,7 @@
 						}
 					],
 					"name": "Tesco",
-					"color": "",
+					"color": "#00A3E0",
 					"values": {
 						"usim": [
 							{
@@ -31474,7 +31474,7 @@
 						}
 					],
 					"name": "Jawwal",
-					"color": "",
+					"color": "#93BF3D",
 					"values": {
 						"inter": [
 							{
@@ -31525,7 +31525,7 @@
 						}
 					],
 					"name": "Wataniya Mobile",
-					"color": "",
+					"color": "#E31837",
 					"values": {
 						"inter": [
 							{
@@ -31576,7 +31576,7 @@
 						}
 					],
 					"name": "Hot Mobile",
-					"color": "",
+					"color": "#D91921",
 					"values": {
 						"inter": [
 							{
@@ -31609,7 +31609,7 @@
 						}
 					],
 					"name": "PHI",
-					"color": "",
+					"color": "#57AD02",
 					"values": {
 						"inter3G": [
 							{
@@ -34361,7 +34361,7 @@
 						}
 					],
 					"name": "Altel",
-					"color": "",
+					"color": "#EA2B8F",
 					"values": {
 						"inter": [
 							{
@@ -34467,7 +34467,7 @@
 						}
 					],
 					"name": "Safaricom",
-					"color": "",
+					"color": "#6EB43F",
 					"values": {
 						"inter": [
 							{
@@ -34802,7 +34802,7 @@
 						}
 					],
 					"name": "yu",
-					"color": "",
+					"color": "#ED1B26",
 					"values": {
 						"inter": [
 							{
@@ -35459,7 +35459,7 @@
 						}
 					],
 					"name": "O!",
-					"color": "",
+					"color": "#E40981",
 					"values": {
 						"inter": [
 							{
@@ -35957,7 +35957,7 @@
 						}
 					],
 					"name": "mtc touch",
-					"color": "",
+					"color": "#009FB5",
 					"values": {
 						"inter": [
 							{
@@ -36078,7 +36078,7 @@
 						}
 					],
 					"name": "Madar",
-					"color": "",
+					"color": "#6FA131",
 					"values": {
 						"inter": [
 							{
@@ -37545,7 +37545,7 @@
 						}
 					],
 					"name": "Celcom",
-					"color": "",
+					"color": "#0075B9",
 					"values": {
 						"inter": [
 							{
@@ -37707,7 +37707,7 @@
 						}
 					],
 					"name": "Maxis",
-					"color": "",
+					"color": "#1EE600",
 					"values": {
 						"inter": [
 							{
@@ -38837,7 +38837,7 @@
 						}
 					],
 					"name": "Unefon",
-					"color": "",
+					"color": "#FFC600",
 					"values": {
 						"inter": [
 							{
@@ -39118,7 +39118,7 @@
 						}
 					],
 					"name": "Office des Telephones",
-					"color": "",
+					"color": "#D90000",
 					"values": {
 						"inter": [
 							{
@@ -39522,7 +39522,7 @@
 						}
 					],
 					"name": "IAM",
-					"color": "",
+					"color": "#F58220",
 					"values": {
 						"inter": [
 							{
@@ -39869,7 +39869,7 @@
 						}
 					],
 					"name": "MPT",
-					"color": "",
+					"color": "#231F20",
 					"values": {
 						"inter": [
 							{
@@ -40018,7 +40018,7 @@
 						}
 					],
 					"name": "NDCL",
-					"color": "",
+					"color": "#00368C",
 					"values": {
 						"inter3G": [
 							{
@@ -42217,7 +42217,7 @@
 						}
 					],
 					"name": "Spark",
-					"color": "",
+					"color": "#5F259F",
 					"values": {
 						"inter": [
 							{
@@ -43064,7 +43064,7 @@
 						}
 					],
 					"name": "Telia",
-					"color": "",
+					"color": "#82368C",
 					"values": {
 						"inter": [
 							{
@@ -43560,7 +43560,7 @@
 						}
 					],
 					"name": "Omantel",
-					"color": "",
+					"color": "#1465A5",
 					"values": {
 						"inter": [
 							{
@@ -44150,7 +44150,7 @@
 						}
 					],
 					"name": "Viva",
-					"color": "",
+					"color": "#7D3A70",
 					"values": {
 						"inter3G": [
 							{
@@ -44246,7 +44246,7 @@
 						}
 					],
 					"name": "Entel",
-					"color": "",
+					"color": "#0154A0",
 					"values": {
 						"inter3G": [
 							{
@@ -44464,7 +44464,7 @@
 						}
 					],
 					"name": "Smart",
-					"color": "",
+					"color": "#0B9444",
 					"values": {
 						"inter": [
 							{
@@ -46739,7 +46739,7 @@
 						}
 					],
 					"name": "NetWorkS!",
-					"color": "",
+					"color": "#990033",
 					"values": {
 						"inter": [
 							{
@@ -47115,7 +47115,7 @@
 						}
 					],
 					"name": "MEO",
-					"color": "",
+					"color": "#000000",
 					"values": {
 						"inter": [
 							{
@@ -50702,7 +50702,7 @@
 						}
 					],
 					"name": "Win Mobile",
-					"color": "",
+					"color": "#0093DD",
 					"values": {
 						"inter": [
 							{
@@ -50922,7 +50922,7 @@
 						}
 					],
 					"name": "Al Jawal",
-					"color": "",
+					"color": "#833D71",
 					"values": {
 						"inter": [
 							{
@@ -52731,7 +52731,7 @@
 						}
 					],
 					"name": "Swan",
-					"color": "",
+					"color": "#004282",
 					"values": {
 						"inter": [
 							{
@@ -53396,7 +53396,7 @@
 						}
 					],
 					"name": "Hormuud",
-					"color": "",
+					"color": "#01A54F",
 					"values": {
 						"inter": [
 							{
@@ -53614,7 +53614,7 @@
 						}
 					],
 					"name": "Telkom Mobile",
-					"color": "",
+					"color": "#1081C8",
 					"values": {
 						"inter": [
 							{
@@ -53652,7 +53652,7 @@
 						}
 					],
 					"name": "Cell C",
-					"color": "",
+					"color": "#000000",
 					"values": {
 						"inter": [
 							{
@@ -56062,7 +56062,7 @@
 						}
 					],
 					"name": "SWEDEN",
-					"color": "",
+					"color": "#E64714",
 					"values": {
 						"inter": [
 							{
@@ -56165,7 +56165,7 @@
 						}
 					],
 					"name": "Sweden 3G",
-					"color": "",
+					"color": "#990AE3",
 					"values": {
 						"inter": [
 							{
@@ -56922,7 +56922,7 @@
 						}
 					],
 					"name": "Sweden 2G",
-					"color": "",
+					"color": "#FD003A",
 					"values": {
 						"inter": [
 							{
@@ -58052,7 +58052,7 @@
 						}
 					],
 					"name": "Salt",
-					"color": "",
+					"color": "#000000",
 					"values": {
 						"inter": [
 							{
@@ -58844,7 +58844,7 @@
 						}
 					],
 					"name": "tiGO",
-					"color": "",
+					"color": "#4B4494",
 					"values": {
 						"inter": [
 							{
@@ -58870,7 +58870,7 @@
 						}
 					],
 					"name": "Zantel",
-					"color": "",
+					"color": "#8AC440",
 					"values": {
 						"inter": [
 							{
@@ -58992,7 +58992,7 @@
 						}
 					],
 					"name": "my CAT 3G+",
-					"color": "",
+					"color": "#FF6600",
 					"values": {
 						"inter": [
 							{
@@ -59756,7 +59756,7 @@
 						}
 					],
 					"name": "Tunicell",
-					"color": "",
+					"color": "#FFFFFF",
 					"values": {
 						"inter": [
 							{
@@ -60588,7 +60588,7 @@
 						}
 					],
 					"name": "Smart",
-					"color": "",
+					"color": "#2E558E",
 					"values": {
 						"inter3G": [
 							{
@@ -61073,7 +61073,7 @@
 						}
 					],
 					"name": "lifecell",
-					"color": "",
+					"color": "#FED11C",
 					"values": {
 						"inter": [
 							{
@@ -61241,7 +61241,7 @@
 						}
 					],
 					"name": "Utel",
-					"color": "",
+					"color": "#47AB25",
 					"values": {
 						"inter": [
 							{
@@ -65447,7 +65447,7 @@
 						}
 					],
 					"name": "GCI",
-					"color": "",
+					"color": "#B71234",
 					"values": {
 						"inter3G": [
 							{
@@ -65488,7 +65488,7 @@
 						}
 					],
 					"name": "Cellular One",
-					"color": "",
+					"color": "#CD171F",
 					"values": {
 						"inter": [
 							{
@@ -65539,7 +65539,7 @@
 						}
 					],
 					"name": "iWireless",
-					"color": "",
+					"color": "#48D537",
 					"values": {
 						"inter": [
 							{
@@ -65799,7 +65799,7 @@
 						}
 					],
 					"name": "UMS",
-					"color": "",
+					"color": "#FF0015",
 					"values": {
 						"inter": [
 							{
@@ -66567,7 +66567,7 @@
 						}
 					],
 					"name": "Econet",
-					"color": "",
+					"color": "#2B358C",
 					"values": {
 						"inter": [
 							{

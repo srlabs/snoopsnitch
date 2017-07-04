@@ -166,6 +166,10 @@ public class Risk {
         return operatorColor;
     }
 
+    public void setOperatorColor(String color){
+        this.operatorColor = color;
+    }
+
     public Vector<Risk> getServerData() {
         return serverData;
     }

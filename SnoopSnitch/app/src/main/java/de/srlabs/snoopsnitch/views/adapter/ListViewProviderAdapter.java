@@ -20,6 +20,8 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk> {
     private Context context;
     private Vector<Risk> values;
     private Risk risk;
+    private final String[] FALLBACK_COLOR_SET = {"#01FF06","#FD0100","#FC4F13","#81007F","#000000","#808080","#30D5C7"};
+
 
     public ListViewProviderAdapter(Context context, Vector<Risk> values) {
         super(context, R.layout.custom_row_layout_provider);
@@ -33,6 +35,34 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk> {
 
         // Add result data to values list
         values.insertElementAt(risk, 0);
+
+        //correct missing colors
+        addMissingOperatorColors(values);
+    }
+
+    private void addMissingOperatorColors(Vector<Risk> values) {
+        int countFixedOperators = 0;
+        for(Risk operator : values){
+            String color = operator.getOperatorColor();
+            if(color == null || color.equals("")) {
+                if(countFixedOperators >= FALLBACK_COLOR_SET.length) {
+                    countFixedOperators = 0;
+                }
+                operator.setOperatorColor(FALLBACK_COLOR_SET[countFixedOperators]);
+                countFixedOperators++;
+            }
+            else{
+                try{
+                    Color.parseColor(color);
+                }catch(IllegalArgumentException e){
+                    if(countFixedOperators >= FALLBACK_COLOR_SET.length) {
+                        countFixedOperators = 0;
+                    }
+                    operator.setOperatorColor(FALLBACK_COLOR_SET[countFixedOperators]);
+                    countFixedOperators++;
+                }
+            }
+        }
     }
 
 
@@ -61,6 +91,7 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk> {
 
             // Set provider color
             dpl.setColor(Color.parseColor(values.elementAt(position).getOperatorColor()));
+
         } else {
             rowView = inflater.inflate(R.layout.custom_row_layout_provider, parent, false);
 
