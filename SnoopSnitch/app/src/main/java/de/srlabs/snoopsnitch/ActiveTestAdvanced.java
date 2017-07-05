@@ -1,10 +1,13 @@
 package de.srlabs.snoopsnitch;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,10 +17,15 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
+import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
+import de.srlabs.snoopsnitch.util.PermissionChecker;
 import de.srlabs.snoopsnitch.util.Utils;
 
 public class ActiveTestAdvanced extends BaseActivity {
@@ -113,7 +121,11 @@ public class ActiveTestAdvanced extends BaseActivity {
                         // Start over: Clear test results and start again
                         activeTestHelper.clearResults();
                     }
-                    activeTestHelper.showConfirmDialogAndStart(false);
+
+                    if (PermissionChecker.checkAndRequestPermissionsForActiveTest(ActiveTestAdvanced.this)) {
+                        activeTestHelper.showConfirmDialogAndStart(false);
+                    }
+
                 } else { // STOP
                     activeTestHelper.stopActiveTest();
                 }
@@ -198,5 +210,65 @@ public class ActiveTestAdvanced extends BaseActivity {
             }
         });
         activeTestWebView.loadUrl("file:///android_asset/active_test_advanced.html");
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        MsdLog.d("DashboardActivity", "Received Permission request result; code: " + requestCode);
+        if (requestCode == PermissionChecker.REQUEST_ACTIVE_TEST_PERMISSIONS) {
+            if (grantResults.length > 0) {
+                //find all neccessary permissions not granted
+                List<String> notGrantedPermissions = new LinkedList<>();
+                for (int i = 0; i < permissions.length; i++) {
+                    if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                        notGrantedPermissions.add(permissions[i]);
+                    }
+                }
+
+                if (notGrantedPermissions.isEmpty()) {
+                    //Success: All neccessary permissions granted
+                    // -> start Active Test!
+                    //Log.i(TAG, "Active Test PERMISSIONS: ALL granted!");
+                    activeTestHelper.showConfirmDialogAndStart(false);
+                } else {
+
+                    //ask again for all not granted permissions
+                    boolean showDialog = false;
+                    for (String notGrantedPermission : notGrantedPermissions) {
+                        showDialog = showDialog || ActivityCompat.shouldShowRequestPermissionRationale(this, notGrantedPermission);
+                    }
+
+                    if (showDialog) {
+                        showDialogAskingForAllPermissionsActiveTest(getResources().getString(R.string.alert_active_test_permissions_not_granted));
+                    } else {
+                        // IF permission is denied (and "never ask again" is checked)
+                        // Log.e(TAG, mTAG + ": Permission FAILURE: some permissions are not granted. Asking again.");
+                        showDialogPersistentDeniedPermissions(getResources().getString(R.string.alert_active_test_permissions_not_granted_persistent));
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
+    private void showDialogAskingForAllPermissionsActiveTest(String message) {
+        MsdDialog.makeConfirmationDialog(this, message,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PermissionChecker.checkAndRequestPermissionsForActiveTest(ActiveTestAdvanced.this);
+                    }
+                }, null, false).show();
+    }
+
+    private void showDialogPersistentDeniedPermissions(String message) {
+        /*TODO: Send user to permission settings for SNSN directly? Adapt message accordingly
+                     startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+							 Uri.parse("package:de.srlabs.snoopsnitch")));*/
+        MsdDialog.makeConfirmationDialog(this, message, null, null, false).show();
+
     }
 }
