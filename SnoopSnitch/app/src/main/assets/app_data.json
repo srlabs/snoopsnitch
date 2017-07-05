@@ -2397,6 +2397,11 @@
 								"monthIndex": 76,
 								"value": 0.687,
 								"size": 0.024
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.689,
+								"size": 0.003
 							}
 						],
 						"imper": [
@@ -2499,6 +2504,11 @@
 								"monthIndex": 76,
 								"value": 0.494,
 								"size": 0.008
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.5,
+								"size": 0.001
 							}
 						],
 						"track": [
@@ -2666,8 +2676,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.897,
-								"size": 0.036
+								"value": 0.898,
+								"size": 0.048
 							}
 						],
 						"usim": [
@@ -3870,6 +3880,11 @@
 								"monthIndex": 77,
 								"value": 0.967,
 								"size": 0.009
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.97,
+								"size": 0.004
 							}
 						],
 						"usim": [
@@ -7904,9 +7919,9 @@
 			"code": "KH",
 			"name": "Cambodia",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Cambodia-2016-07.pdf",
-				"year": 2016,
-				"month": 7
+				"filename": "gsmmap.org-country_report-Cambodia-2017-06.pdf",
+				"year": 2017,
+				"month": 6
 			},
 			"boundaries": {
 				"xMin": 102.3197,
@@ -9360,8 +9375,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.89,
-								"size": 0.05
+								"value": 0.892,
+								"size": 0.134
 							}
 						],
 						"usim": [
@@ -9398,7 +9413,7 @@
 							{
 								"monthIndex": 77,
 								"value": 1,
-								"size": 0.026
+								"size": 0.079
 							}
 						]
 					}
@@ -10702,9 +10717,9 @@
 			"code": "HR",
 			"name": "Croatia",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Croatia-2016-08.pdf",
-				"year": 2016,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Croatia-2017-05.pdf",
+				"year": 2017,
+				"month": 5
 			},
 			"boundaries": {
 				"xMin": 13.5172,
@@ -11246,9 +11261,9 @@
 			"code": "CY",
 			"name": "Cyprus",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Cyprus-2016-05.pdf",
-				"year": 2016,
-				"month": 5
+				"filename": "gsmmap.org-country_report-Cyprus-2017-01.pdf",
+				"year": 2017,
+				"month": 1
 			},
 			"boundaries": {
 				"xMin": 32.301,
@@ -11358,6 +11373,11 @@
 								"monthIndex": 72,
 								"value": 0.509,
 								"size": 0.013
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.516,
+								"size": 0
 							}
 						],
 						"imper": [
@@ -11419,6 +11439,25 @@
 								"monthIndex": 52,
 								"value": 0.91,
 								"size": 0.018
+							}
+						]
+					}
+				},
+				{
+					"mcc_mnc": [
+						{
+							"mcc": 280,
+							"mnc": 20
+						}
+					],
+					"name": "PrimeTel",
+					"color": "#00000",
+					"values": {
+						"inter3G": [
+							{
+								"monthIndex": 77,
+								"value": 0.9,
+								"size": 0.004
 							}
 						]
 					}
@@ -12232,9 +12271,9 @@
 			"code": "DK",
 			"name": "Denmark",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Denmark-2016-08.pdf",
-				"year": 2016,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Denmark-2017-06.pdf",
+				"year": 2017,
+				"month": 6
 			},
 			"boundaries": {
 				"xMin": 8.1321,
@@ -13527,6 +13566,11 @@
 								"monthIndex": 76,
 								"value": 0.901,
 								"size": 0.007
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.901,
+								"size": 0.012
 							}
 						],
 						"usim": [
@@ -13603,6 +13647,11 @@
 								"monthIndex": 76,
 								"value": 0.644,
 								"size": 0.028
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.644,
+								"size": 0.012
 							}
 						],
 						"imper": [
@@ -13655,6 +13704,11 @@
 								"monthIndex": 76,
 								"value": 0.467,
 								"size": 0.017
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.445,
+								"size": 0.004
 							}
 						],
 						"track": [
@@ -13729,6 +13783,16 @@
 								"monthIndex": 76,
 								"value": 0.9,
 								"size": 0.031
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.9,
+								"size": 0.044
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.901,
+								"size": 0.025
 							}
 						]
 					}
@@ -13914,6 +13978,11 @@
 								"monthIndex": 76,
 								"value": 0.902,
 								"size": 0.008
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.901,
+								"size": 0.014
 							}
 						]
 					}
@@ -18343,7 +18412,12 @@
 							{
 								"monthIndex": 77,
 								"value": 0.683,
-								"size": 0.151
+								"size": 0.159
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.683,
+								"size": 0.007
 							}
 						],
 						"imper": [
@@ -18699,8 +18773,13 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.627,
-								"size": 0.122
+								"value": 0.626,
+								"size": 0.129
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.624,
+								"size": 0.001
 							}
 						],
 						"track": [
@@ -19208,8 +19287,13 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.932,
-								"size": 0.061
+								"value": 0.933,
+								"size": 0.069
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.933,
+								"size": 0.006
 							}
 						],
 						"usim": [
@@ -19356,7 +19440,7 @@
 							{
 								"monthIndex": 77,
 								"value": 0.995,
-								"size": 0.021
+								"size": 0.026
 							}
 						]
 					}
@@ -19754,6 +19838,11 @@
 								"monthIndex": 77,
 								"value": 0.605,
 								"size": 0.081
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.605,
+								"size": 0.006
 							}
 						],
 						"imper": [
@@ -20131,6 +20220,11 @@
 								"monthIndex": 77,
 								"value": 0.377,
 								"size": 0.069
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.377,
+								"size": 0.003
 							}
 						],
 						"track": [
@@ -20688,8 +20782,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.915,
-								"size": 0.068
+								"value": 0.916,
+								"size": 0.091
 							}
 						],
 						"usim": [
@@ -21201,8 +21295,13 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.607,
-								"size": 0.15
+								"value": 0.601,
+								"size": 0.205
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.603,
+								"size": 0.049
 							}
 						],
 						"imper": [
@@ -21548,8 +21647,13 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.496,
-								"size": 0.11
+								"value": 0.49,
+								"size": 0.152
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.489,
+								"size": 0.039
 							}
 						],
 						"track": [
@@ -21885,8 +21989,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.689,
-								"size": 0.053
+								"value": 0.69,
+								"size": 0.062
 							}
 						],
 						"inter3G": [
@@ -22067,8 +22171,13 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.922,
-								"size": 0.104
+								"value": 0.923,
+								"size": 0.127
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.923,
+								"size": 0.002
 							}
 						],
 						"usim": [
@@ -23679,8 +23788,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.984,
-								"size": 0.023
+								"value": 0.985,
+								"size": 0.05
 							}
 						]
 					}
@@ -23862,6 +23971,16 @@
 								"monthIndex": 75,
 								"value": 0.656,
 								"size": 0.007
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.503,
+								"size": 0.03
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.47,
+								"size": 0.033
 							}
 						],
 						"imper": [
@@ -23914,6 +24033,16 @@
 								"monthIndex": 75,
 								"value": 0.448,
 								"size": 0.002
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.32,
+								"size": 0.015
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.289,
+								"size": 0.015
 							}
 						],
 						"track": [
@@ -24028,6 +24157,11 @@
 								"monthIndex": 72,
 								"value": 0.901,
 								"size": 0.005
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.9,
+								"size": 0.011
 							}
 						]
 					}
@@ -24125,8 +24259,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.47,
-								"size": 0.033
+								"value": 0.626,
+								"size": 0.081
 							}
 						],
 						"imper": [
@@ -24197,8 +24331,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.302,
-								"size": 0.015
+								"value": 0.566,
+								"size": 0.039
 							}
 						],
 						"track": [
@@ -24301,8 +24435,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.831,
-								"size": 0.001
+								"value": 0.861,
+								"size": 0.033
 							}
 						]
 					}
@@ -27442,6 +27576,11 @@
 								"monthIndex": 76,
 								"value": 0.589,
 								"size": 0.001
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.662,
+								"size": 0.001
 							}
 						]
 					}
@@ -30506,9 +30645,9 @@
 			"code": "IE",
 			"name": "Ireland",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Ireland-2016-07.pdf",
-				"year": 2016,
-				"month": 7
+				"filename": "gsmmap.org-country_report-Ireland-2017-04.pdf",
+				"year": 2017,
+				"month": 4
 			},
 			"boundaries": {
 				"xMin": -10.3567,
@@ -34020,8 +34159,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.422,
-								"size": 0.004
+								"value": 0.479,
+								"size": 0.01
 							}
 						],
 						"imper": [
@@ -34037,8 +34176,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.245,
-								"size": 0.004
+								"value": 0.288,
+								"size": 0.01
 							}
 						],
 						"track": [
@@ -34077,7 +34216,7 @@
 							{
 								"monthIndex": 77,
 								"value": 0.9,
-								"size": 0.07
+								"size": 0.071
 							}
 						]
 					}
@@ -34176,9 +34315,9 @@
 			"code": "KZ",
 			"name": "Kazakhstan",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Kazakhstan-2016-08.pdf",
-				"year": 2016,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Kazakhstan-2017-06.pdf",
+				"year": 2017,
+				"month": 6
 			},
 			"boundaries": {
 				"xMin": 46.6092,
@@ -34445,9 +34584,9 @@
 			"code": "KE",
 			"name": "Kenya",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Kenya-2016-08.pdf",
-				"year": 2016,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Kenya-2017-04.pdf",
+				"year": 2017,
+				"month": 4
 			},
 			"boundaries": {
 				"xMin": 33.9032,
@@ -35520,9 +35659,9 @@
 			"code": "LV",
 			"name": "Latvia",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Latvia-2016-06.pdf",
-				"year": 2016,
-				"month": 6
+				"filename": "gsmmap.org-country_report-Latvia-2017-04.pdf",
+				"year": 2017,
+				"month": 4
 			},
 			"boundaries": {
 				"xMin": 21.0461,
@@ -35790,9 +35929,9 @@
 			"code": "LB",
 			"name": "Lebanon",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Lebanon-2016-08.pdf",
-				"year": 2016,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Lebanon-2017-04.pdf",
+				"year": 2017,
+				"month": 4
 			},
 			"boundaries": {
 				"xMin": 35.1086,
@@ -39938,6 +40077,11 @@
 								"monthIndex": 77,
 								"value": 0.9,
 								"size": 0.005
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.9,
+								"size": 0.004
 							}
 						]
 					}
@@ -41543,6 +41687,11 @@
 								"monthIndex": 72,
 								"value": 0.561,
 								"size": 0.008
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.544,
+								"size": 0.01
 							}
 						],
 						"imper": [
@@ -41695,6 +41844,11 @@
 								"monthIndex": 72,
 								"value": 0.445,
 								"size": 0.004
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.417,
+								"size": 0.001
 							}
 						],
 						"track": [
@@ -41907,8 +42061,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.912,
-								"size": 0.001
+								"value": 0.92,
+								"size": 0.019
 							}
 						],
 						"usim": [
@@ -43534,9 +43688,9 @@
 			"code": "OM",
 			"name": "Oman",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Oman-2016-08.pdf",
-				"year": 2016,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Oman-2017-04.pdf",
+				"year": 2017,
+				"month": 4
 			},
 			"boundaries": {
 				"xMin": 51.9776,
@@ -43928,6 +44082,11 @@
 								"monthIndex": 74,
 								"value": 0.901,
 								"size": 0.009
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.9,
+								"size": 0.007
 							}
 						]
 					}
@@ -45139,8 +45298,13 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.922,
-								"size": 0.006
+								"value": 0.921,
+								"size": 0.011
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.924,
+								"size": 0.005
 							}
 						],
 						"usim": [
@@ -47760,7 +47924,7 @@
 							{
 								"monthIndex": 77,
 								"value": 0.824,
-								"size": 0.008
+								"size": 0.009
 							}
 						],
 						"inter3G": [
@@ -47907,7 +48071,7 @@
 							{
 								"monthIndex": 77,
 								"value": 0.9,
-								"size": 0.049
+								"size": 0.051
 							}
 						],
 						"usim": [
@@ -47998,8 +48162,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.827,
-								"size": 0.028
+								"value": 0.833,
+								"size": 0.03
 							}
 						]
 					}
@@ -50681,8 +50845,8 @@
 							},
 							{
 								"monthIndex": 76,
-								"value": 0.814,
-								"size": 0.005
+								"value": 0.818,
+								"size": 0.009
 							}
 						],
 						"usim": [
@@ -51679,8 +51843,8 @@
 							},
 							{
 								"monthIndex": 77,
-								"value": 0.813,
-								"size": 0.006
+								"value": 0.786,
+								"size": 0.009
 							}
 						],
 						"usim": [
@@ -53420,9 +53584,9 @@
 			"code": "ZA",
 			"name": "South Africa",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-South_Africa-2016-08.pdf",
-				"year": 2016,
-				"month": 8
+				"filename": "gsmmap.org-country_report-South_Africa-2017-03.pdf",
+				"year": 2017,
+				"month": 3
 			},
 			"boundaries": {
 				"xMin": 16.4476,
@@ -53947,6 +54111,11 @@
 								"monthIndex": 74,
 								"value": 0.648,
 								"size": 0.023
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.646,
+								"size": 0.001
 							}
 						],
 						"imper": [
@@ -54980,6 +55149,11 @@
 								"monthIndex": 74,
 								"value": 0.9,
 								"size": 0
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.9,
+								"size": 0.002
 							}
 						]
 					}
@@ -58638,6 +58812,11 @@
 								"monthIndex": 66,
 								"value": 0.448,
 								"size": 0.013
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.408,
+								"size": 0.009
 							}
 						],
 						"imper": [
@@ -58645,6 +58824,11 @@
 								"monthIndex": 66,
 								"value": 0.218,
 								"size": 0.005
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.193,
+								"size": 0.003
 							}
 						]
 					}
@@ -58844,7 +59028,7 @@
 						}
 					],
 					"name": "tiGO",
-					"color": "#4B4494",
+					"color": "#396BB4",
 					"values": {
 						"inter": [
 							{
@@ -58970,9 +59154,9 @@
 			"code": "TH",
 			"name": "Thailand",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Thailand-2016-08.pdf",
-				"year": 2016,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Thailand-2017-02.pdf",
+				"year": 2017,
+				"month": 2
 			},
 			"boundaries": {
 				"xMin": 97.3739,
@@ -59626,7 +59810,7 @@
 							{
 								"monthIndex": 77,
 								"value": 1,
-								"size": 0.018
+								"size": 0.053
 							}
 						]
 					}
@@ -60588,7 +60772,7 @@
 						}
 					],
 					"name": "Smart",
-					"color": "#2E558E",
+					"color": "#0B9444",
 					"values": {
 						"inter3G": [
 							{
@@ -61312,9 +61496,9 @@
 			"code": "AE",
 			"name": "United Arab Emirates",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-United_Arab_Emirates-2016-07.pdf",
-				"year": 2016,
-				"month": 7
+				"filename": "gsmmap.org-country_report-United_Arab_Emirates-2017-05.pdf",
+				"year": 2017,
+				"month": 5
 			},
 			"boundaries": {
 				"xMin": 51.5722,
@@ -63269,6 +63453,11 @@
 								"monthIndex": 76,
 								"value": 0.57,
 								"size": 0.019
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.578,
+								"size": 0.002
 							}
 						],
 						"imper": [
@@ -63580,6 +63769,11 @@
 								"monthIndex": 76,
 								"value": 0.898,
 								"size": 0.012
+							},
+							{
+								"monthIndex": 77,
+								"value": 0.898,
+								"size": 0.001
 							}
 						],
 						"usim": [
@@ -64337,7 +64531,7 @@
 							{
 								"monthIndex": 77,
 								"value": 0.936,
-								"size": 0.173
+								"size": 0.176
 							}
 						],
 						"usim": [
@@ -65286,6 +65480,11 @@
 								"monthIndex": 77,
 								"value": 0.888,
 								"size": 0.129
+							},
+							{
+								"monthIndex": 78,
+								"value": 0.888,
+								"size": 0.003
 							}
 						],
 						"usim": [
@@ -65878,9 +66077,9 @@
 			"code": "VN",
 			"name": "Vietnam",
 			"pdf": {
-				"filename": "gsmmap.org-country_report-Vietnam-2016-08.pdf",
-				"year": 2016,
-				"month": 8
+				"filename": "gsmmap.org-country_report-Vietnam-2017-03.pdf",
+				"year": 2017,
+				"month": 3
 			},
 			"boundaries": {
 				"xMin": 102.1274,
@@ -68969,15 +69168,15 @@
 			}
 		},
 		"654": {
-			"country": "Kosovo",
+			"country": "Comoros",
 			"boundaries": {
-				"xMin": 20.0295,
-				"xMax": 21.7529,
-				"yMin": 41.8662,
-				"yMax": 43.2611,
-				"xc": 20.8768,
-				"yc": 42.5604,
-				"area": 11598.0513
+				"xMin": 43.2267,
+				"xMax": 43.4658,
+				"yMin": -11.9013,
+				"yMax": -11.3745,
+				"xc": 43.3473,
+				"yc": -11.6413,
+				"area": 724.3464
 			}
 		},
 		"655": {
