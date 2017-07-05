@@ -60,19 +60,19 @@ public class DeviceCompatibilityChecker {
                 return context.getResources().getString(R.string.device_never_compatible);
             } else {
                 // case 2: no /dev/diag + MSM chip -> not compatible for now, check again after firmware changed
-                if (lastFirmwareInfo != null && !lastFirmwareInfo.equals(currentFirmwareInfo)) {
-                    // firmware change detected, be optimistic and give it a try
-                    MsdConfig.setLastFirmwareInformation(context, currentFirmwareInfo);
-                    return null;
-                }
-
                 MsdConfig.setLastFirmwareInformation(context, currentFirmwareInfo);
                 return context.getResources().getString(R.string.device_not_compatible_now_no_diag);
             }
         } else {
             if (deviceIncompatibleDetected) {
-                //case 3: diag device + no baseband messages
-                return context.getResources().getString(R.string.compat_no_baseband_messages_in_active_test);
+                //case 3: diag device + no baseband messages, check if firmware changed to be optimistic
+                if (lastFirmwareInfo != null && !lastFirmwareInfo.equals(currentFirmwareInfo)) {
+                    // firmware change detected, be optimistic and give it a try
+                    MsdConfig.setLastFirmwareInformation(context, currentFirmwareInfo);
+                }
+                else {
+                    return context.getResources().getString(R.string.compat_no_baseband_messages_in_active_test);
+                }
             }
         }
 
