@@ -31,7 +31,9 @@
     <string name="common_button_upload">upload</string>
     <string name="common_button_nodata">No data</string>
     <string name="common_button_networktest_start">Start Test</string> 
-    <string name="common_button_networktest_stop">Stop Test</string> 
+    <string name="common_button_networktest_stop">Stop Test</string>
+    <string name="warning_button_proceed_anyway">Ok, proceed anyway</string>
+    <string name="warning_button_quit">Quit application</string>
     
     <!-- Messages -->
     <string name="message_smsDetected">New SMS detected&#8230;</string>
@@ -304,6 +306,7 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
      
      <string name="compat_no_baseband_messages_in_active_test">Error, no baseband messages received during active test.</string>
      <string name="compat_no_baseband_messages">Error, no baseband messages.</string>
+     <string name="compat_no_baseband_messages_warning">SnoopSnitch was not able to parse baseband messages, during the last run.\nIt might be that your device is not compatible,\n and therefore the main features of SnoopSnitch will not work properly.</string>
 
      <!-- Settings-->
      <string name="no_service_running">service running</string>
@@ -467,7 +470,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="alert_network_activity_permissions_not_granted_persistent">You have to grant ALL requested permissions, to get further Network information.</string>
 <string name="device_never_compatible">Your device does not have a MSM Qualcomm chip, and is therefore not able to run SnoopSnitch main features.</string>
 <string name="device_not_compatible_now_no_diag">Your device is not compatible currently. This might change with an upcoming firmware update.</string>
-
 
 
 </resources>

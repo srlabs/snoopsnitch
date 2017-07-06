@@ -29,7 +29,9 @@
     <string name="common_button_upload">Hochladen</string>
     <string name="common_button_nodata">Keine Daten</string>
     <string name="common_button_networktest_start">Test starten</string> 
-    <string name="common_button_networktest_stop">Test abbrechen</string> 
+    <string name="common_button_networktest_stop">Test abbrechen</string>
+    <string name="warning_button_proceed_anyway">Ok, trotzdem fortfahren</string>
+    <string name="warning_button_quit">App schließen</string>
     
     <!-- Messages -->
     <string name="message_smsDetected">Neues Ereignis erkannt&#8230;</string>
@@ -303,6 +305,7 @@ https://opensource.srlabs.de/projects/snoopsnitch\n
 
      <string name="compat_no_baseband_messages_in_active_test">Fehler, keine Basebandnachrichten während aktivem Test.</string>
      <string name="compat_no_baseband_messages">Fehler, keine Basebandnachrichten.</string>
+     <string name="compat_no_baseband_messages_warning">SnoopSnitch hat festgestellt, dass keine Basebandnachrichten erhalten wurden.\nEs ist möglich, dass ihr Gerät nicht unterstützt wird,\n und dadurch die Hauptfunktionalität von SnoopSnitch nicht gewährleitet werden kann.</string>
      <string name="device_never_compatible">Ihr Gerät besitzt keinen MSM Qualcomm-Chip, und unterstützt deshalb SnoopSnitch\'s Kernfunktionalität nicht.</string>
      <string name="device_not_compatible_now_no_diag">Ihr Gerät wird momentan nicht unterstützt. Dies kann sich durch ein Firmware-Update ändern.</string>
 

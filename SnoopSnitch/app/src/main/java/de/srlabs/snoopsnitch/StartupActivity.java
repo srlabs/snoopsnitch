@@ -49,10 +49,43 @@ public class StartupActivity extends Activity {
                 createDatabaseAndStartDashboard();
             }
         } else {
+            if(incompatibilityReason.equals(getResources().getString(R.string.compat_no_baseband_messages_in_active_test))){
+                showDialogWarningNoBasebandMessages();
+            }
             showDeviceIncompatibleDialog(incompatibilityReason);
         }
     }
 
+    private void showDialogWarningNoBasebandMessages(){
+        MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.compat_no_baseband_messages_warning),
+                new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //continue normal startup
+                        if (MsdConfig.getFirstRun(StartupActivity.this)) {
+                            showFirstRunDialog();
+                        } else {
+                            createDatabaseAndStartDashboard();
+                        }
+                    }
+                },
+                new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        quitApplication();
+                    }
+                },
+                new OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        quitApplication();
+                    }
+                },
+                getResources().getString(R.string.warning_button_proceed_anyway),
+                getResources().getString(R.string.warning_button_quit),
+                false
+        ).show();
+    }
 
     private void showDeviceIncompatibleDialog(String incompatibilityReason) {
         Utils.showDeviceIncompatibleDialog(this, incompatibilityReason, new Runnable() {
