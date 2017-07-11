@@ -162,8 +162,8 @@ public class ActiveTestService extends Service {
          */
         @Override
         public void applySettings() throws RemoteException {
-            // Only switch to online again if no test is running
-            ActiveTestService.this.applySettings(!isTestRunning());
+            //try to switch to Online again
+            ActiveTestService.this.applySettings(true);
         }
     }
 
@@ -346,6 +346,10 @@ public class ActiveTestService extends Service {
                 postIterateRunnable(1000);
                 return;
             }
+
+            updateOnlineState(true);
+            stateInfo("Active Test iteration in Mode: "+ (results.isOnlineMode() ? "Online" : "Offline"));
+
             if (continiousMode) {
                 handleFatalError("Continious mode is not yet implemented");
             } else {
@@ -636,12 +640,23 @@ public class ActiveTestService extends Service {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    private void applySettings(boolean switchToOnline) {
+    /**
+     * This method set the tests running to use the Online API,if switchToOnline is true and there is an Internet connection.
+     * The user configured setting to not use the Online API (force Offline), will always override the above mentioned logic.
+     * @param switchToOnline
+     */
+    private void updateOnlineState(boolean switchToOnline){
         if (switchToOnline && isNetworkAvailable())
             results.setOnlineMode(true);
         if (MsdConfig.getActiveTestForceOffline(this)) {
             results.setOnlineMode(false);
         }
+    }
+
+    private void applySettings(boolean switchToOnline) {
+
+        updateOnlineState(switchToOnline);
+
         smsMoDisabled = MsdConfig.getActiveTestSMSMODisabled(this);
         results.setSmsMoDisabled(smsMoDisabled);
         smsMoNumber = MsdConfig.getActiveTestSMSMONumber(this);
