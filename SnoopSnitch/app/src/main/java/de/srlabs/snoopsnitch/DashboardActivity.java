@@ -226,17 +226,6 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     private void checkOperator() {
 
         Risk risk = MSDServiceHelperCreator.getInstance().getMsdServiceHelper().getData().getScores();
-        if (!unknownOperator && risk.operatorUnknown()) {
-            String msg =
-                    this.getResources().getString(R.string.operator_not_found) +
-                            " (MCC=" + risk.getMcc() + ", MNC=" + risk.getMnc() + ")";
-            MsdDialog.makeNotificationDialog(this, msg, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            }, false).show();
-
-        }
         unknownOperator = risk.operatorUnknown();
     }
 
