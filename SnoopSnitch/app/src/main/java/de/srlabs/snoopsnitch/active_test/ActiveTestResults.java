@@ -411,6 +411,7 @@ public class ActiveTestResults implements Serializable {
         String currentOperatorName = "Not connected";
 
         numIterations = MsdConfig.getActiveTestNumIterations(context);
+        onlineMode = Utils.isNetworkAvailable(context) && !MsdConfig.getActiveTestForceOffline(context);
 
         if (currentNetworkOperator != null)
             currentOperatorName = currentNetworkOperator.operatorName;
