@@ -347,7 +347,6 @@ public class ActiveTestService extends Service {
                 return;
             }
 
-            updateOnlineState(true);
             stateInfo("Active Test iteration in Mode: "+ (results.isOnlineMode() ? "Online" : "Offline"));
 
             if (continiousMode) {
@@ -549,12 +548,14 @@ public class ActiveTestService extends Service {
             debugInfo("handleApiSuccess() received in state " + state.name());
             if (state == State.CALL_MT_API) {
                 setState(State.CALL_MT_WAITING, "handleApiSuccess", Constants.CALL_MT_TIMEOUT);
+                results.setOnlineMode(true);
                 results.getCurrentTest().setRequestId(apiId);
                 results.getCurrentTest().stateWaiting();
                 // Update the timeout so that the progress indicator does not contain the API timeout any more
                 results.getCurrentTest().updateTimeout(Constants.CALL_MT_TIMEOUT + Constants.CALL_MT_ACTIVE_TIMEOUT);
             } else if (state == State.SMS_MT_API) {
                 setState(State.SMS_MT_WAITING, "handleApiSuccess", Constants.SMS_MT_TIMEOUT);
+                results.setOnlineMode(true);
                 results.getCurrentTest().setRequestId(apiId);
                 results.getCurrentTest().stateWaiting();
                 // Update the timeout so that the progress indicator does not contain the API timeout any more
@@ -647,7 +648,7 @@ public class ActiveTestService extends Service {
     }
 
     private void applySettings(boolean switchToOnline) {
-
+        Log.i("ActiveTestService","applySettings() called with: "+switchToOnline);
         updateOnlineState(switchToOnline);
 
         smsMoDisabled = MsdConfig.getActiveTestSMSMODisabled(this);
@@ -732,7 +733,6 @@ public class ActiveTestService extends Service {
             handleFatalError("Could not get telephonyService", e);
         }
         stateMachine = new StateMachine();
-        results.setOnlineMode(true);
         applySettings(true);
         results.isOnlineMode();
         this.testRunning = true;

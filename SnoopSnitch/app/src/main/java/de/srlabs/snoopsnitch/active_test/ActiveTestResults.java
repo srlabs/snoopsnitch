@@ -29,7 +29,7 @@ public class ActiveTestResults implements Serializable {
     private String fatalError = null;
     private boolean testRoundComplete = false;
     private String errorLog = "";
-    private boolean onlineMode = true;
+    private boolean onlineMode = false;
     private boolean blacklisted = false;
     private boolean invalidNumber = false;
     private boolean invalidSmsMoNumber = false;
@@ -411,7 +411,6 @@ public class ActiveTestResults implements Serializable {
         String currentOperatorName = "Not connected";
 
         numIterations = MsdConfig.getActiveTestNumIterations(context);
-        onlineMode = Utils.isNetworkAvailable(context) && !MsdConfig.getActiveTestForceOffline(context);
 
         if (currentNetworkOperator != null)
             currentOperatorName = currentNetworkOperator.operatorName;

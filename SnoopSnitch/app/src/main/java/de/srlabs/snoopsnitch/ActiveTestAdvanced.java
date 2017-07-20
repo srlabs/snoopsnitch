@@ -1,6 +1,7 @@
 package de.srlabs.snoopsnitch;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -50,6 +51,7 @@ public class ActiveTestAdvanced extends BaseActivity {
     class MyActiveTestCallback implements ActiveTestCallback {
         @Override
         public void handleTestResults(ActiveTestResults results) {
+            Log.i(TAG,"handleTestResults() called");
             lastResults = results;
             handler.post(new Runnable() {
                 @Override
@@ -97,8 +99,16 @@ public class ActiveTestAdvanced extends BaseActivity {
     public void updateWebView() {
         if (lastResults == null)
             return;
+        if(!activeTestHelper.isActiveTestRunning()) {
+            //show anticipated Online/Offline state for next ActiveTest
+            Log.i(TAG,"showing anticipated Online/Offline state");
+            lastResults.setOnlineMode(Utils.isNetworkAvailable(this.getApplicationContext())
+                    && !MsdConfig.getActiveTestForceOffline(this.getApplicationContext()));
+        }
+        Log.i("ActivTestAdvanced", "Online mode: " + lastResults.isOnlineMode());
         activeTestWebView.loadUrl("javascript:" + lastResults.getUpdateJavascript(this.getApplicationContext()));
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
