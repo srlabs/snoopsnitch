@@ -52,7 +52,9 @@ public class StartupActivity extends Activity {
             if(incompatibilityReason.equals(getResources().getString(R.string.compat_no_baseband_messages_in_active_test))){
                 showDialogWarningNoBasebandMessages();
             }
-            showDeviceIncompatibleDialog(incompatibilityReason);
+            else {
+                showDeviceIncompatibleDialog(incompatibilityReason);
+            }
         }
     }
 
