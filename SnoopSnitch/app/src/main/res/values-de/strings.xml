@@ -44,6 +44,7 @@
     <string name="alert_confirmation_title">Bestätigung</string>
     <string name="alert_fatal_condition_title">Fehler</string>
     <string name="alert_notification_title">Meldung</string>
+    <string name="alert_db_creation_failed_detail">Datenbank-Erstellung fehlgeschlagen. Bitte löschen Sie die SnoopSnitch App Daten in den Android Apps Einstellunge, und starten Sie SnoopSnitch neu. Wenn dies das Problem nicht behebt, installieren Sie SnoopSnitch neu.</string>
 
 	<!-- Device compatibility check failure -->
     <string name="alert_deviceCompatibility_title">Kompatibilitätsprüfung nicht erfolgreich.</string>
@@ -379,5 +380,6 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="notification_vibrate_and_ring">Vibration und Sound</string>
     <string name="settings_imsi_catcher_notification_summary">Hier können Sie einstellen, wie Sie benachrichtigt werden wollen, wenn ein IMSI-Catcher erkannt wurde.</string>
     <string name="settings_sms_event_notification_summary">Hier können Sie einstellen, wie Sie benachrichtigt werden wollen, wenn ein SMS/SS7-Attacke erkannt wurde.</string>
+
 
 </resources>

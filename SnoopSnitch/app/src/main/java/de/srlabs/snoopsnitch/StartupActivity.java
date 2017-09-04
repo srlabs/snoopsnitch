@@ -8,11 +8,13 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +24,7 @@ import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDialog;
+import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.PermissionChecker;
 import de.srlabs.snoopsnitch.util.Utils;
 
@@ -33,6 +36,7 @@ import de.srlabs.snoopsnitch.util.Utils;
  * DashboardActivity.
  */
 public class StartupActivity extends Activity {
+    private static final String TAG = "StartupActivity";
     private MsdSQLiteOpenHelper helper;
     private boolean alreadyClicked = false;
     private ProgressDialog progressDialog;
@@ -143,22 +147,35 @@ public class StartupActivity extends Activity {
             @Override
             public void run() {
                 helper = new MsdSQLiteOpenHelper(StartupActivity.this);
-                SQLiteDatabase db = helper.getReadableDatabase();
-                db.rawQuery("SELECT * FROM config", null).close();
-                db.close();
-                helper.close();
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressDialog.dismiss();
+                try {
+                    SQLiteDatabase db = helper.getReadableDatabase();
+                    db.rawQuery("SELECT * FROM config", null).close();
+                    db.close();
+                    helper.close();
 
-                        //Check for ACCESS_COARSE_PERMISSION neccessary for Recoding in MsdService to function
-                        if (PermissionChecker.checkAndRequestPermissionForMsdService(StartupActivity.this)) {
-                            startDashboard();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+
+                            //Check for ACCESS_COARSE_PERMISSION neccessary for Recoding in MsdService to function
+                            if (PermissionChecker.checkAndRequestPermissionForMsdService(StartupActivity.this)) {
+                                startDashboard();
+                            }
+
                         }
+                    });
+                }catch(SQLException e){
+                    // Testing if the DB creation worked successfully failed
+                    Log.e(TAG,"DB creation failed, maybe App assets are corrupted: "+ e.getMessage());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            showDBCreationFailedDialog();
+                        }
+                    });
 
-                    }
-                });
+                }
             }
         };
         t.start();
@@ -253,6 +270,15 @@ public class StartupActivity extends Activity {
                         startDashboard();
                     }
                 }, false).show();
+    }
+
+    private void showDBCreationFailedDialog() {
+        MsdDialog.makeFatalConditionDialog(this, getResources().getString(R.string.alert_db_creation_failed_detail), new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                quitApplication();
+            }
+        },null,false).show();
     }
 
 }
