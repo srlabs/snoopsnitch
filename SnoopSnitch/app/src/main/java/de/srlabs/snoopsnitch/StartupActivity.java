@@ -156,7 +156,9 @@ public class StartupActivity extends Activity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            progressDialog.dismiss();
+                            if (progressDialog != null && progressDialog.isShowing ()) {
+                                progressDialog.dismiss ();
+                            }
 
                             //Check for ACCESS_COARSE_PERMISSION neccessary for Recoding in MsdService to function
                             if (PermissionChecker.checkAndRequestPermissionForMsdService(StartupActivity.this)) {
