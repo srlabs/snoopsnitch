@@ -23,6 +23,7 @@ import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
+import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.PermissionChecker;
@@ -146,12 +147,14 @@ public class StartupActivity extends Activity {
         Thread t = new Thread() {
             @Override
             public void run() {
-                helper = new MsdSQLiteOpenHelper(StartupActivity.this);
+
                 try {
-                    SQLiteDatabase db = helper.getReadableDatabase();
+                    MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(StartupActivity.this));
+                    MsdDatabaseManager msdDatabaseManager = MsdDatabaseManager.getInstance();
+                    SQLiteDatabase db = msdDatabaseManager.openDatabase();
+                    //testing DB init
                     db.rawQuery("SELECT * FROM config", null).close();
-                    db.close();
-                    helper.close();
+                    msdDatabaseManager.closeDatabase();
 
                     handler.post(new Runnable() {
                         @Override
