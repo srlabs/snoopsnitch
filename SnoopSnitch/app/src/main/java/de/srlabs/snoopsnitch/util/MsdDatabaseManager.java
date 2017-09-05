@@ -2,14 +2,16 @@ package de.srlabs.snoopsnitch.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 
 // Class for concurrent database access.
 // Cf. http://dmytrodanylyk.com/pages/blog/concurrent-database.html
 public class MsdDatabaseManager {
-
+    private static final String TAG = "MsdDatabaseManager";
     private AtomicInteger mOpenCounter = new AtomicInteger();
 
     private static MsdDatabaseManager instance;
@@ -35,7 +37,12 @@ public class MsdDatabaseManager {
     public synchronized SQLiteDatabase openDatabase() {
         if (mOpenCounter.incrementAndGet() == 1) {
             // Opening new database
-            mDatabase = mDatabaseHelper.getWritableDatabase();
+            try {
+                mDatabase = mDatabaseHelper.getWritableDatabase();
+            }
+            catch (SQLException e){
+                Log.e(TAG,"SQLException when trying to retrieve writeable DB object: "+e.getMessage());
+            }
         }
         return mDatabase;
     }

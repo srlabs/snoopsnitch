@@ -2326,16 +2326,20 @@ public class MsdService extends Service {
         for (int i = 0; i < 10; i++) {
             plaintextFilename = "debug_" + timestampStr + (i > 0 ? "." + i : "") + ".gz";
             encryptedFilename = plaintextFilename + ".smime";
-            Cursor cur = db.query("files", null, "filename='" + encryptedFilename + "'", null, null, null, "_id");
-            boolean existingInDb = cur.moveToFirst();
-            cur.close();
-            if (existingInDb ||
-                    (new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() ||
-                    (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists()) {
-                plaintextFilename = null;
-                encryptedFilename = null;
-            } else {
-                break;
+            try {
+                Cursor cur = db.query("files", null, "filename='" + encryptedFilename + "'", null, null, null, "_id");
+                boolean existingInDb = cur.moveToFirst();
+                cur.close();
+                if (existingInDb ||
+                        (new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() ||
+                        (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists()) {
+                    plaintextFilename = null;
+                    encryptedFilename = null;
+                } else {
+                    break;
+                }
+            }catch(SQLException e){
+                Log.e(TAG,"SQLException when checking if debug log file '"+encryptedFilename+"' exists in DB: "+ e.getMessage());
             }
         }
         if (encryptedFilename == null) {
