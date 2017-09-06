@@ -29,6 +29,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
 import org.apache.http.Header;
@@ -1614,13 +1615,19 @@ public class MsdService extends Service {
                         // if we are sure that the file has been fully
                         // transmitted
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        int i;
-                        i = in.read();
-                        while (i != -1) {
-                            byteArrayOutputStream.write(i);
+                        try {
+                            int i;
                             i = in.read();
+                            while (i != -1) {
+                                byteArrayOutputStream.write(i);
+                                i = in.read();
+                            }
+                            in.close();
+                        }catch(SSLException e){
+                            MsdLog.e(TAG,"SSLException when trying to get content of JSON files from GSMMap server: "+e.getMessage());
+                            return;
                         }
-                        in.close();
+
                         byte[] buf = byteArrayOutputStream.toByteArray();
                         info("Received new data.json, size=" + buf.length);
                         FileOutputStream os = openFileOutput("app_data.json", 0);
