@@ -1914,6 +1914,10 @@ public class MsdService extends Service {
     }
 
     void handleFatalError(String msg, final Throwable e) {
+
+        if(msg == null)
+            msg = "empty message";
+
         boolean doShutdown = false;
         if (recording && shuttingDown.compareAndSet(false, true)) {
             msg += " => shutting down service";
