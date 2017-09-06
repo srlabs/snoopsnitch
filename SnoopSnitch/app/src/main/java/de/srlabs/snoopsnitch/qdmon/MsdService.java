@@ -2245,7 +2245,8 @@ public class MsdService extends Service {
             // There is an open debug logfile already, so let's close it and set the end time in the database
             oldRawWrite.close();
             df = DumpFile.get(db, oldRawLogFileId);
-            df.endRecording(db, this, 20 * 60 * 1000L);
+            if(df != null)
+                df.endRecording(db, this, 20 * 60 * 1000L);
         }
         MsdDatabaseManager.getInstance().closeDatabase();
         triggerUploading();
