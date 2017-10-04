@@ -51,21 +51,24 @@ script. The source of those projects is pulled in by the build scripts through
 sub-modules.
 
 As SnoopSnitch ships with the prebuilt binaries, the following step is optional.
-To build the parser binary from source, the ant packages are required:
+To build the parser binary from source, first install:
 
-	$ sudo apt-get install ant default-jdk
+	$ sudo apt-get install default-jdk
 
 In the SnoopSnitch source directory do the following:
 
 	$ cd contrib/
 	$ ./compile.sh -t android -g -u
 
-To build the app, in the SnoopSnitch source directory do the following:
+To build the app, in the SnoopSnitch source directory, run the gradle wrapper like this:
 
 	$ cd SnoopSnitch
-	$ ant debug
+	$ ./gradlew build
 
-Please please consult the Android documentation on how to set up the tools and
+The compiled apk file can be found under: SnoopSnitch/app/build/outputs/apk
+
+
+Please consult the Android documentation on how to set up the tools and
 perform a release build.
 
 
