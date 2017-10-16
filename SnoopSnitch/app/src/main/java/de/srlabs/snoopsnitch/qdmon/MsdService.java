@@ -29,6 +29,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
 import org.apache.http.Header;
@@ -1614,13 +1615,19 @@ public class MsdService extends Service {
                         // if we are sure that the file has been fully
                         // transmitted
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        int i;
-                        i = in.read();
-                        while (i != -1) {
-                            byteArrayOutputStream.write(i);
+                        try {
+                            int i;
                             i = in.read();
+                            while (i != -1) {
+                                byteArrayOutputStream.write(i);
+                                i = in.read();
+                            }
+                            in.close();
+                        }catch(SSLException e){
+                            MsdLog.e(TAG,"SSLException when trying to get content of JSON files from GSMMap server: "+e.getMessage());
+                            return;
                         }
-                        in.close();
+
                         byte[] buf = byteArrayOutputStream.toByteArray();
                         info("Received new data.json, size=" + buf.length);
                         FileOutputStream os = openFileOutput("app_data.json", 0);
@@ -1914,6 +1921,10 @@ public class MsdService extends Service {
     }
 
     void handleFatalError(String msg, final Throwable e) {
+
+        if(msg == null)
+            msg = "empty message";
+
         boolean doShutdown = false;
         if (recording && shuttingDown.compareAndSet(false, true)) {
             msg += " => shutting down service";
@@ -2241,7 +2252,8 @@ public class MsdService extends Service {
             // There is an open debug logfile already, so let's close it and set the end time in the database
             oldRawWrite.close();
             df = DumpFile.get(db, oldRawLogFileId);
-            df.endRecording(db, this, 20 * 60 * 1000L);
+            if(df != null)
+                df.endRecording(db, this, 20 * 60 * 1000L);
         }
         MsdDatabaseManager.getInstance().closeDatabase();
         triggerUploading();
@@ -2326,16 +2338,20 @@ public class MsdService extends Service {
         for (int i = 0; i < 10; i++) {
             plaintextFilename = "debug_" + timestampStr + (i > 0 ? "." + i : "") + ".gz";
             encryptedFilename = plaintextFilename + ".smime";
-            Cursor cur = db.query("files", null, "filename='" + encryptedFilename + "'", null, null, null, "_id");
-            boolean existingInDb = cur.moveToFirst();
-            cur.close();
-            if (existingInDb ||
-                    (new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() ||
-                    (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists()) {
-                plaintextFilename = null;
-                encryptedFilename = null;
-            } else {
-                break;
+            try {
+                Cursor cur = db.query("files", null, "filename='" + encryptedFilename + "'", null, null, null, "_id");
+                boolean existingInDb = cur.moveToFirst();
+                cur.close();
+                if (existingInDb ||
+                        (new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() ||
+                        (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists()) {
+                    plaintextFilename = null;
+                    encryptedFilename = null;
+                } else {
+                    break;
+                }
+            }catch(SQLException e){
+                Log.e(TAG,"SQLException when checking if debug log file '"+encryptedFilename+"' exists in DB: "+ e.getMessage());
             }
         }
         if (encryptedFilename == null) {
