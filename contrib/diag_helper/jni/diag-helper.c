@@ -32,6 +32,10 @@ logmsg(int prio, const char *fmt, ...)
         va_start(args, fmt);
         __android_log_vprint(prio, "diag-helper", fmt, args);
         va_end(args);
+
+	if (prio == ANDROID_LOG_ERROR || prio == ANDROID_LOG_FATAL) {
+		fprintf(stderr,"diag-helper error: %s", fmt);
+	}
 }
 
 static void
