@@ -18,9 +18,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,6 +31,7 @@ import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
 import de.srlabs.snoopsnitch.analysis.Risk;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
+import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
@@ -124,6 +127,49 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         threatImsiCounts.add(txtImsiDayCount);
         threatImsiCounts.add(txtImsiWeekCount);
         threatImsiCounts.add(txtImsiMonthCount);
+
+        checkCompatibilityAndDisableFunctions();
+
+
+    }
+
+    private void checkCompatibilityAndDisableFunctions(){
+        LinearLayout dashboardEventCharts = (LinearLayout) findViewById(R.id.dashboardChartSection);
+        View toggleRecordingMenuItem = (View) findViewById(R.id.menu_action_scan);
+        View activeTestAdvancedMenuItem = (View) findViewById(R.id.menu_action_active_test_advanced);
+
+        String reason = DeviceCompatibilityChecker.checkDeviceCompatibility(this);
+        if(reason != null){
+            //SNSN features not fully accessible ; phone not compatible
+
+            setViewAndChildrenEnabled(btnDashboardNetworkTest,false);
+            setViewAndChildrenEnabled(dashboardEventCharts,false);
+            setViewAndChildrenEnabled(toggleRecordingMenuItem, false); //FIXME toggleRecordingMenuItem == null
+            setViewAndChildrenEnabled(activeTestAdvancedMenuItem, false);//FIXME activeTestAdvancedMenuItem == null
+        }
+        else{ //TODO necessary?
+            setViewAndChildrenEnabled(btnDashboardNetworkTest,true);
+            setViewAndChildrenEnabled(dashboardEventCharts,true);
+            setViewAndChildrenEnabled(toggleRecordingMenuItem, true);
+            setViewAndChildrenEnabled(activeTestAdvancedMenuItem, true);
+        }
+    }
+
+    private static void setViewAndChildrenEnabled(View view, boolean enabled) {
+        if(view == null)
+            return;
+        view.setEnabled(enabled);
+        if(enabled)
+            view.setAlpha(1.0f);
+        else
+            view.setAlpha(0.8f);
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                setViewAndChildrenEnabled(child, enabled);
+            }
+        }
     }
 
     @Override

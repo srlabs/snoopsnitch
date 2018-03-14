@@ -61,16 +61,16 @@
         android:layout_weight="4"
         android:background="@color/common_sectionBackground"
         android:orientation="vertical"
-        android:weightSum="8" >
+        android:weightSum="8">
 
         <LinearLayout
             android:id="@+id/SilentSMSCharts"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
+            android:onClick="openDetailView"
             android:orientation="horizontal"
-            android:weightSum="10"
-            android:onClick="openDetailView" >
+            android:weightSum="10">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -79,7 +79,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="3"
                 android:orientation="horizontal"
-                android:weightSum="6" >
+                android:weightSum="6">
 
                 <ImageView
                     android:id="@+id/imgDashboardSilentSms"
@@ -113,7 +113,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtDashboardSilentSmsMonthCount"
@@ -144,7 +144,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtDashboardSilentSmsWeekCount"
@@ -175,7 +175,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtDashboardSilentSmsDayCount"
@@ -206,7 +206,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtDashboardSilentSmsHourCount"
@@ -240,9 +240,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
+            android:onClick="openDetailView"
             android:orientation="horizontal"
-            android:weightSum="10"
-            android:onClick="openDetailView" >
+            android:weightSum="10">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -251,7 +251,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_weight="3"
                 android:orientation="horizontal"
-                android:weightSum="6" >
+                android:weightSum="6">
 
                 <ImageView
                     android:id="@+id/imgDashboardImsiCatcher"
@@ -285,7 +285,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtDashboardImsiCatcherMonthCount"
@@ -315,7 +315,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtDashboardImsiCatcherWeekCount"
@@ -345,7 +345,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtDashboardImsiCatcherDayCount"
@@ -375,7 +375,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtDashboardImsiCatcherHourCount"
@@ -408,7 +408,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:orientation="horizontal"
-            android:weightSum="20" >
+            android:weightSum="20">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -416,13 +416,13 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="6"
                 android:orientation="vertical"
-                android:weightSum="5" >
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:weightSum="4" >
+                    android:weightSum="4">
 
                     <View
                         android:id="@+id/View12"
@@ -449,7 +449,7 @@
                     android:layout_weight="4"
                     android:gravity="top|center_horizontal"
                     android:text=""
-                    android:textColor="@color/common_text"/>
+                    android:textColor="@color/common_text" />
             </LinearLayout>
 
             <View
@@ -462,13 +462,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:weightSum="5" >
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:weightSum="4" >
+                    android:weightSum="4">
 
                     <View
                         android:id="@+id/View26"
@@ -494,11 +494,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="4"
+                    android:fontFamily="sans-serif-condensed"
                     android:gravity="top|center_horizontal"
                     android:text="@string/dashboard_timeline_month"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium"
-                    android:fontFamily="sans-serif-condensed" />
+                    android:textSize="@dimen/text_medium" />
             </LinearLayout>
 
             <View
@@ -511,13 +511,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:weightSum="5" >
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:weightSum="4" >
+                    android:weightSum="4">
 
                     <View
                         android:id="@+id/View03"
@@ -543,11 +543,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="4"
+                    android:fontFamily="sans-serif-condensed"
                     android:gravity="top|center_horizontal"
                     android:text="@string/dashboard_timeline_week"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium"
-                    android:fontFamily="sans-serif-condensed" />
+                    android:textSize="@dimen/text_medium" />
             </LinearLayout>
 
             <LinearLayout
@@ -555,13 +555,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="4"
                 android:orientation="vertical"
-                android:weightSum="5" >
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:weightSum="4" >
+                    android:weightSum="4">
 
                     <View
                         android:id="@+id/View02"
@@ -587,11 +587,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="4"
+                    android:fontFamily="sans-serif-condensed"
                     android:gravity="top|center_horizontal"
                     android:text="@string/dashboard_timeline_today"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium"
-                    android:fontFamily="sans-serif-condensed" />
+                    android:textSize="@dimen/text_medium" />
 
             </LinearLayout>
 
@@ -605,13 +605,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="8"
                 android:orientation="vertical"
-                android:weightSum="5" >
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:weightSum="4" >
+                    android:weightSum="4">
 
                     <View
                         android:id="@+id/View14"
@@ -637,14 +637,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="4"
+                    android:fontFamily="sans-serif-condensed"
                     android:gravity="top|center_horizontal"
                     android:text="@string/dashboard_timeline_lasthour"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium"
-                    android:fontFamily="sans-serif-condensed" />
+                    android:textSize="@dimen/text_medium" />
 
             </LinearLayout>
-            
+
         </LinearLayout>
 
     </LinearLayout>
