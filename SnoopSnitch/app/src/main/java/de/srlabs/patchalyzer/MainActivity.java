@@ -56,7 +56,7 @@ import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 
 public class MainActivity extends Activity {
     private Handler handler;
-    private Button btnDebug, clearButton, startTestButton, uploadButton;
+    private Button startTestButton;
     private TextView statusTextView;
     private WebView legendView;
     private ScrollView webViewContent, metaInfoText;
@@ -135,8 +135,6 @@ public class MainActivity extends Activity {
             handler.post(new Runnable() {
                 public void run() {
                     startTestButton.setEnabled(false);
-                    uploadButton.setEnabled(false);
-                    clearButton.setEnabled(false);
                     webViewContent.removeAllViews();
                     WebView wv = new WebView(MainActivity.this);
                     String html = "<html><body><h1>New version available</h1>This app version is out of date. Please download the latest version here: <a href=\"" + finalUpgradeUrl + "\">" + finalUpgradeUrl + "</a></body></html>";
@@ -163,13 +161,11 @@ public class MainActivity extends Activity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {;
-                    clearButton.setEnabled(true);
                     startTestButton.setEnabled(true);
                     showMetaInformation("Finished");
                     if(showTablePending) {
                         showPatchlevelDateNoTable();
                         showTablePending = false;
-                        uploadButton.setEnabled(true);
                     }
                 }
             });
@@ -207,10 +203,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         handler = new Handler(Looper.getMainLooper());
         setContentView(R.layout.activity_patchalyzer);
-        btnDebug = (Button) findViewById(R.id.btnDebug);
-        clearButton = (Button) findViewById(R.id.btnClear);
         startTestButton = (Button) findViewById(R.id.btnDoIt);
-        uploadButton = (Button) findViewById(R.id.btnUpload);
         webViewContent = (ScrollView) findViewById(R.id.scrollViewTable);
         statusTextView = (TextView) findViewById(R.id.textView);
         legendView = (WebView) findViewById(R.id.legend);
@@ -223,15 +216,11 @@ public class MainActivity extends Activity {
                 startTest();
             }
         });
-        uploadButton.setEnabled(false);
-        btnDebug.setVisibility(View.INVISIBLE);
-        uploadButton.setVisibility(View.INVISIBLE);
-        clearButton.setVisibility(View.INVISIBLE);
         statusTextView.setText("");
         if(!Constants.IS_TEST_MODE) {
-            setTitle("Patchalyzer " + BuildConfig.VERSION_NAME + " - AppID " + TestUtils.getAppId(this));
+            setTitle("Patchalyzer - AppID " + TestUtils.getAppId(this));
         }else{
-            setTitle("Patchalyzer " + BuildConfig.VERSION_NAME + " - TESTMODE");
+            setTitle("Patchalyzer - TESTMODE");
         }
         displayCutline();
 
@@ -394,17 +383,11 @@ public class MainActivity extends Activity {
         if(state == ActivityState.PATCHLEVEL_DATES) {
             showPatchlevelDateNoTable();
             startTestButton.setEnabled(true);
-            uploadButton.setEnabled(true);
-            clearButton.setEnabled(true);
         } else if(state == ActivityState.VULNERABILITY_LIST){
             showDetailsNoTable(currentPatchlevelDate);
             startTestButton.setEnabled(true);
-            uploadButton.setEnabled(true);
-            clearButton.setEnabled(true);
         } else{
             startTestButton.setEnabled(true);
-            uploadButton.setEnabled(false);
-            clearButton.setEnabled(true);
         }
         restoreStatePending = false;
     }
@@ -416,7 +399,6 @@ public class MainActivity extends Activity {
     }
     private void btnClear_clicked(){
         clearTable();
-        uploadButton.setEnabled(false);
         progressBar.setProgress(0);
         statusTextView.setText("");
         try {
@@ -462,9 +444,6 @@ public class MainActivity extends Activity {
             noCVETestsForApiLevelMessage = null;
             clearTable();
             startTestButton.setEnabled(false);
-            clearButton.setEnabled(false);
-            uploadButton.setEnabled(false);
-
             try {
                 showTablePending = true;
                 if(!Constants.IS_TEST_MODE) {
@@ -473,8 +452,6 @@ public class MainActivity extends Activity {
                 else{
                     if(!requestSdcardPermission()) {
                         startTestButton.setEnabled(true);
-                        clearButton.setEnabled(true);
-                        uploadButton.setEnabled(true);
                         return;
                     }
                     mITestExecutorService.startWork(true, true, true, false, false, callbacks);
@@ -493,9 +470,8 @@ public class MainActivity extends Activity {
     }
     private void uploadResults(){
         //clearTable();
-        statusTextView.setText("Uploading...");;
+        statusTextView.setText("Uploading...");
         startTestButton.setEnabled(false);
-        clearButton.setEnabled(false);
         /*if(!requestSdcardPermission())
             return;*/
         try {
@@ -558,21 +534,16 @@ public class MainActivity extends Activity {
 
 
             for (final String category : categories) {
-                /*if (category.equals("other")) {
-                    showJavaBasicTestResults(testResults);
-                    continue;
-                }*/
-
                 LinearLayout row = new LinearLayout(this);
                 row.setGravity(Gravity.CENTER_VERTICAL);
-                Button button = new Button(this);
+                Button button = (Button) getLayoutInflater().inflate(R.layout.custom_button, null);;
                 // TODO: Remove this, category is now already truncated with recent test suite
                 String truncatedCategory = category;
                 if (category.startsWith("201")) {
                     truncatedCategory = category.substring(0, 7);
                 }
                 else if(category.equals("other")){
-                    truncatedCategory = "general";
+                    truncatedCategory = "General";
                 }
                 button.setText(truncatedCategory);
                 button.getMeasuredWidth();

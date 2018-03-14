@@ -51,6 +51,8 @@ public class TestExecutorService extends Service {
         api = new ServerApi();
         subThreads = new HashSet<Thread>();
 
+        deviceInfoJson = TestUtils.makeDeviceinfoJson(this,null);
+
         try {
             this.sharedPrefs = getSharedPreferences("TestSuite", Context.MODE_PRIVATE);
         } catch (Exception e) {
@@ -604,7 +606,8 @@ public class TestExecutorService extends Service {
 
         @Override
         public void run() {
-            deviceInfoJson = TestUtils.makeDeviceinfoJson(TestExecutorService.this, progress);
+            if(deviceInfoJson == null)
+                deviceInfoJson = TestUtils.makeDeviceinfoJson(TestExecutorService.this, progress);
             deviceInfoThread = null;
             deviceInfoRunning = false;
             if(onFinishedRunnable != null) {

@@ -346,12 +346,14 @@ public class TestUtils {
             devinfo.put("systemPartition", DirectoryTreeLister.makeFilelist(new File("/system/"), new DirectoryTreeLister.ProgressCallback() {
                 @Override
                 public void reportProgress(double progress) {
-                    progressItem.update(0.1 + 0.6*progress); // 60% progress for filesystem listing/hashing
+                    if(progressItem != null)
+                        progressItem.update(0.1 + 0.6*progress); // 60% progress for filesystem listing/hashing
                 }
             }));
             long filelistDuration = System.currentTimeMillis() - filelistStartTime;
             Log.i(Constants.LOG_TAG, "Generating filelist took " + filelistDuration + " ms");
-            progressItem.update(0.7);
+            if(progressItem != null)
+                progressItem.update(0.7);
             Log.i(Constants.LOG_TAG,"Reading all manifests...");
             JSONObject manifests = readAllManifests(context);
             devinfo.put("manifests", manifests.getJSONObject("manifests"));
@@ -360,7 +362,8 @@ public class TestUtils {
             FileOutputStream fos = new FileOutputStream(f);
             fos.write(devinfo.toString(4).getBytes());
             fos.close();*/
-            progressItem.update(1.0); // Final 30% progress for Android manifests of system applications
+            if(progressItem != null)
+                progressItem.update(1.0); // Final 30% progress for Android manifests of system applications
             Log.i(Constants.LOG_TAG,"Finished reading all manifests.");
             return devinfo;
         } catch(Exception e){

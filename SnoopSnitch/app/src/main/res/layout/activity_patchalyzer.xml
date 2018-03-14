@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,52 +8,46 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/common_applicationBackground"
     tools:context="de.srlabs.patchalyzer.MainActivity">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+       >
 
         <RelativeLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"> <!-- is ok here, cause the nested webview has a fixed size -->
+            android:layout_height="wrap_content">
 
             <Button
-                android:text="Perform test"
+                android:id="@+id/btnDoIt"
+                style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnDoIt"
-                android:layout_weight="1" />
+                android:layout_centerHorizontal="false"
+                android:layout_centerInParent="false"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/custom_upload_button_background"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="Perform test"
+                android:textColor="@drawable/custom_upload_button_color"
+                android:textStyle="bold" />
+
             <WebView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:scrollbars="none"
                 android:text="Legend"
                 android:id="@+id/legend"
                 android:layout_toRightOf="@+id/btnDoIt"/>
 
-            <Button
-                android:text="Upload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnUpload"
-                android:layout_weight="1" />
-
-            <Button
-                android:text="Clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnClear"
-                android:layout_weight="1" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="debug"
-                android:id="@+id/btnDebug"
-                android:layout_weight="1" />
         </RelativeLayout>
 
         <ProgressBar
@@ -63,30 +58,56 @@
             android:progressTint="#3f51b5" />
 
         <ScrollView
+            android:id="@+id/scrollViewText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/scrollViewText"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:background="@color/common_sectionBackground"
+            android:paddingLeft="10dp">
 
             <TextView
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Small Text"
-                android:id="@+id/textView"
-                android:layout_below="@+id/btnClear"
-                android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="true"
+                android:text="Small Text"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
         </ScrollView>
+
+        <View
+            android:id="@+id/View43"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/common_sectionSeparator" />
+
+        <View
+            android:id="@+id/View10"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/common_applicationSeparator" />
+
+        <View
+            android:id="@+id/View44"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/common_sectionSeparator" />
+
         <ScrollView
+            android:id="@+id/scrollViewTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fadeScrollbars="false"
-            android:id="@+id/scrollViewTable">
-        </ScrollView>
+            android:background="@color/common_sectionBackground"
+            android:fadeScrollbars="false"></ScrollView>
+
+
     </LinearLayout>
 
 </RelativeLayout>

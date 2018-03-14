@@ -259,10 +259,11 @@ public class BaseActivity extends FragmentActivity {
 
     private void setRecordingIcon() {
         if (menu != null) {
+            MenuItem menuItem = menu.findItem(R.id.menu_action_scan);
             if (msdServiceHelperCreator.getMsdServiceHelper().isRecording()) {
-                menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_record_disable, null));
+                menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_record_disable, null));
             } else {
-                menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notrecord_disable, null));
+                menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notrecord_disable, null));
             }
         }
     }
@@ -283,6 +284,5 @@ public class BaseActivity extends FragmentActivity {
             System.exit(0);
         }
     }
-
 
 }
