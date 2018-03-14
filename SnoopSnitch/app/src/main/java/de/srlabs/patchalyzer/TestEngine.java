@@ -1,0 +1,394 @@
+package de.srlabs.patchalyzer;
+
+import android.content.Context;
+import android.util.Base64;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.util.HashMap;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import de.srlabs.patchalyzer.java_basic_tests.AslrTest;
+import de.srlabs.patchalyzer.java_basic_tests.JavaBasicTest;
+import de.srlabs.patchalyzer.signatures.MaskSignature;
+import de.srlabs.patchalyzer.signatures.SymbolInformation;
+
+public class TestEngine {
+    public static Boolean runTest(BasicTestCache cache, Object testObject) throws JSONException, IOException {
+        if (testObject instanceof String) {
+            return cache.getOrExecute((String) testObject);
+        } else {
+            Log.d(Constants.LOG_TAG,"runTest for "+testObject.toString());
+            JSONObject test = (JSONObject) testObject;
+            assert (test.has("testType"));
+            String testType = test.getString("testType");
+            if (testType.equals("TRUE")) {
+                return true;
+            } else if (testType.equals("FALSE")) {
+                return false;
+            } else if (testType.equals("AND")) {
+                JSONArray subtests = test.getJSONArray("subtests");
+                boolean nullFound = false;
+                for (int i = 0; i < subtests.length(); i++) {
+                    Object subtest = subtests.get(i);
+                    Boolean subtestResult = runTest(cache, subtest);
+                    if(subtestResult == null)
+                        nullFound = true;
+                    else if(!subtestResult)
+                        return false;
+                }
+                if(nullFound)
+                    return null;
+                return true;
+            } else if (testType.equals("NAND")) {
+                JSONArray subtests = test.getJSONArray("subtests");
+                boolean nullFound = false;
+                for (int i = 0; i < subtests.length(); i++) {
+                    Object subtest = subtests.get(i);
+                    Boolean subtestResult = runTest(cache, subtest);
+                    if(subtestResult == null)
+                        nullFound = true;
+                    else if(!subtestResult)
+                        return true;
+                }
+                if(nullFound)
+                    return null;
+                return false;
+            } else if (testType.equals("OR")) {
+                JSONArray subtests = test.getJSONArray("subtests");
+                boolean nullFound = false;
+                for (int i = 0; i < subtests.length(); i++) {
+                    Object subtest = subtests.get(i);
+                    Boolean subtestResult = runTest(cache, subtest);
+                    if(subtestResult == null)
+                        nullFound = true;
+                    else  if (subtestResult == true)
+                        return true;
+                }
+                if(nullFound)
+                    return null;
+                return false;
+            } else if (testType.equals("NOR")) {
+                JSONArray subtests = test.getJSONArray("subtests");
+                boolean nullFound = false;
+                for (int i = 0; i < subtests.length(); i++) {
+                    Object subtest = subtests.get(i);
+                    Boolean subtestResult = runTest(cache, subtest);
+                    if(subtestResult == null)
+                        nullFound = true;
+                    else  if (subtestResult == true)
+                        return false;
+                }
+                if(nullFound)
+                    return null;
+                return true;
+            } else if (testType.equals("NOT")) {
+                Object subtest = test.get("subtest");
+                Boolean subtestResult = runTest(cache, subtest);
+                if(subtestResult == null)
+                    return null;
+                return !subtestResult;
+            } else{
+                throw new IllegalArgumentException("Unknown testType " + testType);
+            }
+        }
+    }
+    public static Boolean executeBasicTest(Context context, JSONObject test) throws Exception {
+        if(Constants.IS_TEST_MODE){
+            File folder = new File(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/");
+            if(!folder.exists()){
+                String errorMessage = "Extracted build does not exist here:"+folder.getAbsolutePath();
+                Log.e(Constants.LOG_TAG,errorMessage);
+                throw new IOException(errorMessage);
+            }
+        }
+
+        assert (test.has("testType"));
+        String testType = test.getString("testType");
+        if(testType.equals("CHIPSET_VENDOR")){
+            if(TestUtils.getChipVendor().equals(test.getString("vendor"))){
+                return true;
+            } else{
+                return false;
+            }
+        } else if(testType.equals("CHIPSET_VENDOR_OR_UNKNOWN")){
+            String vendor = TestUtils.getChipVendor();
+            if(vendor.equals("UNKNOWN") || vendor.equals(test.getString("vendor"))){
+                return true;
+            } else{
+                return false;
+            }
+        } else if(testType.equals("ANDROID_VERSION_LESS_EQUAL")){
+            return true; // TODO
+        } else if(testType.equals("FILE_EXISTS")){
+            String filename = test.getString("filename");
+            if(Constants.IS_TEST_MODE)
+                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+            TestUtils.validateFilename(filename);
+            File f = new File(filename);
+            return f.exists();
+        } else if(testType.equals("FILE_CONTAINS_SUBSTRING")){
+            String filename = test.getString("filename");
+            if(Constants.IS_TEST_MODE)
+                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+            byte[] needle;
+            if(test.has("substring")){
+                if(test.has("substringB64"))
+                    throw new IllegalArgumentException("Test FILE_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both");
+                needle = test.getString("substring").getBytes();
+            } else{
+                needle = Base64.decode(test.getString("substringB64"), 0);
+            }
+            TestUtils.validateFilename(filename);
+            File f = new File(filename);
+            if(!f.exists())
+                return null;
+            FileInputStream fis = new FileInputStream(f);
+            BufferedInputStream bis = new BufferedInputStream(fis, 4096);
+            return TestUtils.streamContainsSubstring(bis, needle);
+        } else if(testType.equals("XZ_CONTAINS_SUBSTRING")){
+            String filename = test.getString("filename");
+            if(Constants.IS_TEST_MODE)
+                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+            byte[] needle;
+            if(test.has("substring")){
+                if(test.has("substringB64"))
+                    throw new IllegalArgumentException("Test XZ_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both");
+                needle = test.getString("substring").getBytes();
+            } else{
+                needle = Base64.decode(test.getString("substringB64"), 0);
+            }
+            TestUtils.validateFilename(filename);
+            File f = new File(filename);
+            if(!f.exists())
+                return null;
+            String[] cmd = new String[3];
+            cmd[0] = "/data/data/de.srlabs.patchalyzer/lib/libbusybox.so";
+            cmd[1] = "xzcat";
+            cmd[2] = filename;
+            Process p = Runtime.getRuntime().exec(cmd);
+            BufferedInputStream bis = new BufferedInputStream(p.getInputStream(), 4096);
+            return TestUtils.streamContainsSubstring(bis, needle);
+        } else if(testType.equals("ZIP_CONTAINS_SUBSTRING")){
+            String filename = test.getString("zipFile");
+            if(Constants.IS_TEST_MODE)
+                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+            String zipitem = test.getString("zipItem");
+            byte[] needle;
+            if(filename.equals("/system/framework/services.jar")){
+                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
+            }
+            else if(Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/framework/services.jar")){
+                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
+            }
+            if(test.has("substring")){
+                if(test.has("substringB64"))
+                    throw new IllegalArgumentException("Test FILE_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both");
+                needle = test.getString("substring").getBytes();
+            } else{
+                needle = Base64.decode(test.getString("substringB64"), 0);
+            }
+            if(filename.equals("/system/framework/services.jar")){
+                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
+            }
+            else if(Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/framework/services.jar")){
+                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
+            }
+            TestUtils.validateFilename(filename);
+            File f = new File(filename);
+            if(!f.exists())
+                return null;
+            if(filename.equals("/system/framework/services.jar")){
+                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
+            }
+            else if(Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/framework/services.jar")){
+                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
+            }
+            ZipFile zf = new ZipFile(f);
+            ZipEntry ze = zf.getEntry(zipitem);
+            if(ze == null)
+                return null;
+            InputStream is = zf.getInputStream(ze);
+            BufferedInputStream bis = new BufferedInputStream(is, 4096);
+            boolean result =  TestUtils.streamContainsSubstring(bis, needle);
+            if(filename.equals("/system/framework/services.jar")){
+                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
+            }
+            else if(Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/framework/services.jar")){
+                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
+            }
+            return result;
+        } else if(testType.equals("ZIP_ENTRY_EXISTS")) {
+            String filename = test.getString("zipFile");
+            if(Constants.IS_TEST_MODE)
+                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+            String zipitem = test.getString("zipItem");
+            TestUtils.validateFilename(filename);
+            File f = new File(filename);
+            if (!f.exists())
+                return null;
+            ZipFile zf = new ZipFile(f);
+            ZipEntry ze = zf.getEntry(zipitem);
+            if (ze == null)
+                return false;
+            return true;
+        }else if(testType.equals("BINARY_CONTAINS_SYMBOL")){
+            String filename = test.getString("filename");
+            if(Constants.IS_TEST_MODE)
+                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+            String symbol = test.getString("symbol");
+            TestUtils.validateFilename(filename);
+            File f = new File(filename);
+            if(!f.exists())
+                return null;
+            try {
+                // JSONObject symtable = TestUtils.readSymbolTable(filename);
+                // return symtable.has(symbol);
+                return ProcessHelper.getSymbolTableEntry(filename, symbol) != null;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else if(testType.equals("DISAS_FUNCTION_CONTAINS_STRING")){
+            String filename = test.getString("filename");
+            if(Constants.IS_TEST_MODE)
+                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+            String symbol = test.getString("symbol");
+            String substringB64 = test.getString("substringB64");
+            String substring = new String(Base64.decode(substringB64.getBytes(), Base64.DEFAULT));
+            TestUtils.validateFilename(filename);
+            File f = new File(filename);
+            if(!f.exists())
+                return null;
+            try {
+                JSONObject entry = ProcessHelper.getSymbolTableEntry(filename, symbol);
+                if(entry == null)
+                    return false;
+                long addr = entry.getLong("addr");
+                long size = entry.getLong("len");
+                String addrHex = Long.toString(addr, 16);
+                String addrEndHex = Long.toString(addr+size, 16);
+                Vector<String> lines = ProcessHelper.runObjdumpCommand("-d","--start-address=0x" + addrHex, "--stop-address=0x" + addrEndHex, filename);
+                for(String line: lines){
+                    if(line.contains(substring)){
+                        return true;
+                    }
+                }
+                return false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else if(testType.equals("DISAS_FUNCTION_MATCHES_REGEX")){
+            String filename = test.getString("filename");
+            if(Constants.IS_TEST_MODE)
+                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+            String symbol = test.getString("symbol");
+            String regex = test.getString("regex");
+            Pattern p = Pattern.compile(regex);
+            TestUtils.validateFilename(filename);
+            File f = new File(filename);
+            if(!f.exists())
+                return null;
+            try {
+                JSONObject entry = ProcessHelper.getSymbolTableEntry(filename, symbol);
+                if(entry == null)
+                    return null;
+                long addr = entry.getLong("addr");
+                long size = entry.getLong("len");
+                String addrHex = Long.toString(addr, 16);
+                String addrEndHex = Long.toString(addr+size, 16);
+                Vector<String> lines = ProcessHelper.runObjdumpCommand("-d","--start-address=0x" + addrHex, "--stop-address=0x" + addrEndHex, filename);
+                StringBuilder builder = new StringBuilder();
+                for(String line: lines){
+                    builder.append(line.trim() + "\n");
+                }
+                Matcher m = p.matcher(builder);
+                return m.matches();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }else if(testType.equals("MASK_SIGNATURE_SYMBOL")) {
+            String signature = test.getString("signature");
+            String filename = test.getString("filename");
+            if(Constants.IS_TEST_MODE)
+                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+            String symbol = test.getString("symbol");
+
+            TestUtils.validateFilename(filename);
+            File f = new File(filename);
+            if(!f.exists())
+                return null;
+
+            MaskSignature signatureChecker = new MaskSignature();
+            signatureChecker.parse(signature);
+            HashMap<String, SymbolInformation> symbolTable = null;
+
+            symbolTable = signatureChecker.readSymbolTable(filename);
+            if (symbolTable == null) {
+                throw new IllegalStateException("Error: creating symbol table failed for file: "+filename);
+            }
+
+            SymbolInformation symbolInfo = symbolTable.get(symbol);
+            if (symbolInfo == null) {
+                //throw new IllegalStateException("Error: Symbol not found in table: " + symbol);
+                return null;
+            }
+            int symbolPos = symbolInfo.getPosition();
+            int symbolLength = symbolInfo.getLength();
+
+            //read file content region to byte array
+            byte[] codeBuf = new byte[symbolLength];
+            RandomAccessFile file = new RandomAccessFile(filename, "r");
+            file.seek(symbolPos);
+            file.read(codeBuf);
+            file.close();
+
+            boolean result = signatureChecker.checkCodeBuf(codeBuf);
+            //Log.d(Constants.LOG_TAG, "Signature check result: " + result);
+            return result;
+        } else if(testType.equals("JAVA_TEST")){
+            String testClassName = test.getString("testClassName");
+            // Make sure that the class name only contains valid characters
+            for(int i=0;i<testClassName.length();i++){
+                char c = testClassName.charAt(i);
+                if(c >= 'a' && c <= 'z'){
+                    continue;
+                }
+                if(c >= 'A' && c <= 'Z'){
+                    continue;
+                }
+                if(c >= '0' && c <= '9'){
+                    continue;
+                }
+                if(c == '_') {
+                    continue;
+                }
+                throw new IllegalStateException("Invalid character '" + c + "' in  testClassName '" + testClassName + "'");
+            }
+            // Get an instance of testClassName via Reflection
+            // If the test class isn't included, it will throw an Exception (which will be reported to the server).
+            Class c = Class.forName(AslrTest.class.getPackage().getName() + "." + testClassName);
+            JavaBasicTest javaBasicTest = (JavaBasicTest) c.newInstance();
+            // Run the test, it may also throw an Exception.
+            return javaBasicTest.runTest(context);
+        }
+        else{
+            throw new IllegalArgumentException("Unknown testType " + testType);
+        }
+    }
+}

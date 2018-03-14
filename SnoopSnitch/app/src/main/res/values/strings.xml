@@ -475,6 +475,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="alert_db_creation_failed_detail">Creating Database failed. Please remove the App data in the Android App settings and restart SnoopSnitch. If this does not solve the problem, please reinstall SnoopSnitch.</string>
 <string name="device_never_compatible">Your device does not have a MSM Qualcomm chip, and is therefore not able to run SnoopSnitch main features.</string>
 <string name="device_not_compatible_now_no_diag">Your device is not compatible currently. This might change with an upcoming firmware update.</string>
+<string name="action_switch_to_patchalyzer">Switch to Patchalyzer</string>
 
 
 

@@ -46,7 +46,8 @@ public class StartupActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String incompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
+        //String incompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
+        String incompatibilityReason = null; //TODO just for testing here
         if (incompatibilityReason == null) {
             if (MsdConfig.getFirstRun(this)) {
                 showFirstRunDialog();

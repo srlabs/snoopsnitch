@@ -74,6 +74,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
             readSQLAsset(context, db, "analysis_tables.sql", verbose);
             readSQLAsset(context, db, "local.sqlx", verbose);
             readSQLAsset(context, db, "files.sql", verbose);
+            readSQLAsset(context, db, "basictests.sql",verbose);
         } catch (Exception e) {
             Log.e("MSD", "Failed to create database", e);
         }
@@ -138,6 +139,11 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
             } catch (Exception e) {
                 Log.e("MSD", "Failed to update database", e);
             }
+        }
+        try {
+            readSQLAsset(context, db, "basictests.sql", verbose);
+        }catch(Exception e){
+            Log.d("MSD","Failed to upgrade Patchalyzer basic tests tables",e);
         }
     }
 }

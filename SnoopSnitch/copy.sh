@@ -14,6 +14,8 @@ cp ../contrib/prebuilt/libosmocore.so $JNI_DIR
 cp ../contrib/prebuilt/libosmogsm.so $JNI_DIR
 cp ../contrib/prebuilt/libsmime_crt.so $JNI_DIR
 cp ../contrib/prebuilt/libdiag-helper.so $JNI_DIR
+cp ../contrib/prebuilt/libbusybox.so $JNI_DIR
+cp ../contrib/prebuilt/libobjdump.so $JNI_DIR
 
 cp ../contrib/prebuilt/anonymize.sql $ASSETS_DIR
 cp ../contrib/prebuilt/si.sql $ASSETS_DIR
@@ -26,6 +28,7 @@ cp ../contrib/prebuilt/mcc.sql $ASSETS_DIR
 cp ../contrib/prebuilt/mnc.sql $ASSETS_DIR
 cp ../contrib/prebuilt/hlr_info.sql $ASSETS_DIR
 cp ../contrib/prebuilt/sm.sql $ASSETS_DIR
+cp ../contrib/prebuilt/basictests.sql $ASSETS_DIR
 cp ../contrib/sql/files.sql $ASSETS_DIR
 cp ../analysis/prebuilt/catcher_analysis.sql $ASSETS_DIR
 cp ../analysis/prebuilt/config.sql $ASSETS_DIR

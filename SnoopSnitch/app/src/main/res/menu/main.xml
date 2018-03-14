@@ -1,6 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-  
-    <item android:id="@+id/menu_action_scan"
+
+	<item android:id="@+id/menu_action_switch_to_patchalyzer"
+			  android:icon="@drawable/ic_menu_switch"
+			  android:title="@string/action_switch_to_patchalyzer"
+			  android:showAsAction="ifRoom" />
+
+	<item android:id="@+id/menu_action_scan"
           android:icon="@drawable/ic_menu_record_disable"
           android:title="@string/action_scan"
           android:showAsAction="ifRoom" />

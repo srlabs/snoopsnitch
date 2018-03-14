@@ -68,6 +68,14 @@ if [ -n "${do_git}" ];then
     then
 	(cd .. && git submodule init contrib/gsm-parser)
     fi
+    if [ ! "$(ls -A busybox)" -a "x${fast}" = "x" ];
+    then
+        (cd .. && git submodule init contrib/busybox)
+    fi
+    if [ ! "$(ls -A binutils-gdb)" -a "x${fast}" = "x" ];
+    then
+        (cd .. && git submodule init contrib/binutils-gdb)
+    fi
 fi
 
 if [ -n "${do_git}" ];then
@@ -76,7 +84,9 @@ if [ -n "${do_git}" ];then
 	(cd .. && \
 	    git submodule update contrib/libasn1c && \
 	    git submodule update contrib/libosmocore && \
-	    git submodule update contrib/gsm-parser)
+	    git submodule update contrib/gsm-parser && \
+	    git submodule update contrib/busybox && \
+	    git submodule update contrib/binutils-gdb)
     fi
 fi
 
@@ -121,7 +131,7 @@ fi
 # Build OpenSSL and diag helper only for Android
 if [ "x${target}" = "xandroid" -a "x${fast}" = "x" ];
 then
-	TARGETS="${TARGETS} openssl diag_helper"
+	TARGETS="${TARGETS} openssl diag_helper busybox binutils-gdb"
 fi
 
 TARGETS="${TARGETS} gsm-parser"

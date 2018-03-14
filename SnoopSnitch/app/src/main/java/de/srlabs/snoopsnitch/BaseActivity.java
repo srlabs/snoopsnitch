@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import de.srlabs.patchalyzer.MainActivity;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -36,6 +37,7 @@ public class BaseActivity extends FragmentActivity {
     protected Menu menu;
     protected Boolean isInForeground = false;
     protected Handler handler;
+    private Intent patchalyzerIntent;
     protected final int refresh_intervall = 1000;
     // Static variable so that it is common to all Activities of the App
     private static boolean exitFlag = false;
@@ -146,9 +148,18 @@ public class BaseActivity extends FragmentActivity {
         return msdServiceHelperCreator;
     }
 
+    public void showPatchalyzer(){
+        if(patchalyzerIntent == null)
+            patchalyzerIntent = new Intent(this, MainActivity.class);
+        startActivity(patchalyzerIntent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_action_switch_to_patchalyzer:
+                showPatchalyzer();
+                break;
             case R.id.menu_action_scan:
                 toggleRecording();
                 break;
@@ -214,11 +225,12 @@ public class BaseActivity extends FragmentActivity {
     public void stateChanged(StateChangedReason reason) {
         if (reason.equals(StateChangedReason.RECORDING_STATE_CHANGED)) {
             if (menu != null) {
+                MenuItem menuItem = menu.findItem(R.id.menu_action_scan);
                 if (msdServiceHelperCreator.getMsdServiceHelper().isRecording()) {
-                    menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_record_disable, null));
+                    menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_record_disable, null));
                     showMessage(getResources().getString(R.string.message_recordingStarted));
                 } else {
-                    menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notrecord_disable, null));
+                    menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notrecord_disable, null));
                     showMessage(getResources().getString(R.string.message_recordingStopped));
                 }
             }
