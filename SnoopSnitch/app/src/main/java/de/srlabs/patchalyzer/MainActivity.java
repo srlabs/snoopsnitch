@@ -23,7 +23,6 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -61,6 +60,7 @@ public class MainActivity extends Activity {
     private WebView legendView;
     private ScrollView webViewContent, metaInfoText;
     private ProgressBar progressBar;
+    private PatchalyzerSumResultChart resultChart;
 
     private ITestExecutorServiceInterface mITestExecutorService;
     private boolean isServiceBound=false;
@@ -210,6 +210,8 @@ public class MainActivity extends Activity {
         metaInfoText = (ScrollView) findViewById(R.id.scrollViewText);
         //metaInfoText.setBackgroundColor(Color.TRANSPARENT);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
+
         startTestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -237,94 +239,8 @@ public class MainActivity extends Activity {
         state = ActivityState.valueOf(settings.getString("state", ActivityState.START.toString()));
         restoreStatePending = true;
 
-
-        //testResetBasicTestDBInformation();
-        //testDownloadJSONAndAddtoDBAndParseBack();
     }
 
-    /*private void testDownloadJSONAndAddtoDBAndParseBack() {
-        Thread thread = new Thread(){
-            @Override
-            public void run(){
-
-                try {
-                    BasicTestParser parser = new BasicTestParser(MainActivity.this);
-                    parser.initReadingBasicTests();
-                    //ServerApi.downloadTestSuite(MainActivity.this, "0a895f90", 25, "2017-02-21.1", 10);
-                    JSONObject basicTest = null;
-                    // write all basic test to DB
-                    while((basicTest = parser.getNextBasicTest()) != null){
-                        parser.insertBasicTestToDB(basicTest);
-                    }
-
-                    //check if worked correctly
-                    //parser.addTestResultToDB("002D7F16C77DA71E",false);
-                    JSONObject basicMaskSignatureTest = parser.getBasicTestByUUID("002D7F16C77DA71E");
-                    if(basicMaskSignatureTest.has("result")){
-                        Log.d(Constants.LOG_TAG,"testBasicTestParser: result: "+basicMaskSignatureTest.getBoolean("result"));
-                    }
-                    assert !basicMaskSignatureTest.has("result");
-                    assert basicMaskSignatureTest.getString("uuid").equals("002D7F16C77DA71E");
-                    assert basicMaskSignatureTest.getString("filename").equals("/system/lib64/libstagefright_soft_avcdec.so");
-                    assert basicMaskSignatureTest.getString("signature").equals("MASK:e70:c306ba8c7f1a0064b18b25ccba298d3ca036f35fe3ad4b98214fc27b53ad1cd7:0058C_004cC_00d4C_0054C_0058C_0050A_0008B_004cC_0010A_0008B_0008C_0008A_0008B_0024C_0064C_0030C_0020C_0048C_0028C_0120C_00c0C_015cC_001cC_0010C_0078C_00bcC_0004A_0008A_0008B_0004B_0024A_0004B_0024A_0004B_0028C_002cC_002cA_0010B_0004C_0034A_0014B_0004C_0044A_0004A_0004A_0004A_0004B_0004B_0008B_0004B_02e8C_0030C_0044C_0088C");
-                    assert basicMaskSignatureTest.getString("symbol").equals("ih264d_parse_decode_slice");
-                    assert basicMaskSignatureTest.getString("testType").equals("MASK_SIGNATURE_SYMBOL");
-                    Log.d(Constants.LOG_TAG,"Test DB query: mask signature test: "+basicMaskSignatureTest.toString());
-
-
-                    JSONObject secondTest = parser.getBasicTestByUUID("147DA24467E6BCB2");
-                    Log.d(Constants.LOG_TAG,"Test DB query 2: "+secondTest.toString());
-
-                    Log.d(Constants.LOG_TAG,"testBasicTestParser: result: not tested yet: "+parser.getTestResult("005EF69559F83E57"));
-                    parser.addTestResultToDB("0077EBD71ADD60A9",true);
-                    Log.d(Constants.LOG_TAG,"testBasicTestParser: result: true ==  "+parser.getTestResult("0077EBD71ADD60A9"));
-                    parser.addTestResultToDB("0077EBD71ADD60A9",false);
-                    Log.d(Constants.LOG_TAG,"testBasicTestParser: result: false ==  "+parser.getTestResult("0077EBD71ADD60A9"));
-
-
-                    Log.d(Constants.LOG_TAG,"testBasicTestParser: "+parser.getUUIDsOfNotPerformedTests().size()+" tests not performed yet!");
-
-                    parser.addTestResultToDB("147DA24467E6BCB2",null);
-                    Log.d(Constants.LOG_TAG,"testBasicTestParser: inconclusive test results in DB: "+parser.getTestResult("147DA24467E6BCB2"));
-
-                    parser.addTestExceptionToDB("147DA24467E6BCB2","What a scary exception here, wow...");
-                    Log.d(Constants.LOG_TAG,"testBasicTestParser: exception to and from DB: "+parser.getBasicTestByUUID("147DA24467E6BCB2").getString("exception"));
-
-                    /*
-                    ServerApi.downloadTestSuite(MainActivity.this, "0a895f90", 25, "2017-02-21.1", 10);
-                    BasicTestParser parser = new BasicTestParser(MainActivity.this);
-                    parser.initReadingVulnerabilities();
-
-                    JSONObject vulnerabilities = parser.parseVulnerabilities();
-                    Log.d(Constants.LOG_TAG,"Parsed vulnerabilites: "+vulnerabilities.getJSONObject("CVE-2016-2182"));
-
-                }catch(Exception e){
-                    Log.e(Constants.LOG_TAG,"testDownloadJSONAndAddtoDB: Exception: "+e.getMessage());
-                }
-            }
-        };
-        thread.start();
-    }*/
-
-    /*private void testResetBasicTestDBInformation() {
-        try {
-            BasicTestParser parser = new BasicTestParser(this);
-            Log.d(Constants.LOG_TAG, "Test DB: test result of 1st example basic test: " + parser.getTestResult("147DA24467E6BCB2"));
-            parser.addTestResultToDB("002D7F16C77DA71E", true);
-            parser.addTestExceptionToDB("002D7F16C77DA71E", "nasty exception here!!!");
-            JSONObject secondbasictest = parser.getBasicTestByUUID("002D7F16C77DA71E");
-            Log.d(Constants.LOG_TAG, "Test DB: test result of 2nd example basic test: " + secondbasictest.getBoolean("result") + " exception:" + secondbasictest.getString("exception"));
-            parser.resetAllBasicTests();
-            Log.d(Constants.LOG_TAG, "Resetting all basic tests info in DB");
-
-            Log.d(Constants.LOG_TAG, "Test DB: test result of 1st example basic test: " + parser.getTestResult("147DA24467E6BCB2"));
-            secondbasictest = parser.getBasicTestByUUID("002D7F16C77DA71E");
-            Log.d(Constants.LOG_TAG, "Test DB: test result of 2nd example basic test: " + (secondbasictest.isNull("result") ? "null" : secondbasictest.getBoolean("result")) + " exception:" + (secondbasictest.has("exception") ? secondbasictest.getString("exception") : "-none-"));
-
-        }catch (JSONException e){
-            Log.e(Constants.LOG_TAG,"JSONException when testing:"+e.getMessage());
-        }
-    }*/
     private void initDatabase(){
         Thread t = new Thread() {
             @Override
@@ -439,6 +355,10 @@ public class MainActivity extends Activity {
     }
     private void startTest(){
         //startService();
+
+
+        progressBar.setVisibility(View.VISIBLE);
+        resultChart.setVisibility(View.INVISIBLE);
 
         if(TestUtils.isConnectedToInternet(this)) {
             noCVETestsForApiLevelMessage = null;
@@ -563,7 +483,22 @@ public class MainActivity extends Activity {
                 Vector<Integer> statusColors = new Vector<Integer>();
                 for (int i = 0; i < vulnerabilitiesForCategory.length(); i++) {
                     JSONObject vulnerability = vulnerabilitiesForCategory.getJSONObject(i);
-                    statusColors.add(getVulnerabilityIndicatorColor(vulnerability, refPatchlevelDate));
+                    int color = getVulnerabilityIndicatorColor(vulnerability, refPatchlevelDate);
+                    statusColors.add(color);
+                    switch(color){
+                        case Constants.COLOR_PATCHED:
+                            resultChart.increasePatched(1);
+                            break;
+                        case Constants.COLOR_INCONCLUSIVE:
+                            resultChart.increaseInconclusive(1);
+                            break;
+                        case Constants.COLOR_MISSING:
+                            resultChart.increaseMissing(1);
+                            break;
+                        case Constants.COLOR_NOTAFFECTED:
+                            resultChart.increaseNotAffected(1);
+                            break;
+                    }
                 }
 
                 int[] tmp = new int[statusColors.size()];
@@ -582,6 +517,11 @@ public class MainActivity extends Activity {
             if(noCVETestsForApiLevelMessage != null){
                 showNoCVETestsForApiLevelDialog(noCVETestsForApiLevelMessage);
             }
+
+            resultChart.invalidate();
+            resultChart.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
+
         } catch(Exception e){
             Log.e(Constants.LOG_TAG, "showPatchlevelDateTable Exception", e);
         }

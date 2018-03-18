@@ -38,7 +38,6 @@ public class TestExecutorService extends Service {
     private ServerApi api = null;
     private SharedPreferences sharedPrefs;
     private Vector<ProgressItem> progressItems;
-    private boolean appIsOutdated = false;
     public static final String NO_INTERNET_CONNECTION_ERROR = "no_uplink";
 
     @Override
@@ -318,7 +317,6 @@ public class TestExecutorService extends Service {
                         if(uploadTestResults){
                             apiRunning = true;
                             if(!isConnectedToInternet()){
-                                stopSubThreads();
                                 return;
                             }
                             api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -328,6 +326,7 @@ public class TestExecutorService extends Service {
                         }
                     } catch(IOException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
+                        stopSubThreads();
                         Log.e(Constants.LOG_TAG, "Exception in pendingTestResultsUploadRunnable", e);
                         apiRunning = false;
                     } catch( JSONException e){
@@ -345,7 +344,6 @@ public class TestExecutorService extends Service {
                             apiRunning = true;
                             if (deviceInfoJson != null) {
                                 if(!isConnectedToInternet()){
-                                    stopSubThreads();
                                     return;
                                 }
                                 api.reportSys(deviceInfoJson, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -356,6 +354,7 @@ public class TestExecutorService extends Service {
                         }
                     } catch(IOException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
+                        stopSubThreads();
                         Log.e(Constants.LOG_TAG, "Exception in pendingDeviceInfoUploadRunnable()", e);
                         apiRunning = false;
                     } catch(JSONException e){
@@ -551,11 +550,10 @@ public class TestExecutorService extends Service {
         @Override
         public void run(){
             try {
-                Log.i(Constants.LOG_TAG, "Starting api.downlaodTests");
+                Log.i(Constants.LOG_TAG, "Starting download test suite thread...");
                 apiRunning = true;
                 //FIXME add current testVersion here ->
                 if(!isConnectedToInternet()){
-                    stopSubThreads();
                     return;
                 }
                 downloadingTestSuite = true;
@@ -572,12 +570,13 @@ public class TestExecutorService extends Service {
                 checkIfCVETestsAvailable(testSuite);
 
             } catch (JSONException e) {
-                Log.e(Constants.LOG_TAG, "JSONException in api.downlaodTests", e);
-                reportError("JSONException in api.downlaodTests" + e);
+                Log.e(Constants.LOG_TAG, "JSONException in DownloadThread", e);
+                reportError("JSONException in DownloadThread" + e);
                 return;
             } catch (IOException e) {
-                Log.e(Constants.LOG_TAG, "IOException in api.downlaodTests", e);
+                Log.e(Constants.LOG_TAG, "IOException in DownloadThread", e);
                 reportError(NO_INTERNET_CONNECTION_ERROR);
+                stopSubThreads();
                 return;
             } finally{
                 apiRunning = false;
@@ -625,7 +624,6 @@ public class TestExecutorService extends Service {
             Vector<ProgressItem> requestProgress = new Vector<>();
             try {
                 if(!isConnectedToInternet()){
-                    stopSubThreads();
                     return;
                 }
                 JSONArray requestsJson = api.getRequests(TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT, TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -644,7 +642,6 @@ public class TestExecutorService extends Service {
                         TestUtils.validateFilename(filename);
                         Log.d(Constants.LOG_TAG,"Uploading file: "+filename);
                         if(!isConnectedToInternet()){
-                            stopSubThreads();
                             return;
                         }
                         api.reportFile(filename, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -659,8 +656,10 @@ public class TestExecutorService extends Service {
                 showStatus("Reporting files to server finished...");
             } catch(Exception e){
                 Log.e(Constants.LOG_TAG, "RequestsThread.run() exception", e);
-                if(e instanceof IOException) //TODO test
+                if(e instanceof IOException) {
+                    stopSubThreads();
                     reportError(NO_INTERNET_CONNECTION_ERROR);
+                }
                 downloadRequestsProgress.update(1.0);
                 for(ProgressItem x:requestProgress){
                     x.update(1.0);
@@ -674,6 +673,7 @@ public class TestExecutorService extends Service {
     private boolean isConnectedToInternet(){
         if(!TestUtils.isConnectedToInternet(TestExecutorService.this)){
             reportError(NO_INTERNET_CONNECTION_ERROR);
+            stopSubThreads();
             return false;
         }
         else{

@@ -56,6 +56,15 @@
             android:layout_height="wrap_content"
             android:id="@+id/progressBar"
             android:progressTint="#3f51b5" />
+        
+        <de.srlabs.patchalyzer.PatchalyzerSumResultChart
+            android:id="@+id/sumResultChart"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:visibility="invisible"
+            custom:drawborder="true"
+            custom:shownumbers="true"
+            custom:small="false"/>
 
         <ScrollView
             android:id="@+id/scrollViewText"
