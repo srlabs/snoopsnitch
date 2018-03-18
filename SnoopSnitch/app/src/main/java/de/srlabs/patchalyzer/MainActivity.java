@@ -238,6 +238,7 @@ public class MainActivity extends Activity {
         SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
         state = ActivityState.valueOf(settings.getString("state", ActivityState.START.toString()));
         //restoreStatePending = true;
+        
 
     }
 

@@ -70,6 +70,9 @@ public class BasicTestParser {
         TEST_TYPE_FIELDS.put("JAVA_TEST",new String[]{"testClassName"});
         TEST_TYPE_FIELDS.put("CHIPSET_VENDOR",new String[]{"vendor;VENDOR"});
         TEST_TYPE_FIELDS.put("CHIPSET_VENDOR_OR_UNKNOWN",new String[]{"vendor;VENDOR"});
+        TEST_TYPE_FIELDS.put("COMBINED_SIGNATURE",new String[]{"filename","rollingSignature","maskSignature"});
+        TEST_TYPE_FIELDS.put("ROLLING_SIGNATURE",new String[]{"filename","rollingSignature"});
+
     }
 
     /**
@@ -176,7 +179,12 @@ public class BasicTestParser {
      * Precondition: initReadingVulnerabilities
      */
     public JSONObject parseVulnerabilities(){
-        JSONObject vulnerabilities = new JSONObject();
+        return parseAndAddVulnerabilities(null);
+    }
+
+    public JSONObject parseAndAddVulnerabilities(JSONObject vulnerabilities){
+        if(vulnerabilities == null)
+            vulnerabilities = new JSONObject();
         try {
             boolean finished = false;
 
@@ -620,6 +628,7 @@ public class BasicTestParser {
         if(db == null || !db.isOpen()){
             db = MsdDatabaseManager.getInstance().openDatabase();
         }
+        Log.d(Constants.LOG_TAG,"Marking basicTestChunkURL: "+basicTestChunkURL+" as downloaded and parsed successfully in DB");
         ContentValues values = new ContentValues();
         //write to basictests table
         values.put("url",basicTestChunkURL);

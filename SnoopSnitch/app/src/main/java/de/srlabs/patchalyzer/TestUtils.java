@@ -37,6 +37,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,8 +46,12 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.srlabs.patchalyzer.signatures.Section;
+import de.srlabs.patchalyzer.signatures.SymbolInformation;
+
 public class TestUtils {
     public static HashMap<String,String> buildProperties = null;
+    private static Object buildPropertiesLock = new Object();
     private static JSONArray protectedBroadcasts;
 
     public static boolean checkAffectedAndroidVersion(String[] affectedAndroidVersions) {
@@ -201,7 +206,7 @@ public class TestUtils {
         return protectedBroadcasts;
     }
     private static boolean readBuildProperties(){
-        buildProperties = new HashMap<>();
+        HashMap<String, String> tempBuildProperties = new HashMap<>();
         try{
             Log.w("TestUtils", "Running getprop");
             String[] cmd = {"getprop"};
@@ -218,7 +223,7 @@ public class TestUtils {
                     Matcher m = pattern.matcher(line);
                     if(m.matches()) {
                         MatchResult mr = m.toMatchResult();
-                        buildProperties.put(m.group(1).trim(), m.group(2).trim());
+                        tempBuildProperties.put(m.group(1).trim(), m.group(2).trim());
                         //Log.w("TestUtils", "GETPROP: " + m.group(1) + " = " + m.group(2));
                     }
                     else{
@@ -231,7 +236,7 @@ public class TestUtils {
         } catch(Exception e) {
             Log.e("TestUtils", "Error reading build properties from getprop, falling back to reading /system/build.prop", e);
             try {
-                buildProperties = new HashMap<>();
+                tempBuildProperties = new HashMap<>();
                 File f = new File("/system/build.prop");
                 FileInputStream fis = new FileInputStream(f);
                 boolean eof = false;
@@ -278,7 +283,7 @@ public class TestUtils {
                             }
                             value.add((byte) b);
                         }
-                        buildProperties.put(byteVectorToString(key).trim(), byteVectorToString(value).trim());
+                        tempBuildProperties.put(byteVectorToString(key).trim(), byteVectorToString(value).trim());
                     } else {
                         while (true) {
                             int b = fis.read();
@@ -295,6 +300,7 @@ public class TestUtils {
                 return false;
             }
         }
+        buildProperties = tempBuildProperties;
         return true;
     }
     public static String readProcSelfMaps() throws Exception{
@@ -346,14 +352,12 @@ public class TestUtils {
             devinfo.put("systemPartition", DirectoryTreeLister.makeFilelist(new File("/system/"), new DirectoryTreeLister.ProgressCallback() {
                 @Override
                 public void reportProgress(double progress) {
-                    if(progressItem != null)
-                        progressItem.update(0.1 + 0.6*progress); // 60% progress for filesystem listing/hashing
+                    progressItem.update(0.1 + 0.6*progress); // 60% progress for filesystem listing/hashing
                 }
             }));
             long filelistDuration = System.currentTimeMillis() - filelistStartTime;
             Log.i(Constants.LOG_TAG, "Generating filelist took " + filelistDuration + " ms");
-            if(progressItem != null)
-                progressItem.update(0.7);
+            progressItem.update(0.7);
             Log.i(Constants.LOG_TAG,"Reading all manifests...");
             JSONObject manifests = readAllManifests(context);
             devinfo.put("manifests", manifests.getJSONObject("manifests"));
@@ -362,8 +366,7 @@ public class TestUtils {
             FileOutputStream fos = new FileOutputStream(f);
             fos.write(devinfo.toString(4).getBytes());
             fos.close();*/
-            if(progressItem != null)
-                progressItem.update(1.0); // Final 30% progress for Android manifests of system applications
+            progressItem.update(1.0); // Final 30% progress for Android manifests of system applications
             Log.i(Constants.LOG_TAG,"Finished reading all manifests.");
             return devinfo;
         } catch(Exception e){
@@ -409,8 +412,10 @@ public class TestUtils {
         }
     }
     public static String getBuildProperty(String name){
-        if(buildProperties == null)
-            readBuildProperties();
+        synchronized (buildPropertiesLock) {
+            if (buildProperties == null)
+                readBuildProperties();
+        }
         if(!buildProperties.containsKey(name))
             return null;
         return buildProperties.get(name);
@@ -586,5 +591,94 @@ public class TestUtils {
         for(byte b: a)
             sb.append(String.format("%02x", b & 0xff));
         return sb.toString();
+    }
+
+    public static HashMap<String, SymbolInformation> readSymbolTable(String filePath) throws Exception{
+        //Log.i(Constants.LOG_TAG,"Creating symbol table for file: "+filePath);
+        String objFile = filePath;
+        HashMap<String, SymbolInformation> symtable = new HashMap<>();
+
+        if (filePath == null) {
+            throw new IllegalStateException("filePath argument == null!");
+        }
+
+        Pattern patternWhitespaces = Pattern.compile("\\s+");
+
+        List<String> lines = ProcessHelper.getObjDumptTOutput(objFile);
+        for (String line : lines) {
+            line = line.trim(); //.decode()
+            if (!line.contains(".text"))
+                continue;
+            if (line.contains(".text.unlikely"))
+                continue;
+            if (line.contains(".text."))
+                continue;
+
+
+            String[] components = patternWhitespaces.split(line);
+            if (components.length < 4)
+                continue;
+
+            String symbolName = components[components.length - 1];
+            String addrHex = components[0];
+            String lenHex = null;
+            for (int i = 0; i < components.length - 1; i++) {
+                if (components[i].equals(".text")) {
+                    lenHex = components[i + 1];
+                }
+            }
+            if (lenHex == null) {
+                throw new IllegalStateException("Invalid line: " + line);
+            }
+            int addr = Integer.parseInt(addrHex, 16);
+            int length = Integer.parseInt(lenHex, 16);
+
+            symtable.put(symbolName, new SymbolInformation(symbolName, addr, length));
+        }
+        ArrayList<Section> sections = new ArrayList<>();
+        for (String line : ProcessHelper.getObjDumpHW(objFile)) {
+            line = line.trim(); //.decode()
+            if (line.contains("CODE")) {
+                // Idx Name Size VMA LMA File off
+                String[] items = patternWhitespaces.split(line);
+                int size = Integer.parseInt(items[2], 16);
+                int vma = Integer.parseInt(items[3], 16);
+                int fileOffset = Integer.parseInt(items[5], 16);
+                sections.add(new Section(size, vma, fileOffset));
+            }
+        }
+
+        // add pos
+        for (SymbolInformation symbolInformation : symtable.values()) {
+            int addr = symbolInformation.getAddr();
+            int pos = addr;
+            for (Section section : sections) {
+                if (addr >= section.getVma() && addr < section.getVma() + section.getSize()) {
+                    pos = section.getFileOffset() + (addr - section.getVma());
+                    symbolInformation.setPosition(pos);
+                }
+            }
+        }
+
+        if (filePath.endsWith(".o")) {
+            for (String line : ProcessHelper.getObjDumpHWwithCheck(objFile)) {
+                line = line.trim(); //.decode()
+                if (!line.contains(".text.")) {
+                    continue;
+                }
+                String[] components = patternWhitespaces.split(line);
+                for (int i = 0; i < components.length - 1; i++) {
+                    if (components[i].startsWith(".text.")) {
+                        String symbolName = components[i].substring((".text.").length());
+                        int codeLen = Integer.parseInt(components[i + 1], 16);
+                        int pos = Integer.parseInt(components[i + 4], 16);
+                        SymbolInformation symbolInformation = new SymbolInformation(symbolName, pos, codeLen);
+                        symbolInformation.setPosition(pos);
+                        symtable.put(symbolName, symbolInformation);
+                    }
+                }
+            }
+        }
+        return symtable;
     }
 }

@@ -1,40 +1,50 @@
 package de.srlabs.patchalyzer.signatures;
 
-/** This object will contain all the information about symbols
+/** This object contains all the information about symbols
  * Created by jonas on 14.12.17.
  */
 
 public class SymbolInformation {
 
-    private String symbolName;
-    private int position;
-    private int addr;
-    private int length;
+	private String symbolName;
+	private long position;
+	private int addr;
+	private int length;
 
-    public SymbolInformation(String symbolName, int addr, int length){
-        this.symbolName = symbolName;
-        this.addr = addr;
-        this.length = length;
-    }
+	public SymbolInformation(String symbolName, long pos) {
+		this.symbolName = symbolName;
+		this.position = pos;
+	}
 
-    public void setPosition(int position){
-        this.position = position;
-    }
+	public SymbolInformation(String symbolName, int addr, int length) {
+		this.symbolName = symbolName;
+		this.addr = addr;
+		this.length = length;
+	}
 
-    public int getPosition(){
-        return position;
-    }
+	public void setPosition(long position) {
+		this.position = position;
+	}
 
-    public int getAddr(){
-        return addr;
-    }
+	public long getPosition() {
+		return position;
+	}
 
-    public int getLength(){
-        return length;
-    }
+	public int getAddr() {
+		return addr;
+	}
 
-    public String getSymbolName(){
-        return symbolName;
-    }
+	public int getLength() {
+		return length;
+	}
+
+	public String getSymbolName() {
+		return symbolName;
+	}
+
+	@Override
+	public int hashCode() {
+		return symbolName.hashCode() + ((int)position) + addr + length;
+	}
 
 }

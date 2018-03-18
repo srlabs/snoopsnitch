@@ -37,6 +37,7 @@ public class BasicTestCache {
     private HashMap<String,String> exceptionsByTestId = new HashMap<String, String>();
     private ProgressItem progressItem;
     private Runnable finishedRunnable = null;
+    private boolean stopTesting = false;
 
     public BasicTestCache(TestExecutorService service, String testSuiteVersion, int apiLevel){
         this.testSuiteVersion = testSuiteVersion;
@@ -103,6 +104,7 @@ public class BasicTestCache {
     }
 
     public void startWorking() {
+        stopTesting = false;
         new MasterWorkingThread(4).start();
     }
 
@@ -128,6 +130,10 @@ public class BasicTestCache {
         return result;
     }
 
+    public void stopTesting(){
+        stopTesting = true;
+    }
+
     /**
      * This thread is going to handle the DB connection and fill the working
      */
@@ -147,6 +153,9 @@ public class BasicTestCache {
             int testBatchSize = addNextMissingTestBatch();
 
             while(true){
+                if(stopTesting){
+                    break;
+                }
                 //check if results queue contains all results
                 for(int i=0; i < testBatchSize; i++) {
                     try {
@@ -172,7 +181,9 @@ public class BasicTestCache {
             }
             terminateThreads();
             progressItem.update(1.0);
-            finishedRunnable.run();
+            if(!stopTesting) {
+                finishedRunnable.run();
+            }
         }
 
         private void terminateThreads(){

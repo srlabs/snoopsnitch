@@ -131,7 +131,7 @@ fi
 # Build OpenSSL and diag helper only for Android
 if [ "x${target}" = "xandroid" -a "x${fast}" = "x" ];
 then
-	TARGETS="${TARGETS} openssl diag_helper busybox binutils-gdb"
+	TARGETS="${TARGETS} openssl diag_helper busybox binutils-gdb sigtool"
 fi
 
 TARGETS="${TARGETS} gsm-parser"
