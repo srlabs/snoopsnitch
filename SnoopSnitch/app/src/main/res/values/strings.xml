@@ -30,7 +30,7 @@
     <!-- Common Buttons -->
     <string name="common_button_upload">upload</string>
     <string name="common_button_nodata">No data</string>
-    <string name="common_button_networktest_start">Start Test</string> 
+    <string name="common_button_networktest_start">Start network test</string>
     <string name="common_button_networktest_stop">Stop Test</string>
     <string name="warning_button_proceed_anyway">Ok, proceed anyway</string>
     <string name="warning_button_quit">Quit application</string>
@@ -476,6 +476,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="device_never_compatible">Your device does not have a MSM Qualcomm chip, and is therefore not able to run SnoopSnitch main features.</string>
 <string name="device_not_compatible_now_no_diag">Your device is not compatible currently. This might change with an upcoming firmware update.</string>
 <string name="action_switch_to_patchalyzer">Switch to Patchalyzer</string>
+<string name="android_patchlevel_text">Android patch level</string>
 
 
 

@@ -8,48 +8,436 @@
     android:weightSum="10"
     tools:context=".DashboardActivity" >
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/patchalyzer_summary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/common_applicationBackground"
-        android:paddingBottom="5dp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="5dp" >
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:orientation="vertical" >
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="0dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="6">
+
+                <ImageView
+                    android:id="@+id/imgDashboardPatchalyzer"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:scaleType="fitStart"
+                    android:src="@mipmap/ic_launcher" />
 
                 <TextView
-                    android:id="@+id/txtDashboardLastAnalysis"
+                    android:id="@+id/TextView02"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:text="@string/android_patchlevel_text"
+                    android:textColor="@color/common_text"
+                    android:textSize="@dimen/text_large"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+            <de.srlabs.patchalyzer.PatchalyzerSumResultChart
+                android:id="@+id/sumResultChart"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:visibility="visible"
+                custom:drawborder="true"
+                custom:shownumbers="true"
+                custom:small="false" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/View10"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@color/common_applicationSeparator" />
+
+    <LinearLayout
+        android:id="@+id/network_security"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:background="@color/common_sectionBackground"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:weightSum="17">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="4"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <ImageView
+                    android:id="@+id/ImageView04"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_marginLeft="2dp"
                     android:layout_marginRight="2dp"
-                    android:text="@string/dashboard_lastanalysis"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/ic_content_network" />
+
+                <TextView
+                    android:id="@+id/TextView08"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="left|center_vertical"
+                    android:paddingTop="4dp"
+                    android:text="@string/dashboard_network_security_title"
+                    android:textColor="@color/common_text"
+                    android:textSize="@dimen/text_large"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/View29"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/common_applicationSeparator" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_weight="3"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="left|center_vertical"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="@string/dashboard_network_security_provider_scrollview_header"
+                android:textColor="@color/common_text"
+                android:textSize="@dimen/text_medium" />
+
+            <View
+                android:id="@+id/View30"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/common_applicationSeparator" />
+
+            <ListView
+                android:id="@+id/lstDashboardProviderList"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10.5"
+                android:background="@color/common_applicationBackground"
+                android:divider="@null">
+
+            </ListView>
+
+            <View
+                android:id="@+id/View31"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/common_applicationSeparator" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"></LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/View28"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/common_applicationSeparator" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:orientation="vertical"
+            android:weightSum="17">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="4"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/txtDashboardNetworkTest"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textSize="@dimen/text_medium" />
+
+                <Button
+                    android:id="@+id/btnDashboardTestNetwork"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_upload_button_background"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:onClick="toggleNetworkTest"
+                    android:text="@string/common_button_networktest_start"
+                    android:textColor="@drawable/custom_upload_button_color" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/View34"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/common_applicationSeparator" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3">
+
+                <TextView
+                    android:id="@+id/TextView05"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/dashboard_network_security_interception_title"
+                    android:textColor="@color/common_text"
+                    android:textSize="@dimen/text_large"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/View35"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/common_applicationSeparator" />
+
+                <TextView
+                    android:id="@+id/TextView07"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/dashboard_network_security_impersonation_title"
+                    android:textColor="@color/common_text"
+                    android:textSize="@dimen/text_large"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/View33"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/common_applicationSeparator" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10.5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="2">
+
+                    <de.srlabs.snoopsnitch.views.DashboardProviderChart
+                        android:id="@+id/pvcDashboardInterception"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:onClick="openLocalMapView"
+                        custom:type="interception" />
+
+                    <View
+                        android:id="@+id/View39"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/common_applicationSeparator" />
+
+                    <de.srlabs.snoopsnitch.views.DashboardProviderChart
+                        android:id="@+id/pvcDashboardImpersonation"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:onClick="openLocalMapView"
+                        custom:type="impersonation" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/View40"
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/common_sectionBackground" />
+
+                <View
+                    android:id="@+id/View41"
+                    android:layout_width="10dp"
+                    android:layout_height="33dp"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="6dp"
+                    android:background="@color/common_sectionBackground" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:paddingBottom="2dp"
+                    android:paddingTop="2dp"
+                    android:text="@string/dashboard_network_security_protectionLevel_high"
+                    android:textSize="@dimen/text_medium" />
+
+                <TextView
+                    android:id="@+id/TextView01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:paddingBottom="2dp"
+                    android:paddingTop="2dp"
+                    android:text="@string/dashboard_network_security_protectionLevel_low"
+                    android:textSize="@dimen/text_medium" />
+
+            </FrameLayout>
+
+            <View
+                android:id="@+id/View32"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/common_applicationSeparator" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:weightSum="4">
+
+                <TextView
+                    android:id="@+id/txtDashboardInterception3g"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/common_3g_title"
+                    android:textColor="@color/common_text"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/View37"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/common_applicationSeparator" />
+
+                <TextView
+                    android:id="@+id/txtDashboardInterception2g"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/common_2g_title"
+                    android:textColor="@color/common_text"
+                    android:textSize="@dimen/text_medium" />
+
+                <View
+                    android:id="@+id/View38"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/common_applicationSeparator" />
+
+                <!--
+                <TextView
+                    android:id="@+id/txtDashboardImpersonation3g"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/common_3g_title"
+                    android:textSize="@dimen/text_medium"
+                    android:textStyle="bold"
                     android:textColor="@color/common_text"
                     android:fontFamily="sans-serif-condensed" />
 
+                <View
+                    android:id="@+id/View36"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/common_applicationSeparator" />
+
                 <TextView
-                    android:id="@+id/txtDashboardLastAnalysisTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_lastanalysis_time"
+                    android:id="@+id/txtDashboardImpersonation2g"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/common_2g_title"
+                    android:textSize="@dimen/text_medium"
                     android:textColor="@color/common_text"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-condensed" />
+              	-->
+
+                <TextView
+                    android:id="@+id/txtDashboardImpersonation2g"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/common_2g_title"
+                    android:textColor="@color/common_text"
+                    android:textSize="@dimen/text_medium" />
+
             </LinearLayout>
+
         </LinearLayout>
-    </RelativeLayout>
+
+    </LinearLayout>
 
     <View
-        android:id="@+id/View42"
+        android:id="@+id/View44"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/common_sectionSeparator" />
@@ -655,381 +1043,51 @@
         android:layout_height="1dp"
         android:background="@color/common_sectionSeparator" />
 
-    <View
-        android:id="@+id/View10"
+    <RelativeLayout
+        android:id="@+id/last_analysis_text"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:background="@color/common_applicationSeparator" />
+        android:layout_height="wrap_content"
+        android:background="@color/common_applicationBackground"
+        android:paddingBottom="5dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="5dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txtDashboardLastAnalysis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/dashboard_lastanalysis"
+                    android:textColor="@color/common_text" />
+
+                <TextView
+                    android:id="@+id/txtDashboardLastAnalysisTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dashboard_lastanalysis_time"
+                    android:textColor="@color/common_text"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
 
     <View
-        android:id="@+id/View44"
+        android:id="@+id/View42"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/common_sectionSeparator" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
-        android:background="@color/common_sectionBackground"
-        android:orientation="horizontal"
-        android:weightSum="10" >
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:orientation="vertical"
-            android:weightSum="17" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3"
-                android:orientation="horizontal"
-                android:weightSum="2" >
-
-                <ImageView
-                    android:id="@+id/ImageView04"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
-                    android:scaleType="fitStart"
-                    android:src="@drawable/ic_content_network" />
-
-                <TextView
-                    android:id="@+id/TextView08"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center_vertical"
-                    android:gravity="left|center_vertical"
-                    android:paddingTop="4dp"
-                    android:text="@string/dashboard_network_security_title"
-                    android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_large"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/View29"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/common_applicationSeparator" />
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_weight="2.5"
-                android:gravity="left|center_vertical"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="@string/dashboard_network_security_provider_scrollview_header"
-                android:textColor="@color/common_text"
-                android:textSize="@dimen/text_medium"
-                android:fontFamily="sans-serif-condensed" />
-
-            <View
-                android:id="@+id/View30"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/common_applicationSeparator" />
-
-            <ListView
-                android:id="@+id/lstDashboardProviderList"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="10.5"
-                android:background="@color/common_applicationBackground"
-                android:divider="@null" >
-
-            </ListView>
-
-            <View
-                android:id="@+id/View31"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/common_applicationSeparator" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" >
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/View28"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/common_applicationSeparator" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="7"
-            android:orientation="vertical"
-            android:weightSum="17" >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3"
-                android:weightSum="2" >
-
-                <TextView
-                    android:id="@+id/txtDashboardNetworkTest"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:textSize="@dimen/text_medium" />
-
-                <Button
-                    android:id="@+id/btnDashboardTestNetwork"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_upload_button_background"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:onClick="toggleNetworkTest"
-                    android:text="@string/common_button_networktest_start"
-                    android:textColor="@drawable/custom_upload_button_color" />
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/View34"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/common_applicationSeparator" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2.5" >
-
-                <TextView
-                    android:id="@+id/TextView05"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/dashboard_network_security_interception_title"
-                    android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_large"
-                    android:textStyle="bold" />
-
-                <View
-                    android:id="@+id/View35"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/common_applicationSeparator" />
-
-                <TextView
-                    android:id="@+id/TextView07"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.5"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/dashboard_network_security_impersonation_title"
-                    android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_large"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/View33"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/common_applicationSeparator" />
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="10.5" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:weightSum="2" >
-
-                    <de.srlabs.snoopsnitch.views.DashboardProviderChart
-                        android:id="@+id/pvcDashboardInterception"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:onClick="openLocalMapView"
-                        custom:type="interception" />
-
-                    <View
-                        android:id="@+id/View39"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/common_applicationSeparator" />
-
-                    <de.srlabs.snoopsnitch.views.DashboardProviderChart
-                        android:id="@+id/pvcDashboardImpersonation"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:onClick="openLocalMapView"
-                        custom:type="impersonation" />
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/View40"
-                    android:layout_width="10dp"
-                    android:layout_height="33dp"
-                    android:layout_gravity="top|center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/common_sectionBackground" />
-
-                <View
-                    android:id="@+id/View41"
-                    android:layout_width="10dp"
-                    android:layout_height="33dp"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginBottom="6dp"
-                    android:background="@color/common_sectionBackground" />
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:paddingBottom="2dp"
-                    android:paddingTop="2dp"
-                    android:text="@string/dashboard_network_security_protectionLevel_high"
-					android:fontFamily="sans-serif-condensed"
-                    android:textSize="@dimen/text_medium" />
-
-                <TextView
-                    android:id="@+id/TextView01"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:paddingBottom="2dp"
-                    android:paddingTop="2dp"
-                    android:text="@string/dashboard_network_security_protectionLevel_low"
-					android:fontFamily="sans-serif-condensed"
-                    android:textSize="@dimen/text_medium" />
-
-            </FrameLayout>
-
-            <View
-                android:id="@+id/View32"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/common_applicationSeparator" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:weightSum="4" >
-
-                <TextView
-                    android:id="@+id/txtDashboardInterception3g"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/common_3g_title"
-                    android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-condensed" />
-
-                <View
-                    android:id="@+id/View37"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="3dp"
-                    android:layout_marginTop="3dp"
-                    android:background="@color/common_applicationSeparator" />
-				
-                <TextView
-                    android:id="@+id/txtDashboardInterception2g"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/common_2g_title"
-                    android:textSize="@dimen/text_medium"
-                    android:textColor="@color/common_text"
-                    android:fontFamily="sans-serif-condensed" />
-
-                <View
-                    android:id="@+id/View38"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/common_applicationSeparator" />
-
-                <!--
-                <TextView
-                    android:id="@+id/txtDashboardImpersonation3g"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/common_3g_title"
-                    android:textSize="@dimen/text_medium"
-                    android:textStyle="bold"
-                    android:textColor="@color/common_text"
-                    android:fontFamily="sans-serif-condensed" />
-
-                <View
-                    android:id="@+id/View36"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="3dp"
-                    android:layout_marginTop="3dp"
-                    android:background="@color/common_applicationSeparator" />
-
-                <TextView
-                    android:id="@+id/txtDashboardImpersonation2g"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/common_2g_title"
-                    android:textSize="@dimen/text_medium"
-                    android:textColor="@color/common_text"
-                    android:fontFamily="sans-serif-condensed" />
-              	-->
-              	
-            	<TextView
-                    android:id="@+id/txtDashboardImpersonation2g"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/common_2g_title"
-                    android:textSize="@dimen/text_medium"
-                    android:textColor="@color/common_text"
-                    android:fontFamily="sans-serif-condensed" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
 
 </LinearLayout>

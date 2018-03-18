@@ -29,7 +29,7 @@
     <!-- Common Buttons -->
     <string name="common_button_upload">uploaden</string>
     <string name="common_button_nodata">Geen data</string>
-    <string name="common_button_networktest_start">Start Test</string> 
+    <string name="common_button_networktest_start">Start network test</string>
     <string name="common_button_networktest_stop">Stop Test</string> 
     
     <!-- Messages -->

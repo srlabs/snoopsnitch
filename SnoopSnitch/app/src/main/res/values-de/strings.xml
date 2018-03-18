@@ -28,7 +28,7 @@
     <!-- Common Buttons -->
     <string name="common_button_upload">Hochladen</string>
     <string name="common_button_nodata">Keine Daten</string>
-    <string name="common_button_networktest_start">Test starten</string> 
+    <string name="common_button_networktest_start">Netzwerktest starten</string>
     <string name="common_button_networktest_stop">Test abbrechen</string>
     <string name="warning_button_proceed_anyway">Ok, trotzdem fortfahren</string>
     <string name="warning_button_quit">App schließen</string>
@@ -380,6 +380,9 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="notification_vibrate_and_ring">Vibration und Sound</string>
     <string name="settings_imsi_catcher_notification_summary">Hier können Sie einstellen, wie Sie benachrichtigt werden wollen, wenn ein IMSI-Catcher erkannt wurde.</string>
     <string name="settings_sms_event_notification_summary">Hier können Sie einstellen, wie Sie benachrichtigt werden wollen, wenn ein SMS/SS7-Attacke erkannt wurde.</string>
+
+    <string name="action_switch_to_patchalyzer">Zu Patchalyzer wechseln</string>
+    <string name="android_patchlevel_text">Android-Patch Level</string>
 
 
 </resources>
