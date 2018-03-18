@@ -50,8 +50,6 @@ public class TestExecutorService extends Service {
         api = new ServerApi();
         subThreads = new HashSet<Thread>();
 
-        deviceInfoJson = TestUtils.makeDeviceinfoJson(this,null);
-
         try {
             this.sharedPrefs = getSharedPreferences("TestSuite", Context.MODE_PRIVATE);
         } catch (Exception e) {
