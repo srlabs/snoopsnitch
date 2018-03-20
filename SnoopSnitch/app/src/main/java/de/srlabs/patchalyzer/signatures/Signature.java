@@ -57,7 +57,7 @@ public abstract class Signature {
 	 * Reads a signature from it's string reprentation, automatically choosing the right subclass
 	 * @param signatureString
 	 */
-	public static Signature getInstance(String signatureString) {
+	public static Signature getInstance(String signatureString) throws IOException{
 		if (signatureString != null) {
 			String signatureType = signatureString.split(":")[0];
 			if (signatureType.equals(MaskSignature.SIGNATURE_TYPE)) {
@@ -71,7 +71,7 @@ public abstract class Signature {
 		return null;
 	}
 
-	public abstract Signature parse(String signatureString);
+	public abstract Signature parse(String signatureString) throws IOException;
 
 	public abstract int getCodeLength();
 

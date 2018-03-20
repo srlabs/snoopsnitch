@@ -32,9 +32,10 @@ public class MultiSignatureScanner {
 	 * Add rolling signature check (string)
 	 * @param signatureString
 	 */
-	public void addSignatureChecker(String signatureString) {
+	public void addSignatureChecker(String signatureString) throws IOException{
 		Signature checker = Signature.getInstance(signatureString);
 		addSignatureChecker(checker);
+
 	}
 	/**
 	 * Add rolling signature check objects

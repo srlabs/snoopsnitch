@@ -470,8 +470,11 @@ public class TestEngine {
                 return (RollingSignature) signature;
             }
         }catch(JSONException e){
-            Log.d(Constants.LOG_TAG,"JSONException in getRollingSignatureForTest()",e);
+            Log.e(Constants.LOG_TAG,"JSONException in getRollingSignatureForTest()",e);
+        }catch(IOException e){
+            Log.e(Constants.LOG_TAG,"IOException in getRollingSignatureForTest",e);
         }
+
         return null;
     }
 

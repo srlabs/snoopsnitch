@@ -1,11 +1,14 @@
 package de.srlabs.patchalyzer.signatures;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.srlabs.patchalyzer.Constants;
 import de.srlabs.patchalyzer.ProcessHelper;
 
 
@@ -33,15 +36,22 @@ public class MaskSignature extends Signature {
 	 * @param signatureString
 	 */
 	@Override
-	public MaskSignature parse(String signatureString) {
+	public MaskSignature parse(String signatureString) throws IOException{
 		String[] parts  = signatureString.split(":");
-		if (parts.length == 4) {
+		if (parts.length == 4 || parts.length == 3) {
 			this.signatureType = parts[0];
 			this.codeLen = Integer.parseInt(parts[1], 16);
 			this.checksumSha256 = parts[2];
 			//Log.i(Constants.LOG_TAG,"sha256 checksum:"+this.checksumSha256);
-			String maskString = parts[3];
-			String[] maskStrList = maskString.split("_");
+			String[] maskStrList = null;
+			if(parts.length == 4) {
+				String maskString = parts[3];
+				maskStrList = maskString.split("_");
+			}
+			else{
+				maskStrList = new String[]{};
+			}
+
 			int pos = 0;
 			for (String maskStr : maskStrList) {
 				int offset = Integer.parseInt(maskStr.substring(0, 4), 16);
@@ -69,8 +79,10 @@ public class MaskSignature extends Signature {
 			}
 			return this;
 		}
+		else{
+			throw new IOException("Exception while parsing mask signature string: "+signatureString);
+		}
 		//Log.e(Constants.LOG_TAG,"Error while parsing signature string, wrong format!");
-		return null;
 	}
 
 	@Override
@@ -108,7 +120,10 @@ public class MaskSignature extends Signature {
 		}
 
 		String calculatedHash = ProcessHelper.sha256(maskedCode.toByteArray());
-		//Log.d(Constants.LOG_TAG,"this.hash = "+this.checksumSha256+" calculated:"+calculatedHash);
+		if(this.checksumSha256 == null)
+			Log.d(Constants.LOG_TAG,"sha256 is null: parsed");
+		if(calculatedHash == null)
+			Log.d(Constants.LOG_TAG,"sha256 is null: calculated");
 		if (this.checksumSha256.equals(calculatedHash)) {
 			return true;
 		}
