@@ -34,7 +34,7 @@ public class PatchalyzerSumResultChart extends View {
     private boolean showNumbers=false;
     private boolean isSmall=false;
     private boolean drawBorder=false;
-    HashMap<String,ResultPart> parts = new HashMap<String,ResultPart>();
+    static HashMap<String,ResultPart> parts = new HashMap<String,ResultPart>();
 
     public PatchalyzerSumResultChart(Context context, AttributeSet attrs) {
         super(context, attrs);

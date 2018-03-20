@@ -718,4 +718,17 @@ public class TestUtils {
             }
         }
     }
+
+    public static JSONObject parseCacheResultFile(File cachedTestResult) throws IOException, JSONException {
+        BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(new FileInputStream(cachedTestResult))));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = "";
+        while ((line = responseStreamReader.readLine()) != null) {
+            stringBuilder.append(line).append("\n");
+        }
+        responseStreamReader.close();
+
+        //try to parse to JSONObject and return the string representation of that
+        return new JSONObject(stringBuilder.toString());
+    }
 }

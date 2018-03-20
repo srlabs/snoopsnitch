@@ -1,5 +1,6 @@
 package de.srlabs.snoopsnitch;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -26,6 +27,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import junit.framework.Test;
+
+import de.srlabs.patchalyzer.PatchalyzerSumResultChart;
+import de.srlabs.patchalyzer.TestExecutorService;
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
@@ -70,6 +75,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     private TextView txtDashboardImpersonation2g;
     private ListView lstDashboardProviderList;
     private Button btnDashboardNetworkTest;
+    private PatchalyzerSumResultChart resultChart;
     private Vector<Risk> providerList;
     Vector<TextView> threatSmsCounts;
     Vector<TextView> threatImsiCounts;
@@ -127,6 +133,9 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         threatImsiCounts.add(txtImsiDayCount);
         threatImsiCounts.add(txtImsiWeekCount);
         threatImsiCounts.add(txtImsiMonthCount);
+
+
+        resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
 
         checkCompatibilityAndDisableFunctions();
 
@@ -274,7 +283,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     }
 
     private void refreshPatchalyzerResultSum() {
-
+        resultChart.invalidate();
     }
 
     private void checkOperator() {

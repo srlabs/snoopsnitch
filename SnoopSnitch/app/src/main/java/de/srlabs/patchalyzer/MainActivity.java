@@ -446,7 +446,7 @@ public class MainActivity extends Activity {
             File cachedTestResult = new File(getCacheDir(), TestExecutorService.CACHE_TEST_RESULT_FILE);
             if(cachedTestResult != null && cachedTestResult.exists()){
                 Log.d(Constants.LOG_TAG,"Found cached test results, parsing it...");
-                testResults = parseCacheResultFile(cachedTestResult);
+                testResults = TestUtils.parseCacheResultFile(cachedTestResult);
                 return testResults;
             }
             else {
@@ -463,18 +463,7 @@ public class MainActivity extends Activity {
         return testResults;
     }
 
-    private JSONObject parseCacheResultFile(File cachedTestResult) throws IOException, JSONException {
-        BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(new FileInputStream(cachedTestResult))));
-        StringBuilder stringBuilder = new StringBuilder();
-        String line = "";
-        while ((line = responseStreamReader.readLine()) != null) {
-            stringBuilder.append(line).append("\n");
-        }
-        responseStreamReader.close();
 
-        //try to parse to JSONObject and return the string representation of that
-        return new JSONObject(stringBuilder.toString());
-    }
 
     private void showPatchlevelDateNoTable(){
         showMetaInformation(null);
