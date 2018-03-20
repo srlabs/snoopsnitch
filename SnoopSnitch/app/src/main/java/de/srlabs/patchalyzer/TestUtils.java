@@ -15,8 +15,10 @@ import android.os.Build;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.Process;
 
 import android.text.TextUtils;
@@ -680,5 +682,40 @@ public class TestUtils {
             }
         }
         return symtable;
+    }
+
+    public static void writeInputstreamToFile(InputStream inputStream, File file) throws IOException{
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int length;
+            while((length=inputStream.read(buf))>0){
+                outputStream.write(buf,0,length);
+            }
+        }
+        finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+            inputStream.close();
+        }
+    }
+
+    public static void writeStringToFile(String string, File file) throws IOException{
+        if(string != null && file != null) {
+            OutputStream outputStream = null;
+            try {
+                outputStream = new FileOutputStream(file);
+                outputStream.write(string.getBytes());
+            } catch (Exception e) {
+                Log.e(Constants.LOG_TAG, "Exception while writing string to file: " + file);
+            }
+            finally {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        }
     }
 }

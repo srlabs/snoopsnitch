@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.Vector;
 
 public class TestExecutorService extends Service {
+    public static final String CACHE_TEST_RESULT_FILE = "cached_testresult.json";
     private JSONObject deviceInfoJson = null;
     private TestSuite testSuite = null;
     private DeviceInfoThread deviceInfoThread = null;
@@ -180,11 +181,13 @@ public class TestExecutorService extends Service {
             return basicTestCache.getQueueSize();
         }
         public String evaluateVulnerabilitiesTests() throws RemoteException{
-            showStatus("Creating result overview...");
             try {
                 Log.d(Constants.LOG_TAG, "Starting to create result JSON...");
                 boolean is64BitSystem = TestUtils.is64BitSystem();
                 JSONObject result = new JSONObject();
+                if(testSuite == null)
+                    return null;
+                showStatus("Creating result overview...");
                 JSONObject vulnerabilities = testSuite.getVulnerabilities();
                 Iterator<String> identifierIterator = vulnerabilities.keys();
                 Vector<String> identifiers = new Vector<String>();
@@ -227,7 +230,9 @@ public class TestExecutorService extends Service {
                     result.getJSONArray(category).put(vulnerabilityResult);
                 }
                 basicTestCache.clearTemporaryTestResultCache();
-                return result.toString(4);
+                String testResultJSON = result.toString(4);
+                saveCurrentTestResult(testResultJSON);
+                return testResultJSON;
             } catch (Exception e) {
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
                 return e.toString();
@@ -247,6 +252,7 @@ public class TestExecutorService extends Service {
         public void startWork(boolean updateTests, boolean generateDeviceInfo, final boolean evaluateTests, final boolean uploadTestResults, final boolean uploadDeviceInfo, final ITestExecutorCallbacks callback){
 
             TestExecutorService.this.callback = callback;
+
             if(downloadingTestSuite){
                 showStatus("Still downloading test suite...please be patient!");
                 return;
@@ -269,6 +275,8 @@ public class TestExecutorService extends Service {
 
             clearProgress();
             updateProgress();
+
+            deleteCacheTestResultJSONFile();
 
             final ProgressItem uploadDeviceInfoProgress;
             if(uploadDeviceInfo) {
@@ -316,6 +324,7 @@ public class TestExecutorService extends Service {
                                 stopSubThreads();
                                 return;
                             }
+                            showStatus("Reporting test results to server...");
                             api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
                             showStatus("Uploading test results finished...");
                             uploadTestResultsProgress.update(1.0);
@@ -424,6 +433,19 @@ public class TestExecutorService extends Service {
             t.start();
         }
     };
+
+    private void deleteCacheTestResultJSONFile() {
+        File cacheTestResulFile = new File(getCacheDir(),CACHE_TEST_RESULT_FILE);
+        if(cacheTestResulFile != null && cacheTestResulFile.exists())
+            cacheTestResulFile.delete();
+    }
+
+    private void saveCurrentTestResult(String testResultJSON) throws IOException{
+        File cacheTestResulFile = new File(getCacheDir(),CACHE_TEST_RESULT_FILE);
+        TestUtils.writeStringToFile(testResultJSON,cacheTestResulFile);
+
+        //persist
+    }
 
     private void checkIfCVETestsAvailable(TestSuite testSuite) {
         if(testSuite != null){

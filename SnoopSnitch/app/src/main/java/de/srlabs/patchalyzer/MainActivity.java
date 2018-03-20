@@ -35,11 +35,18 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import junit.framework.Test;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Iterator;
@@ -56,7 +63,7 @@ import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 public class MainActivity extends Activity {
     private Handler handler;
     private Button startTestButton;
-    private TextView statusTextView;
+    private TextView statusTextView, percentageText;
     private WebView legendView;
     private ScrollView webViewContent, metaInfoText;
     private ProgressBar progressBar;
@@ -152,6 +159,13 @@ public class MainActivity extends Activity {
                 public void run() {
                     progressBar.setMax(1000);
                     progressBar.setProgress((int) (progressPercent * 1000.0));
+                    String percentageString = ""+progressPercent*100000.0;
+                    if(percentageString.length() == 3){
+                        percentageText.setText(percentageString+"%");
+                    }
+                    else {
+                        percentageText.setText(("" + progressPercent * 100).substring(0, 4) + "%");
+                    }
                 }
             });
         }
@@ -206,6 +220,7 @@ public class MainActivity extends Activity {
         startTestButton = (Button) findViewById(R.id.btnDoIt);
         webViewContent = (ScrollView) findViewById(R.id.scrollViewTable);
         statusTextView = (TextView) findViewById(R.id.textView);
+        percentageText = (TextView) findViewById(R.id.textPercentage);
         legendView = (WebView) findViewById(R.id.legend);
         metaInfoText = (ScrollView) findViewById(R.id.scrollViewText);
         //metaInfoText.setBackgroundColor(Color.TRANSPARENT);
@@ -219,6 +234,7 @@ public class MainActivity extends Activity {
             }
         });
         statusTextView.setText("");
+        percentageText.setText("");
         if(!Constants.IS_TEST_MODE) {
             setTitle("Patchalyzer - AppID " + TestUtils.getAppId(this));
         }else{
@@ -237,7 +253,7 @@ public class MainActivity extends Activity {
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
         state = ActivityState.valueOf(settings.getString("state", ActivityState.START.toString()));
-        //restoreStatePending = true;
+        restoreStatePending = true;
 
     }
 
@@ -278,22 +294,26 @@ public class MainActivity extends Activity {
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
-    @Override
+    /*@Override
     public void onStop(){
         super.onStop();
-        Log.i("Patchalyzer_Activity","onStop() called -> persisting state to sharedPrefs");
 
-        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("state", state.toString());
-        editor.commit();
-     }
+
+        mITestExecutorService.stopTe
+
+
+     }*/
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
         if(isServiceBound)
             unbindService(mConnection);
+        Log.i("Patchalyzer_Activity","onDestroy() called -> persisting state to sharedPrefs");
+        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("state", state.toString());
+        editor.commit();
     }
     private void restoreState(){
         if(state == ActivityState.PATCHLEVEL_DATES) {
@@ -358,7 +378,9 @@ public class MainActivity extends Activity {
 
 
         progressBar.setVisibility(View.VISIBLE);
+        percentageText.setVisibility(View.VISIBLE);
         resultChart.setVisibility(View.INVISIBLE);
+        resultChart.resetCounts();
 
         if(TestUtils.isConnectedToInternet(this)) {
             noCVETestsForApiLevelMessage = null;
@@ -417,10 +439,20 @@ public class MainActivity extends Activity {
     }
 
 
-    private JSONObject loadTestResultsWhenNeeded() throws RemoteException, JSONException {
+    private JSONObject loadTestResultsWhenNeeded() throws RemoteException, JSONException, IOException {
         Log.d(Constants.LOG_TAG,"loadTestResultsWhenNeeded()");
         if(testResults == null){
-            String testResultsStr = mITestExecutorService.evaluateVulnerabilitiesTests();
+            String testResultsStr = null;
+            File cachedTestResult = new File(getCacheDir(), TestExecutorService.CACHE_TEST_RESULT_FILE);
+            if(cachedTestResult != null && cachedTestResult.exists()){
+                Log.d(Constants.LOG_TAG,"Found cached test results, parsing it...");
+                testResults = parseCacheResultFile(cachedTestResult);
+                return testResults;
+            }
+            else {
+                Log.d(Constants.LOG_TAG,"No cached test results found, creating it..");
+                testResultsStr = mITestExecutorService.evaluateVulnerabilitiesTests();
+            }
             //Log.e(Constants.LOG_TAG, testResultsStr);
             if(testResultsStr != null ){//&& !testResultsStr.contains("Exception")) { //FIXME
                 Log.i(Constants.LOG_TAG,"Trying to convert to JSON: "+testResultsStr);
@@ -430,6 +462,20 @@ public class MainActivity extends Activity {
         }
         return testResults;
     }
+
+    private JSONObject parseCacheResultFile(File cachedTestResult) throws IOException, JSONException {
+        BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(new FileInputStream(cachedTestResult))));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = "";
+        while ((line = responseStreamReader.readLine()) != null) {
+            stringBuilder.append(line).append("\n");
+        }
+        responseStreamReader.close();
+
+        //try to parse to JSONObject and return the string representation of that
+        return new JSONObject(stringBuilder.toString());
+    }
+
     private void showPatchlevelDateNoTable(){
         showMetaInformation(null);
         String refPatchlevelDate = TestUtils.getPatchlevelDate();
@@ -520,6 +566,7 @@ public class MainActivity extends Activity {
 
             resultChart.invalidate();
             resultChart.setVisibility(View.VISIBLE);
+            percentageText.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
 
         } catch(Exception e){
@@ -533,6 +580,10 @@ public class MainActivity extends Activity {
         int numAffectedVulnerabilities = 0;
         try{
             loadTestResultsWhenNeeded();
+            if(testResults == null){
+                showMetaInformation("Claimed patch level: " + refPatchlevelDate+"<br>No test results!");
+                return;
+            }
             JSONArray vulnerabilitiesForPatchlevelDate = testResults.getJSONArray(category);
 
             WebView wv = new WebView(MainActivity.this);

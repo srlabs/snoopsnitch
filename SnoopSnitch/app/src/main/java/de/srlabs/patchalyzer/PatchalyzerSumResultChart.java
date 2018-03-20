@@ -108,7 +108,7 @@ public class PatchalyzerSumResultChart extends View {
         }
         else{
             chartHeight = getHeight() * 0.8f;
-            textSize = 80f;
+            textSize = 60f;
         }
 
         int sumCVEs = 0;
@@ -151,6 +151,12 @@ public class PatchalyzerSumResultChart extends View {
         
     }
 
+    public void resetCounts() {
+        for(ResultPart part : parts.values()){
+            part.setCount(0);
+        }
+    }
+
     protected class ResultPart{
         private int count;
         private int color;
@@ -158,6 +164,10 @@ public class PatchalyzerSumResultChart extends View {
         public ResultPart(int count, int color){
             this.count = count;
             this.color = color;
+        }
+
+        public void setCount(int count){
+            this.count = count;
         }
 
         public int getCount(){

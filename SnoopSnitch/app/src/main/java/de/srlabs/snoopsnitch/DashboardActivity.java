@@ -267,8 +267,14 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
         refreshProviderList();
 
+        refreshPatchalyzerResultSum();
+
         // Set texts
         resetThreatCounts();
+    }
+
+    private void refreshPatchalyzerResultSum() {
+
     }
 
     private void checkOperator() {

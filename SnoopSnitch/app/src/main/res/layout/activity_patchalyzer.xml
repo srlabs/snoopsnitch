@@ -50,46 +50,73 @@
 
         </RelativeLayout>
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
+        <LinearLayout
+            android:id="@+id/status_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/progressBar"
-            android:progressTint="#3f51b5" />
-        
-        <de.srlabs.patchalyzer.PatchalyzerSumResultChart
-            android:id="@+id/sumResultChart"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:visibility="invisible"
-            custom:drawborder="true"
-            custom:shownumbers="true"
-            custom:small="false"/>
+            android:orientation="vertical">
 
-        <ScrollView
-            android:id="@+id/scrollViewText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
-            android:background="@color/common_sectionBackground"
-            android:paddingLeft="10dp">
+            <de.srlabs.patchalyzer.PatchalyzerSumResultChart
+                android:id="@+id/sumResultChart"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="2"
+                android:visibility="invisible"
+                custom:drawborder="true"
+                custom:shownumbers="true"
+                custom:small="false" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+            <LinearLayout
+                android:id="@+id/progress_box"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textPercentage"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="TextView" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:progressTint="#3f51b5" />
+
+            </LinearLayout>
+
+            <ScrollView
+                android:id="@+id/scrollViewText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true"
-                android:text="Small Text"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:layout_weight="2"
+                android:background="@color/common_sectionBackground"
+                android:paddingLeft="10dp">
 
-        </ScrollView>
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentStart="true"
+                    android:text="Small Text"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </ScrollView>
+
+        </LinearLayout>
 
         <View
             android:id="@+id/View43"
@@ -103,18 +130,18 @@
             android:layout_height="4dp"
             android:background="@color/common_applicationSeparator" />
 
-        <View
-            android:id="@+id/View44"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/common_sectionSeparator" />
-
         <ScrollView
             android:id="@+id/scrollViewTable"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/common_sectionBackground"
             android:fadeScrollbars="false"></ScrollView>
+
+        <View
+            android:id="@+id/View44"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/common_sectionSeparator" />
 
 
     </LinearLayout>

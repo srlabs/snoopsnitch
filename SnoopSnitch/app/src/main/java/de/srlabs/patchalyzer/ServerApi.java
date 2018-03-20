@@ -39,7 +39,7 @@ public class ServerApi {
         File outputFile = new File(context.getCacheDir(), filenamePrefix+"_"+apiVersion+".json");
         try {
             // pipe testSuite JSON to cache file
-            writeInputstreamToFile(connection.getInputStream(), outputFile);
+            TestUtils.writeInputstreamToFile(connection.getInputStream(), outputFile);
         }finally{
             connection.disconnect();
         }
@@ -65,7 +65,7 @@ public class ServerApi {
 
         try {
             // pipe testSuite JSON to cache file
-            writeInputstreamToFile(connection.getInputStream(), outputFile);
+            TestUtils.writeInputstreamToFile(connection.getInputStream(), outputFile);
         }finally{
             connection.disconnect();
         }
@@ -273,40 +273,6 @@ public class ServerApi {
         sr.nextBytes(random);
         return TestUtils.byteArrayToHex(random);
     }
-    private static void writeInputstreamToFile(InputStream inputStream, File file) throws IOException{
-        OutputStream outputStream = null;
-        try {
-            outputStream = new FileOutputStream(file);
-            byte[] buf = new byte[1024];
-            int length;
-            while((length=inputStream.read(buf))>0){
-                outputStream.write(buf,0,length);
-            }
-        }
-        finally {
-            if (outputStream != null) {
-                outputStream.close();
-            }
-            inputStream.close();
-        }
-    }
-
-    private static void writeStringToFile(String string, File file) throws IOException{
-        if(string != null && file != null) {
-            OutputStream outputStream = null;
-            try {
-                outputStream = new FileOutputStream(file);
-                outputStream.write(string.getBytes());
-            } catch (Exception e) {
-                Log.e(Constants.LOG_TAG, "Exception while writing string to file: " + file);
-            }
-            finally {
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            }
-        }
-    }
 
     public File downloadVulnerabilityChunk(Context context, String urlString) throws IOException{
         URL url = new URL(urlString);
@@ -336,7 +302,7 @@ public class ServerApi {
             new JSONObject(jsonString);
 
             File outputFile = new File(context.getCacheDir(),chunkName);
-            writeStringToFile(jsonString, outputFile);
+            TestUtils.writeStringToFile(jsonString, outputFile);
 
             connection.disconnect();
 
