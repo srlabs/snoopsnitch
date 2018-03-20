@@ -91,7 +91,7 @@ public class ProcessHelper {
 
     public static Vector<String> runObjdumpCommand(String... params) throws IOException, InterruptedException {
         String[] cmd = new String[params.length + 1];
-        cmd[0] = "/data/data/de.srlabs.patchalyzer/lib/libobjdump.so";
+        cmd[0] = OBJDUMP_PATH;
         for (int i = 0; i < params.length; i++) {
             cmd[i + 1] = params[i];
         }

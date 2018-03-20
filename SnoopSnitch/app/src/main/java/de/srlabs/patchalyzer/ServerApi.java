@@ -19,14 +19,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 
 public class ServerApi {
-    public static final String API_URL="https://snoopsnitch-api.srlabs.de/v0/";
-    public static final String API_URL_NEW="https://snoopsnitch-api.srlabs.de/v1/";
+    public static final String API_URL="https://snoopsnitch-api.srlabs.de/v1/";
 
     public File downloadTestSuite(String filenamePrefix, Context context, String appid, int apiVersion, String currentVersion, int appVersion) throws JSONException, IOException{
         URL url = new URL(API_URL + "test/suite?appId=" + appid + "&androidApiVersion=" + apiVersion + "&testVersion=" + URLEncoder.encode(currentVersion, "UTF-8") + "&appVersion=" + appVersion);
@@ -61,7 +59,7 @@ public class ServerApi {
         String[] parts = urlString.split("/");
         String chunkName = parts[parts.length-1];
 
-        File outputFile = new File(context.getDataDir(), chunkName);
+        File outputFile = new File(context.getCacheDir(), chunkName);
         Log.d(Constants.LOG_TAG,"Saving basic test chunk file to :"+outputFile.getAbsolutePath());
 
 
@@ -150,6 +148,7 @@ public class ServerApi {
         connection.setReadTimeout(3600*1000);
         connection.setInstanceFollowRedirects(false);
         connection.setDoOutput(true);
+
         String boundary = generateBoundary();
         connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
         DataOutputStream request = new DataOutputStream(connection.getOutputStream());
@@ -309,9 +308,9 @@ public class ServerApi {
         }
     }
 
-    public boolean downloadVulnerabilityChunk(Context context, String urlString) throws IOException{
+    public File downloadVulnerabilityChunk(Context context, String urlString) throws IOException{
         URL url = new URL(urlString);
-        Log.i(Constants.LOG_TAG,"Downloading basic test chunk: "+url.toString());
+        Log.i(Constants.LOG_TAG,"Downloading vulnerability chunk: "+url.toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(10000);
@@ -336,21 +335,29 @@ public class ServerApi {
             jsonString = stringBuilder.toString();
             new JSONObject(jsonString);
 
-            writeStringToFile(jsonString, new File(context.getDataDir(),chunkName));
+            File outputFile = new File(context.getCacheDir(),chunkName);
+            writeStringToFile(jsonString, outputFile);
+
+            connection.disconnect();
+
+            return outputFile;
         }catch(JSONException e){
             Log.e(Constants.LOG_TAG,"Exception while downloading and parsing vulnerability chunk to JSON: "+e.getMessage());
             //writeStringToFile(jsonString, new File(context.getDataDir(), chunkName+".tmp"));
-            return false;
         }
-
-        return true;
+        connection.disconnect();
+        return null;
     }
 
-    public boolean isVulnerabilityChunkCached(Context context, String urlString){
+    public File getVulnerabilityChunkCacheFile(Context context, String urlString) throws IOException{
         String[] parts = urlString.split("/");
         String chunkName = parts[parts.length-1];
-        File file = new File(context.getDataDir(),chunkName);
-        return file.exists();
+        File file = new File(context.getCacheDir(),chunkName);
+        if(!file.exists()) {
+            Log.d(Constants.LOG_TAG,"Cached vulnerability chunk file does not exists here:"+file.getAbsolutePath());
+            return null;
+        }
+        return file;
     }
 }
 

@@ -5,32 +5,25 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import junit.framework.TestResult;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Queue;
-import java.util.Set;
 import java.util.Vector;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class BasicTestCache {
     private final String testSuiteVersion;
     private int apiLevel;
     private static final int TEST_BATCH_SIZE = 1024;
-    LinkedBlockingQueue<JSONObject> testQueue = new LinkedBlockingQueue<JSONObject>();
+    private static final int TEST_BUNDLE_SIZE = 256;
+    LinkedBlockingQueue<TestBundle> testQueue = new LinkedBlockingQueue<TestBundle>();
     LinkedBlockingQueue<BasicTestResult> resultQueue = new LinkedBlockingQueue<BasicTestResult>();
     private SharedPreferences sharedPrefs;
     private BasicTestParser database;
-    private Context service;
+    private TestExecutorService service;
     int progressTotal = 0;
     int progressDone = 0;
     final Object progressLock = new Object();
@@ -38,6 +31,7 @@ public class BasicTestCache {
     private ProgressItem progressItem;
     private Runnable finishedRunnable = null;
     private boolean stopTesting = false;
+    private HashMap<String,Boolean> cacheResults;
 
     public BasicTestCache(TestExecutorService service, String testSuiteVersion, int apiLevel){
         this.testSuiteVersion = testSuiteVersion;
@@ -56,6 +50,7 @@ public class BasicTestCache {
                 ) {
             clearCache();
         }
+        cacheResults = new HashMap<String,Boolean>();
     }
     public void clearCache(){
         Log.i(Constants.LOG_TAG, "BasicTestCache.clearCache() called");
@@ -69,6 +64,12 @@ public class BasicTestCache {
         this.sharedPrefs = service.getSharedPreferences("BasicTestCache", Context.MODE_PRIVATE);
 
         resetDBInformation();
+        clearTemporaryTestResultCache();
+    }
+
+    public void clearTemporaryTestResultCache(){
+        if(cacheResults != null)
+            cacheResults.clear();
     }
 
     private void resetDBInformation() {
@@ -77,18 +78,36 @@ public class BasicTestCache {
     }
 
     public Boolean getOrExecute(String uuid) throws JSONException, IOException {
+        //check if we queried this result from the DB already
+        if(cacheResults.containsKey(uuid)){
+            //Log.d(Constants.LOG_TAG,"Found temp. cached basic test result.");
+            return cacheResults.get(uuid);
+        }
         if(uuid.startsWith("!")){
             Boolean subtestResult = getOrExecute(uuid.substring(1));
-            if(subtestResult == null)
+            if(subtestResult == null) {
+                cacheResult(uuid,null);
                 return null;
+            }
+            cacheResult(uuid,!subtestResult);
             return !subtestResult;
         }
         JSONObject basicTest = database.getBasicTestByUUID(uuid);
         if(basicTest.has("exception") && !basicTest.getString("exception").equals("")) {
             exceptionsByTestId.put(uuid, basicTest.getString("exception"));
+            cacheResult(uuid,null);
             return null;
         }
-        return basicTest.isNull("result") ? null : basicTest.getBoolean("result");
+        Boolean result =  basicTest.isNull("result") ? null : basicTest.getBoolean("result");
+        cacheResult(uuid,result);
+        return result;
+    }
+
+    public void cacheResult(String uuid, Boolean result){
+        if(cacheResults == null){
+            cacheResults = new HashMap<String,Boolean>();
+        }
+        cacheResults.put(uuid,result);
     }
 
     public void startTesting(ProgressItem progressItem, Runnable finishedRunnable){
@@ -164,7 +183,7 @@ public class BasicTestCache {
                             Log.d(Constants.LOG_TAG,"TestResult: "+testResult.getBasicTestUUID()+" exception:"+testResult.getException());
                             database.addTestExceptionToDB(testResult.getBasicTestUUID(), testResult.getException());
                         } else {
-                            Log.d(Constants.LOG_TAG,"TestResult: "+testResult.getBasicTestUUID()+" result:"+testResult.getResult());
+                            //Log.d(Constants.LOG_TAG,"TestResult: "+testResult.getBasicTestUUID()+" result:"+testResult.getResult());
                             database.addTestResultToDB(testResult.getBasicTestUUID(), testResult.getResult());
                         }
                         updateTotalProgress();
@@ -173,7 +192,7 @@ public class BasicTestCache {
                     }
                 }
                 testBatchSize = addNextMissingTestBatch();
-                Log.d(Constants.LOG_TAG,"testBatchSize:"+testBatchSize);
+                //Log.d(Constants.LOG_TAG,"testBatchSize:"+testBatchSize);
 
                 if(testBatchSize == 0){
                     break;
@@ -181,6 +200,8 @@ public class BasicTestCache {
             }
             terminateThreads();
             progressItem.update(1.0);
+            service.finishedBasicTests();
+
             if(!stopTesting) {
                 finishedRunnable.run();
             }
@@ -189,24 +210,20 @@ public class BasicTestCache {
         private void terminateThreads(){
           Log.d(Constants.LOG_TAG,"terminating threads...");
           for(int i =0; i < nThreads; i++){
-              try {
-                  testQueue.add(new JSONObject("{\"STOPMARKER\":true}"));
-              }catch(JSONException e){
-                  Log.d(Constants.LOG_TAG,"JSONException while adding stopmarker to queue..."+e.getMessage());
-              }
+                  testQueue.add(TestBundle.getStopMarker());
           }
           for(RegularWorkingThread thread : workingThreads){
               while(true) {
                   try {
                       thread.join();
-                      Log.d(Constants.LOG_TAG, "Joined worker thread");
+                      //Log.d(Constants.LOG_TAG, "Joined worker thread");
                       break;
                   } catch (InterruptedException e) {
                       Log.e(Constants.LOG_TAG, "InterruptedException in terminateThreads:"+e.getMessage());
                   }
               }
           }
-          Log.d(Constants.LOG_TAG, "Joined all worker threads");
+          Log.d(Constants.LOG_TAG, "Shut down all worker threads.");
         }
 
         private void addNewThreads() {
@@ -221,12 +238,51 @@ public class BasicTestCache {
         }
 
         public int addNextMissingTestBatch() {
+            //Log.d(Constants.LOG_TAG,"adding new test bundles to testQueue!");
             int result = 0;
-            Vector<JSONObject> basicTestBatch = database.getNotPerformedTests(TEST_BATCH_SIZE);
-            for(JSONObject basicTest : basicTestBatch){
-                Log.d(Constants.LOG_TAG,"Addind basic test to queue:"+basicTest.toString());
-                testQueue.add(basicTest);
-                result++;
+            Vector<JSONObject> basicTestBatch = database.getNotPerformedTestsSortedByFilenameAndTestType(TEST_BATCH_SIZE);
+            if (basicTestBatch != null) {
+                String lastFilename = "";
+                TestBundle currentTestBundle = null;
+                TestBundle testsWithoutFilename = new TestBundle(null);
+                for (JSONObject basicTest : basicTestBatch) {
+                    try {
+                        //Log.d(Constants.LOG_TAG,"Adding basic test to bundle: "+basicTest.toString());
+                        if (!basicTest.has("filename")) {
+                            testsWithoutFilename.add(basicTest);//FIXME restrict size of this as well!!!
+                        } else {
+                            String currentFilename = basicTest.getString("filename");
+                            if (!lastFilename.equals(currentFilename)) {
+                                Log.d(Constants.LOG_TAG,"Creating new bundle as filename is different from previous test!");
+                                lastFilename = currentFilename;
+
+                                if (currentTestBundle != null) {
+                                    //add current testBundle to queue
+                                    testQueue.add(currentTestBundle);
+                                    Log.d(Constants.LOG_TAG,"currentTestBundle: "+currentTestBundle);
+                                }
+                                //create new testbundle
+                                currentTestBundle = new TestBundle(currentFilename);
+                                Log.d(Constants.LOG_TAG,"currentTestBundle: "+currentTestBundle);
+                            }
+                            //Log.d(Constants.LOG_TAG,"Adding basic test to bundle: "+currentTestBundle.getFilename());
+                            currentTestBundle.add(basicTest);
+                            if (currentTestBundle.getTestCount() == TEST_BUNDLE_SIZE) {
+                            testQueue.add(currentTestBundle);
+                                currentTestBundle = new TestBundle(currentFilename);
+                            }
+                        }
+                        result++;
+                    } catch(Exception e){
+                        Log.e(Constants.LOG_TAG, "Exception when creating test bundle for test queue:", e);
+                    }
+                }
+                synchronized (testQueue) {
+                    if(currentTestBundle != null && currentTestBundle.getTestCount() > 0){
+                        testQueue.add(currentTestBundle);
+                    }
+                    testQueue.add(testsWithoutFilename);
+                }
             }
             return result;
         }
@@ -251,10 +307,10 @@ public class BasicTestCache {
     class RegularWorkingThread extends Thread{
 
         private Context context = null;
-        private LinkedBlockingQueue<JSONObject> tasks = null;
+        private LinkedBlockingQueue<TestBundle> tasks = null;
         private Queue<BasicTestResult> results = null;
 
-        public RegularWorkingThread(Context context, LinkedBlockingQueue<JSONObject> tasks, Queue<BasicTestResult> results){
+        public RegularWorkingThread(Context context, LinkedBlockingQueue<TestBundle> tasks, Queue<BasicTestResult> results){
             this.context = context;
             this.tasks = tasks;
             this.results = results;
@@ -264,16 +320,17 @@ public class BasicTestCache {
         public void run(){
             while(true){
                 try {
-                    JSONObject basicTest = tasks.take();
-                    if(basicTest.has("STOPMARKER")) {
+                    TestBundle bundle = tasks.take();
+                    if(bundle.isStopMarker()) {
                         Log.d(Constants.LOG_TAG," shutting down worker thread..");
                         return;
                     }
-                    BasicTestResult result = performTest(basicTest);
-                    synchronized (results) {
-                        results.add(result);
+                    for(JSONObject basicTest : bundle.getBasicTests()){
+                        BasicTestResult result = performTest(bundle,basicTest);
+                        synchronized (results) {
+                            results.add(result);
+                        }
                     }
-
                 }catch(InterruptedException e){
                     Log.d(Constants.LOG_TAG,"InterruptedException while dequeuing from tasks: "+e.getMessage());
                 }
@@ -281,15 +338,48 @@ public class BasicTestCache {
         }
 
 
-
-        private BasicTestResult performTest(JSONObject basicTest){
+        private BasicTestResult performTest(TestBundle bundle, JSONObject basicTest){
             try {
                 // run basic test and add result to result queue
-                Log.d(Constants.LOG_TAG," working on task: "+basicTest.toString());
+                //Log.d(Constants.LOG_TAG," working on task: "+basicTest.toString());
                 Boolean result = null;
                 String exception = null;
+
                 try {
-                    result = TestEngine.executeBasicTest(context, basicTest);
+                    String testType = basicTest.getString("testType");
+                    // all optimized tests here:
+                    //      and all the information cached temporarily to aggregate test requirements and avoid e.g. redundant objdump calls
+                    if(testType.equals("MASK_SIGNATURE_SYMBOL")){
+                        if (bundle.getSymbolTable() == null) {
+                            String currentFilename = basicTest.getString("filename");
+                            bundle.setSymbolTable(TestUtils.readSymbolTable(currentFilename));
+                        }
+                        result = TestEngine.runMaskSignatureTest(basicTest, bundle.getSymbolTable());
+                    }
+                    else if(testType.equals("BINARY_CONTAINS_SYMBOL")){
+                        if(bundle.getObjdumpLines() == null){
+                            String currentFilename = basicTest.getString("filename");
+                            bundle.setObjdumpLines(ProcessHelper.runObjdumpCommand("-tT", currentFilename));
+                        }
+                        result = TestEngine.runBinaryContainsSymbolTest(basicTest,bundle.getObjdumpLines());
+                    }
+                    else if(testType.equals("DISAS_FUNCTION_CONTAINS_STRING")){
+                        if(bundle.getObjdumpLines() == null){
+                            String currentFilename = basicTest.getString("filename");
+                            bundle.setObjdumpLines(ProcessHelper.runObjdumpCommand("-tT", currentFilename));
+                        }
+                        result = TestEngine.runDisasFunctionContainsStringTest(basicTest,bundle.getObjdumpLines());
+                    }
+                    else if(testType.equals("DISAS_FUNCTION_MATCHES_REGEX")){
+                        if(bundle.getObjdumpLines() == null){
+                            String currentFilename = basicTest.getString("filename");
+                            bundle.setObjdumpLines(ProcessHelper.runObjdumpCommand("-tT", currentFilename));
+                        }
+                        result = TestEngine.runDisasFunctionMatchesRegexTest(basicTest,bundle.getObjdumpLines());
+                    }
+                    else {
+                        result = TestEngine.executeBasicTest(context, basicTest);
+                    }
                 } catch (Exception e) {
                     exception = e.getMessage();
                 }

@@ -1,6 +1,7 @@
 package de.srlabs.patchalyzer;
 
 import android.app.Service;
+import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,6 +39,7 @@ public class TestExecutorService extends Service {
     private ServerApi api = null;
     private SharedPreferences sharedPrefs;
     private Vector<ProgressItem> progressItems;
+    private boolean appIsOutdated = false;
     public static final String NO_INTERNET_CONNECTION_ERROR = "no_uplink";
 
     @Override
@@ -64,7 +66,6 @@ public class TestExecutorService extends Service {
             public void run(){
                 ServerApi api = new ServerApi();
                 try{
-                    //FIXME add current testVersion here ->
                     if(!isConnectedToInternet()){
                         return;
                     }
@@ -89,16 +90,13 @@ public class TestExecutorService extends Service {
         thread.start();
     }
 
-    private void parseTestSuiteFile(File testSuiteFile,final ProgressItem parseTestSuiteProgress){
+    private void parseTestSuiteFile(File testSuiteFile,final ProgressItem parseTestSuiteProgress) throws IOException{
         Log.d(Constants.LOG_TAG,"TestExecutorService: Parsing testsuite...");
         Log.d(Constants.LOG_TAG, "TestExecutorService: testSuiteFile:" + testSuiteFile.getAbsolutePath());
         testSuite = new TestSuite(this, testSuiteFile);
-        parseTestSuiteProgress.update(0.3);
-        testSuite.addBasicTestsToDB();
-        parseTestSuiteProgress.update(0.6);
-        testSuite.parseVulnerabilites();
+        testSuite.parseInfoFromJSON();
         parseTestSuiteProgress.update(1.0);
-        showStatus("Parsing testsuite finished...");
+        showStatus("Parsing testsuite and additional data chunks finished.");
         basicTestCache = new BasicTestCache(this, testSuite.getVersion(), Build.VERSION.SDK_INT);
         Log.d(Constants.LOG_TAG,"TestExecutorService: Finished parsing testsuite!");
 
@@ -136,6 +134,9 @@ public class TestExecutorService extends Service {
     }
 
     private String getCurrentTestVersion() throws JSONException{
+        if(testSuite == null || testSuite.getVersion() == null){
+            return sharedPrefs.getString("version","0");
+        }
         return testSuite.getVersion();
     }
 
@@ -179,18 +180,19 @@ public class TestExecutorService extends Service {
             return basicTestCache.getQueueSize();
         }
         public String evaluateVulnerabilitiesTests() throws RemoteException{
+            showStatus("Creating result overview...");
             try {
-                Log.d(Constants.LOG_TAG,"Starting to create result JSON...");
+                Log.d(Constants.LOG_TAG, "Starting to create result JSON...");
                 boolean is64BitSystem = TestUtils.is64BitSystem();
                 JSONObject result = new JSONObject();
                 JSONObject vulnerabilities = testSuite.getVulnerabilities();
                 Iterator<String> identifierIterator = vulnerabilities.keys();
                 Vector<String> identifiers = new Vector<String>();
-                while(identifierIterator.hasNext())
+                while (identifierIterator.hasNext())
                     identifiers.add(identifierIterator.next());
                 Collections.sort(identifiers);
-                Log.d(Constants.LOG_TAG,"number of vulnerabilities to test: "+identifiers.size());
-                for(String identifier:identifiers){
+                Log.d(Constants.LOG_TAG, "number of vulnerabilities to test: " + identifiers.size());
+                for (String identifier : identifiers) {
                     JSONObject vulnerability = vulnerabilities.getJSONObject(identifier);
 
                     try {
@@ -200,22 +202,18 @@ public class TestExecutorService extends Service {
                             //FIXME how to display test
                             continue;
                         }
-                    }catch(JSONException e){
+                    } catch (JSONException e) {
                         //ignoring exception here, as the old test might not come with this info
                     }
 
                     String category = vulnerability.getString("category");
                     JSONObject test_not_affected = vulnerability.getJSONObject("testNotAffected");
-                    if(test_not_affected == null)
-                        Log.d(Constants.LOG_TAG,"test_not_affected == null");
                     Boolean notAffected = TestEngine.runTest(basicTestCache, test_not_affected);
-                    if(notAffected == null)
-                        Log.d(Constants.LOG_TAG,"notAffected == null");
                     JSONObject vulnerabilityResult = new JSONObject();
                     vulnerabilityResult.put("identifier", identifier);
                     vulnerabilityResult.put("title", vulnerability.getString("title"));
                     vulnerabilityResult.put("notAffected", notAffected);
-                    if(!notAffected){
+                    if (!notAffected) {
                         JSONObject testVulnerable = vulnerability.getJSONObject("testVulnerable");
                         Boolean vulnerable = TestEngine.runTest(basicTestCache, testVulnerable);
                         vulnerabilityResult.put("vulnerable", vulnerable);
@@ -223,15 +221,15 @@ public class TestExecutorService extends Service {
                         Boolean fixed = TestEngine.runTest(basicTestCache, testFixed);
                         vulnerabilityResult.put("fixed", fixed);
                     }
-                    if(!result.has(category)){
+                    if (!result.has(category)) {
                         result.put(category, new JSONArray());
                     }
                     result.getJSONArray(category).put(vulnerabilityResult);
                 }
-
+                basicTestCache.clearTemporaryTestResultCache();
                 return result.toString(4);
-            } catch(Exception e){
-                Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests",e);
+            } catch (Exception e) {
+                Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
                 return e.toString();
             }
         }
@@ -286,7 +284,7 @@ public class TestExecutorService extends Service {
             }
             final ProgressItem basicTestsProgress;
             if(evaluateTests) {
-                basicTestsProgress = addProgressItem("basicTests", 1);
+                basicTestsProgress = addProgressItem("basicTests", 6.0);
             } else{
                 basicTestsProgress = null;
             }
@@ -315,6 +313,7 @@ public class TestExecutorService extends Service {
                         if(uploadTestResults){
                             apiRunning = true;
                             if(!isConnectedToInternet()){
+                                stopSubThreads();
                                 return;
                             }
                             api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -342,6 +341,7 @@ public class TestExecutorService extends Service {
                             apiRunning = true;
                             if (deviceInfoJson != null) {
                                 if(!isConnectedToInternet()){
+                                    stopSubThreads();
                                     return;
                                 }
                                 api.reportSys(deviceInfoJson, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -387,6 +387,7 @@ public class TestExecutorService extends Service {
             }
         }
 
+        //FIXME not used anymore!
         @Override
         public void upload(final boolean uploadTestResults, final boolean uploadDeviceInfo, ITestExecutorCallbacks callback) throws RemoteException {
             if(apiRunning){
@@ -423,6 +424,7 @@ public class TestExecutorService extends Service {
             t.start();
         }
     };
+
     private void checkIfCVETestsAvailable(TestSuite testSuite) {
         if(testSuite != null){
             String noCVETestsMessage = testSuite.getNoCVETestMessage();
@@ -434,6 +436,10 @@ public class TestExecutorService extends Service {
         else{
             Log.e(Constants.LOG_TAG,"checkIfCVETestsAvailable: testSuite is null");
         }
+    }
+    public void finishedBasicTests(){
+        showStatus("Finished performing basic tests.");
+        //vulnerabilitiesJSONResult = getJSONFromVulnerabilitiesResults();
     }
     private void clearProgress(){
         this.progressItems = new Vector<ProgressItem>();
@@ -449,7 +455,7 @@ public class TestExecutorService extends Service {
         double weightSum = 0;
         double progressSum = 0;
         for(ProgressItem progressItem:progressItems){
-            Log.i(Constants.LOG_TAG, "getTotalProgres(): name=" + progressItem.getName() + "  weight=" + progressItem.getWeight() + "  progress=" + progressItem.getProgress());
+            //Log.i(Constants.LOG_TAG, "getTotalProgres(): name=" + progressItem.getName() + "  weight=" + progressItem.getWeight() + "  progress=" + progressItem.getProgress());
             weightSum += progressItem.getWeight();
             progressSum += progressItem.getProgress() * progressItem.getWeight();
         }
@@ -548,16 +554,16 @@ public class TestExecutorService extends Service {
         @Override
         public void run(){
             try {
-                Log.i(Constants.LOG_TAG, "Starting download test suite thread...");
+                Log.i(Constants.LOG_TAG, "Starting to download testsuite");
                 apiRunning = true;
-                //FIXME add current testVersion here ->
                 if(!isConnectedToInternet()){
+                    stopSubThreads();
                     return;
                 }
                 downloadingTestSuite = true;
                 Log.d(Constants.LOG_TAG,"Downloading testsuite from server...");
                 File f = api.downloadTestSuite("newtestsuite",TestExecutorService.this,TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT,"0", Constants.APP_VERSION);
-                showStatus("Downloading testsuite finished...");
+                showStatus("Downloading testsuite finished. Fetching additional data chunks...");
                 downloadProgress.update(1.0);
                 Log.d(Constants.LOG_TAG,"Finished downloading testsuite JSON to file:"+f.getAbsolutePath());
                 downloadingTestSuite = false;
@@ -569,12 +575,12 @@ public class TestExecutorService extends Service {
 
             } catch (JSONException e) {
                 Log.e(Constants.LOG_TAG, "JSONException in DownloadThread", e);
-                reportError("JSONException in DownloadThread" + e);
+                reportError("JSONException in api.downlaodTests" + e);
                 return;
             } catch (IOException e) {
                 Log.e(Constants.LOG_TAG, "IOException in DownloadThread", e);
-                reportError(NO_INTERNET_CONNECTION_ERROR);
                 stopSubThreads();
+                reportError(NO_INTERNET_CONNECTION_ERROR);
                 return;
             } finally{
                 apiRunning = false;
@@ -603,8 +609,7 @@ public class TestExecutorService extends Service {
 
         @Override
         public void run() {
-            if(deviceInfoJson == null)
-                deviceInfoJson = TestUtils.makeDeviceinfoJson(TestExecutorService.this, progress);
+            deviceInfoJson = TestUtils.makeDeviceinfoJson(TestExecutorService.this, progress);
             deviceInfoThread = null;
             deviceInfoRunning = false;
             if(onFinishedRunnable != null) {
@@ -622,6 +627,7 @@ public class TestExecutorService extends Service {
             Vector<ProgressItem> requestProgress = new Vector<>();
             try {
                 if(!isConnectedToInternet()){
+                    stopSubThreads();
                     return;
                 }
                 JSONArray requestsJson = api.getRequests(TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT, TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -640,6 +646,7 @@ public class TestExecutorService extends Service {
                         TestUtils.validateFilename(filename);
                         Log.d(Constants.LOG_TAG,"Uploading file: "+filename);
                         if(!isConnectedToInternet()){
+                            stopSubThreads();
                             return;
                         }
                         api.reportFile(filename, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -654,9 +661,9 @@ public class TestExecutorService extends Service {
                 showStatus("Reporting files to server finished...");
             } catch(Exception e){
                 Log.e(Constants.LOG_TAG, "RequestsThread.run() exception", e);
-                if(e instanceof IOException) {
-                    stopSubThreads();
+                if(e instanceof IOException) { //TODO test
                     reportError(NO_INTERNET_CONNECTION_ERROR);
+                    stopSubThreads();
                 }
                 downloadRequestsProgress.update(1.0);
                 for(ProgressItem x:requestProgress){
@@ -671,7 +678,6 @@ public class TestExecutorService extends Service {
     private boolean isConnectedToInternet(){
         if(!TestUtils.isConnectedToInternet(TestExecutorService.this)){
             reportError(NO_INTERNET_CONNECTION_ERROR);
-            stopSubThreads();
             return false;
         }
         else{
@@ -687,7 +693,14 @@ public class TestExecutorService extends Service {
         deviceInfoRunning = false;
         downloadingTestSuite = false;
 
+        if(basicTestCache != null)
+            basicTestCache.stopTesting();
+
         for(Thread thread : subThreads){
+            if(thread instanceof DeviceInfoThread){
+                DeviceInfoThread deviceInfoThread = (DeviceInfoThread) thread;
+                deviceInfoThread.doNotRunFinishedRunnable();
+            }
             while(true) {
                 try {
                     thread.join();

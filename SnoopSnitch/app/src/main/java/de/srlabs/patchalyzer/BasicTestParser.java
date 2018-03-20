@@ -20,14 +20,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
+
 
 /** This class is parsing the testsuite JSON file step by step to avoid having the full testsuite in memory at once
  * Created by jonas on 06.03.18.
@@ -72,7 +75,6 @@ public class BasicTestParser {
         TEST_TYPE_FIELDS.put("CHIPSET_VENDOR_OR_UNKNOWN",new String[]{"vendor;VENDOR"});
         TEST_TYPE_FIELDS.put("COMBINED_SIGNATURE",new String[]{"filename","rollingSignature","maskSignature"});
         TEST_TYPE_FIELDS.put("ROLLING_SIGNATURE",new String[]{"filename","rollingSignature"});
-
     }
 
     /**
@@ -406,6 +408,57 @@ public class BasicTestParser {
         return results;
     }
 
+    public Vector<JSONObject> getNotPerformedTestsSortedByFilenameAndTestType( int limit){
+        Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
+        //make sure DB access is ready
+        if(db == null || !db.isOpen()){
+            db = MsdDatabaseManager.getInstance().openDatabase();
+        }
+
+        Vector<JSONObject> results = new Vector<>();
+
+        //basic test table info
+        Cursor cursor = db.query(
+                "basictests",   // The table to query
+                null,             // The array of columns to return (pass null to get all)
+                "result = ? and exception IS NULL",              // The columns for the WHERE clause
+                new String[]{"-1"},          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                "filename, testType DESC",               // The sort order
+                ""+limit
+        );
+
+        if(cursor == null || cursor.getCount() == 0)
+            return null;
+
+        Log.d(Constants.LOG_TAG,"Got batch of tests with size: "+cursor.getCount()+" from DB!");
+
+        while(cursor.moveToNext()){
+            try {
+                JSONObject basicTest = null;
+                basicTest = new JSONObject();
+                String[] columns = cursor.getColumnNames();
+                for (String column : columns) {
+                    if (column.equals("result")) {
+                        int result = cursor.getInt(cursor.getColumnIndex("result"));
+                        if (result == 2 || result == -1) //inconclusive or not performed yet
+                            basicTest.put("result", JSONObject.NULL);
+                        else
+                            basicTest.put("result", (result == 1));
+                        continue;
+                    }
+                    basicTest.put(column, cursor.getString(cursor.getColumnIndex(column)));
+                }
+                results.add(basicTest);
+            }catch(JSONException e){
+                Log.d(Constants.LOG_TAG,"JSONException while parsing basic test:"+e.getMessage());
+            }
+        }
+        cursor.close();
+        return results;
+    }
+
     public void addTestResultToDB(String uuid, Boolean result){
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
@@ -491,8 +544,10 @@ public class BasicTestParser {
                 String uuid = cursor.getString(uuidIndex);
                 uuids.add(uuid);
             }
+            cursor.close();
             return uuids;
         }
+        cursor.close();
         return null;
     }
 
@@ -533,8 +588,10 @@ public class BasicTestParser {
                 }
                 basicTests.add(basicTest);
             }
+            cursor.close();
             return basicTests;
         }
+        cursor.close();
         return null;
     }
 
@@ -546,10 +603,10 @@ public class BasicTestParser {
         if(db == null || !db.isOpen()){
             db = MsdDatabaseManager.getInstance().openDatabaseReadOnly();
         }
-
+        Cursor cursor = null;
         try {
             //basic test table info
-            Cursor cursor = db.query(
+             cursor = db.query(
                     "basictests",   // The table to query
                     null,             // The array of columns to return (pass null to get all)
                     "uuid = ?",              // The columns for the WHERE clause
@@ -585,6 +642,8 @@ public class BasicTestParser {
 
         }catch(Exception e){
             Log.e(Constants.LOG_TAG,"Exception when retrieving basic test from DB",e);
+            if(cursor != null)
+                cursor.close();
         }
         return null;
     }
@@ -618,7 +677,9 @@ public class BasicTestParser {
 
         if(cursor == null)
             return -1;
-        return cursor.getCount();
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
     public void markBasicTestChunkSuccessful(String basicTestChunkURL) {
@@ -653,8 +714,11 @@ public class BasicTestParser {
 
         if(cursor == null)
             return false;
-        if(cursor.getCount() == 1) //FIXME test this! should work as the url is the primary (=unique) key
+        if(cursor.getCount() == 1) {
+            cursor.close();
             return true;
+        }
+        cursor.close();
         return false;
     }
 }
