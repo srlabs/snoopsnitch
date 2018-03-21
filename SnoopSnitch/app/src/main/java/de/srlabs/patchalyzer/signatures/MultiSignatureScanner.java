@@ -59,7 +59,7 @@ public class MultiSignatureScanner {
 			throw new IllegalStateException("Scanning file not possible, cause the file does not exist!");
 		}
 		long fileSize = targetFile.length();
-		Log.d(Constants.LOG_TAG, "DEBUG: fileSize:" + fileSize);
+		//Log.d(Constants.LOG_TAG, "DEBUG: fileSize:" + fileSize);
 		// Map (summarize) all checksumLengths (from all rolling signature checks) to a set of the checksum1 and checksum2 byte arrays
 		TreeMap<Integer, Set<byte[]>> checksumLengths = new TreeMap<Integer, Set<byte[]>>();
 		for (RollingSignature checker : signatureChecker) {
@@ -70,7 +70,7 @@ public class MultiSignatureScanner {
 			Set<byte[]> checksums = checksumLengths.get(checksumLength);
 			checksums.add(checker.getChecksum1());
 			checksums.add(checker.getChecksum2());
-			Log.d(Constants.LOG_TAG, "DEBUG: checksumLength: " + checksumLength + " -> checksum1:" + Signature.bytesToHex(checker.getChecksum1()) + " checksum2:" + Signature.bytesToHex(checker.getChecksum2()));
+			//Log.d(Constants.LOG_TAG, "DEBUG: checksumLength: " + checksumLength + " -> checksum1:" + Signature.bytesToHex(checker.getChecksum1()) + " checksum2:" + Signature.bytesToHex(checker.getChecksum2()));
 		}
 		//build byte buffer to send to sigtool binary for searching
 		// structure: [number of total signature checks]+
@@ -87,7 +87,7 @@ public class MultiSignatureScanner {
 			}
 		}
 		//let sigtool binary do the searching, and parse the stdout here
-		Log.d(Constants.LOG_TAG, "DEBUG: byte buffer size:" + buf.size());
+		//Log.d(Constants.LOG_TAG, "DEBUG: byte buffer size:" + buf.size());
 		byte[] result = ProcessHelper.sendByteBufferToSigToolSearch("sigtool", buf.toByteArray(), "--aarch64v1", targetFile.getAbsolutePath());
 		if(isPermissionDeniedError(result)){
 			throw new IOException("Error when scanning file: "+filePath+" - Permission denied.");
@@ -95,9 +95,9 @@ public class MultiSignatureScanner {
 		if ((result.length % 16) != 0) {
 			throw new IllegalStateException("Output length not a multiple of 16 bytes: " + result.length + " " + Signature.bytesToHex(result));
 		}
-		Log.d(Constants.LOG_TAG, "DEBUG: Finished searching in file with sigtool!");
+		//Log.d(Constants.LOG_TAG, "DEBUG: Finished searching in file with sigtool!");
 
-		Log.d(Constants.LOG_TAG, "DEBUG: Creating checksumsFound datastructure and filling it...");
+		//Log.d(Constants.LOG_TAG, "DEBUG: Creating checksumsFound datastructure and filling it...");
 		HashMap<Integer, HashMap<String, Set<Long>>> checksumsFound = null; //use hex strings of checksums, cause byte[] are not suitable for hashing/comparing here
 		try {
 			checksumsFound = new HashMap<Integer, HashMap<String, Set<Long>>>();
@@ -113,7 +113,7 @@ public class MultiSignatureScanner {
 
 				byte[] checksum = Arrays.copyOfRange(result, i + 8, i + 16);
 				if (!checksumsFound.containsKey(checksumLen)) {
-					Log.d(Constants.LOG_TAG, "DEBUG: adding checksumLen:" + checksumLen + " -> new Hashmap");
+					//Log.d(Constants.LOG_TAG, "DEBUG: adding checksumLen:" + checksumLen + " -> new Hashmap");
 					checksumsFound.put(checksumLen, new HashMap<String, Set<Long>>());
 				}
 				if (!checksumsFound.get(checksumLen).containsKey(checksum)) {
@@ -122,38 +122,38 @@ public class MultiSignatureScanner {
 				}
 				//checksumsFound[checksumLen][checksum].add(pos)
 				checksumsFound.get(checksumLen).get(Signature.bytesToHex(checksum)).add(position);
-				Log.d(Constants.LOG_TAG, "DEBUG: FILL: checksumLen:" + checksumLen + " checksum:" + Signature.bytesToHex(checksum) + " position:" + position + " entries:" + checksumsFound.get(checksumLen).size());
+				//Log.d(Constants.LOG_TAG, "DEBUG: FILL: checksumLen:" + checksumLen + " checksum:" + Signature.bytesToHex(checksum) + " position:" + position + " entries:" + checksumsFound.get(checksumLen).size());
 			}
 		} catch (Exception e) {
 			Log.e(Constants.LOG_TAG, "Error: when building checksumsFound datastructure!:" + e.getMessage());
 		}
-		Log.d(Constants.LOG_TAG, "DEBUG: Created checksumsFound datastructure!");
+		//Log.d(Constants.LOG_TAG, "DEBUG: Created checksumsFound datastructure!");
 
-		Log.d(Constants.LOG_TAG, "DEBUG: Gathering results information...");
+		//Log.d(Constants.LOG_TAG, "DEBUG: Gathering results information...");
 		Set<SymbolInformation> foundItems = new HashSet<SymbolInformation>();
 		for (RollingSignature checker : signatureChecker) {
-			Log.d(Constants.LOG_TAG, "DEBUG: checksumLen=" + checker.getCheckSumLen() + " sigOffset=" + checker.getChecksumOffset() + " sigStr=" + checker.toString());
+			//Log.d(Constants.LOG_TAG, "DEBUG: checksumLen=" + checker.getCheckSumLen() + " sigOffset=" + checker.getChecksumOffset() + " sigStr=" + checker.toString());
 			int checksumLen = checker.getCheckSumLen();
-			Log.d(Constants.LOG_TAG, "DEBUG: checksum1: " + Signature.bytesToHex(checker.getChecksum1()) + " checksum2:" + Signature.bytesToHex(checker.getChecksum2()));
+			//Log.d(Constants.LOG_TAG, "DEBUG: checksum1: " + Signature.bytesToHex(checker.getChecksum1()) + " checksum2:" + Signature.bytesToHex(checker.getChecksum2()));
 
 			if (checksumsFound.get(checksumLen).get(Signature.bytesToHex(checker.getChecksum2())) == null) {
-				Log.d(Constants.LOG_TAG, "DEBUG: checksum2 not found!");
+				//Log.d(Constants.LOG_TAG, "DEBUG: checksum2 not found!");
 				continue;
 			}
 			if (checksumsFound.get(checksumLen).get(Signature.bytesToHex(checker.getChecksum1())) == null ) {
-				Log.d(Constants.LOG_TAG, "DEBUG: checksum1 not found!");
+				//Log.d(Constants.LOG_TAG, "DEBUG: checksum1 not found!");
 				continue;
 			}
 
 			for (Long found1pos : checksumsFound.get(checksumLen).get(Signature.bytesToHex(checker.getChecksum1()))) {
-				Log.d(Constants.LOG_TAG, "DEBUG: FOUND1: " + checker.toString() + " at " + found1pos);
+				//Log.d(Constants.LOG_TAG, "DEBUG: FOUND1: " + checker.toString() + " at " + found1pos);
 				long wantedFound2pos = found1pos + checker.getChecksumOffset();
 				if (checksumsFound.get(checksumLen).get(Signature.bytesToHex(checker.getChecksum2())).contains(wantedFound2pos)) {
 					foundItems.add(new SymbolInformation(checker.toString(), found1pos)); //TODO solve this!
 				}
 			}
 		}
-		Log.d(Constants.LOG_TAG, "DEBUG: Gathered results information!");
+		//Log.d(Constants.LOG_TAG, "DEBUG: Gathered results information!");
 		return foundItems;
 	}
 

@@ -124,7 +124,7 @@ public class PatchalyzerSumResultChart extends View {
                 partWidth = startX + chartWidth * (1f * part.getCount() / sumCVEs);
                 paint.setColor(part.getColor());
                 paint.setTextSize(textSize);
-                Log.d(Constants.LOG_TAG, "" + part + " bar: " + startX + "|" + chartOffsetTopBottom + " -> " + partWidth + "|" + chartOffsetTopBottom + chartHeight);
+                //Log.d(Constants.LOG_TAG, "" + part + " bar: " + startX + "|" + chartOffsetTopBottom + " -> " + partWidth + "|" + chartOffsetTopBottom + chartHeight);
                 canvas.drawRect(new RectF(startX, chartOffsetTopBottom, partWidth, chartOffsetTopBottom + chartHeight), paint);
 
                 if (showNumbers) {
