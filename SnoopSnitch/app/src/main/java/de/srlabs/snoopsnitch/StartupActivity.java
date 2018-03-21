@@ -41,14 +41,15 @@ public class StartupActivity extends Activity {
     private MsdSQLiteOpenHelper helper;
     private boolean alreadyClicked = false;
     private ProgressDialog progressDialog;
+    private static boolean isSNSNCompatible = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //String incompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
-        String incompatibilityReason = null; //TODO just for testing here
-        if (incompatibilityReason == null) {
+        String snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
+        //String incompatibilityReason = null; //TODO just for testing here
+        /*if (incompatibilityReason == null) {
             if (MsdConfig.getFirstRun(this)) {
                 showFirstRunDialog();
             } else {
@@ -61,7 +62,34 @@ public class StartupActivity extends Activity {
             else {
                 showDeviceIncompatibleDialog(incompatibilityReason);
             }
+        }*/
+
+        if(snsnIncompatibilityReason != null){
+            if(snsnIncompatibilityReason.equals(getResources().getString(R.string.compat_no_baseband_messages_in_active_test))){
+                showDialogWarningNoBasebandMessages();
+            }
+            else {
+                showDeviceIncompatibleDialog(snsnIncompatibilityReason);
+            }
         }
+        else{
+            isSNSNCompatible = true;
+            proceedAppFlow();
+        }
+
+    }
+
+    private void proceedAppFlow() {
+        //continue with normal startup
+        if (MsdConfig.getFirstRun(this)) {
+            showFirstRunDialog();
+        } else {
+            createDatabaseAndStartDashboard();
+        }
+    }
+
+    public static boolean isSNSNCompatible(){
+        return isSNSNCompatible;
     }
 
     private void showDialogWarningNoBasebandMessages(){
@@ -70,11 +98,7 @@ public class StartupActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //continue normal startup
-                        if (MsdConfig.getFirstRun(StartupActivity.this)) {
-                            showFirstRunDialog();
-                        } else {
-                            createDatabaseAndStartDashboard();
-                        }
+                        proceedAppFlow();
                     }
                 },
                 new OnClickListener() {
@@ -83,12 +107,7 @@ public class StartupActivity extends Activity {
                         quitApplication();
                     }
                 },
-                new OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        quitApplication();
-                    }
-                },
+                null,
                 getResources().getString(R.string.warning_button_proceed_anyway),
                 getResources().getString(R.string.warning_button_quit),
                 false
@@ -96,10 +115,12 @@ public class StartupActivity extends Activity {
     }
 
     private void showDeviceIncompatibleDialog(String incompatibilityReason) {
-        Utils.showDeviceIncompatibleDialog(this, incompatibilityReason, new Runnable() {
+        Utils.showDeviceIncompatibleDialog(this, incompatibilityReason+"\n"+this.getResources().getString(R.string.compat_snsn_features_not_working), new Runnable() {
             @Override
             public void run() {
-                quitApplication();
+                //quitApplication();
+                //still start SNSN -> Patchalyzer feature can still be used
+                proceedAppFlow();
             }
         });
     }
@@ -164,8 +185,12 @@ public class StartupActivity extends Activity {
                                 progressDialog.dismiss ();
                             }
 
-                            //Check for ACCESS_COARSE_PERMISSION neccessary for Recoding in MsdService to function
-                            if (PermissionChecker.checkAndRequestPermissionForMsdService(StartupActivity.this)) {
+                            if(isSNSNCompatible) {
+                                //Check for ACCESS_COARSE_PERMISSION neccessary for Recoding in MsdService to function
+                                if (PermissionChecker.checkAndRequestPermissionForMsdService(StartupActivity.this)) {
+                                    startDashboard();
+                                }
+                            }else{
                                 startDashboard();
                             }
 

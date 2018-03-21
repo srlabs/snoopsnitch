@@ -223,18 +223,23 @@ public class Utils {
                 activity.getResources().getString(R.string.alert_deviceCompatibility_header) + " " + incompatibilityReason + " " +
                         activity.getResources().getString(R.string.alert_deviceCompatibility_message);
 
-        MsdDialog.makeFatalConditionDialog(activity, dialogMessage, new OnClickListener() {
+        MsdDialog.makeConfirmationDialog(activity, dialogMessage, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         callback.run();
                     }
-                }, null,
+                }, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        callback.run();
+                    }
+                },
                 new OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         callback.run();
                     }
-                }, false
+                }, true
         ).show();
     }
 

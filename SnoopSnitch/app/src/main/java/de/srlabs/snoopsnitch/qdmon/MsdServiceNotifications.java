@@ -20,6 +20,7 @@ import de.srlabs.snoopsnitch.CrashUploadActivity;
 import de.srlabs.snoopsnitch.DashboardActivity;
 import de.srlabs.snoopsnitch.EnableAutoUploadModeActivity;
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.StartupActivity;
 import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 
@@ -136,21 +137,23 @@ public class MsdServiceNotifications {
     }
 
     public void showExpectedErrorNotification(int errorId) {
-        Log.i("MsdServiceNotifications", "showExpectedErrorNotification(" + errorId + ")");
-        Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_event);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(service)
-                        .setSmallIcon(R.drawable.ic_content_imsi_event)
-                        .setLargeIcon(icon)
-                        // .setAutoCancel(true)
-                        .setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title));
-        ;
-        if (errorId == ERROR_ROOT_PRIVILEGES_DENIED) {
-            notificationBuilder.setContentText(service.getString(R.string.error_root_privileges_denied));
+        if(StartupActivity.isSNSNCompatible()) {
+            Log.i("MsdServiceNotifications", "showExpectedErrorNotification(" + errorId + ")");
+            Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_event);
+            NotificationCompat.Builder notificationBuilder =
+                    new NotificationCompat.Builder(service)
+                            .setSmallIcon(R.drawable.ic_content_imsi_event)
+                            .setLargeIcon(icon)
+                            // .setAutoCancel(true)
+                            .setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title));
+            ;
+            if (errorId == ERROR_ROOT_PRIVILEGES_DENIED) {
+                notificationBuilder.setContentText(service.getString(R.string.error_root_privileges_denied));
+            }
+            Notification n = notificationBuilder.build();
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
+            notificationManager.notify(Constants.NOTIFICATION_ID_EXPECTED_ERROR, n);
         }
-        Notification n = notificationBuilder.build();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
-        notificationManager.notify(Constants.NOTIFICATION_ID_EXPECTED_ERROR, n);
     }
 
 

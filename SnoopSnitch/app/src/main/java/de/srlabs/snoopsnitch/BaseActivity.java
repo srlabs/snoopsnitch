@@ -52,7 +52,7 @@ public class BaseActivity extends FragmentActivity {
         messageToast = new Toast(getApplicationContext());
 
         // Get MsdService Helper
-        boolean autoStartRecording = PermissionChecker.isAccessingFineLocationAllowed(this) || PermissionChecker.isAccessingCoarseLocationAllowed(this);
+        boolean autoStartRecording = StartupActivity.isSNSNCompatible() && (PermissionChecker.isAccessingFineLocationAllowed(this) || PermissionChecker.isAccessingCoarseLocationAllowed(this));
         msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(this.getApplicationContext(), autoStartRecording);
         MsdLog.init(msdServiceHelperCreator.getMsdServiceHelper());
         MsdLog.i("MSD", "MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());

@@ -18,7 +18,7 @@ public class MsdDialog extends DialogFragment {
     public static Dialog makeConfirmationDialog(Activity activity, String message,
                                                 OnClickListener positiveOnClickListener, OnClickListener negativeOnClickListener,
                                                 OnCancelListener onCancelListener, Boolean backButtonActive) {
-        return makeConfirmationDialog(activity, message, positiveOnClickListener, negativeOnClickListener, null,
+        return makeConfirmationDialog(activity, message, positiveOnClickListener, negativeOnClickListener, onCancelListener,
                 activity.getResources().getString(R.string.alert_button_ok), activity.getString(R.string.alert_button_cancel), backButtonActive);
     }
 
