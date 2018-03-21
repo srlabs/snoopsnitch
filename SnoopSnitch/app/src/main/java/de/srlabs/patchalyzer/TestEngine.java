@@ -305,11 +305,40 @@ public class TestEngine {
         }
         else if(testType.equals("COMBINED_SIGNATURE")){
             String filename = test.getString("filename");
-            String rollingSignature = test.getString("rollingSignature");
-            String maskSignature = test.getString("maskSignature");
+            //String rollingSignatureString = test.getString("rollingSignature"); -> already fetched in getRollingSignatureForTest()
+            String maskSignatureString = test.getString("maskSignature");
 
-            //TODO implement
-            throw new IllegalStateException("COMBINED_SIGNATURE check not implemented yet!");
+            RollingSignature rollingSignature = getRollingSignatureForTest(test);
+
+            MultiSignatureScanner scanner = new MultiSignatureScanner();
+            scanner.addSignatureChecker(rollingSignature);
+
+
+
+            MaskSignature maskSignatureChecker = new MaskSignature();
+            maskSignatureChecker.parse(maskSignatureString);
+
+            Set<SymbolInformation> results = scanner.scanFile(filename);
+
+            for(SymbolInformation symbolInfo : results){
+                long symbolPos = symbolInfo.getPosition();
+                int symbolLength = maskSignatureChecker.getCodeLength();
+
+                //read file content region to byte array
+                byte[] codeBuf = new byte[symbolLength];
+                RandomAccessFile file = new RandomAccessFile(filename, "r");
+                file.seek(symbolPos);
+                file.read(codeBuf);
+                file.close();
+
+                //TODO cache codeBuf for mask signature test in TestBundle
+
+                if(maskSignatureChecker.checkCodeBuf(codeBuf))
+                    return true;
+            }
+
+            return false;
+
         }
         else{
             throw new IllegalArgumentException("Unknown testType " + testType);
@@ -451,6 +480,8 @@ public class TestEngine {
         file.read(codeBuf);
         file.close();
 
+        //TODO cache codeBuf for mask signature test in TestBundle
+
         boolean result = signatureChecker.checkCodeBuf(codeBuf);
         //Log.d(Constants.LOG_TAG, "Signature check result: " + result);
         return result;
@@ -458,7 +489,8 @@ public class TestEngine {
 
     private static RollingSignature getRollingSignatureForTest(JSONObject test){
         try {
-            if (test != null && test.getString("testType").equals("ROLLING_SIGNATURE")) {
+            String testType = test.getString("testType");
+            if (test != null && (testType.equals("ROLLING_SIGNATURE") || testType.equals("COMBINED_SIGNATURE"))) {
                 String rollingSignature = test.getString("rollingSignature");
 
                 //throw new IllegalStateException("ROLLING_SIGNATURE test not fully implemented yet!");
