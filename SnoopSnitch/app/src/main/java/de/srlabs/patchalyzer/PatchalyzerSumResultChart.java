@@ -137,8 +137,13 @@ public class PatchalyzerSumResultChart extends View {
             }
         }
         else{
-            paint.setColor(Constants.COLOR_PATCHED);
+            //default (no test results available)
+            paint.setColor(Color.GRAY);
             canvas.drawRect(new RectF(startX, chartOffsetTopBottom, startX+chartWidth, chartOffsetTopBottom + chartHeight), paint);
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(textSize);
+            //FIXME text position not correctly centered vertically!!
+            canvas.drawText(this.getResources().getString(R.string.patchalyzer_no_test_result), (chartWidth * 0.3f) , (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
         }
 
         if(drawBorder){

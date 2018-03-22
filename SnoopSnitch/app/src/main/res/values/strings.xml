@@ -478,7 +478,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="device_not_compatible_now_no_diag">Your device is not compatible currently. This might change with an upcoming firmware update.</string>
 <string name="action_switch_to_patchalyzer">Switch to Patchalyzer</string>
 <string name="android_patchlevel_text">Android patch level</string>
-
+<string name="patchalyzer_no_test_result">No test results available</string>
 
 
 </resources>

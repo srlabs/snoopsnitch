@@ -70,22 +70,27 @@
                 android:id="@+id/progress_box"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="12"
+                android:gravity="center_vertical|center_horizontal|center"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textPercentage"
-                    android:layout_width="150dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:text="TextView" />
+                    android:textColor="@color/common_text"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="0.0%" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="11"
                     android:progressTint="#3f51b5" />
 
             </LinearLayout>

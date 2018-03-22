@@ -58,6 +58,8 @@ public class BaseActivity extends FragmentActivity {
         MsdLog.i("MSD", "MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 
         handler = new Handler();
+
+
     }
 
     @Override
@@ -80,7 +82,11 @@ public class BaseActivity extends FragmentActivity {
 
         setRecordingIcon();
 
+
+
         super.onResume();
+
+
     }
 
     @Override
@@ -206,7 +212,7 @@ public class BaseActivity extends FragmentActivity {
     private void showMessage(String message) {
         if (isInForeground) {
             messageText.setText(message);
-            messageToast.setGravity(Gravity.FILL_HORIZONTAL | Gravity.TOP, 0, getActionBar().getHeight());
+            messageToast.setGravity(Gravity.FILL_HORIZONTAL | Gravity.BOTTOM, 0, getActionBar().getHeight());
             messageToast.setDuration(Toast.LENGTH_LONG);
             messageToast.setView(messageLayout);
             messageToast.show();

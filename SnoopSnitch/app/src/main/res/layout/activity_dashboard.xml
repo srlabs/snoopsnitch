@@ -40,7 +40,7 @@
                     android:src="@mipmap/ic_launcher" />
 
                 <TextView
-                    android:id="@+id/TextView02"
+                    android:id="@+id/android_patch_analysis"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical"

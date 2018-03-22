@@ -1,6 +1,7 @@
 package de.srlabs.patchalyzer;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,26 +36,19 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import junit.framework.Test;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import de.srlabs.patchalyzer.Constants.ActivityState;
-import de.srlabs.snoopsnitch.BuildConfig;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
@@ -80,8 +74,6 @@ public class MainActivity extends Activity {
     private static final int SDCARD_PERMISSION_RCODE = 1;
 
     private ActivityState state = ActivityState.START;
-
-    MsdSQLiteOpenHelper database = null;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         // Called when the connection with the service is established
@@ -235,10 +227,14 @@ public class MainActivity extends Activity {
         });
         statusTextView.setText("");
         percentageText.setText("");
+        ActionBar actionBar = getActionBar();
+
+
         if(!Constants.IS_TEST_MODE) {
-            setTitle("Patchalyzer - AppID " + TestUtils.getAppId(this));
+            actionBar.setTitle("Patchalyzer");
+            actionBar.setSubtitle("App ID: "+TestUtils.getAppId(this));
         }else{
-            setTitle("Patchalyzer - TESTMODE");
+            actionBar.setTitle("Patchalyzer - TESTMODE");
         }
         displayCutline();
 
@@ -254,6 +250,8 @@ public class MainActivity extends Activity {
         SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
         state = ActivityState.valueOf(settings.getString("state", ActivityState.START.toString()));
         restoreStatePending = true;
+
+        startService();
 
     }
 
@@ -285,7 +283,6 @@ public class MainActivity extends Activity {
     protected void onResume(){
         super.onResume();
         startService();
-
     }
 
     private void startService(){
@@ -294,15 +291,6 @@ public class MainActivity extends Activity {
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
-    /*@Override
-    public void onStop(){
-        super.onStop();
-
-
-        mITestExecutorService.stopTe
-
-
-     }*/
 
     @Override
     protected void onDestroy(){
@@ -333,46 +321,7 @@ public class MainActivity extends Activity {
         savedInstanceState.putString("currentPatchlevelDate", currentPatchlevelDate);
         super.onSaveInstanceState(savedInstanceState);
     }
-    private void btnClear_clicked(){
-        clearTable();
-        progressBar.setProgress(0);
-        statusTextView.setText("");
-        try {
-            mITestExecutorService.clearCache();
-        } catch(RemoteException e){
-            statusTextView.setText(e.toString());
-        }
-    }
-    private void btnDebug_clicked() {
-        try {
-            String[] cmd = new String[3];
-            cmd[0] = "/data/data/de.srlabs.patchalyzer/lib/libbusybox.so";
-            cmd[1] = "xzcat";
-            cmd[2] = "/data/local/tmp/test.xz";
-            Log.i(Constants.LOG_TAG, "XZCAT COMMAND: " + cmd[0] + " " + cmd[1] + " " + cmd[2]);
-            Process p = Runtime.getRuntime().exec(cmd);
-            BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = r.readLine();
-            Log.i(Constants.LOG_TAG, "XZCAT LINE: " + line);
 
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            while(true){
-                line = errorReader.readLine();
-                Log.i(Constants.LOG_TAG,"XZCAT ERROR: " + line);
-                if(line == null)
-                    break;
-            }
-        } catch(Exception e){
-            Log.e(Constants.LOG_TAG, "XZCAT", e);
-        }
-    }
-    private void dumpBuf(String name, byte[] buf){
-        String output = name + ": ";
-        for(int i=0;i<buf.length;i++){
-            output += String.format("%x, ", buf[i]);
-        }
-        Log.e(Constants.LOG_TAG, output);
-    }
     private void startTest(){
         //startService();
 
@@ -408,18 +357,6 @@ public class MainActivity extends Activity {
             //no internet connection
             Log.w(Constants.LOG_TAG,"Not testing, because of missing internet connection.");
             showNoInternetConnectionDialog();
-        }
-    }
-    private void uploadResults(){
-        //clearTable();
-        statusTextView.setText("Uploading...");
-        startTestButton.setEnabled(false);
-        /*if(!requestSdcardPermission())
-            return;*/
-        try {
-            mITestExecutorService.upload(true, true, callbacks);
-        } catch (RemoteException e) {
-            Log.e(Constants.LOG_TAG, "uploadResults RemoteException", e);
         }
     }
 
