@@ -48,34 +48,19 @@ public class StartupActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         String snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
-        //String incompatibilityReason = null; //TODO just for testing here
-        /*if (incompatibilityReason == null) {
-            if (MsdConfig.getFirstRun(this)) {
-                showFirstRunDialog();
-            } else {
-                createDatabaseAndStartDashboard();
-            }
-        } else {
-            if(incompatibilityReason.equals(getResources().getString(R.string.compat_no_baseband_messages_in_active_test))){
-                showDialogWarningNoBasebandMessages();
-            }
-            else {
-                showDeviceIncompatibleDialog(incompatibilityReason);
-            }
-        }*/
 
         if(snsnIncompatibilityReason != null){
-            if(snsnIncompatibilityReason.equals(getResources().getString(R.string.compat_no_baseband_messages_in_active_test))){
+            /*if(snsnIncompatibilityReason.equals(getResources().getString(R.string.compat_no_baseband_messages_in_active_test))){
                 showDialogWarningNoBasebandMessages();
             }
             else {
                 showDeviceIncompatibleDialog(snsnIncompatibilityReason);
-            }
+            }*/
         }
         else{
             isSNSNCompatible = true;
-            proceedAppFlow();
         }
+        proceedAppFlow();
 
     }
 
