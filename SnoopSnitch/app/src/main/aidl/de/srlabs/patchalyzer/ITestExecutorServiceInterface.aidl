@@ -13,6 +13,6 @@ interface ITestExecutorServiceInterface {
     String evaluateVulnerabilitiesTests();
     void clearCache();
     boolean updateTestsNeeded();
-    void startWork(boolean updateTests, boolean generateDeviceInfo, boolean evaluateTests, boolean uploadTestResults, boolean uploadDeviceInfo, ITestExecutorCallbacks callback);
-    void upload(boolean uploadTestResults, boolean updateDeviceInfo, ITestExecutorCallbacks callback);
+    void updateCallback(ITestExecutorCallbacks callback);
+    void startWork(boolean updateTests, boolean generateDeviceInfo, boolean evaluateTests, boolean uploadTestResults, boolean uploadDeviceInfo);
 }

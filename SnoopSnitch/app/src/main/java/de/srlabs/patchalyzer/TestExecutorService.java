@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -92,6 +93,7 @@ public class TestExecutorService extends Service {
     }
 
     private void parseTestSuiteFile(File testSuiteFile,final ProgressItem parseTestSuiteProgress) throws IOException{
+
         Log.d(Constants.LOG_TAG,"TestExecutorService: Parsing testsuite...");
         Log.d(Constants.LOG_TAG, "TestExecutorService: testSuiteFile:" + testSuiteFile.getAbsolutePath());
         testSuite = new TestSuite(this, testSuiteFile);
@@ -142,6 +144,13 @@ public class TestExecutorService extends Service {
     }
 
     private final ITestExecutorServiceInterface.Stub mBinder = new ITestExecutorServiceInterface.Stub() {
+
+        @Override
+        public void updateCallback(final ITestExecutorCallbacks callback){
+            TestExecutorService.this.callback = callback;
+            updateProgress();
+        }
+
         @Override
         public void startMakingDeviceInfo() throws RemoteException {
             if(deviceInfoThread != null && deviceInfoThread.isAlive()){
@@ -249,9 +258,7 @@ public class TestExecutorService extends Service {
         }
 
         @Override
-        public void startWork(boolean updateTests, boolean generateDeviceInfo, final boolean evaluateTests, final boolean uploadTestResults, final boolean uploadDeviceInfo, final ITestExecutorCallbacks callback){
-
-            TestExecutorService.this.callback = callback;
+        public void startWork(boolean updateTests, boolean generateDeviceInfo, final boolean evaluateTests, final boolean uploadTestResults, final boolean uploadDeviceInfo){
 
             if(downloadingTestSuite){
                 showStatus("Still downloading test suite...please be patient!");
@@ -396,42 +403,6 @@ public class TestExecutorService extends Service {
             }
         }
 
-        //FIXME not used anymore!
-        @Override
-        public void upload(final boolean uploadTestResults, final boolean uploadDeviceInfo, ITestExecutorCallbacks callback) throws RemoteException {
-            if(apiRunning){
-                try {
-                    callback.showErrorMessage("Already work in progress, not starting: apiRunning");
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                return;
-            }
-            TestExecutorService.this.callback = callback;
-            apiRunning = true;
-            Thread t = new Thread(){
-                @Override
-                public void run() {
-                    try {
-                        sendProgressToCallback(0.0);
-                        if (uploadTestResults) {
-                            api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
-                        }
-                        sendProgressToCallback(0.5);
-                        if (uploadDeviceInfo && deviceInfoJson != null) {
-                            api.reportSys(deviceInfoJson, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
-                        }
-                        sendProgressToCallback(1.0);
-                    } catch(Exception e){
-                        reportError("Exception in upload(): " + e);
-                        Log.e(Constants.LOG_TAG, "Exception in upload()", e);
-                    }
-                    apiRunning = false;
-                    sendFinishedToCallback();
-                }
-            };
-            t.start();
-        }
     };
 
     private void deleteCacheTestResultJSONFile() {
@@ -476,7 +447,10 @@ public class TestExecutorService extends Service {
         //Log.i(Constants.LOG_TAG, "getTotalProgres()");
         double weightSum = 0;
         double progressSum = 0;
-        for(ProgressItem progressItem:progressItems){
+        if(progressItems == null){
+            return 0;
+        }
+        for(ProgressItem progressItem : progressItems){
             //Log.i(Constants.LOG_TAG, "getTotalProgres(): name=" + progressItem.getName() + "  weight=" + progressItem.getWeight() + "  progress=" + progressItem.getProgress());
             weightSum += progressItem.getWeight();
             progressSum += progressItem.getProgress() * progressItem.getWeight();
@@ -601,8 +575,8 @@ public class TestExecutorService extends Service {
                 return;
             } catch (IOException e) {
                 Log.e(Constants.LOG_TAG, "IOException in DownloadThread", e);
-                stopSubThreads();
                 reportError(NO_INTERNET_CONNECTION_ERROR);
+                stopSubThreads();
                 return;
             } finally{
                 apiRunning = false;

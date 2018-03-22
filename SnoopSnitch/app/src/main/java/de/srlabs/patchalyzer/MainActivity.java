@@ -23,6 +23,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,7 +55,7 @@ import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
     private Handler handler;
     private Button startTestButton;
     private TextView statusTextView, percentageText;
@@ -72,6 +73,7 @@ public class MainActivity extends Activity {
     private boolean showTablePending = false;
     private String noCVETestsForApiLevelMessage = null;
     private static final int SDCARD_PERMISSION_RCODE = 1;
+    private TestCallbacks callbacks = new TestCallbacks();
 
     private ActivityState state = ActivityState.START;
 
@@ -81,6 +83,11 @@ public class MainActivity extends Activity {
             // Following the example above for an AIDL interface,
             // this gets an instance of the IRemoteInterface, which we can use to call on the service
             mITestExecutorService = ITestExecutorServiceInterface.Stub.asInterface(service);
+            try{
+                mITestExecutorService.updateCallback(callbacks);
+            } catch (RemoteException e) {
+                Log.e(Constants.LOG_TAG, "RemoteException in onServiceConnected():", e);
+            }
             Log.d(Constants.LOG_TAG,"Service connected!");
             isServiceBound = true;
             if(restoreStatePending){
@@ -96,8 +103,7 @@ public class MainActivity extends Activity {
         }
     };
 
-    private MyCallbacks callbacks = new MyCallbacks();
-    class MyCallbacks extends ITestExecutorCallbacks.Stub{
+    class TestCallbacks extends ITestExecutorCallbacks.Stub{
         @Override
         public void showErrorMessage(final String text) throws RemoteException {
             handler.post(new Runnable(){
@@ -291,13 +297,12 @@ public class MainActivity extends Activity {
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
-
     @Override
     protected void onDestroy(){
         super.onDestroy();
         if(isServiceBound)
             unbindService(mConnection);
-        Log.i("Patchalyzer_Activity","onDestroy() called -> persisting state to sharedPrefs");
+        Log.i("Patchalyzer_Activity","onDestroy() called -> persisting state to sharedPrefs: "+state.toString());
         SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("state", state.toString());
@@ -338,14 +343,14 @@ public class MainActivity extends Activity {
             try {
                 showTablePending = true;
                 if(!Constants.IS_TEST_MODE) {
-                    mITestExecutorService.startWork(true, true, true, true, true, callbacks);
+                    mITestExecutorService.startWork(true, true, true, true, true);
                 }
                 else{
                     if(!requestSdcardPermission()) {
                         startTestButton.setEnabled(true);
                         return;
                     }
-                    mITestExecutorService.startWork(true, true, true, false, false, callbacks);
+                    startWorkInTestMode();
                 }
                 statusTextView.setText("Testing your phone...");
                 metaInfoText.removeAllViews();
@@ -358,6 +363,10 @@ public class MainActivity extends Activity {
             Log.w(Constants.LOG_TAG,"Not testing, because of missing internet connection.");
             showNoInternetConnectionDialog();
         }
+    }
+
+    private void startWorkInTestMode() throws RemoteException{
+        mITestExecutorService.startWork(true, true, true, false, false);
     }
 
     private boolean requestSdcardPermission(){
@@ -615,8 +624,8 @@ public class MainActivity extends Activity {
     public void onBackPressed(){
         if(state == ActivityState.VULNERABILITY_LIST)
             showPatchlevelDateNoTable();
-        else
-            finish();
+        //else
+            //finish();
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -628,7 +637,7 @@ public class MainActivity extends Activity {
     }
     public void showNoInternetConnectionDialog(){
         if(!noInternetDialogShowing) {
-
+            Log.d(Constants.LOG_TAG,"Showing internet connection issues dialog");
             showMetaInformation("");
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -693,7 +702,7 @@ public class MainActivity extends Activity {
                     //Success: All neccessary permissions granted
                     // start test in TEST MODE!
                     try {
-                        mITestExecutorService.startWork(true, true, true, false, false, callbacks);
+                        startWorkInTestMode();
                     }catch(RemoteException e){
                         Log.e(Constants.LOG_TAG,"RemoteException when starting test:"+e.getMessage());
                     }
