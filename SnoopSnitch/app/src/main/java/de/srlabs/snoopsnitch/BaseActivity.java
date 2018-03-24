@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import de.srlabs.patchalyzer.MainActivity;
+import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -155,8 +155,8 @@ public class BaseActivity extends FragmentActivity {
     }
 
     public void showPatchalyzer(){
-        if(patchalyzerIntent == null)
-            patchalyzerIntent = new Intent(this, MainActivity.class);
+        //if(patchalyzerIntent == null)
+        patchalyzerIntent = new Intent(this, PatchalyzerMainActivity.class);
         startActivity(patchalyzerIntent);
     }
 

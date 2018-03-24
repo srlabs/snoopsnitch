@@ -2,7 +2,6 @@ package de.srlabs.patchalyzer;
 
 import android.Manifest;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -55,7 +54,7 @@ import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 
 
-public class MainActivity extends FragmentActivity {
+public class PatchalyzerMainActivity extends FragmentActivity {
     private Handler handler;
     private Button startTestButton;
     private TextView statusTextView, percentageText;
@@ -70,7 +69,6 @@ public class MainActivity extends FragmentActivity {
     private JSONObject testResults = null;
     private String currentPatchlevelDate; // Only valid in ActivityState.VULNERABILITY_LIST
     private boolean restoreStatePending = false;
-    private boolean showTablePending = false;
     private String noCVETestsForApiLevelMessage = null;
     private static final int SDCARD_PERMISSION_RCODE = 1;
     private TestCallbacks callbacks = new TestCallbacks();
@@ -141,7 +139,7 @@ public class MainActivity extends FragmentActivity {
                 public void run() {
                     startTestButton.setEnabled(false);
                     webViewContent.removeAllViews();
-                    WebView wv = new WebView(MainActivity.this);
+                    WebView wv = new WebView(PatchalyzerMainActivity.this);
                     String html = "<html><body><h1>New version available</h1>This app version is out of date. Please download the latest version here: <a href=\"" + finalUpgradeUrl + "\">" + finalUpgradeUrl + "</a></body></html>";
                     wv.loadDataWithBaseURL("", html, "text/html", "UTF-8", "");
                     webViewContent.addView(wv);
@@ -151,7 +149,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public void updateProgress(final double progressPercent) throws RemoteException {
-            Log.i(Constants.LOG_TAG, "MainActivity received updateProgress(" + progressPercent + ")");
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received updateProgress(" + progressPercent + ")"+ PatchalyzerMainActivity.this + " - "+mITestExecutorService);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -169,28 +167,26 @@ public class MainActivity extends FragmentActivity {
         }
         @Override
         public void finished() throws RemoteException {
-            Log.i(Constants.LOG_TAG, "MainActivity received finished()");
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received finished()");
             handler.post(new Runnable() {
                 @Override
                 public void run() {;
                     startTestButton.setEnabled(true);
                     showMetaInformation("Finished");
-                    if(showTablePending) {
-                        showPatchlevelDateNoTable();
-                        showTablePending = false;
-                    }
+
+                    showPatchlevelDateNoTable();
                 }
             });
         }
         @Override
         public void showNoCVETestsForApiLevel(String message) throws RemoteException{
-            Log.i(Constants.LOG_TAG,"MainActivity received showNoCVETestsForApiLevel()");
+            Log.i(Constants.LOG_TAG,"PatchalyzerMainActivity received showNoCVETestsForApiLevel()");
             noCVETestsForApiLevelMessage = message;
         }
     }
     public void showMetaInformation(String status){
         metaInfoText.removeAllViews();
-        WebView wv = new WebView(MainActivity.this);
+        WebView wv = new WebView(PatchalyzerMainActivity.this);
         String html = "<html><body>\n";
         if(status != null)
             html += "\t" + status + "</body></html>\n";
@@ -213,6 +209,8 @@ public class MainActivity extends FragmentActivity {
     }
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(Constants.LOG_TAG, "onCreate() called");
         handler = new Handler(Looper.getMainLooper());
         setContentView(R.layout.activity_patchalyzer);
         startTestButton = (Button) findViewById(R.id.btnDoIt);
@@ -267,7 +265,7 @@ public class MainActivity extends FragmentActivity {
             public void run() {
                 try {
                     Log.d(Constants.LOG_TAG,"Creating SQLite database...");
-                    MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MainActivity.this));
+                    MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(PatchalyzerMainActivity.this));
                     MsdDatabaseManager msdDatabaseManager = MsdDatabaseManager.getInstance();
                     SQLiteDatabase db = msdDatabaseManager.openDatabase();
                     //testing DB init
@@ -292,7 +290,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void startService(){
-        Intent intent = new Intent(MainActivity.this, TestExecutorService.class);
+        Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
         intent.setAction(ITestExecutorServiceInterface.class.getName());
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
@@ -302,7 +300,7 @@ public class MainActivity extends FragmentActivity {
         super.onDestroy();
         if(isServiceBound)
             unbindService(mConnection);
-        Log.i("Patchalyzer_Activity","onDestroy() called -> persisting state to sharedPrefs: "+state.toString());
+        Log.i(Constants.LOG_TAG,"onDestroy() called -> persisting state to sharedPrefs: "+state.toString());
         SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("state", state.toString());
@@ -315,7 +313,11 @@ public class MainActivity extends FragmentActivity {
         } else if(state == ActivityState.VULNERABILITY_LIST){
             showDetailsNoTable(currentPatchlevelDate);
             startTestButton.setEnabled(true);
-        } else{
+        } else if(state == ActivityState.TESTING){
+            startTestButton.setEnabled(false);
+            showMetaInformation("Testing your phone...");
+        }
+        else{
             startTestButton.setEnabled(true);
         }
         restoreStatePending = false;
@@ -328,8 +330,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void startTest(){
-        //startService();
-
 
         progressBar.setVisibility(View.VISIBLE);
         percentageText.setVisibility(View.VISIBLE);
@@ -341,8 +341,8 @@ public class MainActivity extends FragmentActivity {
             clearTable();
             startTestButton.setEnabled(false);
             try {
-                showTablePending = true;
                 if(!Constants.IS_TEST_MODE) {
+
                     mITestExecutorService.startWork(true, true, true, true, true);
                 }
                 else{
@@ -355,6 +355,8 @@ public class MainActivity extends FragmentActivity {
                 statusTextView.setText("Testing your phone...");
                 metaInfoText.removeAllViews();
                 metaInfoText.addView(statusTextView);
+
+                state = ActivityState.TESTING;
             } catch (RemoteException e) {
                 Log.e(Constants.LOG_TAG, "startTest RemoteException", e);
             }
@@ -410,7 +412,6 @@ public class MainActivity extends FragmentActivity {
     }
 
 
-
     private void showPatchlevelDateNoTable(){
         showMetaInformation(null);
         String refPatchlevelDate = TestUtils.getPatchlevelDate();
@@ -433,7 +434,7 @@ public class MainActivity extends FragmentActivity {
             rows.setOrientation(LinearLayout.VERTICAL);
             rows.setLayoutParams(new ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.MATCH_PARENT));
 
-
+            resultChart.resetCounts();
             for (final String category : categories) {
                 LinearLayout row = new LinearLayout(this);
                 row.setGravity(Gravity.CENTER_VERTICAL);
@@ -462,25 +463,34 @@ public class MainActivity extends FragmentActivity {
                 //row.addView(makePatchlevelDateColumn(vulnerabilitiesForPatchlevelDate));
 
                 Vector<Integer> statusColors = new Vector<Integer>();
+
+                int numPatched = 0, numMissing = 0, numInconclusive = 0, numNotAffected = 0;
+
                 for (int i = 0; i < vulnerabilitiesForCategory.length(); i++) {
                     JSONObject vulnerability = vulnerabilitiesForCategory.getJSONObject(i);
                     int color = getVulnerabilityIndicatorColor(vulnerability, refPatchlevelDate);
                     statusColors.add(color);
                     switch(color){
                         case Constants.COLOR_PATCHED:
-                            resultChart.increasePatched(1);
+                            numPatched++;
                             break;
                         case Constants.COLOR_INCONCLUSIVE:
-                            resultChart.increaseInconclusive(1);
+                            numInconclusive++;
                             break;
                         case Constants.COLOR_MISSING:
-                            resultChart.increaseMissing(1);
+                            numMissing++;
                             break;
                         case Constants.COLOR_NOTAFFECTED:
-                            resultChart.increaseNotAffected(1);
+                            numNotAffected++;
                             break;
                     }
                 }
+
+                //set result chart
+                resultChart.increasePatched(numPatched);
+                resultChart.increaseInconclusive(numInconclusive);
+                resultChart.increaseMissing(numMissing);
+                resultChart.increaseNotAffected(numNotAffected);
 
                 int[] tmp = new int[statusColors.size()];
                 for (int i = 0; i < statusColors.size(); i++) {
@@ -521,7 +531,7 @@ public class MainActivity extends FragmentActivity {
             }
             JSONArray vulnerabilitiesForPatchlevelDate = testResults.getJSONArray(category);
 
-            WebView wv = new WebView(MainActivity.this);
+            WebView wv = new WebView(PatchalyzerMainActivity.this);
             StringBuilder html = new StringBuilder();
             html.append("<html><body><table style=\"border-collapse:collapse;\">\n");
 
@@ -624,8 +634,8 @@ public class MainActivity extends FragmentActivity {
     public void onBackPressed(){
         if(state == ActivityState.VULNERABILITY_LIST)
             showPatchlevelDateNoTable();
-        //else
-            //finish();
+        else
+            super.onBackPressed();
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -640,7 +650,7 @@ public class MainActivity extends FragmentActivity {
             Log.d(Constants.LOG_TAG,"Showing internet connection issues dialog");
             showMetaInformation("");
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(PatchalyzerMainActivity.this);
 
             builder.setTitle("No internet connection!");
             builder.setMessage("Your device is not connected to the Internet.\nPlease establish a connection and try starting a test again.");

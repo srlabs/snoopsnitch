@@ -128,7 +128,7 @@ public class PatchalyzerSumResultChart extends View {
                 canvas.drawRect(new RectF(startX, chartOffsetTopBottom, partWidth, chartOffsetTopBottom + chartHeight), paint);
 
                 if (showNumbers) {
-                    if(part.getCount() > 0) {
+                    if(part.getCount() > 10) {
                         paint.setColor(Color.BLACK);
                         canvas.drawText("" + part.getCount(), (startX + partWidth) / 2f - (textSize / 2f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
                     }
@@ -153,7 +153,6 @@ public class PatchalyzerSumResultChart extends View {
             canvas.drawRect(marginleftright/2,chartOffsetTopBottom,chartWidth+marginleftright/2,chartOffsetTopBottom+chartHeight, paint);
         }
 
-        
     }
 
     public void resetCounts() {

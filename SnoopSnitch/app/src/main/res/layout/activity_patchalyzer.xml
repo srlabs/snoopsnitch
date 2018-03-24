@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@color/common_applicationBackground"
-    tools:context="de.srlabs.patchalyzer.MainActivity">
+    tools:context="de.srlabs.patchalyzer.PatchalyzerMainActivity">
 
     <LinearLayout
         android:orientation="vertical"

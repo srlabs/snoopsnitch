@@ -32,7 +32,7 @@ public class TestExecutorService extends Service {
     private DeviceInfoThread deviceInfoThread = null;
     Set<Thread> subThreads = null;
     private BasicTestCache basicTestCache = null;
-    private ITestExecutorCallbacks callback = null;
+    private static ITestExecutorCallbacks callback = null;
     private boolean apiRunning = false;
     private boolean basicTestsRunning = false;
     private boolean deviceInfoRunning = false;
@@ -105,6 +105,19 @@ public class TestExecutorService extends Service {
 
     }
 
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.v(Constants.LOG_TAG, "in onUnbind");
+        return true;
+    }
+
+
+    @Override
+    public void onRebind(Intent intent) {
+        Log.v(Constants.LOG_TAG, "onRebind() called");
+        super.onRebind(intent);
+    }
+
     private boolean isAppOutdated(boolean notify){
         if(testSuite != null && testSuite.getMinAppVersion() != -1){
             int minAppVersion = testSuite.getMinAppVersion();
@@ -147,6 +160,7 @@ public class TestExecutorService extends Service {
 
         @Override
         public void updateCallback(final ITestExecutorCallbacks callback){
+            Log.d(Constants.LOG_TAG,"Updating callbacks.");
             TestExecutorService.this.callback = callback;
             updateProgress();
         }
@@ -477,6 +491,13 @@ public class TestExecutorService extends Service {
             public void run() {
                 try {
                     callback.finished();
+
+                    //persist state to sharedPrefs
+                    SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("state", Constants.ActivityState.VULNERABILITY_LIST.toString());
+                    editor.commit();
+
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.updateProgress() => callback.finished() RemoteException", e);
                 }
