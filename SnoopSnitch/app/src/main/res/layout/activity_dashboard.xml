@@ -37,7 +37,7 @@
                     android:layout_marginLeft="2dp"
                     android:layout_marginRight="2dp"
                     android:scaleType="fitStart"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/ic_patchalyzer" />
 
                 <TextView
                     android:id="@+id/android_patch_analysis"

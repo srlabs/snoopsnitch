@@ -307,16 +307,17 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         editor.commit();
     }
     private void restoreState(){
+        Log.d(Constants.LOG_TAG,"restoring state: "+state.toString());
         if(state == ActivityState.PATCHLEVEL_DATES) {
             showPatchlevelDateNoTable();
             startTestButton.setEnabled(true);
         } else if(state == ActivityState.VULNERABILITY_LIST){
             showDetailsNoTable(currentPatchlevelDate);
             startTestButton.setEnabled(true);
-        } else if(state == ActivityState.TESTING){
+        } /*else if(state == ActivityState.TESTING){
             startTestButton.setEnabled(false);
             showMetaInformation("Testing your phone...");
-        }
+        }*/
         else{
             startTestButton.setEnabled(true);
         }

@@ -493,6 +493,7 @@ public class TestExecutorService extends Service {
                     callback.finished();
 
                     //persist state to sharedPrefs
+                    Log.d(Constants.LOG_TAG,"Writing VULNERABILITY_LIST state to sharedPrefs");
                     SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("state", Constants.ActivityState.VULNERABILITY_LIST.toString());
