@@ -479,6 +479,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="action_switch_to_patchalyzer">Switch to Patchalyzer</string>
 <string name="android_patchlevel_text">Android patch level</string>
 <string name="patchalyzer_no_test_result">No test results available</string>
+    <string name="patchalyzer_running_notification_title">Patch level analysis running...</string>
+    <string name="patchalyzer_running_notification_text">testtext</string>
+    <string name="patchalyzer_running_notification_ticker">testticker</string>
 
 
 </resources>

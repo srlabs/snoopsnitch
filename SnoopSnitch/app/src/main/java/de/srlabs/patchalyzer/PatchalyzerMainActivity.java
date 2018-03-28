@@ -5,7 +5,6 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -63,7 +62,11 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private ProgressBar progressBar;
     private PatchalyzerSumResultChart resultChart;
 
-    private ITestExecutorServiceInterface mITestExecutorService;
+    // Make this activity into a singleton for easier access from service
+    protected static PatchalyzerMainActivity instance;
+    public TestCallbacks callbacks;
+
+    private TestExecutorService.TestExecutorServiceHelper testExecutorServiceHelper;
     private boolean isServiceBound=false;
     private boolean noInternetDialogShowing = false;
     private JSONObject testResults = null;
@@ -71,7 +74,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private boolean restoreStatePending = false;
     private String noCVETestsForApiLevelMessage = null;
     private static final int SDCARD_PERMISSION_RCODE = 1;
-    private TestCallbacks callbacks = new TestCallbacks();
+
 
     private ActivityState state = ActivityState.START;
 
@@ -80,10 +83,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         public void onServiceConnected(ComponentName className, IBinder service) {
             // Following the example above for an AIDL interface,
             // this gets an instance of the IRemoteInterface, which we can use to call on the service
-            mITestExecutorService = ITestExecutorServiceInterface.Stub.asInterface(service);
+            //testExecutorServiceHelper = ITestExecutorServiceInterface.Stub.asInterface(service);
             try{
-                mITestExecutorService.updateCallback(callbacks);
-            } catch (RemoteException e) {
+                testExecutorServiceHelper.updateCallback(callbacks);
+            } catch (Exception e) {
                 Log.e(Constants.LOG_TAG, "RemoteException in onServiceConnected():", e);
             }
             Log.d(Constants.LOG_TAG,"Service connected!");
@@ -97,7 +100,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         public void onServiceDisconnected(ComponentName className) {
             Log.e(Constants.LOG_TAG, "Service has unexpectedly disconnected");
             isServiceBound = false;
-            mITestExecutorService = null;
+            testExecutorServiceHelper = null;
         }
     };
 
@@ -149,7 +152,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         @Override
         public void updateProgress(final double progressPercent) throws RemoteException {
-            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received updateProgress(" + progressPercent + ")"+ PatchalyzerMainActivity.this + " - "+mITestExecutorService);
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received updateProgress(" + progressPercent + ")"+ PatchalyzerMainActivity.this + " - "+ testExecutorServiceHelper);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -210,6 +213,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        this.callbacks = new TestCallbacks();
         Log.d(Constants.LOG_TAG, "onCreate() called");
         handler = new Handler(Looper.getMainLooper());
         setContentView(R.layout.activity_patchalyzer);
@@ -255,8 +259,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         state = ActivityState.valueOf(settings.getString("state", ActivityState.START.toString()));
         restoreStatePending = true;
 
-        startService();
-
+        //startService();
+        PatchalyzerMainActivity.instance = this;
     }
 
     private void initDatabase(){
@@ -286,25 +290,60 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        startService();
+        PatchalyzerMainActivity.instance = this;
+        if (TestExecutorService.instance != null) {
+            testExecutorServiceHelper = TestExecutorService.instance.helper;
+        }
+
+        if (testExecutorServiceHelper != null) {
+            try {
+                testExecutorServiceHelper.updateCallback(callbacks);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        //startService();
     }
 
-    private void startService(){
-        Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
-        intent.setAction(ITestExecutorServiceInterface.class.getName());
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    private ComponentName startServiceIfNotRunning(){
+        if (TestExecutorService.instance == null) {
+            Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
+            //intent.setAction(ITestExecutorServiceInterface.class.getName());
+            startService(intent);
+        }
+        if (TestExecutorService.instance != null) {
+            testExecutorServiceHelper = TestExecutorService.instance.helper;
+        }
+        if (testExecutorServiceHelper != null) {
+            try {
+                testExecutorServiceHelper.updateCallback(callbacks);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        PatchalyzerMainActivity.instance = null;
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        if(isServiceBound)
-            unbindService(mConnection);
+        PatchalyzerMainActivity.instance = null;
+        //if(isServiceBound)
+          //  unbindService(mConnection);
+
+        /*
         Log.i(Constants.LOG_TAG,"onDestroy() called -> persisting state to sharedPrefs: "+state.toString());
         SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("state", state.toString());
         editor.commit();
+        */
     }
     private void restoreState(){
         Log.d(Constants.LOG_TAG,"restoring state: "+state.toString());
@@ -343,9 +382,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             startTestButton.setEnabled(false);
             try {
                 if(!Constants.IS_TEST_MODE) {
-
-                    mITestExecutorService.startWork(true, true, true, true, true);
-                }
+                    // TODO: only start service here, this call is done within
+                    startServiceIfNotRunning();                }
                 else{
                     if(!requestSdcardPermission()) {
                         startTestButton.setEnabled(true);
@@ -369,7 +407,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
 
     private void startWorkInTestMode() throws RemoteException{
-        mITestExecutorService.startWork(true, true, true, false, false);
+        testExecutorServiceHelper.startWork(true, true, true, false, false);
     }
 
     private boolean requestSdcardPermission(){
@@ -400,7 +438,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             }
             else {
                 Log.d(Constants.LOG_TAG,"No cached test results found, creating it..");
-                testResultsStr = mITestExecutorService.evaluateVulnerabilitiesTests();
+                testResultsStr = testExecutorServiceHelper.evaluateVulnerabilitiesTests();
             }
             //Log.e(Constants.LOG_TAG, testResultsStr);
             if(testResultsStr != null ){//&& !testResultsStr.contains("Exception")) { //FIXME
