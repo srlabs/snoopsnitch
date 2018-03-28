@@ -94,6 +94,14 @@ public class TestExecutorService extends Service {
 
     @Override
     public void onDestroy() {
+
+        //persist state to sharedPrefs
+        Log.d(Constants.LOG_TAG,"Writing PATCHLEVEL_DATES state to sharedPrefs");
+        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("state", Constants.ActivityState.PATCHLEVEL_DATES.toString());
+        editor.commit();
+
         TestExecutorService.instance = null;
     }
 
@@ -520,6 +528,11 @@ public class TestExecutorService extends Service {
         double totalProgress = getTotalProgress();
         sendProgressToCallback(totalProgress);
         if(totalProgress == 1.0) {
+            try {
+                helper.evaluateVulnerabilitiesTests();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             sendFinishedToCallback();
             stopSelf();
         }
@@ -532,10 +545,10 @@ public class TestExecutorService extends Service {
 
 
                     //persist state to sharedPrefs
-                    Log.d(Constants.LOG_TAG,"Writing VULNERABILITY_LIST state to sharedPrefs");
+                    Log.d(Constants.LOG_TAG,"Writing PATCHLEVEL_DATES state to sharedPrefs");
                     SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
                     SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("state", Constants.ActivityState.VULNERABILITY_LIST.toString());
+                    editor.putString("state", Constants.ActivityState.PATCHLEVEL_DATES.toString());
                     editor.commit();
 
                     PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
@@ -824,6 +837,12 @@ public class TestExecutorService extends Service {
                         .build();
 
         startForeground(ONGOING_NOTIFICATION_ID, notification);
+
+        Log.d(Constants.LOG_TAG,"Writing TESTING state to sharedPrefs");
+        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("state", Constants.ActivityState.TESTING.toString());
+        editor.commit();
 
 
         doWorkAsync();

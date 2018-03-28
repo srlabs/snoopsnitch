@@ -158,13 +158,14 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 public void run() {
                     progressBar.setMax(1000);
                     progressBar.setProgress((int) (progressPercent * 1000.0));
-                    String percentageString = ""+progressPercent*100000.0;
-                    if(percentageString.length() == 3){
-                        percentageText.setText(percentageString+"%");
+                    String percentageString = ""+progressPercent*100.0;
+                    if(percentageString.length() > 4){
+                        percentageString = percentageString.substring(0, 4);
+                        if (percentageString.endsWith(".")) {
+                            percentageString = percentageString.substring(0, percentageString.length() - 1);
+                        }
                     }
-                    else {
-                        percentageText.setText(("" + progressPercent * 100).substring(0, 4) + "%");
-                    }
+                    percentageText.setText(percentageString+"%");
                 }
             });
         }
@@ -259,6 +260,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         state = ActivityState.valueOf(settings.getString("state", ActivityState.START.toString()));
         restoreStatePending = true;
 
+        if(restoreStatePending){
+            restoreState();
+        }
+
         //startService();
         PatchalyzerMainActivity.instance = this;
     }
@@ -351,12 +356,25 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             showPatchlevelDateNoTable();
             startTestButton.setEnabled(true);
         } else if(state == ActivityState.VULNERABILITY_LIST){
+            // TODO: show specific vulnerability here
             showDetailsNoTable(currentPatchlevelDate);
             startTestButton.setEnabled(true);
-        } /*else if(state == ActivityState.TESTING){
-            startTestButton.setEnabled(false);
-            showMetaInformation("Testing your phone...");
-        }*/
+        } else if(state == ActivityState.TESTING){
+            // sanity check. Change state if the process was killed
+            if (TestExecutorService.instance != null) {
+                startTestButton.setEnabled(false);
+                showMetaInformation("Testing your phone...");
+            } else {
+                state = ActivityState.PATCHLEVEL_DATES;
+                //persist state to sharedPrefs
+                Log.d(Constants.LOG_TAG,"Writing PATCHLEVEL_DATES state to sharedPrefs");
+                SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("state", Constants.ActivityState.PATCHLEVEL_DATES.toString());
+                editor.commit();
+            }
+
+        }
         else{
             startTestButton.setEnabled(true);
         }
@@ -436,10 +454,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 testResults = TestUtils.parseCacheResultFile(cachedTestResult);
                 return testResults;
             }
-            else {
+            /*else {
                 Log.d(Constants.LOG_TAG,"No cached test results found, creating it..");
                 testResultsStr = testExecutorServiceHelper.evaluateVulnerabilitiesTests();
-            }
+            }*/
             //Log.e(Constants.LOG_TAG, testResultsStr);
             if(testResultsStr != null ){//&& !testResultsStr.contains("Exception")) { //FIXME
                 Log.i(Constants.LOG_TAG,"Trying to convert to JSON: "+testResultsStr);
@@ -461,6 +479,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         try{
             loadTestResultsWhenNeeded();
             if(testResults == null) {
+                // TODO: This could be used further down to display the analysis execution date.
                 showMetaInformation("Claimed patch level: " + refPatchlevelDate+"<br>No test results!");
                 return;
             }
@@ -548,6 +567,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 showNoCVETestsForApiLevelDialog(noCVETestsForApiLevelMessage);
             }
 
+            resultChart.saveValuesToSharedPrefs(this);
             resultChart.invalidate();
             resultChart.setVisibility(View.VISIBLE);
             percentageText.setVisibility(View.INVISIBLE);

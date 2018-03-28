@@ -1,6 +1,8 @@
 package de.srlabs.patchalyzer;
 
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,9 +16,14 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import de.srlabs.patchalyzer.Constants;
 import de.srlabs.snoopsnitch.R;
@@ -185,5 +192,49 @@ public class PatchalyzerSumResultChart extends View {
         public void addCount(int addition){
             this.count += addition;
         }
+    }
+
+    // using SharedPrefs
+    public void saveValuesToSharedPrefs(ContextWrapper context) {
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            for(Map.Entry entry : parts.entrySet()) {
+                jsonObject.put((String) entry.getKey(), ((ResultPart) entry.getValue()).getCount());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(Constants.LOG_TAG,"Writing resultsChart state to sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("resultsChart", jsonObject.toString());
+        editor.commit();
+
+    }
+
+    // using SharedPrefs
+    public void loadValuesFromSharedPrefs(ContextWrapper context) {
+        Log.d(Constants.LOG_TAG,"Reading resultsChart state from sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+
+        try {
+            JSONObject jsonObject = new JSONObject(settings.getString("resultsChart", "{}"));
+            Iterator<String> it = jsonObject.keys();
+            if (it.hasNext()) {
+                resetCounts();
+            }
+
+            while (it.hasNext()) {
+                String key = it.next();
+                ResultPart part = parts.get(key);
+                part.addCount(jsonObject.getInt(key));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

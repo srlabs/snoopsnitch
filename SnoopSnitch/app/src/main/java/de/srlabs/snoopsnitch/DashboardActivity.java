@@ -136,6 +136,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
 
         resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
+        resultChart.loadValuesFromSharedPrefs(this);
         resultChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -288,6 +289,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     }
 
     private void refreshPatchalyzerResultSum() {
+        // TODO: Maybe call resultChart.loadValuesFromSharedPrefs(this); here?
         resultChart.invalidate();
     }
 
