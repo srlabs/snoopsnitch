@@ -67,7 +67,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     protected static PatchalyzerMainActivity instance;
     public TestCallbacks callbacks;
 
-    private TestExecutorService.TestExecutorServiceHelper testExecutorServiceHelper;
     private boolean isServiceBound=false;
     private boolean noInternetDialogShowing = false;
     private JSONObject testResults = null;
@@ -150,7 +149,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         @Override
         public void updateProgress(final double progressPercent) throws RemoteException {
-            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received updateProgress(" + progressPercent + ")"+ PatchalyzerMainActivity.this + " - "+ testExecutorServiceHelper);
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received updateProgress(" + progressPercent + ")"+ PatchalyzerMainActivity.this + " - "+ TestExecutorService.instance);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -252,9 +251,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         initDatabase();
 
-        // Restore preferences
-        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
-
 
         restoreState();
 
@@ -291,18 +287,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     protected void onResume(){
         super.onResume();
         PatchalyzerMainActivity.instance = this;
-        if (TestExecutorService.instance != null) {
-            testExecutorServiceHelper = TestExecutorService.instance.helper;
+        TestExecutorService service = TestExecutorService.instance;
+        if (service != null) {
+            TestExecutorService.TestExecutorServiceHelper helper = service.helper;
+            helper.updateCallback(callbacks);
         }
 
-        if (testExecutorServiceHelper != null) {
-            try {
-                testExecutorServiceHelper.updateCallback(callbacks);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        //startService();
     }
 
     private ComponentName startServiceIfNotRunning(){
@@ -311,16 +301,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             //intent.setAction(ITestExecutorServiceInterface.class.getName());
             startService(intent);
         }
-        if (TestExecutorService.instance != null) {
-            testExecutorServiceHelper = TestExecutorService.instance.helper;
-        }
-        if (testExecutorServiceHelper != null) {
-            try {
-                testExecutorServiceHelper.updateCallback(callbacks);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+
         return null;
     }
 
@@ -396,7 +377,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 metaInfoText.removeAllViews();
                 metaInfoText.addView(statusTextView);
 
-                setActivityState(this, ActivityState.TESTING);
+                //setActivityState(this, ActivityState.TESTING);
+                restoreState();
             } catch (RemoteException e) {
                 Log.e(Constants.LOG_TAG, "startTest RemoteException", e);
             }
@@ -408,7 +390,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
 
     private void startWorkInTestMode() throws RemoteException{
-        testExecutorServiceHelper.startWork(true, true, true, false, false);
+        // TODO: Implement this
+        throw new UnsupportedOperationException();
     }
 
     private boolean requestSdcardPermission(){
@@ -695,7 +678,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(PatchalyzerMainActivity.this);
 
             builder.setTitle("No network connection");
-            builder.setMessage("Could not establish connection to backend server. Please ensure your " +
+            builder.setMessage("Could not establish connection to backend server.\nPlease make sure your " +
                     "device is connected to the internet and try again later.");
             builder.setIcon(android.R.drawable.ic_dialog_alert);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
