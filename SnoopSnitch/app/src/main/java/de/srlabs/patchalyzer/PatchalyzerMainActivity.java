@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -75,34 +76,31 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private String noCVETestsForApiLevelMessage = null;
     private static final int SDCARD_PERMISSION_RCODE = 1;
 
+    private ActivityState lastActiveState = null;
+    private ActivityState nonPersistentState = ActivityState.PATCHLEVEL_DATES;
 
-    private ActivityState state = ActivityState.START;
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        // Called when the connection with the service is established
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            // Following the example above for an AIDL interface,
-            // this gets an instance of the IRemoteInterface, which we can use to call on the service
-            //testExecutorServiceHelper = ITestExecutorServiceInterface.Stub.asInterface(service);
-            try{
-                testExecutorServiceHelper.updateCallback(callbacks);
-            } catch (Exception e) {
-                Log.e(Constants.LOG_TAG, "RemoteException in onServiceConnected():", e);
-            }
-            Log.d(Constants.LOG_TAG,"Service connected!");
-            isServiceBound = true;
-            if(restoreStatePending){
-                restoreState();
-            }
+    protected ActivityState getActivityState() {
+        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
+        return ActivityState.valueOf(settings.getString("state", ActivityState.PATCHLEVEL_DATES.toString()));
+    }
+
+    // Saves ActivityState to sharedPrefs and triggers UI reload if PatchalyzerMainActivity.instance exists
+    protected static void setActivityState(ContextWrapper context, ActivityState state) {
+
+
+        Log.d(Constants.LOG_TAG,"Writing " + state.toString() + " state to sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("state", state.toString());
+        editor.commit();
+
+        PatchalyzerMainActivity instance = PatchalyzerMainActivity.instance;
+        if (instance != null) {
+            instance.restoreState();
         }
+    }
 
-        // Called when the connection with the service disconnects unexpectedly
-        public void onServiceDisconnected(ComponentName className) {
-            Log.e(Constants.LOG_TAG, "Service has unexpectedly disconnected");
-            isServiceBound = false;
-            testExecutorServiceHelper = null;
-        }
-    };
 
     class TestCallbacks extends ITestExecutorCallbacks.Stub{
         @Override
@@ -248,21 +246,18 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         displayCutline();
 
         if (savedInstanceState != null) {
-            state = (ActivityState) savedInstanceState.get("state");
+            //TODO: Move this to sharedprefs?
             currentPatchlevelDate = savedInstanceState.getString("currentPatchlevelDate");
-            restoreStatePending = true;
         }
 
         initDatabase();
 
         // Restore preferences
         SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
-        state = ActivityState.valueOf(settings.getString("state", ActivityState.START.toString()));
-        restoreStatePending = true;
 
-        if(restoreStatePending){
-            restoreState();
-        }
+
+        restoreState();
+
 
         //startService();
         PatchalyzerMainActivity.instance = this;
@@ -350,39 +345,45 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         editor.commit();
         */
     }
+
+
+    // performs a sanity check regarding ActivityState.TESTING
     private void restoreState(){
-        Log.d(Constants.LOG_TAG,"restoring state: "+state.toString());
-        if(state == ActivityState.PATCHLEVEL_DATES) {
-            showPatchlevelDateNoTable();
-            startTestButton.setEnabled(true);
-        } else if(state == ActivityState.VULNERABILITY_LIST){
-            // TODO: show specific vulnerability here
-            showDetailsNoTable(currentPatchlevelDate);
-            startTestButton.setEnabled(true);
-        } else if(state == ActivityState.TESTING){
-            // sanity check. Change state if the process was killed
-            if (TestExecutorService.instance != null) {
+        ActivityState state = getActivityState();
+
+        if (TestExecutorService.instance == null) {
+            if(state == ActivityState.TESTING){
+                // sanity check. Change state if the process was killed
+                state = ActivityState.PATCHLEVEL_DATES;
+            }
+        } else {
+            state = ActivityState.TESTING;
+        }
+
+        if (lastActiveState != state) {
+            Log.d(Constants.LOG_TAG,"restoring state: "+state.toString());
+            if(state == ActivityState.PATCHLEVEL_DATES) {
+                showPatchlevelDateNoTable();
+                startTestButton.setEnabled(true);
+            } else if(state == ActivityState.VULNERABILITY_LIST){
+                // TODO: show specific vulnerability here
+                showDetailsNoTable(currentPatchlevelDate);
+                startTestButton.setEnabled(true);
+            } else if(state == ActivityState.TESTING){
                 startTestButton.setEnabled(false);
                 showMetaInformation("Testing your phone...");
-            } else {
-                state = ActivityState.PATCHLEVEL_DATES;
-                //persist state to sharedPrefs
-                Log.d(Constants.LOG_TAG,"Writing PATCHLEVEL_DATES state to sharedPrefs");
-                SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("state", Constants.ActivityState.PATCHLEVEL_DATES.toString());
-                editor.commit();
             }
+            else{
+                startTestButton.setEnabled(true);
+            }
+            restoreStatePending = false;
+            lastActiveState = state;
+        }
 
-        }
-        else{
-            startTestButton.setEnabled(true);
-        }
-        restoreStatePending = false;
     }
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable("state", state);
+        savedInstanceState.putSerializable("state", getActivityState());
         savedInstanceState.putString("currentPatchlevelDate", currentPatchlevelDate);
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -413,7 +414,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 metaInfoText.removeAllViews();
                 metaInfoText.addView(statusTextView);
 
-                state = ActivityState.TESTING;
+                setActivityState(this, ActivityState.TESTING);
             } catch (RemoteException e) {
                 Log.e(Constants.LOG_TAG, "startTest RemoteException", e);
             }
@@ -561,7 +562,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             }
             webViewContent.removeAllViews();
             webViewContent.addView(rows);
-            state = ActivityState.PATCHLEVEL_DATES;
+            setActivityState(this, ActivityState.PATCHLEVEL_DATES);
 
             if(noCVETestsForApiLevelMessage != null){
                 showNoCVETestsForApiLevelDialog(noCVETestsForApiLevelMessage);
@@ -627,7 +628,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
             showCategoryMetaInfo(category,numAffectedVulnerabilities);
 
-            state = ActivityState.VULNERABILITY_LIST;
+            setActivityState(this, ActivityState.VULNERABILITY_LIST);
             currentPatchlevelDate = category;
         } catch(Exception e){
             Log.e(Constants.LOG_TAG, "showDetailsNoTable Exception", e);
@@ -691,16 +692,16 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
     @Override
     public void onBackPressed(){
-        if(state == ActivityState.VULNERABILITY_LIST)
+        if(getActivityState() == ActivityState.VULNERABILITY_LIST)
             showPatchlevelDateNoTable();
         else
             super.onBackPressed();
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        if(state == ActivityState.PATCHLEVEL_DATES)
+        if(getActivityState() == ActivityState.PATCHLEVEL_DATES)
             showPatchlevelDateNoTable();
-        else if(state == ActivityState.VULNERABILITY_LIST){
+        else if(getActivityState() == ActivityState.VULNERABILITY_LIST){
             showDetailsNoTable(currentPatchlevelDate);
         }
     }
@@ -711,8 +712,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(PatchalyzerMainActivity.this);
 
-            builder.setTitle("No internet connection!");
-            builder.setMessage("Your device is not connected to the Internet.\nPlease establish a connection and try starting a test again.");
+            builder.setTitle("No network connection");
+            builder.setMessage("Could not establish connection to backend server. Please ensure your " +
+                    "device is connected to the internet and try again later.");
             builder.setIcon(android.R.drawable.ic_dialog_alert);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override

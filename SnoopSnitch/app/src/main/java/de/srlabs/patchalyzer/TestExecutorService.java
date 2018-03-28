@@ -57,6 +57,11 @@ public class TestExecutorService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        // Only one instance of this service should be running at all times
+        if (TestExecutorService.instance != null) {
+            stopSelf();
+            return;
+        }
         TestExecutorService.instance = this;
 
         Log.d(Constants.LOG_TAG,"onCreate() of TestExecutorService called...");
@@ -95,12 +100,7 @@ public class TestExecutorService extends Service {
     @Override
     public void onDestroy() {
 
-        //persist state to sharedPrefs
-        Log.d(Constants.LOG_TAG,"Writing PATCHLEVEL_DATES state to sharedPrefs");
-        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("state", Constants.ActivityState.PATCHLEVEL_DATES.toString());
-        editor.commit();
+        PatchalyzerMainActivity.setActivityState(this, Constants.ActivityState.PATCHLEVEL_DATES);
 
         TestExecutorService.instance = null;
     }
@@ -543,13 +543,7 @@ public class TestExecutorService extends Service {
             public void run() {
                 try {
 
-
-                    //persist state to sharedPrefs
-                    Log.d(Constants.LOG_TAG,"Writing PATCHLEVEL_DATES state to sharedPrefs");
-                    SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("state", Constants.ActivityState.PATCHLEVEL_DATES.toString());
-                    editor.commit();
+                    PatchalyzerMainActivity.setActivityState(TestExecutorService.this, Constants.ActivityState.PATCHLEVEL_DATES);
 
                     PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
                     if (patchalyzerMainActivity != null) {
@@ -838,11 +832,7 @@ public class TestExecutorService extends Service {
 
         startForeground(ONGOING_NOTIFICATION_ID, notification);
 
-        Log.d(Constants.LOG_TAG,"Writing TESTING state to sharedPrefs");
-        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("state", Constants.ActivityState.TESTING.toString());
-        editor.commit();
+        PatchalyzerMainActivity.setActivityState(this, Constants.ActivityState.TESTING);
 
 
         doWorkAsync();
