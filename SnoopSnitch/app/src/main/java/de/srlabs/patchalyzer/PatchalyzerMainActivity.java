@@ -349,35 +349,17 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     // performs a sanity check regarding ActivityState.TESTING
     private void restoreState(){
-        ActivityState state = getActivityState();
-
+        ActivityState tempNonPersistentState = nonPersistentState;
+        showPatchlevelDateNoTable();
         if (TestExecutorService.instance == null) {
-            if(state == ActivityState.TESTING){
-                // sanity check. Change state if the process was killed
-                state = ActivityState.PATCHLEVEL_DATES;
-            }
+            startTestButton.setEnabled(true);
         } else {
-            state = ActivityState.TESTING;
+            startTestButton.setEnabled(false);
+            showMetaInformation("Testing your phone...");
         }
-
-        if (lastActiveState != state) {
-            Log.d(Constants.LOG_TAG,"restoring state: "+state.toString());
-            if(state == ActivityState.PATCHLEVEL_DATES) {
-                showPatchlevelDateNoTable();
-                startTestButton.setEnabled(true);
-            } else if(state == ActivityState.VULNERABILITY_LIST){
-                // TODO: show specific vulnerability here
-                showDetailsNoTable(currentPatchlevelDate);
-                startTestButton.setEnabled(true);
-            } else if(state == ActivityState.TESTING){
-                startTestButton.setEnabled(false);
-                showMetaInformation("Testing your phone...");
-            }
-            else{
-                startTestButton.setEnabled(true);
-            }
-            restoreStatePending = false;
-            lastActiveState = state;
+        if(tempNonPersistentState == ActivityState.VULNERABILITY_LIST) {
+            // TODO: show specific vulnerability here
+            showDetailsNoTable(currentPatchlevelDate);
         }
 
     }
@@ -562,7 +544,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             }
             webViewContent.removeAllViews();
             webViewContent.addView(rows);
-            setActivityState(this, ActivityState.PATCHLEVEL_DATES);
+            nonPersistentState = ActivityState.PATCHLEVEL_DATES;
 
             if(noCVETestsForApiLevelMessage != null){
                 showNoCVETestsForApiLevelDialog(noCVETestsForApiLevelMessage);
@@ -628,7 +610,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
             showCategoryMetaInfo(category,numAffectedVulnerabilities);
 
-            setActivityState(this, ActivityState.VULNERABILITY_LIST);
+            nonPersistentState = ActivityState.VULNERABILITY_LIST;
             currentPatchlevelDate = category;
         } catch(Exception e){
             Log.e(Constants.LOG_TAG, "showDetailsNoTable Exception", e);
@@ -692,16 +674,16 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
     @Override
     public void onBackPressed(){
-        if(getActivityState() == ActivityState.VULNERABILITY_LIST)
+        if(nonPersistentState == ActivityState.VULNERABILITY_LIST)
             showPatchlevelDateNoTable();
         else
             super.onBackPressed();
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        if(getActivityState() == ActivityState.PATCHLEVEL_DATES)
+        if(nonPersistentState == ActivityState.PATCHLEVEL_DATES)
             showPatchlevelDateNoTable();
-        else if(getActivityState() == ActivityState.VULNERABILITY_LIST){
+        else if(nonPersistentState == ActivityState.VULNERABILITY_LIST){
             showDetailsNoTable(currentPatchlevelDate);
         }
     }
