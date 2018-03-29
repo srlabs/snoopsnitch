@@ -23,6 +23,7 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
@@ -287,12 +288,20 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     protected void onResume(){
         super.onResume();
         PatchalyzerMainActivity.instance = this;
+
+        cancelAnalysisFinishedNotification();
+
         TestExecutorService service = TestExecutorService.instance;
         if (service != null) {
             TestExecutorService.TestExecutorServiceHelper helper = service.helper;
             helper.updateCallback(callbacks);
         }
 
+    }
+
+    private void cancelAnalysisFinishedNotification() {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.cancel(TestExecutorService.FINISHED_NOTIFICATION_ID);
     }
 
     private ComponentName startServiceIfNotRunning(){
@@ -328,8 +337,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
 
 
-    // performs a sanity check regarding ActivityState.TESTING
     private void restoreState(){
+        cancelAnalysisFinishedNotification();
         ActivityState tempNonPersistentState = nonPersistentState;
         showPatchlevelDateNoTable();
         if (TestExecutorService.instance == null) {
@@ -373,12 +382,11 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     }
                     startWorkInTestMode();
                 }
-                statusTextView.setText("Testing your phone...");
+                //statusTextView.setText("Testing your phone...");
                 metaInfoText.removeAllViews();
                 metaInfoText.addView(statusTextView);
 
-                //setActivityState(this, ActivityState.TESTING);
-                restoreState();
+                recreate();
             } catch (RemoteException e) {
                 Log.e(Constants.LOG_TAG, "startTest RemoteException", e);
             }

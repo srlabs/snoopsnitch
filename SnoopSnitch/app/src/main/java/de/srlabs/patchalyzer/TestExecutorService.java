@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -50,7 +51,8 @@ public class TestExecutorService extends Service {
     private Vector<ProgressItem> progressItems;
     private boolean appIsOutdated = false;
     public static final String NO_INTERNET_CONNECTION_ERROR = "no_uplink";
-    private static final int ONGOING_NOTIFICATION_ID = 1147;
+    public static final int ONGOING_NOTIFICATION_ID = 1147;
+    public static final int FINISHED_NOTIFICATION_ID = 1148;
 
 
     @Override
@@ -528,15 +530,38 @@ public class TestExecutorService extends Service {
         double totalProgress = getTotalProgress();
         sendProgressToCallback(totalProgress);
         if(totalProgress == 1.0) {
-            try {
-                helper.evaluateVulnerabilitiesTests();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            sendFinishedToCallback();
-            stopSelf();
+            onFinishedAnalysis();
         }
     }
+
+    private void onFinishedAnalysis() {
+        try {
+            helper.evaluateVulnerabilitiesTests();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        sendFinishedToCallback();
+
+        //show finished notification
+        Intent notificationIntent = new Intent(this, PatchalyzerMainActivity.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Notification notification =
+                new Notification.Builder(this)
+                        .setContentTitle(getText(R.string.patchalyzer_finished_notification_title))
+                        .setContentText(getText(R.string.patchalyzer_finished_notification_text))
+                        .setSmallIcon(R.drawable.ic_patchalyzer)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
+                        .build();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(FINISHED_NOTIFICATION_ID, notification);
+
+
+
+        stopSelf();
+    }
+
     private void sendFinishedToCallback(){
         handler.post(new Runnable(){
             @Override
@@ -820,16 +845,13 @@ public class TestExecutorService extends Service {
         Intent notificationIntent = new Intent(this, PatchalyzerMainActivity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
         Notification notification =
                 new Notification.Builder(this)
                         .setContentTitle(getText(R.string.patchalyzer_running_notification_title))
                         .setContentText(getText(R.string.patchalyzer_running_notification_text))
                         .setSmallIcon(R.drawable.ic_patchalyzer)
                         .setContentIntent(pendingIntent)
-                        .setTicker(getText(R.string.patchalyzer_running_notification_ticker))
                         .build();
-
         startForeground(ONGOING_NOTIFICATION_ID, notification);
 
         PatchalyzerMainActivity.setActivityState(this, Constants.ActivityState.TESTING);

@@ -166,6 +166,11 @@ public class PatchalyzerSumResultChart extends View {
         for(ResultPart part : parts.values()){
             part.setCount(0);
         }
+        Log.d(Constants.LOG_TAG,"Clearing resultsChart state frrom sharedPrefs");
+        SharedPreferences settings = getContext().getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("resultsChart", "{}");
+        editor.commit();
     }
 
     protected class ResultPart{
@@ -212,6 +217,15 @@ public class PatchalyzerSumResultChart extends View {
         editor.putString("resultsChart", jsonObject.toString());
         editor.commit();
 
+    }
+
+    //using SharedPrefs
+    public static void clearPersistedValues(ContextWrapper context) {
+        Log.d(Constants.LOG_TAG,"Clearing resultsChart state frrom sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("resultsChart", "{}");
+        editor.commit();
     }
 
     // using SharedPrefs
