@@ -23,11 +23,14 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NavUtils;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -243,6 +246,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         }else{
             actionBar.setTitle("Patchalyzer - TESTMODE");
         }
+
+        // see onOptionsItemSelected
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         displayCutline();
 
         if (savedInstanceState != null) {
@@ -258,6 +265,20 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         //startService();
         PatchalyzerMainActivity.instance = this;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(upIntent);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initDatabase(){
