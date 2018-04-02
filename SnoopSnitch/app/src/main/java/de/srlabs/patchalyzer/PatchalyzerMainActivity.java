@@ -205,7 +205,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_MISSING)+"\">Patch missing</span>&nbsp;&nbsp;<br>\n" +
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_PATCHED)+"\">Patched</span>&nbsp;&nbsp;<br>\n" +
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_INCONCLUSIVE)+"\">Test inconclusive</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTAFFECTED)+"\">Not affected</span>&nbsp;&nbsp;\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTAFFECTED)+"\">Not affected</span>&nbsp;&nbsp;<br>\n" +
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTCLAIMED)+"\">After claimed patch level</span>&nbsp;&nbsp;\n" +
                     "\t</div>\n"+
                 "</body></html>";
@@ -484,7 +484,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
                 for (int i = 0; i < vulnerabilitiesForCategory.length(); i++) {
                     JSONObject vulnerability = vulnerabilitiesForCategory.getJSONObject(i);
-                    int color = getVulnerabilityIndicatorColor(vulnerability, refPatchlevelDate);
+                    int color = getVulnerabilityIndicatorColor(vulnerability, category);
                     statusColors.add(color);
                     switch(color){
                         case Constants.COLOR_PATCHED:
@@ -558,7 +558,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             for(int i=0;i<vulnerabilitiesForPatchlevelDate.length();i++) {
                 JSONObject vulnerability = vulnerabilitiesForPatchlevelDate.getJSONObject(i);
                 String identifier = vulnerability.getString("identifier");
-                String identifierColor = toColorString(getVulnerabilityIndicatorColor(vulnerability,refPatchlevelDate));
+                String identifierColor = toColorString(getVulnerabilityIndicatorColor(vulnerability, category));
                 String description = vulnerability.getString("title");
                 html.append("<tr>");
 
