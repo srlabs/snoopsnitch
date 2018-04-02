@@ -648,28 +648,16 @@ public class PatchalyzerMainActivity extends FragmentActivity {
      */
     private int getVulnerabilityIndicatorColor(JSONObject vulnerability, String refPatchlevelDate) {
         try {
-            if (vulnerability.isNull("fixed") || vulnerability.isNull("vulnerable") || vulnerability.isNull("notAffected")) {
+            if (TestUtils.isValidDateFormat(refPatchlevelDate) && !TestUtils.isPatchDateClaimed(refPatchlevelDate)) {
+                return Constants.COLOR_NOTCLAIMED;
+            } else if (vulnerability.isNull("fixed") || vulnerability.isNull("vulnerable") || vulnerability.isNull("notAffected")) {
                 return Constants.COLOR_INCONCLUSIVE;
             } else if(!vulnerability.isNull("notAffected") && vulnerability.getBoolean("notAffected")){
                 return Constants.COLOR_NOTAFFECTED;
             } else if (vulnerability.getBoolean("fixed") && !vulnerability.getBoolean("vulnerable")) {
                 return Constants.COLOR_PATCHED;
             } else if (!vulnerability.getBoolean("fixed") && vulnerability.getBoolean("vulnerable")) {
-                boolean missed = false;
-                String vulnerabilityPatchlevelDate = null;
-                if (vulnerability.has("patchlevelDate")) {
-                    vulnerabilityPatchlevelDate = vulnerability.getString("patchlevelDate");
-                }
-                if (vulnerabilityPatchlevelDate != null && vulnerabilityPatchlevelDate.startsWith("201") && refPatchlevelDate != null && refPatchlevelDate.startsWith("20")) {
-                    if (vulnerabilityPatchlevelDate.compareTo(refPatchlevelDate) <= 0)
-                        missed = true;
-                }
-                if (missed) {
-                    return Constants.COLOR_MISSING;
-                } else {
-                    return Constants.COLOR_MISSING;
-                    //identifierView.setBackgroundColor(0xFFFF8000); // Orange in ARGB notation
-                }
+                return Constants.COLOR_MISSING;
             }
         }catch(JSONException e){
             Log.e(Constants.LOG_TAG,"Problem assigning color for tests",e);

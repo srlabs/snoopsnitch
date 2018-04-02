@@ -136,7 +136,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
 
         resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
-        resultChart.loadValuesFromSharedPrefs(this);
+        resultChart.loadValuesFromCachedResultsFile(this);
         resultChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -39,7 +39,10 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.security.SecureRandom;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -413,6 +416,27 @@ public class TestUtils {
             return result;
         }
     }
+
+    public static boolean isPatchDateClaimed(String patchReleaseDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+        try {
+            Date requestedDate = format.parse(patchReleaseDate);
+            Date claimedDate = format.parse(getPatchlevelDate());
+            return (claimedDate.compareTo(requestedDate) >= 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean isValidDateFormat(String date) {
+        Pattern datePattern = Pattern.compile("^\\d{4}\\-\\d{2}$");
+        Matcher m = datePattern.matcher(date);
+        return m.matches();
+    }
+
+
     public static String getBuildProperty(String name){
         synchronized (buildPropertiesLock) {
             if (buildProperties == null)
@@ -720,6 +744,13 @@ public class TestUtils {
     }
 
     public static JSONObject parseCacheResultFile(File cachedTestResult) throws IOException, JSONException {
+        // prevent File IO racecondition
+        // TODO: Add lock variable to check before calling de.srlabs.patchalyzer.TestExecutorService.saveCurrentTestResult()
+        // TODO: Or use SharedPrefs instead of file.
+        if (TestExecutorService.instance != null) {
+            return null;
+        }
+
         BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(new FileInputStream(cachedTestResult))));
         StringBuilder stringBuilder = new StringBuilder();
         String line = "";

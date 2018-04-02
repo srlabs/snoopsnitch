@@ -16,9 +16,12 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +30,8 @@ import java.util.Map;
 
 import de.srlabs.patchalyzer.Constants;
 import de.srlabs.snoopsnitch.R;
+
+import de.srlabs.patchalyzer.TestUtils;
 
 /**This UI element visually summarizes the patchalyzer test results in a bar chart
  * Created by jonas on 20.02.18.
@@ -68,6 +73,7 @@ public class PatchalyzerSumResultChart extends View {
         parts.put("inconclusive",new ResultPart(0, Constants.COLOR_INCONCLUSIVE));
         parts.put("missing",new ResultPart(0,Constants.COLOR_MISSING));
         parts.put("notAffected",new ResultPart(0,Constants.COLOR_NOTAFFECTED));
+        parts.put("notClaimed",new ResultPart(0,Constants.COLOR_NOTCLAIMED));
 
     }
 
@@ -90,6 +96,12 @@ public class PatchalyzerSumResultChart extends View {
         ResultPart part = parts.get("notAffected");
         part.addCount(addition);
     }
+
+    public void increaseNotClaimed(int addition){
+        ResultPart part = parts.get("notClaimed");
+        part.addCount(addition);
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -250,5 +262,62 @@ public class PatchalyzerSumResultChart extends View {
         }
 
 
+    }
+
+    public void loadValuesFromJSONResult(JSONObject analysisResult) {
+        try {
+            int patched = 0;
+            int inconclusive = 0;
+            int missing = 0;
+            int notAffected = 0;
+            int notClaimed = 0;
+
+            Iterator<String> categoryIterator = analysisResult.keys();
+            while (categoryIterator.hasNext()) {
+                String key = categoryIterator.next();
+                JSONArray category = analysisResult.getJSONArray(key);
+                // category "other", or a patch date that should be covered
+                if (!TestUtils.isValidDateFormat(key) || TestUtils.isPatchDateClaimed(key)) {
+                    for (int i = 0; i < category.length(); i++) {
+                        JSONObject vulnerability = category.getJSONObject(i);
+                        if (vulnerability.isNull("fixed") || vulnerability.isNull("vulnerable") || vulnerability.isNull("notAffected")) {
+                            inconclusive++;
+                        } else if(!vulnerability.isNull("notAffected") && vulnerability.getBoolean("notAffected")){
+                            notAffected++;
+                        } else if (vulnerability.getBoolean("fixed") && !vulnerability.getBoolean("vulnerable")) {
+                            patched++;
+                        } else if (!vulnerability.getBoolean("fixed") && vulnerability.getBoolean("vulnerable")) {
+                            missing++;
+                        }
+                    }
+                } else {
+                    notClaimed += category.length();
+                }
+            }
+
+            resetCounts();
+            increasePatched(patched);
+            increaseInconclusive(inconclusive);
+            increaseMissing(missing);
+            increaseNotAffected(notAffected);
+            increaseNotClaimed(notClaimed);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadValuesFromCachedResultsFile(ContextWrapper context) {
+        try {
+            File cachedTestResult = new File(context.getCacheDir(), TestExecutorService.CACHE_TEST_RESULT_FILE);
+            if(cachedTestResult != null && cachedTestResult.exists()){
+                Log.d(Constants.LOG_TAG,"Found cached test results, parsing it...");
+                JSONObject analysisResult = TestUtils.parseCacheResultFile(cachedTestResult);
+                loadValuesFromJSONResult(analysisResult);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

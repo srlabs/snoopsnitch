@@ -20,4 +20,6 @@ public class Constants {
     public static final int COLOR_MISSING= Color.RED;
     public static final int COLOR_PATCHED=Color.GREEN;
     public static final int COLOR_NOTAFFECTED=Color.GRAY;
+    public static final int COLOR_NOTCLAIMED=0xFFFF8000;
+
 }
