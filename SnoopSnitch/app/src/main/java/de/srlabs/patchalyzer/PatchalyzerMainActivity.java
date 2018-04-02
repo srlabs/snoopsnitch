@@ -202,11 +202,11 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     public void displayCutline(){
         String html =
                     "\t<div style=\"text-align:right\">\n"+
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_MISSING)+"\">Patch missing</span>&nbsp;&nbsp;<br>\n" +
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_PATCHED)+"\">Patched</span>&nbsp;&nbsp;<br>\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_MISSING)+"\">Patch missing</span>&nbsp;&nbsp;<br>\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTCLAIMED)+"\">After claimed patch level</span>&nbsp;&nbsp;<br>\n" +
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_INCONCLUSIVE)+"\">Test inconclusive</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTAFFECTED)+"\">Not affected</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTCLAIMED)+"\">After claimed patch level</span>&nbsp;&nbsp;\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTAFFECTED)+"\">Not affected</span>&nbsp;&nbsp;\n" +
                     "\t</div>\n"+
                 "</body></html>";
         legendView.setBackgroundColor(Color.TRANSPARENT);

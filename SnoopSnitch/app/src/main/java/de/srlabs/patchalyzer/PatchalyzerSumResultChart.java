@@ -49,6 +49,8 @@ public class PatchalyzerSumResultChart extends View {
     static HashMap<String, ResultPart> parts = new HashMap<String, ResultPart>();
     private static JSONObject resultToDrawFrom = null;
 
+    private static final String[] drawOrder = {"patched", "missing", "notClaimed", "inconclusive", "notAffected"};
+
     public PatchalyzerSumResultChart(Context context, AttributeSet attrs) {
         super(context, attrs);
         itemHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getResources().getDisplayMetrics());
@@ -146,7 +148,8 @@ public class PatchalyzerSumResultChart extends View {
         float partWidth;
         if (sumCVEs > 0) {
             //draw parts in list order
-            for (ResultPart part : parts.values()) { //FIXME not sorted here, or?!
+            for (String key : drawOrder) {
+                ResultPart part = parts.get(key);
                 partWidth = startX + chartWidth * (1f * part.getCount() / sumCVEs);
                 paint.setColor(part.getColor());
                 paint.setTextSize(textSize);
