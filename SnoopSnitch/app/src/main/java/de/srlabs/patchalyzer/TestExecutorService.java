@@ -85,7 +85,11 @@ public class TestExecutorService extends Service {
             @Override
             public void run() {
                 try {
-                    helper.startWork(true, true, true, true, true);
+                    if (Constants.IS_TEST_MODE) {
+                        helper.startWork(true, true, true, false, false);
+                    } else {
+                        helper.startWork(true, true, true, true, true);
+                    }
                 } catch (Exception e) {
                     Log.e(Constants.LOG_TAG, "startTest Exception", e);
                 } finally {

@@ -392,35 +392,22 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             noCVETestsForApiLevelMessage = null;
             clearTable();
             startTestButton.setEnabled(false);
-            try {
-                if(!Constants.IS_TEST_MODE) {
-                    // TODO: only start service here, this call is done within
-                    startServiceIfNotRunning();                }
-                else{
-                    if(!requestSdcardPermission()) {
-                        startTestButton.setEnabled(true);
-                        return;
-                    }
-                    startWorkInTestMode();
-                }
-                //statusTextView.setText("Testing your phone...");
-                metaInfoText.removeAllViews();
-                metaInfoText.addView(statusTextView);
-
-                recreate();
-            } catch (RemoteException e) {
-                Log.e(Constants.LOG_TAG, "startTest RemoteException", e);
+            if(!requestSdcardPermission()) {
+                startTestButton.setEnabled(true);
+                return;
             }
+            startServiceIfNotRunning();
+
+            //statusTextView.setText("Testing your phone...");
+            metaInfoText.removeAllViews();
+            metaInfoText.addView(statusTextView);
+
+            recreate();
         }else{
             //no internet connection
             Log.w(Constants.LOG_TAG,"Not testing, because of missing internet connection.");
             showNoInternetConnectionDialog();
         }
-    }
-
-    private void startWorkInTestMode() throws RemoteException{
-        // TODO: Implement this
-        throw new UnsupportedOperationException();
     }
 
     private boolean requestSdcardPermission(){
@@ -733,11 +720,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 if (notGrantedPermissions.isEmpty()) {
                     //Success: All neccessary permissions granted
                     // start test in TEST MODE!
-                    try {
-                        startWorkInTestMode();
-                    }catch(RemoteException e){
-                        Log.e(Constants.LOG_TAG,"RemoteException when starting test:"+e.getMessage());
-                    }
+                    startServiceIfNotRunning();
                 } else {
                     //ask again for all not granted permissions
                     boolean showDialog = false;
