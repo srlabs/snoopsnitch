@@ -47,6 +47,7 @@ public class PatchalyzerSumResultChart extends View {
     private boolean isSmall = false;
     private boolean drawBorder = false;
     static HashMap<String, ResultPart> parts = new HashMap<String, ResultPart>();
+    private static JSONObject resultToDrawFrom = null;
 
     public PatchalyzerSumResultChart(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -102,10 +103,17 @@ public class PatchalyzerSumResultChart extends View {
         part.addCount(addition);
     }
 
+    public static void setResultToDrawFromOnNextUpdate(JSONObject newResultToDrawFrom) {
+        resultToDrawFrom = newResultToDrawFrom;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (resultToDrawFrom != null) {
+            loadValuesFromJSONResult(resultToDrawFrom);
+            resultToDrawFrom = null;
+        }
         this.canvas = canvas;
         drawResultChart();
     }
@@ -180,11 +188,6 @@ public class PatchalyzerSumResultChart extends View {
         for (ResultPart part : parts.values()) {
             part.setCount(0);
         }
-        Log.d(Constants.LOG_TAG, "Clearing resultsChart state frrom sharedPrefs");
-        SharedPreferences settings = getContext().getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("resultsChart", "{}");
-        editor.commit();
     }
 
     protected class ResultPart {
@@ -213,25 +216,6 @@ public class PatchalyzerSumResultChart extends View {
         }
     }
 
-    // using SharedPrefs
-    public void saveValuesToSharedPrefs(ContextWrapper context) {
-        JSONObject jsonObject = new JSONObject();
-
-        try {
-            for (Map.Entry entry : parts.entrySet()) {
-                jsonObject.put((String) entry.getKey(), ((ResultPart) entry.getValue()).getCount());
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        Log.d(Constants.LOG_TAG, "Writing resultsChart state to sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("resultsChart", jsonObject.toString());
-        editor.commit();
-
-    }
 
     public void loadValuesFromJSONResult(JSONObject analysisResult) {
         if (analysisResult == null) {

@@ -305,6 +305,7 @@ public class TestExecutorService extends Service {
                     result.getJSONArray(category).put(vulnerabilityResult);
                 }
                 basicTestCache.clearTemporaryTestResultCache();
+                PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(result);
                 return TestUtils.saveAnalysisResult(result, TestExecutorService.this);
             } catch (Exception e) {
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
