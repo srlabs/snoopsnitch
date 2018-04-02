@@ -483,6 +483,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="patchalyzer_running_notification_text">tap for more details</string>
     <string name="patchalyzer_finished_notification_title">Patchalyzer analysis completed</string>
     <string name="patchalyzer_finished_notification_text">Tap to see results</string>
+    <string name="patchalyzer_analysis_in_progress">Analysis in progress...</string>
 
 
 </resources>

@@ -1,6 +1,7 @@
 package de.srlabs.patchalyzer;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -58,6 +59,7 @@ public class TestUtils {
     public static HashMap<String,String> buildProperties = null;
     private static Object buildPropertiesLock = new Object();
     private static JSONArray protectedBroadcasts;
+    private static JSONObject cachedResultJSON;
 
     public static boolean checkAffectedAndroidVersion(String[] affectedAndroidVersions) {
         for (String affectedVersion : affectedAndroidVersions) {
@@ -743,23 +745,46 @@ public class TestUtils {
         }
     }
 
-    public static JSONObject parseCacheResultFile(File cachedTestResult) throws IOException, JSONException {
-        // prevent File IO racecondition
-        // TODO: Add lock variable to check before calling de.srlabs.patchalyzer.TestExecutorService.saveCurrentTestResult()
-        // TODO: Or use SharedPrefs instead of file.
-        if (TestExecutorService.instance != null) {
+
+    public static void clearSavedAnalysisResult(ContextWrapper context) {
+        cachedResultJSON = null;
+
+        Log.d(Constants.LOG_TAG,"Deleting analysisResult from sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("analysisResult", "");
+        editor.commit();
+    }
+
+    public static JSONObject getAnalysisResult(ContextWrapper context) throws JSONException {
+        if (cachedResultJSON != null) {
+            return cachedResultJSON;
+        }
+
+        Log.d(Constants.LOG_TAG,"Reading analysisResult from sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+
+        String analysisResultString = settings.getString("analysisResult", "");
+        if (analysisResultString.equals("")) {
             return null;
         }
 
-        BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(new FileInputStream(cachedTestResult))));
-        StringBuilder stringBuilder = new StringBuilder();
-        String line = "";
-        while ((line = responseStreamReader.readLine()) != null) {
-            stringBuilder.append(line).append("\n");
-        }
-        responseStreamReader.close();
-
-        //try to parse to JSONObject and return the string representation of that
-        return new JSONObject(stringBuilder.toString());
+        return new JSONObject(analysisResultString);
     }
+
+    // @return: A stringified version of analysisResultJSON
+    public static String saveAnalysisResult(JSONObject analysisResultJSON, ContextWrapper context) throws IOException{
+        cachedResultJSON = analysisResultJSON;
+        String analysisResultString = analysisResultJSON.toString();
+
+        Log.d(Constants.LOG_TAG,"Writing analysisResult to sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("analysisResult", analysisResultString);
+        editor.commit();
+
+        return analysisResultString;
+    }
+
+
 }

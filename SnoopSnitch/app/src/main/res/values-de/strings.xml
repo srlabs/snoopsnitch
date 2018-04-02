@@ -386,5 +386,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="android_patchlevel_text">Android-Patch Level</string>
 
     <string name="patchalyzer_no_test_result">Keine Testergebnisse verfügbar</string>
+    <string name="patchalyzer_analysis_in_progress">Analyse wird durchgeführt...</string>
+
 
 </resources>

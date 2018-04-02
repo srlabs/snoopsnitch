@@ -73,7 +73,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     private boolean isServiceBound=false;
     private boolean noInternetDialogShowing = false;
-    private JSONObject testResults = null;
     private String currentPatchlevelDate; // Only valid in ActivityState.VULNERABILITY_LIST
     private boolean restoreStatePending = false;
     private String noCVETestsForApiLevelMessage = null;
@@ -207,6 +206,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_PATCHED)+"\">Patched</span>&nbsp;&nbsp;<br>\n" +
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_INCONCLUSIVE)+"\">Test inconclusive</span>&nbsp;&nbsp;<br>\n" +
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTAFFECTED)+"\">Not affected</span>&nbsp;&nbsp;\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTCLAIMED)+"\">After claimed patch level</span>&nbsp;&nbsp;\n" +
                     "\t</div>\n"+
                 "</body></html>";
         legendView.setBackgroundColor(Color.TRANSPARENT);
@@ -439,30 +439,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
 
 
-    private JSONObject loadTestResultsWhenNeeded() throws RemoteException, JSONException, IOException {
-        Log.d(Constants.LOG_TAG,"loadTestResultsWhenNeeded()");
-        if(testResults == null){
-            String testResultsStr = null;
-            File cachedTestResult = new File(getCacheDir(), TestExecutorService.CACHE_TEST_RESULT_FILE);
-            if(cachedTestResult != null && cachedTestResult.exists()){
-                Log.d(Constants.LOG_TAG,"Found cached test results, parsing it...");
-                testResults = TestUtils.parseCacheResultFile(cachedTestResult);
-                return testResults;
-            }
-            /*else {
-                Log.d(Constants.LOG_TAG,"No cached test results found, creating it..");
-                testResultsStr = testExecutorServiceHelper.evaluateVulnerabilitiesTests();
-            }*/
-            //Log.e(Constants.LOG_TAG, testResultsStr);
-            if(testResultsStr != null ){//&& !testResultsStr.contains("Exception")) { //FIXME
-                Log.i(Constants.LOG_TAG,"Trying to convert to JSON: "+testResultsStr);
-                testResults = new JSONObject(testResultsStr);
-                testResultsStr = null;
-            }
-        }
-        return testResults;
-    }
-
 
     private void showPatchlevelDateNoTable(){
         showMetaInformation(null);
@@ -472,8 +448,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable()");
         //Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable(): w=" + webViewContent.getWidth() + "  h=" + webViewContent.getHeight() + "  innerW=" + webViewContent.getChildAt(0).getWidth() + "  innerH=" + webViewContent.getChildAt(0).getHeight());
         try{
-            loadTestResultsWhenNeeded();
-            if(testResults == null) {
+            JSONObject testResults = TestUtils.getAnalysisResult(this);
+            if(TestUtils.getAnalysisResult(this) == null) {
                 // TODO: This could be used further down to display the analysis execution date.
                 showMetaInformation("Claimed patch level: " + refPatchlevelDate+"<br>No test results!");
                 return;
@@ -517,7 +493,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
                 Vector<Integer> statusColors = new Vector<Integer>();
 
-                int numPatched = 0, numMissing = 0, numInconclusive = 0, numNotAffected = 0;
+                int numPatched = 0, numMissing = 0, numInconclusive = 0, numNotAffected = 0, numNotClaimed = 0;
 
                 for (int i = 0; i < vulnerabilitiesForCategory.length(); i++) {
                     JSONObject vulnerability = vulnerabilitiesForCategory.getJSONObject(i);
@@ -536,6 +512,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                         case Constants.COLOR_NOTAFFECTED:
                             numNotAffected++;
                             break;
+                        case Constants.COLOR_NOTCLAIMED:
+                            numNotClaimed++;
+                            break;
                     }
                 }
 
@@ -544,6 +523,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 resultChart.increaseInconclusive(numInconclusive);
                 resultChart.increaseMissing(numMissing);
                 resultChart.increaseNotAffected(numNotAffected);
+                resultChart.increaseNotClaimed(numNotClaimed);
 
                 int[] tmp = new int[statusColors.size()];
                 for (int i = 0; i < statusColors.size(); i++) {
@@ -562,7 +542,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 showNoCVETestsForApiLevelDialog(noCVETestsForApiLevelMessage);
             }
 
-            resultChart.saveValuesToSharedPrefs(this);
             resultChart.invalidate();
             resultChart.setVisibility(View.VISIBLE);
             percentageText.setVisibility(View.INVISIBLE);
@@ -578,7 +557,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         Log.i(Constants.LOG_TAG, "refPatchlevelDate=" + refPatchlevelDate);
         int numAffectedVulnerabilities = 0;
         try{
-            loadTestResultsWhenNeeded();
+            JSONObject testResults = TestUtils.getAnalysisResult(this);
             if(testResults == null){
                 showMetaInformation("Claimed patch level: " + refPatchlevelDate+"<br>No test results!");
                 return;

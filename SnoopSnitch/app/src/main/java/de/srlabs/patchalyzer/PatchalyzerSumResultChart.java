@@ -43,10 +43,10 @@ public class PatchalyzerSumResultChart extends View {
     private float itemWidth;
     //private float chartWidth=30f;
     private float chartOffsetTopBottom;
-    private boolean showNumbers=false;
-    private boolean isSmall=false;
-    private boolean drawBorder=false;
-    static HashMap<String,ResultPart> parts = new HashMap<String,ResultPart>();
+    private boolean showNumbers = false;
+    private boolean isSmall = false;
+    private boolean drawBorder = false;
+    static HashMap<String, ResultPart> parts = new HashMap<String, ResultPart>();
 
     public PatchalyzerSumResultChart(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -61,43 +61,43 @@ public class PatchalyzerSumResultChart extends View {
 
         try {
             showNumbers = a.getBoolean(R.styleable.PatchalyzerSumResultChart_shownumbers, false);
-            isSmall = a.getBoolean(R.styleable.PatchalyzerSumResultChart_small,false);
+            isSmall = a.getBoolean(R.styleable.PatchalyzerSumResultChart_small, false);
             drawBorder = a.getBoolean(R.styleable.PatchalyzerSumResultChart_drawborder, false);
 
-            Log.d(Constants.LOG_TAG,"PatchalyzerSumResultChart created: "+ (showNumbers ? "showing numbers" : "not showing numbers")+";"+(isSmall ? "small" : "large"));
+            Log.d(Constants.LOG_TAG, "PatchalyzerSumResultChart created: " + (showNumbers ? "showing numbers" : "not showing numbers") + ";" + (isSmall ? "small" : "large"));
         } finally {
             a.recycle();
         }
 
-        parts.put("patched",new ResultPart(0,Constants.COLOR_PATCHED));
-        parts.put("inconclusive",new ResultPart(0, Constants.COLOR_INCONCLUSIVE));
-        parts.put("missing",new ResultPart(0,Constants.COLOR_MISSING));
-        parts.put("notAffected",new ResultPart(0,Constants.COLOR_NOTAFFECTED));
-        parts.put("notClaimed",new ResultPart(0,Constants.COLOR_NOTCLAIMED));
+        parts.put("patched", new ResultPart(0, Constants.COLOR_PATCHED));
+        parts.put("inconclusive", new ResultPart(0, Constants.COLOR_INCONCLUSIVE));
+        parts.put("missing", new ResultPart(0, Constants.COLOR_MISSING));
+        parts.put("notAffected", new ResultPart(0, Constants.COLOR_NOTAFFECTED));
+        parts.put("notClaimed", new ResultPart(0, Constants.COLOR_NOTCLAIMED));
 
     }
 
-    public void increasePatched(int addition){
+    public void increasePatched(int addition) {
         ResultPart part = parts.get("patched");
         part.addCount(addition);
     }
 
-    public void increaseInconclusive(int addition){
+    public void increaseInconclusive(int addition) {
         ResultPart part = parts.get("inconclusive");
         part.addCount(addition);
     }
 
-    public void increaseMissing(int addition){
+    public void increaseMissing(int addition) {
         ResultPart part = parts.get("missing");
         part.addCount(addition);
     }
 
-    public void increaseNotAffected(int addition){
+    public void increaseNotAffected(int addition) {
         ResultPart part = parts.get("notAffected");
         part.addCount(addition);
     }
 
-    public void increaseNotClaimed(int addition){
+    public void increaseNotClaimed(int addition) {
         ResultPart part = parts.get("notClaimed");
         part.addCount(addition);
     }
@@ -116,28 +116,27 @@ public class PatchalyzerSumResultChart extends View {
 
         float marginleftright = 50f;
         float borderWidth = 3f;
-        float chartWidth = getWidth()-marginleftright;
+        float chartWidth = getWidth() - marginleftright;
         float chartHeight;
         float textSize;
 
         //apply xml arguments
-        if(isSmall) {
+        if (isSmall) {
             chartHeight = getHeight() * 0.5f;
             textSize = 20f;
-        }
-        else{
+        } else {
             chartHeight = getHeight() * 0.8f;
             textSize = 60f;
         }
 
         int sumCVEs = 0;
         //calculate sum of CVE tests
-        for(ResultPart part : parts.values()){
+        for (ResultPart part : parts.values()) {
             sumCVEs += part.getCount();
         }
         float startX = marginleftright / 2f;
         float partWidth;
-        if(sumCVEs > 0) {
+        if (sumCVEs > 0) {
             //draw parts in list order
             for (ResultPart part : parts.values()) { //FIXME not sorted here, or?!
                 partWidth = startX + chartWidth * (1f * part.getCount() / sumCVEs);
@@ -147,66 +146,69 @@ public class PatchalyzerSumResultChart extends View {
                 canvas.drawRect(new RectF(startX, chartOffsetTopBottom, partWidth, chartOffsetTopBottom + chartHeight), paint);
 
                 if (showNumbers) {
-                    if(part.getCount() > 10) {
+                    if (part.getCount() > 10) {
                         paint.setColor(Color.BLACK);
                         canvas.drawText("" + part.getCount(), (startX + partWidth) / 2f - (textSize / 2f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
                     }
                 }
                 startX = partWidth;
             }
-        }
-        else{
+        } else {
             //default (no test results available)
             paint.setColor(Color.GRAY);
-            canvas.drawRect(new RectF(startX, chartOffsetTopBottom, startX+chartWidth, chartOffsetTopBottom + chartHeight), paint);
+            canvas.drawRect(new RectF(startX, chartOffsetTopBottom, startX + chartWidth, chartOffsetTopBottom + chartHeight), paint);
             paint.setColor(Color.BLACK);
             paint.setTextSize(textSize);
             //FIXME text position not correctly centered vertically!!
-            canvas.drawText(this.getResources().getString(R.string.patchalyzer_no_test_result), (chartWidth * 0.3f) , (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
+            if (TestExecutorService.instance == null) {
+                canvas.drawText(this.getResources().getString(R.string.patchalyzer_no_test_result), (chartWidth * 0.3f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
+            } else {
+                canvas.drawText(this.getResources().getString(R.string.patchalyzer_analysis_in_progress), (chartWidth * 0.3f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
+            }
         }
 
-        if(drawBorder){
+        if (drawBorder) {
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(Color.DKGRAY);
             paint.setStrokeWidth(borderWidth);
-            canvas.drawRect(marginleftright/2,chartOffsetTopBottom,chartWidth+marginleftright/2,chartOffsetTopBottom+chartHeight, paint);
+            canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight, paint);
         }
 
     }
 
     public void resetCounts() {
-        for(ResultPart part : parts.values()){
+        for (ResultPart part : parts.values()) {
             part.setCount(0);
         }
-        Log.d(Constants.LOG_TAG,"Clearing resultsChart state frrom sharedPrefs");
+        Log.d(Constants.LOG_TAG, "Clearing resultsChart state frrom sharedPrefs");
         SharedPreferences settings = getContext().getSharedPreferences("PATCHALYZER", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("resultsChart", "{}");
         editor.commit();
     }
 
-    protected class ResultPart{
+    protected class ResultPart {
         private int count;
         private int color;
 
-        public ResultPart(int count, int color){
+        public ResultPart(int count, int color) {
             this.count = count;
             this.color = color;
         }
 
-        public void setCount(int count){
+        public void setCount(int count) {
             this.count = count;
         }
 
-        public int getCount(){
+        public int getCount() {
             return count;
         }
 
-        public int getColor(){
+        public int getColor() {
             return color;
         }
 
-        public void addCount(int addition){
+        public void addCount(int addition) {
             this.count += addition;
         }
     }
@@ -216,14 +218,14 @@ public class PatchalyzerSumResultChart extends View {
         JSONObject jsonObject = new JSONObject();
 
         try {
-            for(Map.Entry entry : parts.entrySet()) {
+            for (Map.Entry entry : parts.entrySet()) {
                 jsonObject.put((String) entry.getKey(), ((ResultPart) entry.getValue()).getCount());
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Log.d(Constants.LOG_TAG,"Writing resultsChart state to sharedPrefs");
+        Log.d(Constants.LOG_TAG, "Writing resultsChart state to sharedPrefs");
         SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("resultsChart", jsonObject.toString());
@@ -231,40 +233,11 @@ public class PatchalyzerSumResultChart extends View {
 
     }
 
-    //using SharedPrefs
-    public static void clearPersistedValues(ContextWrapper context) {
-        Log.d(Constants.LOG_TAG,"Clearing resultsChart state frrom sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("resultsChart", "{}");
-        editor.commit();
-    }
-
-    // using SharedPrefs
-    public void loadValuesFromSharedPrefs(ContextWrapper context) {
-        Log.d(Constants.LOG_TAG,"Reading resultsChart state from sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-
-        try {
-            JSONObject jsonObject = new JSONObject(settings.getString("resultsChart", "{}"));
-            Iterator<String> it = jsonObject.keys();
-            if (it.hasNext()) {
-                resetCounts();
-            }
-
-            while (it.hasNext()) {
-                String key = it.next();
-                ResultPart part = parts.get(key);
-                part.addCount(jsonObject.getInt(key));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
     public void loadValuesFromJSONResult(JSONObject analysisResult) {
+        if (analysisResult == null) {
+            resetCounts();
+            return;
+        }
         try {
             int patched = 0;
             int inconclusive = 0;
@@ -282,7 +255,7 @@ public class PatchalyzerSumResultChart extends View {
                         JSONObject vulnerability = category.getJSONObject(i);
                         if (vulnerability.isNull("fixed") || vulnerability.isNull("vulnerable") || vulnerability.isNull("notAffected")) {
                             inconclusive++;
-                        } else if(!vulnerability.isNull("notAffected") && vulnerability.getBoolean("notAffected")){
+                        } else if (!vulnerability.isNull("notAffected") && vulnerability.getBoolean("notAffected")) {
                             notAffected++;
                         } else if (vulnerability.getBoolean("fixed") && !vulnerability.getBoolean("vulnerable")) {
                             patched++;
@@ -306,18 +279,14 @@ public class PatchalyzerSumResultChart extends View {
         }
     }
 
-    public void loadValuesFromCachedResultsFile(ContextWrapper context) {
+    public void loadValuesFromCachedResult(ContextWrapper context){
+        JSONObject analysisResult = null;
         try {
-            File cachedTestResult = new File(context.getCacheDir(), TestExecutorService.CACHE_TEST_RESULT_FILE);
-            if(cachedTestResult != null && cachedTestResult.exists()){
-                Log.d(Constants.LOG_TAG,"Found cached test results, parsing it...");
-                JSONObject analysisResult = TestUtils.parseCacheResultFile(cachedTestResult);
-                loadValuesFromJSONResult(analysisResult);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            analysisResult = TestUtils.getAnalysisResult(context);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        loadValuesFromJSONResult(analysisResult);
     }
+
 }

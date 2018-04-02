@@ -34,7 +34,6 @@ import de.srlabs.snoopsnitch.R;
 
 public class TestExecutorService extends Service {
     protected static TestExecutorService instance;
-    public static final String CACHE_TEST_RESULT_FILE = "cached_testresult.json";
     private JSONObject deviceInfoJson = null;
     private TestSuite testSuite = null;
     private DeviceInfoThread deviceInfoThread = null;
@@ -302,9 +301,7 @@ public class TestExecutorService extends Service {
                     result.getJSONArray(category).put(vulnerabilityResult);
                 }
                 basicTestCache.clearTemporaryTestResultCache();
-                String testResultJSON = result.toString(4);
-                saveCurrentTestResult(testResultJSON);
-                return testResultJSON;
+                return TestUtils.saveAnalysisResult(result, TestExecutorService.this);
             } catch (Exception e) {
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
                 return e.toString();
@@ -343,7 +340,7 @@ public class TestExecutorService extends Service {
             clearProgress();
             updateProgress();
 
-            deleteCacheTestResultJSONFile();
+            TestUtils.clearSavedAnalysisResult(TestExecutorService.this);
 
             final ProgressItem uploadDeviceInfoProgress;
             if(uploadDeviceInfo) {
@@ -463,21 +460,6 @@ public class TestExecutorService extends Service {
             }
         }
 
-    }
-
-
-
-    private void deleteCacheTestResultJSONFile() {
-        File cacheTestResulFile = new File(getCacheDir(),CACHE_TEST_RESULT_FILE);
-        if(cacheTestResulFile != null && cacheTestResulFile.exists())
-            cacheTestResulFile.delete();
-    }
-
-    private void saveCurrentTestResult(String testResultJSON) throws IOException{
-        File cacheTestResulFile = new File(getCacheDir(),CACHE_TEST_RESULT_FILE);
-        TestUtils.writeStringToFile(testResultJSON,cacheTestResulFile);
-
-        //persist
     }
 
     private void checkIfCVETestsAvailable(TestSuite testSuite) {

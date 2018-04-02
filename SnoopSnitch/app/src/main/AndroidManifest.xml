@@ -156,17 +156,11 @@
             android:screenOrientation="portrait"
             android:launchMode="singleInstance"
             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service
             android:name="de.srlabs.patchalyzer.TestExecutorService"
-            android:enabled="true"
-            android:exported="false"
-            android:process=".TestExecutorService" />
+            android:exported="false" />
 
 
         <service android:name="de.srlabs.snoopsnitch.qdmon.MsdService" android:exported="false" android:process=".snoopsnitch_service" />
