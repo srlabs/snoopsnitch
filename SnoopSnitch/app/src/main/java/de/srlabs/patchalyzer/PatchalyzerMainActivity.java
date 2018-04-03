@@ -325,14 +325,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         notificationManager.cancel(TestExecutorService.FINISHED_NOTIFICATION_ID);
     }
 
-    private ComponentName startServiceIfNotRunning(){
+    private void startServiceIfNotRunning(){
         if (TestExecutorService.instance == null) {
             Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
             //intent.setAction(ITestExecutorServiceInterface.class.getName());
             startService(intent);
         }
-
-        return null;
     }
 
     @Override
@@ -392,7 +390,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             noCVETestsForApiLevelMessage = null;
             clearTable();
             startTestButton.setEnabled(false);
-            if(!requestSdcardPermission()) {
+            if(Constants.IS_TEST_MODE && !requestSdcardPermission()) {
                 startTestButton.setEnabled(true);
                 return;
             }
