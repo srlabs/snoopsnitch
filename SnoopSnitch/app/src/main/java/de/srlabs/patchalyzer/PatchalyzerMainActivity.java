@@ -65,6 +65,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private WebView legendView;
     private ScrollView webViewContent, metaInfoText;
     private ProgressBar progressBar;
+    private LinearLayout progressBox;
     private PatchalyzerSumResultChart resultChart;
 
     // Make this activity into a singleton for easier access from service
@@ -228,7 +229,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         //metaInfoText.setBackgroundColor(Color.TRANSPARENT);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
-
+        progressBox = (LinearLayout) findViewById(R.id.progress_box);
         startTestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,9 +260,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         initDatabase();
 
-
         restoreState();
-
 
         //startService();
         PatchalyzerMainActivity.instance = this;
@@ -381,8 +380,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     private void startTest(){
 
-        progressBar.setVisibility(View.VISIBLE);
-        percentageText.setVisibility(View.VISIBLE);
+        progressBox.setVisibility(View.VISIBLE);
         resultChart.setVisibility(View.INVISIBLE);
         resultChart.resetCounts();
 
@@ -452,8 +450,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             for (final String category : categories) {
                 LinearLayout row = new LinearLayout(this);
                 row.setGravity(Gravity.CENTER_VERTICAL);
-                Button button = (Button) getLayoutInflater().inflate(R.layout.custom_button, null);;
-                // TODO: Remove this, category is now already truncated with recent test suite
+                Button button = (Button) getLayoutInflater().inflate(R.layout.custom_button, null);
                 String truncatedCategory = category;
                 if (category.startsWith("201")) {
                     truncatedCategory = category.substring(0, 7);
@@ -462,9 +459,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     truncatedCategory = "General";
                 }
                 button.setText(truncatedCategory);
-                button.getMeasuredWidth();
-                button.setWidth(308);
-                Log.i(Constants.LOG_TAG, "button.getMinimumWidth()=" + button.getMinimumWidth() + "   Category: " + truncatedCategory);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -474,10 +468,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
                 row.addView(button);
                 JSONArray vulnerabilitiesForCategory = testResults.getJSONArray(category);
-                //row.addView(makePatchlevelDateColumn(vulnerabilitiesForPatchlevelDate));
 
                 Vector<Integer> statusColors = new Vector<Integer>();
-
                 int numPatched = 0, numMissing = 0, numInconclusive = 0, numNotAffected = 0, numNotClaimed = 0;
 
                 for (int i = 0; i < vulnerabilitiesForCategory.length(); i++) {
@@ -515,7 +507,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     tmp[i] = statusColors.get(i);
                 }
                 PatchlevelDateOverviewChart chart = new PatchlevelDateOverviewChart(this, tmp);
-                //chart.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 30));
                 row.addView(chart);
                 rows.addView(row);
             }
@@ -529,8 +520,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
             resultChart.invalidate();
             resultChart.setVisibility(View.VISIBLE);
-            percentageText.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.INVISIBLE);
+            progressBox.setVisibility(View.INVISIBLE);
 
         } catch(Exception e){
             Log.e(Constants.LOG_TAG, "showPatchlevelDateTable Exception", e);

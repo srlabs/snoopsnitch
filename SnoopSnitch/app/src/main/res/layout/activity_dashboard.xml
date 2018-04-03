@@ -12,7 +12,7 @@
         android:id="@+id/patchalyzer_summary"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1.5"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -26,7 +26,7 @@
                 android:layout_height="0dp"
                 android:layout_marginRight="2dp"
                 android:layout_marginTop="5dp"
-                android:layout_weight="1"
+                android:layout_weight="1.1"
                 android:orientation="horizontal"
                 android:weightSum="6">
 
@@ -36,6 +36,8 @@
                     android:layout_height="30dp"
                     android:layout_marginLeft="2dp"
                     android:layout_marginRight="2dp"
+                    android:adjustViewBounds="false"
+                    android:forceHasOverlappingRendering="false"
                     android:scaleType="fitStart"
                     android:src="@drawable/ic_patchalyzer" />
 
@@ -55,7 +57,7 @@
             <de.srlabs.patchalyzer.PatchalyzerSumResultChart
                 android:id="@+id/sumResultChart"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:layout_weight="1"
                 android:visibility="visible"
                 custom:drawborder="true"
@@ -66,7 +68,12 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/View10"
+        android:layout_width="match_parent"
+        android:layout_marginTop="2dp"
+        android:layout_height="1dp"
+        android:background="@color/common_sectionSeparator" />
+
+    <View
         android:layout_width="match_parent"
         android:layout_height="4dp"
         android:background="@color/common_applicationSeparator" />
@@ -75,7 +82,7 @@
         android:id="@+id/network_security"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="4.5"
         android:background="@color/common_sectionBackground"
         android:orientation="horizontal"
         android:weightSum="10">
@@ -197,18 +204,18 @@
 
                 <Button
                     android:id="@+id/btnDashboardTestNetwork"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="0dp"
+                    style="@style/Widget.AppCompat.Button.Small"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center_vertical"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_upload_button_background"
                     android:gravity="center_vertical|center_horizontal"
                     android:onClick="toggleNetworkTest"
                     android:text="@string/common_button_networktest_start"
-                    android:textColor="@drawable/custom_upload_button_color" />
+                    android:textColor="@drawable/custom_upload_button_color"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -437,10 +444,14 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/View44"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/common_sectionSeparator" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@color/common_applicationSeparator" />
 
     <LinearLayout
         android:id="@+id/dashboardChartSection"
@@ -1038,7 +1049,6 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/View43"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/common_sectionSeparator" />
@@ -1047,6 +1057,7 @@
         android:id="@+id/last_analysis_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.5"
         android:background="@color/common_applicationBackground"
         android:paddingBottom="5dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"

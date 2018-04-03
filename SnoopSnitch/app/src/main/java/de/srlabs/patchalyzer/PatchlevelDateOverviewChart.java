@@ -37,7 +37,7 @@ public class PatchlevelDateOverviewChart extends View {
     }
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        Log.i(Constants.LOG_TAG, "PatchlevelDateOverviewChart.onSizeChanged(" + w + ", " + h + ", " + oldw + ", " + oldh + ")");
+        //Log.i(Constants.LOG_TAG, "PatchlevelDateOverviewChart.onSizeChanged(" + w + ", " + h + ", " + oldw + ", " + oldh + ")");
         float xpad = (float)(getPaddingLeft() + getPaddingRight());
         float ypad = (float)(getPaddingTop() + getPaddingBottom());
         //Log.i(Constants.LOG_TAG, "getPaddingLeft() = " + getPaddingLeft() + ", getPaddingRight()=" + getPaddingRight() + ", getPaddingTop()=" + getPaddingTop() + ", getPaddingBottom()=" + getPaddingBottom());
@@ -55,7 +55,7 @@ public class PatchlevelDateOverviewChart extends View {
         //Log.i(Constants.LOG_TAG, "elementWidth=" + elementWidth + "   gapWidth=" + gapWidth + "   elementHeight=" + elementHeight);
     }
     public void onDraw(Canvas canvas) {
-        Log.i(Constants.LOG_TAG, "PatchlevelDateOverviewChart.onDraw()");
+        //Log.i(Constants.LOG_TAG, "PatchlevelDateOverviewChart.onDraw()");
         float x = paddingLeft;
         for (int i = 0; i < nElems; i++) {
             // Draw element

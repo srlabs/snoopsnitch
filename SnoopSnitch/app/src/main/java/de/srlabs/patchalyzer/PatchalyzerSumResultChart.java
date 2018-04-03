@@ -132,12 +132,11 @@ public class PatchalyzerSumResultChart extends View {
 
         //apply xml arguments
         if (isSmall) {
-            chartHeight = getHeight() * 0.5f;
-            textSize = 20f;
+            chartHeight = getHeight() * 0.6f;
         } else {
             chartHeight = getHeight() * 0.8f;
-            textSize = 60f;
         }
+        textSize = chartHeight * 0.6f;
 
         int sumCVEs = 0;
         //calculate sum of CVE tests
@@ -159,6 +158,7 @@ public class PatchalyzerSumResultChart extends View {
                 if (showNumbers) {
                     if (part.getCount() > 10) {
                         paint.setColor(Color.BLACK);
+                        paint.setAntiAlias(true);
                         canvas.drawText("" + part.getCount(), (startX + partWidth) / 2f - (textSize / 2f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
                     }
                 }
@@ -170,6 +170,7 @@ public class PatchalyzerSumResultChart extends View {
             canvas.drawRect(new RectF(startX, chartOffsetTopBottom, startX + chartWidth, chartOffsetTopBottom + chartHeight), paint);
             paint.setColor(Color.BLACK);
             paint.setTextSize(textSize);
+            paint.setAntiAlias(true);
             //FIXME text position not correctly centered vertically!!
             if (TestExecutorService.instance == null) {
                 canvas.drawText(this.getResources().getString(R.string.patchalyzer_no_test_result), (chartWidth * 0.3f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
@@ -182,7 +183,8 @@ public class PatchalyzerSumResultChart extends View {
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(Color.DKGRAY);
             paint.setStrokeWidth(borderWidth);
-            canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight, paint);
+            Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
+            canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth, paint);
         }
 
     }
@@ -261,6 +263,7 @@ public class PatchalyzerSumResultChart extends View {
             increaseMissing(missing);
             increaseNotAffected(notAffected);
             increaseNotClaimed(notClaimed);
+            Log.d(Constants.LOG_TAG,"patched:"+patched+" inconclusive:"+inconclusive+" missing:"+missing+" notAffected:"+notAffected+" notClaimed:"+notClaimed);
         } catch (JSONException e) {
             e.printStackTrace();
         }
