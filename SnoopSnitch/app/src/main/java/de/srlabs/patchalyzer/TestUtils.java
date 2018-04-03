@@ -775,5 +775,11 @@ public class TestUtils {
         return analysisResultString;
     }
 
+    // This is needed so that the cached value for the Main App process can be set while the
+    // TestExecutorService modifies the saved value in SharedPrefs
+    public static String saveAnalysisResultNonPersistent(JSONObject analysisResultJSON) {
+        cachedResultJSON = analysisResultJSON;
+        return analysisResultJSON.toString();
+    }
 
 }

@@ -202,7 +202,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
                 }
                 resultChart.setResultToDrawFromOnNextUpdate(resultJSON);
-                TestUtils.saveAnalysisResult(resultJSON, PatchalyzerMainActivity.this);
+                TestUtils.saveAnalysisResultNonPersistent(resultJSON);
                 showMetaInformation("Finished");
 
                 recreate();
