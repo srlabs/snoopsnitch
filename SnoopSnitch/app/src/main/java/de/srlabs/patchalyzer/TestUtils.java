@@ -434,7 +434,7 @@ public class TestUtils {
     }
 
     public static boolean isValidDateFormat(String date) {
-        Pattern datePattern = Pattern.compile("^\\d{4}\\-\\d{2}$");
+        Pattern datePattern = Pattern.compile("^\\d{4}\\-\\d{2}(-\\d{2})?$");
         Matcher m = datePattern.matcher(date);
         return m.matches();
     }

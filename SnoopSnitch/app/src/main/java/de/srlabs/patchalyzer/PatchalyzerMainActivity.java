@@ -210,6 +210,16 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             });
         }
         @Override
+        public void cancelled() throws RemoteException {
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received cancelled()");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {;
+                    TestExecutorService.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
+                }
+            });
+        }
+        @Override
         public void showNoCVETestsForApiLevel(String message) throws RemoteException{
             Log.i(Constants.LOG_TAG,"PatchalyzerMainActivity received showNoCVETestsForApiLevel()");
             noCVETestsForApiLevelMessage = message;

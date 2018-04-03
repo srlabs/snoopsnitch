@@ -114,7 +114,7 @@ public class TestExecutorService extends Service {
 
     protected void cancelAnalysis() {
         Log.d(Constants.LOG_TAG,"TestExecutorService.cancelAnalysis called");
-        showAnalysisFailedNotification();
+        sendCancelledToCallback();
         stopForeground(true);
         stopSelf();
         System.exit(0);
@@ -557,20 +557,20 @@ public class TestExecutorService extends Service {
         notificationManager.notify(FINISHED_NOTIFICATION_ID, notification);
     }
 
-    private void showAnalysisFailedNotification() {
+    public static void showAnalysisFailedNotification(ContextWrapper context) {
         Log.d(Constants.LOG_TAG, "TestExeCutorService.showAnalysisFailedNotification called");
-        Intent notificationIntent = new Intent(this, PatchalyzerMainActivity.class);
+        Intent notificationIntent = new Intent(context, PatchalyzerMainActivity.class);
         PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notificationIntent, 0);
+                PendingIntent.getActivity(context, 0, notificationIntent, 0);
         Notification notification =
-                new Notification.Builder(this)
-                        .setContentTitle(getText(R.string.patchalyzer_failed_notification_title))
-                        .setContentText(getText(R.string.patchalyzer_failed_notification_text))
+                new Notification.Builder(context)
+                        .setContentTitle(context.getText(R.string.patchalyzer_failed_notification_title))
+                        .setContentText(context.getText(R.string.patchalyzer_failed_notification_text))
                         .setSmallIcon(R.drawable.ic_patchalyzer)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
                         .build();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(FAILED_NOTIFICATION_ID, notification);
     }
 
@@ -598,6 +598,18 @@ public class TestExecutorService extends Service {
                     callback.finished(analysisResultString);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.updateProgress() => callback.finished() RemoteException", e);
+                }
+            }
+        });
+    }
+    private void sendCancelledToCallback(){
+        handler.post(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    callback.cancelled();
+                } catch (RemoteException e) {
+                    Log.e(Constants.LOG_TAG, "TestExecutorService => callback.cancelled() RemoteException", e);
                 }
             }
         });
