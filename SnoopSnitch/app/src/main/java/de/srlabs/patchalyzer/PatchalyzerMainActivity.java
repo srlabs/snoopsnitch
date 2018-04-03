@@ -78,6 +78,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private String noCVETestsForApiLevelMessage = null;
     private static final int SDCARD_PERMISSION_RCODE = 1;
     private TestCallbacks callbacks = new TestCallbacks();
+    private boolean isActivityActive = false;
 
     private ActivityState lastActiveState = null;
     private ActivityState nonPersistentState = ActivityState.PATCHLEVEL_DATES;
@@ -333,12 +334,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     protected void onResume(){
         super.onResume();
-
         Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
         intent.setAction(ITestExecutorServiceInterface.class.getName());
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
         TestExecutorService.cancelAnalysisFinishedNotification(this);
+        isActivityActive = true;
 
     }
 
@@ -363,6 +364,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         super.onPause();
         if(isServiceBound)
             unbindService(mConnection);
+        isActivityActive = false;
     }
 
     @Override
@@ -677,7 +679,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         }
     }
     public void showNoInternetConnectionDialog(){
-        if(!noInternetDialogShowing) {
+        if(isActivityActive && !noInternetDialogShowing) {
             Log.d(Constants.LOG_TAG,"Showing internet connection issues dialog");
             showMetaInformation("");
 
