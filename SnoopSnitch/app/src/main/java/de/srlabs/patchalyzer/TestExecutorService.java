@@ -52,6 +52,7 @@ public class TestExecutorService extends Service {
     public static final String NO_INTERNET_CONNECTION_ERROR = "no_uplink";
     public static final int ONGOING_NOTIFICATION_ID = 1147;
     public static final int FINISHED_NOTIFICATION_ID = 1148;
+    private volatile boolean cancelAnalysis = false;
 
 
     @Override
@@ -64,6 +65,7 @@ public class TestExecutorService extends Service {
             return;
         }
         TestExecutorService.instance = this;
+        cancelAnalysis = false;
 
         Log.d(Constants.LOG_TAG,"onCreate() of TestExecutorService called...");
 
@@ -106,8 +108,34 @@ public class TestExecutorService extends Service {
     public void onDestroy() {
 
         PatchalyzerMainActivity.setActivityState(this, Constants.ActivityState.PATCHLEVEL_DATES);
-
         TestExecutorService.instance = null;
+
+        /*PatchalyzerMainActivity temp = PatchalyzerMainActivity.instance;
+        if (temp != null) {
+            temp.recreate();
+        }*/
+    }
+
+    protected void cancelAnalysis() {
+        if (cancelAnalysis) return;
+        cancelAnalysis = true;
+        Thread t = new Thread(){
+            @Override
+            public void run() {
+                BasicTestCache temp = basicTestCache;
+                if (temp != null) {
+                    basicTestCache.stopTesting();
+                }
+            }
+        };
+        t.start();
+        stopSubThreads();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        stopSelf();
     }
 
     @Nullable
@@ -138,7 +166,7 @@ public class TestExecutorService extends Service {
                     Log.e(Constants.LOG_TAG,"Exception while downloading teststuite to file!"+e.getMessage());
                     try {
                         PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                        if (patchalyzerMainActivity != null) {
+                        if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
                             PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
                             if (testCallbacks != null) {
                                 testCallbacks.showErrorMessage("Exception while downloading testsuite: " + e.getMessage());
@@ -187,7 +215,7 @@ public class TestExecutorService extends Service {
                     public void run() {
                         try {
                             PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                            if (patchalyzerMainActivity != null) {
+                            if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
                                 PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
                                 if (testCallbacks != null) {
                                     testCallbacks.showOutdatedError(upgradeUrl);
@@ -390,7 +418,7 @@ public class TestExecutorService extends Service {
                         if(uploadTestResults){
                             apiRunning = true;
                             if(!isConnectedToInternet()){
-                                stopSubThreads();
+                                cancelAnalysis();
                                 return;
                             }
                             showStatus("Reporting test results to server...");
@@ -401,11 +429,12 @@ public class TestExecutorService extends Service {
                         }
                     } catch(IOException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
-                        stopSubThreads();
+                        cancelAnalysis();
                         Log.e(Constants.LOG_TAG, "Exception in pendingTestResultsUploadRunnable", e);
                         apiRunning = false;
                     } catch( JSONException e){
                         Log.e(Constants.LOG_TAG,"JSONException in pendingTestResultsUploadRunnable: "+e.getMessage());
+                        cancelAnalysis();
                         apiRunning = false;
                     }
                 }
@@ -419,7 +448,7 @@ public class TestExecutorService extends Service {
                             apiRunning = true;
                             if (deviceInfoJson != null) {
                                 if(!isConnectedToInternet()){
-                                    stopSubThreads();
+                                    cancelAnalysis();
                                     return;
                                 }
                                 api.reportSys(deviceInfoJson, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -430,11 +459,12 @@ public class TestExecutorService extends Service {
                         }
                     } catch(IOException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
-                        stopSubThreads();
                         Log.e(Constants.LOG_TAG, "Exception in pendingDeviceInfoUploadRunnable()", e);
+                        cancelAnalysis();
                         apiRunning = false;
                     } catch(JSONException e){
                         Log.e(Constants.LOG_TAG,"JSONException in pendingDeviceInfoUploadRunnable: "+e.getMessage());
+                        cancelAnalysis();
                         apiRunning = false;
                     }
                 }
@@ -558,7 +588,7 @@ public class TestExecutorService extends Service {
                     PatchalyzerMainActivity.setActivityState(TestExecutorService.this, Constants.ActivityState.PATCHLEVEL_DATES);
 
                     PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null) {
+                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
                         PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
                         if (testCallbacks != null) {
                             testCallbacks.finished();
@@ -577,7 +607,7 @@ public class TestExecutorService extends Service {
             public void run() {
                 try {
                     PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null) {
+                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
                         PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
                         if (testCallbacks != null) {
                             testCallbacks.updateProgress(totalProgress);
@@ -595,7 +625,7 @@ public class TestExecutorService extends Service {
             public void run() {
                 try {
                     PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null) {
+                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
                         PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
                         if (testCallbacks != null) {
                             testCallbacks.showErrorMessage(error);
@@ -613,7 +643,7 @@ public class TestExecutorService extends Service {
             public void run() {
                 try {
                     PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null) {
+                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
                         PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
                         if (testCallbacks != null) {
                             testCallbacks.showStatusMessage(status);
@@ -631,7 +661,7 @@ public class TestExecutorService extends Service {
             public void run() {
                 try {
                     PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null) {
+                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
                         PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
                         if (testCallbacks != null) {
                             testCallbacks.showNoCVETestsForApiLevel(message);
@@ -665,7 +695,7 @@ public class TestExecutorService extends Service {
                 Log.i(Constants.LOG_TAG, "Starting to download testsuite");
                 apiRunning = true;
                 if(!isConnectedToInternet()){
-                    stopSubThreads();
+                    cancelAnalysis();
                     return;
                 }
                 downloadingTestSuite = true;
@@ -688,7 +718,7 @@ public class TestExecutorService extends Service {
             } catch (IOException e) {
                 Log.e(Constants.LOG_TAG, "IOException in DownloadThread", e);
                 reportError(NO_INTERNET_CONNECTION_ERROR);
-                stopSubThreads();
+                cancelAnalysis();
                 return;
             } finally{
                 apiRunning = false;
@@ -735,7 +765,7 @@ public class TestExecutorService extends Service {
             Vector<ProgressItem> requestProgress = new Vector<>();
             try {
                 if(!isConnectedToInternet()){
-                    stopSubThreads();
+                    cancelAnalysis();
                     return;
                 }
                 JSONArray requestsJson = api.getRequests(TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT, TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -754,7 +784,7 @@ public class TestExecutorService extends Service {
                         TestUtils.validateFilename(filename);
                         Log.d(Constants.LOG_TAG,"Uploading file: "+filename);
                         if(!isConnectedToInternet()){
-                            stopSubThreads();
+                            cancelAnalysis();
                             return;
                         }
                         api.reportFile(filename, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -771,7 +801,7 @@ public class TestExecutorService extends Service {
                 Log.e(Constants.LOG_TAG, "RequestsThread.run() exception", e);
                 if(e instanceof IOException) { //TODO test
                     reportError(NO_INTERNET_CONNECTION_ERROR);
-                    stopSubThreads();
+                    cancelAnalysis();
                 }
                 downloadRequestsProgress.update(1.0);
                 for(ProgressItem x:requestProgress){
@@ -801,23 +831,15 @@ public class TestExecutorService extends Service {
         deviceInfoRunning = false;
         downloadingTestSuite = false;
 
-        if(basicTestCache != null)
-            basicTestCache.stopTesting();
+        //if(basicTestCache != null)
+        ///    basicTestCache.stopTesting();
 
         for(Thread thread : subThreads){
             if(thread instanceof DeviceInfoThread){
                 DeviceInfoThread deviceInfoThread = (DeviceInfoThread) thread;
                 deviceInfoThread.doNotRunFinishedRunnable();
             }
-            while(true) {
-                try {
-                    thread.join();
-                    Log.d(Constants.LOG_TAG,"Stopped TestExecutorService subthread.");
-                    break;
-                } catch (InterruptedException e) {
-                    Log.d(Constants.LOG_TAG, "InterruptedException while stopping running subThread: " + e.getMessage());
-                }
-            }
+            thread.interrupt();
         }
     }
 

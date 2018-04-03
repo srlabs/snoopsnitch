@@ -30,8 +30,9 @@ public class BasicTestCache {
     private HashMap<String,String> exceptionsByTestId = new HashMap<String, String>();
     private ProgressItem progressItem;
     private Runnable finishedRunnable = null;
-    private boolean stopTesting = false;
+    private volatile boolean stopTesting = false;
     private HashMap<String,Boolean> cacheResults;
+    private MasterWorkingThread masterWorkingThread;
 
     public BasicTestCache(TestExecutorService service, String testSuiteVersion, int apiLevel){
         this.testSuiteVersion = testSuiteVersion;
@@ -124,7 +125,8 @@ public class BasicTestCache {
 
     public void startWorking() {
         stopTesting = false;
-        new MasterWorkingThread(4).start();
+        masterWorkingThread = new MasterWorkingThread(4);
+        masterWorkingThread.start();
     }
 
     public int getQueueSize(){
@@ -151,6 +153,8 @@ public class BasicTestCache {
 
     public void stopTesting(){
         stopTesting = true;
+        // Maybe this shouldn't happen here?
+        masterWorkingThread.terminateThreads();
     }
 
     /**
@@ -199,29 +203,22 @@ public class BasicTestCache {
                 }
             }
             terminateThreads();
-            progressItem.update(1.0);
-            service.finishedBasicTests();
 
             if(!stopTesting) {
+                progressItem.update(1.0);
+                service.finishedBasicTests();
                 finishedRunnable.run();
             }
         }
 
         private void terminateThreads(){
+            // TODO: Interrupt master thread?
           Log.d(Constants.LOG_TAG,"terminating threads...");
           for(int i =0; i < nThreads; i++){
                   testQueue.add(TestBundle.getStopMarker());
           }
           for(RegularWorkingThread thread : workingThreads){
-              while(true) {
-                  try {
-                      thread.join();
-                      //Log.d(Constants.LOG_TAG, "Joined worker thread");
-                      break;
-                  } catch (InterruptedException e) {
-                      Log.e(Constants.LOG_TAG, "InterruptedException in terminateThreads:"+e.getMessage());
-                  }
-              }
+              thread.interrupt();
           }
           Log.d(Constants.LOG_TAG, "Shut down all worker threads.");
         }
