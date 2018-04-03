@@ -197,10 +197,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {;
-                    startTestButton.setEnabled(true);
                     showMetaInformation("Finished");
 
-                    showPatchlevelDateNoTable();
+                    restoreState();
                 }
             });
         }
@@ -368,13 +367,19 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private void restoreState(){
         TestExecutorService.cancelAnalysisFinishedNotification(this);
         ActivityState tempNonPersistentState = nonPersistentState;
-        showPatchlevelDateNoTable();
         try {
             if (mITestExecutorService != null && mITestExecutorService.isAnalysisRunning()) {
                 startTestButton.setEnabled(false);
+                progressBox.setVisibility(View.VISIBLE);
+                resultChart.setVisibility(View.INVISIBLE);
+                webViewContent.setVisibility(View.INVISIBLE);
                 showMetaInformation("Testing your phone...");
             } else {
                 startTestButton.setEnabled(true);
+                progressBox.setVisibility(View.INVISIBLE);
+                resultChart.setVisibility(View.VISIBLE);
+                webViewContent.setVisibility(View.VISIBLE);
+                showPatchlevelDateNoTable();
             }
         } catch (RemoteException e) {
             Log.d(Constants.LOG_TAG,"RemoteException in restoreState" , e);

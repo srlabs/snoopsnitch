@@ -543,6 +543,7 @@ public class TestExecutorService extends Service {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        isAnalysisRunning = false;
         sendFinishedToCallback();
 
         //show finished notification
@@ -562,6 +563,7 @@ public class TestExecutorService extends Service {
 
 
 
+        stopForeground(true);
         stopSelf();
     }
 
