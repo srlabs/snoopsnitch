@@ -740,7 +740,7 @@ public class TestUtils {
         editor.commit();
     }
 
-    public static JSONObject getAnalysisResult(ContextWrapper context) throws JSONException {
+    public static JSONObject getAnalysisResult(ContextWrapper context) {
         if (cachedResultJSON != null) {
             return cachedResultJSON;
         }
@@ -753,11 +753,16 @@ public class TestUtils {
             return null;
         }
 
-        return new JSONObject(analysisResultString);
+        try {
+            return new JSONObject(analysisResultString);
+        } catch (JSONException e) {
+            Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
+            return null;
+        }
     }
 
     // @return: A stringified version of analysisResultJSON
-    public static String saveAnalysisResult(JSONObject analysisResultJSON, ContextWrapper context) throws IOException{
+    public static String saveAnalysisResult(JSONObject analysisResultJSON, ContextWrapper context) {
         cachedResultJSON = analysisResultJSON;
         String analysisResultString = analysisResultJSON.toString();
 

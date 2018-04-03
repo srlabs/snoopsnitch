@@ -113,6 +113,7 @@ public class TestExecutorService extends Service {
     protected void cancelAnalysis() {
         Log.d(Constants.LOG_TAG,"TestExecutorService.cancelAnalysis called");
         stopForeground(true);
+        stopSelf();
         System.exit(0);
     }
 
@@ -359,7 +360,7 @@ public class TestExecutorService extends Service {
             clearProgress();
             updateProgress();
 
-            TestUtils.clearSavedAnalysisResult(TestExecutorService.this);
+            //TestUtils.clearSavedAnalysisResult(TestExecutorService.this);
 
             final ProgressItem uploadDeviceInfoProgress;
             if(uploadDeviceInfo) {
@@ -538,13 +539,14 @@ public class TestExecutorService extends Service {
     }
 
     private void onFinishedAnalysis() {
+        String analysisResultString = null;
         try {
-            mBinder.evaluateVulnerabilitiesTests();
+            analysisResultString = mBinder.evaluateVulnerabilitiesTests();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
         isAnalysisRunning = false;
-        sendFinishedToCallback();
+        sendFinishedToCallback(analysisResultString);
 
         //show finished notification
         Intent notificationIntent = new Intent(this, PatchalyzerMainActivity.class);
@@ -567,12 +569,12 @@ public class TestExecutorService extends Service {
         stopSelf();
     }
 
-    private void sendFinishedToCallback(){
+    private void sendFinishedToCallback(final String analysisResultString){
         handler.post(new Runnable(){
             @Override
             public void run() {
                 try {
-                    callback.finished();
+                    callback.finished(analysisResultString);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.updateProgress() => callback.finished() RemoteException", e);
                 }

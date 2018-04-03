@@ -296,13 +296,7 @@ public class PatchalyzerSumResultChart extends View {
     }
 
     public void loadValuesFromCachedResult(ContextWrapper context){
-        JSONObject analysisResult = null;
-        try {
-            analysisResult = TestUtils.getAnalysisResult(context);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        loadValuesFromJSONResult(analysisResult);
+        loadValuesFromJSONResult(TestUtils.getAnalysisResult(context));
     }
 
 }
