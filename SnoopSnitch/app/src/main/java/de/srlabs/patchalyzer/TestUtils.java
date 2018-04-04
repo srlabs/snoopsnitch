@@ -61,6 +61,7 @@ public class TestUtils {
     private static Object buildPropertiesLock = new Object();
     private static JSONArray protectedBroadcasts;
     private static JSONObject cachedResultJSON;
+    private static Pattern datePattern = Pattern.compile("^\\d{4}\\-\\d{2}(-\\d{2})?$");
 
     public static boolean checkAffectedAndroidVersion(String[] affectedAndroidVersions) {
         for (String affectedVersion : affectedAndroidVersions) {
@@ -427,14 +428,13 @@ public class TestUtils {
             Date claimedDate = format.parse(getPatchlevelDate());
             return (claimedDate.compareTo(requestedDate) >= 0);
         } catch (ParseException e) {
-            e.printStackTrace();
+           Log.d(Constants.LOG_TAG,"ParseException in isPatchDateClaimed()",e);
         }
 
         return false;
     }
 
     public static boolean isValidDateFormat(String date) {
-        Pattern datePattern = Pattern.compile("^\\d{4}\\-\\d{2}$");
         Matcher m = datePattern.matcher(date);
         return m.matches();
     }

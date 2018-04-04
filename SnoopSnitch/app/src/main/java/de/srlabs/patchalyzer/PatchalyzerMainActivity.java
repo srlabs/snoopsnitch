@@ -506,6 +506,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
                 for (int i = 0; i < vulnerabilitiesForCategory.length(); i++) {
                     JSONObject vulnerability = vulnerabilitiesForCategory.getJSONObject(i);
+
                     int color = getVulnerabilityIndicatorColor(vulnerability, category);
                     statusColors.add(color);
                     switch(color){
@@ -635,15 +636,15 @@ public class PatchalyzerMainActivity extends FragmentActivity {
      */
     public static int getVulnerabilityIndicatorColor(JSONObject vulnerability, String refPatchlevelDate) {
         try {
-            if (TestUtils.isValidDateFormat(refPatchlevelDate) && !TestUtils.isPatchDateClaimed(refPatchlevelDate)) {
-                return Constants.COLOR_NOTCLAIMED;
-            } else if (vulnerability.isNull("fixed") || vulnerability.isNull("vulnerable") || vulnerability.isNull("notAffected")) {
+            if (vulnerability.isNull("fixed") || vulnerability.isNull("vulnerable") || vulnerability.isNull("notAffected")) {
                 return Constants.COLOR_INCONCLUSIVE;
             } else if(!vulnerability.isNull("notAffected") && vulnerability.getBoolean("notAffected")){
                 return Constants.COLOR_NOTAFFECTED;
             } else if (vulnerability.getBoolean("fixed") && !vulnerability.getBoolean("vulnerable")) {
                 return Constants.COLOR_PATCHED;
             } else if (!vulnerability.getBoolean("fixed") && vulnerability.getBoolean("vulnerable")) {
+                if (TestUtils.isValidDateFormat(refPatchlevelDate) && !TestUtils.isPatchDateClaimed(refPatchlevelDate))
+                    return Constants.COLOR_NOTCLAIMED;
                 return Constants.COLOR_MISSING;
             }
         }catch(JSONException e){
