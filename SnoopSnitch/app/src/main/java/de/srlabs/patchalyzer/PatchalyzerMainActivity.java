@@ -144,7 +144,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     startTestButton.setEnabled(false);
                     webViewContent.removeAllViews();
                     WebView wv = new WebView(PatchalyzerMainActivity.this);
-                    String html = "<html><body><h1>New version available</h1>This app version is out of date. Please download the latest version here: <a href=\"" + finalUpgradeUrl + "\">" + finalUpgradeUrl + "</a></body></html>";
+                    String html = "<html><body><h1>"+PatchalyzerMainActivity.this.getResources().getString(R.string.patchalyzer_new_version_available_heading)+"</h1>"+PatchalyzerMainActivity.this.getResources().getString(R.string.patchalyzer_new_version_available_instructions)+": <a href=\"" + finalUpgradeUrl + "\">" + finalUpgradeUrl + "</a></body></html>";
                     wv.loadDataWithBaseURL("", html, "text/html", "UTF-8", "");
                     webViewContent.addView(wv);
                 }
@@ -177,7 +177,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 @Override
                 public void run() {;
                     startTestButton.setEnabled(true);
-                    showMetaInformation("Finished");
+                    showMetaInformation(PatchalyzerMainActivity.this.getResources().getString(R.string.patchalyzer_test_finished));
 
                     showPatchlevelDateNoTable();
                 }
@@ -203,11 +203,11 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     public void displayCutline(){
         String html =
                     "\t<div style=\"text-align:right\">\n"+
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_PATCHED)+"\">Patched</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_MISSING)+"\">Patch missing</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTCLAIMED)+"\">After claimed patch level</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_INCONCLUSIVE)+"\">Test inconclusive</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTAFFECTED)+"\">Not affected</span>&nbsp;&nbsp;\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_PATCHED)+"\">"+this.getResources().getString(R.string.patchalyzer_patched)+"</span>&nbsp;&nbsp;<br>\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_MISSING)+"\">"+this.getResources().getString(R.string.patchalyzer_patch_missing)+"</span>&nbsp;&nbsp;<br>\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTCLAIMED)+"\">"+this.getResources().getString(R.string.patchalyzer_after_claimed_patchlevel)+"</span>&nbsp;&nbsp;<br>\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_INCONCLUSIVE)+"\">"+this.getResources().getString(R.string.patchalyzer_inconclusive)+"</span>&nbsp;&nbsp;<br>\n" +
+                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTAFFECTED)+"\">"+this.getResources().getString(R.string.patchalyzer_not_affected)+"</span>&nbsp;&nbsp;\n" +
                     "\t</div>\n"+
                 "</body></html>";
         legendView.setBackgroundColor(Color.TRANSPARENT);
@@ -426,7 +426,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private void showPatchlevelDateNoTable(){
         showMetaInformation(null);
         String refPatchlevelDate = TestUtils.getPatchlevelDate();
-        showMetaInformation("Claimed patch level: <b>" + refPatchlevelDate +"</b>");
+        showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": <b>" + refPatchlevelDate +"</b>");
         Log.i(Constants.LOG_TAG, "refPatchlevelDate=" + refPatchlevelDate);
         Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable()");
         //Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable(): w=" + webViewContent.getWidth() + "  h=" + webViewContent.getHeight() + "  innerW=" + webViewContent.getChildAt(0).getWidth() + "  innerH=" + webViewContent.getChildAt(0).getHeight());
@@ -434,7 +434,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             JSONObject testResults = TestUtils.getAnalysisResult(this);
             if(TestUtils.getAnalysisResult(this) == null) {
                 // TODO: This could be used further down to display the analysis execution date.
-                showMetaInformation("Claimed patch level: " + refPatchlevelDate+"<br>No test results!");
+                showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": " + refPatchlevelDate+"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
                 return;
             }
             Vector<String> categories = new Vector<String>();
@@ -534,7 +534,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         try{
             JSONObject testResults = TestUtils.getAnalysisResult(this);
             if(testResults == null){
-                showMetaInformation("Claimed patch level: " + refPatchlevelDate+"<br>No test results!");
+                showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": " + refPatchlevelDate+"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
+
                 return;
             }
             JSONArray vulnerabilitiesForPatchlevelDate = testResults.getJSONArray(category);
@@ -588,7 +589,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             infoText.append("<h4 style=\"margin-bottom:0px\">" + category + "</h4>\n<hr>");
             infoText.append("<p><b>" + numCVEs + "</b> CVEs total</p>");
         }else{
-            infoText.append("<h4 style=\"margin-bottom:0px\">General tests</h4>\n<hr>");
+            infoText.append("<h4 style=\"margin-bottom:0px\">"+this.getResources().getString(R.string.patchalyzer_general_tests)+"</h4>\n<hr>");
             infoText.append("<p><b>"+ numCVEs + "</b> tests total</p>");
         }
         showMetaInformation(infoText.toString());
@@ -648,9 +649,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(PatchalyzerMainActivity.this);
 
-            builder.setTitle("No network connection");
-            builder.setMessage("Could not establish connection to backend server.\nPlease make sure your " +
-                    "device is connected to the internet and try again later.");
+            builder.setTitle(this.getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_title));
+            builder.setMessage(this.getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
             builder.setIcon(android.R.drawable.ic_dialog_alert);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
@@ -669,8 +669,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private void showNoCVETestsForApiLevelDialog(String message){
         String refPatchlevelDate = TestUtils.getPatchlevelDate();
         StringBuilder information = new StringBuilder();
-        information.append("Claimed patch level: <b>" + refPatchlevelDate +"</b></br>");
-        information.append("<b><u>NOTE</u></b></br>");
+        information.append(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": <b>" + refPatchlevelDate +"</b></br>");
+        information.append("<b><u>"+this.getResources().getString(R.string.patchalyzer_dialog_note_title)+"</u></b></br>");
         information.append(message+"</br>");
         information.append("Android OS version: "+ Build.VERSION.RELEASE);
         showMetaInformation(information.toString());

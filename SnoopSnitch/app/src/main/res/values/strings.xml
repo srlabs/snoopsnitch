@@ -476,14 +476,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="alert_db_creation_failed_detail">Creating Database failed. Please remove the App data in the Android App settings and restart SnoopSnitch. If this does not solve the problem, please reinstall SnoopSnitch.</string>
 <string name="device_never_compatible">Your device does not have a MSM Qualcomm chip, and is therefore not able to run SnoopSnitch main features.</string>
 <string name="device_not_compatible_now_no_diag">Your device is not compatible currently. This might change with an upcoming firmware update.</string>
+
 <string name="action_switch_to_patchalyzer">Switch to Patchalyzer</string>
 <string name="android_patchlevel_text">Android patch level</string>
 <string name="patchalyzer_no_test_result">No test results available</string>
-    <string name="patchalyzer_running_notification_title">Patch level analysis running...</string>
-    <string name="patchalyzer_running_notification_text">tap for more details</string>
-    <string name="patchalyzer_finished_notification_title">Patchalyzer analysis completed</string>
-    <string name="patchalyzer_finished_notification_text">Tap to see results</string>
-    <string name="patchalyzer_analysis_in_progress">Analysis in progress...</string>
+<string name="patchalyzer_running_notification_title">Patch level analysis running...</string>
+<string name="patchalyzer_running_notification_text">tap for more details</string>
+<string name="patchalyzer_finished_notification_title">Patchalyzer analysis completed</string>
+<string name="patchalyzer_finished_notification_text">Tap to see results</string>
+<string name="patchalyzer_analysis_in_progress">Analysis in progress...</string>
+
+<string name="patchalyzer_claimed_patchlevel_date">Claimed patch level</string>
+<string name="patchalyzer_general_tests" >General tests</string>
+<string name="patchalyzer_dialog_no_internet_connection_title">No network connection</string>
+<string name="patchalyzer_dialog_no_internet_connection_text">Could not establish connection to backend server.\nPlease make sure your device is connected to the internet and try again later.</string>
+<string name="patchalyzer_dialog_note_title">NOTE</string>
+
+<string name="patchalyzer_patched">Patched</string>
+<string name="patchalyzer_patch_missing">Patch missing</string>
+<string name="patchalyzer_after_claimed_patchlevel">After claimed patch level</string>
+<string name="patchalyzer_inconclusive">Test inconclusive</string>
+<string name="patchalyzer_not_affected">Test inconclusive</string>
+<string name="patchalyzer_test_finished">Finished</string>
+<string name="patchalyzer_new_version_available_heading">New version available</string>
+<string name="patchalyzer_new_version_available_instructions">This app version is out of date. Please download the latest version here</string>
 
 
 </resources>

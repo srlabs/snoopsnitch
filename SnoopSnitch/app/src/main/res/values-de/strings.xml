@@ -384,9 +384,26 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
 
     <string name="action_switch_to_patchalyzer">Zu Patchalyzer wechseln</string>
     <string name="android_patchlevel_text">Android-Patch Level</string>
-
     <string name="patchalyzer_no_test_result">Keine Testergebnisse verfügbar</string>
     <string name="patchalyzer_analysis_in_progress">Analyse wird durchgeführt...</string>
+    <string name="patchalyzer_running_notification_title">Analysiert Android-Patchlevel...</string>
+    <string name="patchalyzer_running_notification_text">Für mehr Details hier tippen.</string>
+    <string name="patchalyzer_finished_notification_title">Patchalyzer Analyse fertig.</string>
+    <string name="patchalyzer_finished_notification_text">Hier tippen, um Ergebnisse zu sehen.</string>
 
+    <string name="patchalyzer_claimed_patchlevel_date">Angegebenes Patchleveldatum</string>
+    <string name="patchalyzer_general_tests" >Allgemeine Tests</string>
+    <string name="patchalyzer_dialog_no_internet_connection_title">Keine Internetverbindung</string>
+    <string name="patchalyzer_dialog_no_internet_connection_text">Es konnte keine Verbindung zum Backendserver hergestellt werden.\nBitte stellen Sie sicher, dass ihr Gerät eine Internetverbindung hat, und wiederholen Sie den Testvorgang.</string>
+    <string name="patchalyzer_dialog_note_title">HINWEIS</string>
+
+    <string name="patchalyzer_patched">Behoben</string>
+    <string name="patchalyzer_patch_missing">Patch fehlt</string>
+    <string name="patchalyzer_after_claimed_patchlevel">Nach dem Patchleveldatum</string>
+    <string name="patchalyzer_inconclusive">Test ergebnislos</string>
+    <string name="patchalyzer_not_affected">Nicht betroffen</string>
+    <string name="patchalyzer_test_finished">Fertig</string>
+    <string name="patchalyzer_new_version_available_heading">Neue Version verfügbar</string>
+    <string name="patchalyzer_new_version_available_instructions">Die Appversion ist veraltet. Bitte laden Sie hier die aktuellste Version herunter:</string>
 
 </resources>
