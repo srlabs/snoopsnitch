@@ -78,7 +78,6 @@ public class PatchalyzerSumResultChart extends View {
         parts.put("missing", new ResultPart(0, Constants.COLOR_MISSING));
         parts.put("notAffected", new ResultPart(0, Constants.COLOR_NOTAFFECTED));
         parts.put("notClaimed", new ResultPart(0, Constants.COLOR_NOTCLAIMED));
-
     }
 
     public void increasePatched(int addition) {
@@ -158,7 +157,7 @@ public class PatchalyzerSumResultChart extends View {
                 canvas.drawRect(new RectF(startX, chartOffsetTopBottom, partWidth, chartOffsetTopBottom + chartHeight), paint);
 
                 if (showNumbers) {
-                    if (part.getCount() > 10) {
+                    if (isNumberFittingDrawnPart(part.getCount(),chartWidth * (1f * part.getCount() / sumCVEs),paint)) {
                         paint.setColor(Color.BLACK);
                         paint.setAntiAlias(true);
                         canvas.drawText("" + part.getCount(), (startX + partWidth) / 2f - (textSize / 2f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
@@ -207,6 +206,14 @@ public class PatchalyzerSumResultChart extends View {
             canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth , paint);
         }
 
+    }
+
+    private boolean isNumberFittingDrawnPart(int count, float partWidth, Paint paint) {
+        Rect textBoundsRect = new Rect();
+        String text = ""+count;
+        paint.getTextBounds(text, 0, text.length(), textBoundsRect);
+        //Log.d(Constants.LOG_TAG,"textwidth: "+textBoundsRect.width()+" partWidth:"+partWidth);
+        return textBoundsRect.width() < partWidth;
     }
 
     public void resetCounts() {
