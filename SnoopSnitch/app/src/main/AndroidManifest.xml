@@ -160,7 +160,8 @@
 
         <service
             android:name="de.srlabs.patchalyzer.TestExecutorService"
-            android:exported="false" />
+            android:exported="false"
+            android:process=".TestExecutorService" />
 
 
         <service android:name="de.srlabs.snoopsnitch.qdmon.MsdService" android:exported="false" android:process=".snoopsnitch_service" />

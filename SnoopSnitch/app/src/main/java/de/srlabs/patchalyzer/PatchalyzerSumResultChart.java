@@ -175,11 +175,12 @@ public class PatchalyzerSumResultChart extends View {
             paint.setAntiAlias(true);
 
             String text = null;
-            if (TestExecutorService.instance == null) {
+            /*if (TestExecutorService.instance == null) {
                 text = this.getResources().getString(R.string.patchalyzer_no_test_result);
             } else {
                 text = this.getResources().getString(R.string.patchalyzer_analysis_in_progress);
-            }
+            }*/
+            text = this.getResources().getString(R.string.patchalyzer_no_test_result);
 
             //calculate centered text position
             Rect textBoundsRect = new Rect();

@@ -496,7 +496,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_patch_missing">Patch missing</string>
 <string name="patchalyzer_after_claimed_patchlevel">After claimed patch level</string>
 <string name="patchalyzer_inconclusive">Test inconclusive</string>
-<string name="patchalyzer_not_affected">Test inconclusive</string>
+<string name="patchalyzer_not_affected">Not affected</string>
 <string name="patchalyzer_test_finished">Finished</string>
 <string name="patchalyzer_new_version_available_heading">New version available</string>
 <string name="patchalyzer_new_version_available_instructions">This app version is out of date. Please download the latest version here</string>
