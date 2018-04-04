@@ -74,6 +74,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private String noCVETestsForApiLevelMessage = null;
     private static final int SDCARD_PERMISSION_RCODE = 1;
     private TestCallbacks callbacks = new TestCallbacks();
+    private boolean isActivityActive = false;
 
     private ActivityState lastActiveState = null;
     private ActivityState nonPersistentState = ActivityState.PATCHLEVEL_DATES;
@@ -128,13 +129,14 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             handler.post(new Runnable(){
                 @Override
                 public void run() {
+                    restoreState();
+                    progressBox.setVisibility(View.INVISIBLE);
                     if(text.equals(TestExecutorService.NO_INTERNET_CONNECTION_ERROR)){
                         showNoInternetConnectionDialog();
                     }
                     else {
                         statusTextView.setText(text);
                     }
-                    startTestButton.setEnabled(true);
                 }
             });
         }
@@ -188,14 +190,22 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             });
         }
         @Override
-        public void finished() throws RemoteException {
+        public void finished(final String analysisResultString) throws RemoteException {
             Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received finished()");
             handler.post(new Runnable() {
                 @Override
-                public void run() {
-                    startTestButton.setEnabled(true);
-                    showMetaInformation(PatchalyzerMainActivity.this.getResources().getString(R.string.patchalyzer_test_finished));
-                    restoreState();
+                public void run() {;
+                JSONObject resultJSON = null;
+                try {
+                    resultJSON = new JSONObject(analysisResultString);
+                } catch (JSONException e) {
+                    Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
+                }
+                resultChart.setResultToDrawFromOnNextUpdate(resultJSON);
+                TestUtils.saveAnalysisResultNonPersistent(resultJSON);
+                showMetaInformation("Finished");
+
+                recreate();
                 }
             });
         }
@@ -320,12 +330,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     protected void onResume(){
         super.onResume();
-
         Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
         intent.setAction(ITestExecutorServiceInterface.class.getName());
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
-        TestExecutorService.cancelAnalysisFinishedNotification(this);
+        TestExecutorService.cancelNonStickyNotifications(this);
+        isActivityActive = true;
 
     }
 
@@ -350,6 +360,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         super.onPause();
         if(isServiceBound)
             unbindService(mConnection);
+        isActivityActive = false;
     }
 
     @Override
@@ -359,7 +370,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
 
     private void restoreState(){
-        TestExecutorService.cancelAnalysisFinishedNotification(this);
+        TestExecutorService.cancelNonStickyNotifications(this);
         ActivityState tempNonPersistentState = nonPersistentState;
         try {
             if (mITestExecutorService != null && mITestExecutorService.isAnalysisRunning()) {
@@ -371,9 +382,14 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             } else {
                 startTestButton.setEnabled(true);
                 progressBox.setVisibility(View.INVISIBLE);
-                resultChart.setVisibility(View.VISIBLE);
-                webViewContent.setVisibility(View.VISIBLE);
-                showPatchlevelDateNoTable();
+                if (TestUtils.getAnalysisResult(this) == null) {
+                    resultChart.setVisibility(View.INVISIBLE);
+                    webViewContent.setVisibility(View.INVISIBLE);
+                } else {
+                    resultChart.setVisibility(View.VISIBLE);
+                    webViewContent.setVisibility(View.VISIBLE);
+                    showPatchlevelDateNoTable();
+                }
             }
         } catch (RemoteException e) {
             Log.d(Constants.LOG_TAG,"RemoteException in restoreState" , e);
@@ -396,6 +412,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         progressBox.setVisibility(View.VISIBLE);
         resultChart.setVisibility(View.INVISIBLE);
         resultChart.resetCounts();
+        TestUtils.clearSavedAnalysisResult(this);
 
         if(TestUtils.isConnectedToInternet(this)) {
             noCVETestsForApiLevelMessage = null;
@@ -411,7 +428,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             metaInfoText.removeAllViews();
             metaInfoText.addView(statusTextView);
 
-            recreate();
+            restoreState();
         }else{
             //no internet connection
             Log.w(Constants.LOG_TAG,"Not testing, because of missing internet connection.");
@@ -442,6 +459,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": <b>" + refPatchlevelDate +"</b>");
         Log.i(Constants.LOG_TAG, "refPatchlevelDate=" + refPatchlevelDate);
         Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable()");
+        webViewContent.removeAllViews();
+        resultChart.resetCounts();
         //Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable(): w=" + webViewContent.getWidth() + "  h=" + webViewContent.getHeight() + "  innerW=" + webViewContent.getChildAt(0).getWidth() + "  innerH=" + webViewContent.getChildAt(0).getHeight());
         try{
             JSONObject testResults = TestUtils.getAnalysisResult(this);
@@ -459,7 +478,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             rows.setOrientation(LinearLayout.VERTICAL);
             rows.setLayoutParams(new ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.MATCH_PARENT));
 
-            resultChart.resetCounts();
+
             for (final String category : categories) {
                 LinearLayout row = new LinearLayout(this);
                 row.setGravity(Gravity.CENTER_VERTICAL);
@@ -523,7 +542,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 row.addView(chart);
                 rows.addView(row);
             }
-            webViewContent.removeAllViews();
+
             webViewContent.addView(rows);
             nonPersistentState = ActivityState.PATCHLEVEL_DATES;
 
@@ -656,7 +675,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         }
     }
     public void showNoInternetConnectionDialog(){
-        if(!noInternetDialogShowing) {
+        if(isActivityActive && !noInternetDialogShowing) {
             Log.d(Constants.LOG_TAG,"Showing internet connection issues dialog");
             showMetaInformation("");
 

@@ -52,6 +52,7 @@ public class TestExecutorService extends Service {
     public static final String NO_INTERNET_CONNECTION_ERROR = "no_uplink";
     public static final int ONGOING_NOTIFICATION_ID = 1147;
     public static final int FINISHED_NOTIFICATION_ID = 1148;
+    public static final int FAILED_NOTIFICATION_ID = 1149;
     private volatile boolean cancelAnalysis = false;
     private boolean isAnalysisRunning = false;
 
@@ -99,9 +100,10 @@ public class TestExecutorService extends Service {
     }
 
 
-    public static void cancelAnalysisFinishedNotification(ContextWrapper context) {
+    public static void cancelNonStickyNotifications(ContextWrapper context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(FINISHED_NOTIFICATION_ID);
+        notificationManager.cancel(FAILED_NOTIFICATION_ID);
     }
 
     @Override
@@ -112,7 +114,9 @@ public class TestExecutorService extends Service {
 
     protected void cancelAnalysis() {
         Log.d(Constants.LOG_TAG,"TestExecutorService.cancelAnalysis called");
+        showAnalysisFailedNotification();
         stopForeground(true);
+        stopSelf();
         System.exit(0);
     }
 
@@ -359,7 +363,7 @@ public class TestExecutorService extends Service {
             clearProgress();
             updateProgress();
 
-            TestUtils.clearSavedAnalysisResult(TestExecutorService.this);
+            //TestUtils.clearSavedAnalysisResult(TestExecutorService.this);
 
             final ProgressItem uploadDeviceInfoProgress;
             if(uploadDeviceInfo) {
@@ -537,16 +541,7 @@ public class TestExecutorService extends Service {
         }
     }
 
-    private void onFinishedAnalysis() {
-        try {
-            mBinder.evaluateVulnerabilitiesTests();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        isAnalysisRunning = false;
-        sendFinishedToCallback();
-
-        //show finished notification
+    private void showAnalysisFinishedNotification() {
         Intent notificationIntent = new Intent(this, PatchalyzerMainActivity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -560,19 +555,47 @@ public class TestExecutorService extends Service {
                         .build();
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(FINISHED_NOTIFICATION_ID, notification);
+    }
 
+    private void showAnalysisFailedNotification() {
+        Log.d(Constants.LOG_TAG, "TestExeCutorService.showAnalysisFailedNotification called");
+        Intent notificationIntent = new Intent(this, PatchalyzerMainActivity.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Notification notification =
+                new Notification.Builder(this)
+                        .setContentTitle(getText(R.string.patchalyzer_failed_notification_title))
+                        .setContentText(getText(R.string.patchalyzer_failed_notification_text))
+                        .setSmallIcon(R.drawable.ic_patchalyzer)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
+                        .build();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(FAILED_NOTIFICATION_ID, notification);
+    }
 
+    private void onFinishedAnalysis() {
+        String analysisResultString = null;
+        try {
+            analysisResultString = mBinder.evaluateVulnerabilitiesTests();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        isAnalysisRunning = false;
+        sendFinishedToCallback(analysisResultString);
+
+        showAnalysisFinishedNotification();
 
         stopForeground(true);
         stopSelf();
     }
 
-    private void sendFinishedToCallback(){
+    private void sendFinishedToCallback(final String analysisResultString){
         handler.post(new Runnable(){
             @Override
             public void run() {
                 try {
-                    callback.finished();
+                    callback.finished(analysisResultString);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.updateProgress() => callback.finished() RemoteException", e);
                 }

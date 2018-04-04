@@ -9,5 +9,5 @@ interface ITestExecutorCallbacks {
     void showStatusMessage(String text);
     void showOutdatedError(String updateUrl);
     void showNoCVETestsForApiLevel(String message);
-    void finished();
+    void finished(String analysisResultString);
 }
