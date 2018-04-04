@@ -10,4 +10,5 @@ interface ITestExecutorCallbacks {
     void showOutdatedError(String updateUrl);
     void showNoCVETestsForApiLevel(String message);
     void finished(String analysisResultString);
+    void cancelled();
 }
