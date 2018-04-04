@@ -481,7 +481,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="android_patchlevel_text">Android patch level</string>
 <string name="patchalyzer_no_test_result">No test results available</string>
 <string name="patchalyzer_running_notification_title">Patch level analysis running...</string>
-<string name="patchalyzer_running_notification_text">tap for more details</string>
+<string name="patchalyzer_running_notification_text">Tap for more details</string>
 <string name="patchalyzer_finished_notification_title">Patchalyzer analysis completed</string>
 <string name="patchalyzer_finished_notification_text">Tap to see results</string>
 <string name="patchalyzer_analysis_in_progress">Analysis in progress...</string>
@@ -500,6 +500,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_test_finished">Finished</string>
 <string name="patchalyzer_new_version_available_heading">New version available</string>
 <string name="patchalyzer_new_version_available_instructions">This app version is out of date. Please download the latest version here</string>
+<string name="patchalyzer_notification_new_feature_title">New SnoopSnitch feature: Android patch analysis</string>
+<string name="patchalyzer_notification_new_feature_text">Test your phone security by starting a test here!</string>
 
 
 </resources>

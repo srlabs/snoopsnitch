@@ -1,7 +1,10 @@
 package de.srlabs.snoopsnitch;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
@@ -10,22 +13,21 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import de.srlabs.snoopsnitch.R;
+import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdDialog;
-import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.PermissionChecker;
 import de.srlabs.snoopsnitch.util.Utils;
 
@@ -65,11 +67,39 @@ public class StartupActivity extends Activity {
     }
 
     private void proceedAppFlow() {
+        showNewPatchalyzerFeatureOnce();
+
         //continue with normal startup
         if (MsdConfig.getFirstRun(this)) {
             showFirstRunDialog();
         } else {
             createDatabaseAndStartDashboard();
+        }
+    }
+
+    private void showNewPatchalyzerFeatureOnce() {
+        SharedPreferences sharedPrefs = getSharedPreferences("PATCHALYZER", Context.MODE_PRIVATE);
+        boolean didShowAlready = sharedPrefs.getBoolean("didShowNewFeatureNotification",false);
+
+        if(!didShowAlready) {
+            Intent notificationIntent = new Intent(this, StartupActivity.class);
+            PendingIntent pendingIntent =
+                    PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            Notification notification =
+                    new Notification.Builder(this)
+                            .setContentTitle(getText(R.string.patchalyzer_notification_new_feature_title))
+                            .setContentText(getText(R.string.patchalyzer_notification_new_feature_text))
+                            .setSmallIcon(R.drawable.ic_patchalyzer)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true)
+                            .build();
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(42, notification);
+
+            //persist that we showed the notification already, to not show it again
+            SharedPreferences.Editor editor = sharedPrefs.edit();
+            editor.putBoolean("didShowNewFeatureNotification",true);
+            editor.commit();
         }
     }
 

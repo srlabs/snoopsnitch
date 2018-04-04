@@ -405,5 +405,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="patchalyzer_test_finished">Fertig</string>
     <string name="patchalyzer_new_version_available_heading">Neue Version verfügbar</string>
     <string name="patchalyzer_new_version_available_instructions">Die Appversion ist veraltet. Bitte laden Sie hier die aktuellste Version herunter:</string>
+    <string name="patchalyzer_notification_new_feature_title">Neu in SnoopSnitch: Android Patchanalyse</string>
+    <string name="patchalyzer_notification_new_feature_text">Überprüfen Sie die Sicherheit Ihres Gerätes durch einen Test!</string>
 
 </resources>
