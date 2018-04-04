@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.support.annotation.Nullable;
@@ -45,7 +46,7 @@ public class PatchalyzerSumResultChart extends View {
     private float chartOffsetTopBottom;
     private boolean showNumbers = false;
     private boolean isSmall = false;
-    private boolean drawBorder = false;
+    private boolean drawBorder = true;
     static HashMap<String, ResultPart> parts = new HashMap<String, ResultPart>();
     private static JSONObject resultToDrawFrom = null;
 
@@ -65,7 +66,7 @@ public class PatchalyzerSumResultChart extends View {
         try {
             showNumbers = a.getBoolean(R.styleable.PatchalyzerSumResultChart_shownumbers, false);
             isSmall = a.getBoolean(R.styleable.PatchalyzerSumResultChart_small, false);
-            drawBorder = a.getBoolean(R.styleable.PatchalyzerSumResultChart_drawborder, false);
+            drawBorder = a.getBoolean(R.styleable.PatchalyzerSumResultChart_drawborder, true);
 
             Log.d(Constants.LOG_TAG, "PatchalyzerSumResultChart created: " + (showNumbers ? "showing numbers" : "not showing numbers") + ";" + (isSmall ? "small" : "large"));
         } finally {
@@ -124,8 +125,7 @@ public class PatchalyzerSumResultChart extends View {
         chartOffsetTopBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
         Paint paint = new Paint();
 
-        float marginleftright = 50f;
-        float borderWidth = 3f;
+        float marginleftright = getWidth() * 0.1f;
         float chartWidth = getWidth() - marginleftright;
         float chartHeight;
         float textSize;
@@ -137,6 +137,8 @@ public class PatchalyzerSumResultChart extends View {
             chartHeight = getHeight() * 0.8f;
         }
         textSize = chartHeight * 0.6f;
+
+        float borderWidth = chartHeight * 0.025f;
 
         int sumCVEs = 0;
         //calculate sum of CVE tests
@@ -171,20 +173,37 @@ public class PatchalyzerSumResultChart extends View {
             paint.setColor(Color.BLACK);
             paint.setTextSize(textSize);
             paint.setAntiAlias(true);
-            //FIXME text position not correctly centered vertically!!
+
+            String text = null;
             if (TestExecutorService.instance == null) {
-                canvas.drawText(this.getResources().getString(R.string.patchalyzer_no_test_result), (chartWidth * 0.3f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
+                text = this.getResources().getString(R.string.patchalyzer_no_test_result);
             } else {
-                canvas.drawText(this.getResources().getString(R.string.patchalyzer_analysis_in_progress), (chartWidth * 0.3f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
+                text = this.getResources().getString(R.string.patchalyzer_analysis_in_progress);
             }
+
+            //calculate centered text position
+            Rect textBoundsRect = new Rect();
+            float left = marginleftright;
+            float right = chartWidth;
+            float top = chartOffsetTopBottom;
+            float bottom = chartHeight + chartOffsetTopBottom;
+
+            paint.getTextBounds(text, 0, text.length(), textBoundsRect);
+            Paint.FontMetrics fm = paint.getFontMetrics();
+
+            float x = left + (right - left - textBoundsRect.width()) / 2;
+            float y = top + (bottom - top) / 2 - (fm.descent + fm.ascent) / 2;
+
+            canvas.drawText(text, x, y, paint);
+
         }
 
         if (drawBorder) {
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(Color.DKGRAY);
             paint.setStrokeWidth(borderWidth);
-            Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
-            canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth, paint);
+            //Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
+            canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth , paint);
         }
 
     }
@@ -228,42 +247,48 @@ public class PatchalyzerSumResultChart extends View {
             return;
         }
         try {
-            int patched = 0;
-            int inconclusive = 0;
-            int missing = 0;
-            int notAffected = 0;
-            int notClaimed = 0;
+            int numPatched = 0;
+            int numInconclusive = 0;
+            int numMissing = 0;
+            int numNotAffected = 0;
+            int numNotClaimed = 0;
 
             Iterator<String> categoryIterator = analysisResult.keys();
             while (categoryIterator.hasNext()) {
-                String key = categoryIterator.next();
-                JSONArray category = analysisResult.getJSONArray(key);
+                String category = categoryIterator.next();
+                JSONArray vulnerabilities = analysisResult.getJSONArray(category);
                 // category "other", or a patch date that should be covered
-                if (!TestUtils.isValidDateFormat(key) || TestUtils.isPatchDateClaimed(key)) {
-                    for (int i = 0; i < category.length(); i++) {
-                        JSONObject vulnerability = category.getJSONObject(i);
-                        if (vulnerability.isNull("fixed") || vulnerability.isNull("vulnerable") || vulnerability.isNull("notAffected")) {
-                            inconclusive++;
-                        } else if (!vulnerability.isNull("notAffected") && vulnerability.getBoolean("notAffected")) {
-                            notAffected++;
-                        } else if (vulnerability.getBoolean("fixed") && !vulnerability.getBoolean("vulnerable")) {
-                            patched++;
-                        } else if (!vulnerability.getBoolean("fixed") && vulnerability.getBoolean("vulnerable")) {
-                            missing++;
-                        }
+                for (int i = 0; i < vulnerabilities.length(); i++) {
+                    JSONObject vulnerability = vulnerabilities.getJSONObject(i);
+
+                    int color = PatchalyzerMainActivity.getVulnerabilityIndicatorColor(vulnerability, category);
+                    switch(color) {
+                        case Constants.COLOR_PATCHED:
+                            numPatched++;
+                            break;
+                        case Constants.COLOR_INCONCLUSIVE:
+                            numInconclusive++;
+                            break;
+                        case Constants.COLOR_MISSING:
+                            numMissing++;
+                            break;
+                        case Constants.COLOR_NOTAFFECTED:
+                            numNotAffected++;
+                            break;
+                        case Constants.COLOR_NOTCLAIMED:
+                            numNotClaimed++;
+                            break;
                     }
-                } else {
-                    notClaimed += category.length();
                 }
             }
 
             resetCounts();
-            increasePatched(patched);
-            increaseInconclusive(inconclusive);
-            increaseMissing(missing);
-            increaseNotAffected(notAffected);
-            increaseNotClaimed(notClaimed);
-            Log.d(Constants.LOG_TAG,"patched:"+patched+" inconclusive:"+inconclusive+" missing:"+missing+" notAffected:"+notAffected+" notClaimed:"+notClaimed);
+            increasePatched(numPatched);
+            increaseInconclusive(numInconclusive);
+            increaseMissing(numMissing);
+            increaseNotAffected(numNotAffected);
+            increaseNotClaimed(numNotClaimed);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -34,12 +34,12 @@ public class ProcessHelper {
     public static final String SIGTOOL_PATH = BIN_PATH +"libsigtool.so";
 
     public static Vector<String> execProcessAndGetStdout(String[] cmd) throws Exception {
-        Log.d(Constants.LOG_TAG, "ProcessHelper: running command: " + Arrays.toString(cmd));
+        //Log.d(Constants.LOG_TAG, "ProcessHelper: running command: " + Arrays.toString(cmd));
         return runCommand(cmd);
     }
 
     public static int execProcessAndGetExitValue(String name, String[] cmd) throws Exception {
-        Log.i(Constants.LOG_TAG, "ProcessHelper: " + name + " running command: " + cmd.toString());
+        //Log.i(Constants.LOG_TAG, "ProcessHelper: " + name + " running command: " + cmd.toString());
         Process p = Runtime.getRuntime().exec(cmd);
         p.waitFor();
         return p.exitValue();
@@ -174,6 +174,7 @@ public class ProcessHelper {
         }
         return null;
     }
+
     public static JSONObject getSymbolTableEntry(Vector<String> objdumpLines, String symbol) throws JSONException, IOException, InterruptedException {
         if(objdumpLines == null)
             throw new IllegalStateException("Exception in ProcessHelper.getSymbolTableEntry(): objdumpLines == null");
@@ -200,6 +201,7 @@ public class ProcessHelper {
         }
         return null;
     }
+
     public static byte[] getSigToolCalcOutput(String name, String archArg, String filePath, String startPos, String endPos) throws Exception {
         //[sigtoolCmd, self.getArchArg(), "calc", tf.name, "%d" % 0, "%d" % self.checksumLen]
         List<String> stdOutLines = execProcessAndGetStdout(new String[] {SIGTOOL_PATH, archArg, "calc", filePath, startPos, endPos});
@@ -207,6 +209,7 @@ public class ProcessHelper {
             throw new IOException("Empty stdout response from sigtool!");
         return stdOutLines.get(0).getBytes();
     }
+
     public static byte[] sendByteBufferToSigToolSearch(String name, byte[] bytesToSendToStdin, String archArg, String filePath) throws IOException {
         List<String> cmd =  new ArrayList<String>();
         cmd.add(SIGTOOL_PATH);
@@ -235,22 +238,21 @@ public class ProcessHelper {
         }
         Log.d(Constants.LOG_TAG, "DEBUG: Finished reading stdout of sigtool!");
 
-                /*try {
-                    p.waitFor();
-                }catch(InterruptedException e){
+        /*try {
+            p.waitFor();
+        }catch(InterruptedException e){
 
-                }
+        }
 
-                if(p.exitValue() != 0){
-                        throw new IllegalStateException("Signature scanning failed with exit code: "+p.exitValue());
-                }*/
+        if(p.exitValue() != 0){
+                throw new IllegalStateException("Signature scanning failed with exit code: "+p.exitValue());
+        }*/
+
         if (stdoutBuffer.size() == 0)
             throw new IOException("Empty stdout response from sigtool!");
 
         return stdoutBuffer.toByteArray();
     }
-
-
 }
 
 

@@ -600,7 +600,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
      * @param refPatchlevelDate reference patch level date
      * @return Color representation in int
      */
-    private int getVulnerabilityIndicatorColor(JSONObject vulnerability, String refPatchlevelDate) {
+    public static int getVulnerabilityIndicatorColor(JSONObject vulnerability, String refPatchlevelDate) {
         try {
             if (TestUtils.isValidDateFormat(refPatchlevelDate) && !TestUtils.isPatchDateClaimed(refPatchlevelDate)) {
                 return Constants.COLOR_NOTCLAIMED;

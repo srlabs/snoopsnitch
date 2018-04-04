@@ -160,7 +160,7 @@ public class BasicTestParser {
                 }
             }
             if(test != null) {
-                Log.d(Constants.LOG_TAG, "Parsed basic test: " + test.toString());
+                Log.d(Constants.LOG_TAG, "Parsed basic test: " + test.getString("uuid"));
                 jsonReader.endObject();
             }
             return test;
