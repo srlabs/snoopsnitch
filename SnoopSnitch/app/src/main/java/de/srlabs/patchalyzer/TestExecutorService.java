@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothClass;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -33,7 +34,6 @@ import java.util.Vector;
 import de.srlabs.snoopsnitch.R;
 
 public class TestExecutorService extends Service {
-    protected static TestExecutorService instance;
     private JSONObject deviceInfoJson = null;
     private TestSuite testSuite = null;
     private DeviceInfoThread deviceInfoThread = null;
@@ -53,18 +53,13 @@ public class TestExecutorService extends Service {
     public static final int ONGOING_NOTIFICATION_ID = 1147;
     public static final int FINISHED_NOTIFICATION_ID = 1148;
     private volatile boolean cancelAnalysis = false;
+    private boolean isAnalysisRunning = false;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        // Only one instance of this service should be running at all times
-        if (TestExecutorService.instance != null) {
-            stopSelf();
-            return;
-        }
-        TestExecutorService.instance = this;
         cancelAnalysis = false;
 
         Log.d(Constants.LOG_TAG,"onCreate() of TestExecutorService called...");
@@ -88,9 +83,9 @@ public class TestExecutorService extends Service {
             public void run() {
                 try {
                     if (Constants.IS_TEST_MODE) {
-                        helper.startWork(true, true, true, false, false);
+                        mBinder.startWork(true, true, true, false, false);
                     } else {
-                        helper.startWork(true, true, true, true, true);
+                        mBinder.startWork(true, true, true, true, true);
                     }
                 } catch (Exception e) {
                     Log.e(Constants.LOG_TAG, "startTest Exception", e);
@@ -104,44 +99,27 @@ public class TestExecutorService extends Service {
     }
 
 
+    public static void cancelAnalysisFinishedNotification(ContextWrapper context) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(FINISHED_NOTIFICATION_ID);
+    }
+
     @Override
     public void onDestroy() {
-
-        PatchalyzerMainActivity.setActivityState(this, Constants.ActivityState.PATCHLEVEL_DATES);
-        TestExecutorService.instance = null;
-
-        /*PatchalyzerMainActivity temp = PatchalyzerMainActivity.instance;
-        if (temp != null) {
-            temp.recreate();
-        }*/
+        Log.d(Constants.LOG_TAG,"TestExecutorService.onDestroy called");
+        isAnalysisRunning = false;
     }
 
     protected void cancelAnalysis() {
-        if (cancelAnalysis) return;
-        cancelAnalysis = true;
-        Thread t = new Thread(){
-            @Override
-            public void run() {
-                BasicTestCache temp = basicTestCache;
-                if (temp != null) {
-                    basicTestCache.stopTesting();
-                }
-            }
-        };
-        t.start();
-        stopSubThreads();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        stopSelf();
+        Log.d(Constants.LOG_TAG,"TestExecutorService.cancelAnalysis called");
+        stopForeground(true);
+        System.exit(0);
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
 
     private void downloadTestSuite(final ProgressItem downloadTestSuiteProgress, final ProgressItem parseTestSuiteProgress){
@@ -165,13 +143,7 @@ public class TestExecutorService extends Service {
                 }catch(Exception e){
                     Log.e(Constants.LOG_TAG,"Exception while downloading teststuite to file!"+e.getMessage());
                     try {
-                        PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                        if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
-                            PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
-                            if (testCallbacks != null) {
-                                testCallbacks.showErrorMessage("Exception while downloading testsuite: " + e.getMessage());
-                            }
-                        }
+                        callback.showErrorMessage("Exception while downloading testsuite: " + e.getMessage());
                     }catch(RemoteException ex){
                         Log.e(Constants.LOG_TAG,"RemoteException when trying to show error message: "+ex.getMessage());
                     }
@@ -194,7 +166,18 @@ public class TestExecutorService extends Service {
 
     }
 
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.v(Constants.LOG_TAG, "in onUnbind");
+        return true;
+    }
 
+
+    @Override
+    public void onRebind(Intent intent) {
+        Log.v(Constants.LOG_TAG, "onRebind() called");
+        super.onRebind(intent);
+    }
 
     private boolean isAppOutdated(boolean notify){
         if(testSuite != null && testSuite.getMinAppVersion() != -1){
@@ -214,13 +197,7 @@ public class TestExecutorService extends Service {
                     @Override
                     public void run() {
                         try {
-                            PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                            if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
-                                PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
-                                if (testCallbacks != null) {
-                                    testCallbacks.showOutdatedError(upgradeUrl);
-                                }
-                            }
+                            callback.showOutdatedError(upgradeUrl);
                         } catch (RemoteException e) {
                             Log.e(Constants.LOG_TAG, "isAppOutdated RemoteException", e);
                         }
@@ -240,16 +217,16 @@ public class TestExecutorService extends Service {
         return testSuite.getVersion();
     }
 
-    protected final TestExecutorServiceHelper helper = new TestExecutorServiceHelper();
+    private final ITestExecutorServiceInterface.Stub mBinder = new ITestExecutorServiceInterface.Stub() {
 
-    public class TestExecutorServiceHelper {
-
+        @Override
         public void updateCallback(final ITestExecutorCallbacks callback){
             Log.d(Constants.LOG_TAG,"Updating callbacks.");
             TestExecutorService.this.callback = callback;
             updateProgress();
         }
 
+        @Override
         public void startMakingDeviceInfo() throws RemoteException {
             if(deviceInfoThread != null && deviceInfoThread.isAlive()){
                 return;
@@ -260,6 +237,7 @@ public class TestExecutorService extends Service {
             deviceInfoThread.start();
         }
 
+        @Override
         public boolean isDeviceInfoFinished() throws RemoteException {
             if(deviceInfoThread != null && deviceInfoThread.isAlive()){
                 return false;
@@ -267,6 +245,7 @@ public class TestExecutorService extends Service {
             return deviceInfoJson != null;
         }
 
+        @Override
         public String getDeviceInfoJson() throws RemoteException {
             try {
                 return deviceInfoJson.toString(4);
@@ -276,10 +255,12 @@ public class TestExecutorService extends Service {
             }
         }
 
+        @Override
         public void startBasicTests() throws RemoteException {
             basicTestCache.startWorking();
         }
 
+        @Override
         public int getBasicTestsQueueSize() throws RemoteException {
             return basicTestCache.getQueueSize();
         }
@@ -342,6 +323,11 @@ public class TestExecutorService extends Service {
         }
         public void clearCache(){
             basicTestCache.clearCache();
+        }
+
+        @Override
+        public boolean isAnalysisRunning() {
+            return isAnalysisRunning;
         }
 
         public boolean updateTestsNeeded() throws RemoteException {
@@ -495,7 +481,7 @@ public class TestExecutorService extends Service {
             }
         }
 
-    }
+    };
 
     private void checkIfCVETestsAvailable(TestSuite testSuite) {
         if(testSuite != null){
@@ -553,7 +539,7 @@ public class TestExecutorService extends Service {
 
     private void onFinishedAnalysis() {
         try {
-            helper.evaluateVulnerabilitiesTests();
+            mBinder.evaluateVulnerabilitiesTests();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -584,17 +570,7 @@ public class TestExecutorService extends Service {
             @Override
             public void run() {
                 try {
-
-                    PatchalyzerMainActivity.setActivityState(TestExecutorService.this, Constants.ActivityState.PATCHLEVEL_DATES);
-
-                    PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
-                        PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
-                        if (testCallbacks != null) {
-                            testCallbacks.finished();
-                        }
-                    }
-
+                    callback.finished();
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.updateProgress() => callback.finished() RemoteException", e);
                 }
@@ -606,13 +582,7 @@ public class TestExecutorService extends Service {
             @Override
             public void run() {
                 try {
-                    PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
-                        PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
-                        if (testCallbacks != null) {
-                            testCallbacks.updateProgress(totalProgress);
-                        }
-                    }
+                    callback.updateProgress(totalProgress);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.updateProgress() RemoteException", e);
                 }
@@ -624,13 +594,7 @@ public class TestExecutorService extends Service {
             @Override
             public void run() {
                 try {
-                    PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
-                        PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
-                        if (testCallbacks != null) {
-                            testCallbacks.showErrorMessage(error);
-                        }
-                    }
+                    callback.showErrorMessage(error);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.reportError() RemoteException", e);
                 }
@@ -642,13 +606,7 @@ public class TestExecutorService extends Service {
             @Override
             public void run() {
                 try {
-                    PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
-                        PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
-                        if (testCallbacks != null) {
-                            testCallbacks.showStatusMessage(status);
-                        }
-                    }
+                    callback.showStatusMessage(status);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.showStatus() RemoteException", e);
                 }
@@ -660,13 +618,7 @@ public class TestExecutorService extends Service {
             @Override
             public void run() {
                 try {
-                    PatchalyzerMainActivity patchalyzerMainActivity = PatchalyzerMainActivity.instance;
-                    if (patchalyzerMainActivity != null && TestExecutorService.this == TestExecutorService.instance) {
-                        PatchalyzerMainActivity.TestCallbacks testCallbacks = patchalyzerMainActivity.callbacks;
-                        if (testCallbacks != null) {
-                            testCallbacks.showNoCVETestsForApiLevel(message);
-                        }
-                    }
+                    callback.showNoCVETestsForApiLevel(message);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.showNoCVETestsForApiLevel() RemoteException", e);
                 }
@@ -839,7 +791,15 @@ public class TestExecutorService extends Service {
                 DeviceInfoThread deviceInfoThread = (DeviceInfoThread) thread;
                 deviceInfoThread.doNotRunFinishedRunnable();
             }
-            thread.interrupt();
+            while(true) {
+                try {
+                    thread.join();
+                    Log.d(Constants.LOG_TAG,"Stopped TestExecutorService subthread.");
+                    break;
+                } catch (InterruptedException e) {
+                    Log.d(Constants.LOG_TAG, "InterruptedException while stopping running subThread: " + e.getMessage());
+                }
+            }
         }
     }
 
@@ -847,9 +807,9 @@ public class TestExecutorService extends Service {
 
     @Override
     public int onStartCommand (Intent intent, int flags, int startId) {
-        Log.v(Constants.LOG_TAG, "onHandleIntent");
-        TestExecutorService.instance = this;
+        Log.v(Constants.LOG_TAG, "onStartCommand called");
 
+        isAnalysisRunning = true;
 
         Intent notificationIntent = new Intent(this, PatchalyzerMainActivity.class);
         PendingIntent pendingIntent =
@@ -862,8 +822,6 @@ public class TestExecutorService extends Service {
                         .setContentIntent(pendingIntent)
                         .build();
         startForeground(ONGOING_NOTIFICATION_ID, notification);
-
-        PatchalyzerMainActivity.setActivityState(this, Constants.ActivityState.TESTING);
 
 
         doWorkAsync();

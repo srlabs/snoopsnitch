@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -68,9 +69,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private LinearLayout progressBox;
     private PatchalyzerSumResultChart resultChart;
 
-    // Make this activity into a singleton for easier access from service
-    protected static PatchalyzerMainActivity instance;
-    public TestCallbacks callbacks;
+    private ITestExecutorServiceInterface mITestExecutorService;
 
     private boolean isServiceBound=false;
     private boolean noInternetDialogShowing = false;
@@ -78,6 +77,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private boolean restoreStatePending = false;
     private String noCVETestsForApiLevelMessage = null;
     private static final int SDCARD_PERMISSION_RCODE = 1;
+    private TestCallbacks callbacks = new TestCallbacks();
 
     private ActivityState lastActiveState = null;
     private ActivityState nonPersistentState = ActivityState.PATCHLEVEL_DATES;
@@ -89,7 +89,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
 
     // Saves ActivityState to sharedPrefs and triggers UI reload if PatchalyzerMainActivity.instance exists
-    protected static void setActivityState(ContextWrapper context, ActivityState state) {
+    protected void setActivityState(ContextWrapper context, ActivityState state) {
 
 
         Log.d(Constants.LOG_TAG,"Writing " + state.toString() + " state to sharedPrefs");
@@ -98,12 +98,33 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         editor.putString("state", state.toString());
         editor.commit();
 
-        PatchalyzerMainActivity instance = PatchalyzerMainActivity.instance;
-        if (instance != null) {
-            instance.restoreState();
-        }
+        restoreState();
     }
 
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        // Called when the connection with the service is established
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // Following the example above for an AIDL interface,
+            // this gets an instance of the IRemoteInterface, which we can use to call on the service
+            mITestExecutorService = ITestExecutorServiceInterface.Stub.asInterface(service);
+            try{
+                mITestExecutorService.updateCallback(callbacks);
+            } catch (RemoteException e) {
+                Log.e(Constants.LOG_TAG, "RemoteException in onServiceConnected():", e);
+            }
+            Log.d(Constants.LOG_TAG,"Service connected!");
+            isServiceBound = true;
+            restoreState();
+        }
+
+        // Called when the connection with the service disconnects unexpectedly
+        public void onServiceDisconnected(ComponentName className) {
+            Log.e(Constants.LOG_TAG, "Service has unexpectedly disconnected");
+            isServiceBound = false;
+            mITestExecutorService = null;
+        }
+    };
 
     class TestCallbacks extends ITestExecutorCallbacks.Stub{
         @Override
@@ -153,7 +174,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         @Override
         public void updateProgress(final double progressPercent) throws RemoteException {
-            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received updateProgress(" + progressPercent + ")"+ PatchalyzerMainActivity.this + " - "+ TestExecutorService.instance);
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received updateProgress(" + progressPercent + ")"+ PatchalyzerMainActivity.this + " - "+mITestExecutorService);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -261,9 +282,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         initDatabase();
 
         restoreState();
-
-        //startService();
-        PatchalyzerMainActivity.instance = this;
     }
 
     @Override
@@ -307,70 +325,66 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        PatchalyzerMainActivity.instance = this;
 
-        cancelAnalysisFinishedNotification();
+        Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
+        intent.setAction(ITestExecutorServiceInterface.class.getName());
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
-        TestExecutorService service = TestExecutorService.instance;
-        if (service != null) {
-            TestExecutorService.TestExecutorServiceHelper helper = service.helper;
-            helper.updateCallback(callbacks);
-        }
+        TestExecutorService.cancelAnalysisFinishedNotification(this);
+
+
 
     }
 
-    private void cancelAnalysisFinishedNotification() {
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.cancel(TestExecutorService.FINISHED_NOTIFICATION_ID);
-    }
+
 
     private void startServiceIfNotRunning(){
-        if (TestExecutorService.instance == null) {
-            Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
-            //intent.setAction(ITestExecutorServiceInterface.class.getName());
-            startService(intent);
+
+        try {
+            if (mITestExecutorService == null || !mITestExecutorService.isAnalysisRunning()) {
+                Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
+                intent.setAction(ITestExecutorServiceInterface.class.getName());
+                startService(intent);
+                bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            }
+        } catch (RemoteException e) {
+            Log.d(Constants.LOG_TAG,"RemoteException in startServiceIfNotRunning" , e);
         }
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        PatchalyzerMainActivity.instance = null;
+        if(isServiceBound)
+            unbindService(mConnection);
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        PatchalyzerMainActivity.instance = null;
-        //if(isServiceBound)
-          //  unbindService(mConnection);
-
-        /*
-        Log.i(Constants.LOG_TAG,"onDestroy() called -> persisting state to sharedPrefs: "+state.toString());
-        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("state", state.toString());
-        editor.commit();
-        */
     }
 
 
     private void restoreState(){
-        cancelAnalysisFinishedNotification();
+        TestExecutorService.cancelAnalysisFinishedNotification(this);
         ActivityState tempNonPersistentState = nonPersistentState;
         showPatchlevelDateNoTable();
-        if (TestExecutorService.instance == null) {
-            startTestButton.setEnabled(true);
-        } else {
-            startTestButton.setEnabled(false);
-            showMetaInformation("Testing your phone...");
+        try {
+            if (mITestExecutorService != null && mITestExecutorService.isAnalysisRunning()) {
+                startTestButton.setEnabled(false);
+                showMetaInformation("Testing your phone...");
+            } else {
+                startTestButton.setEnabled(true);
+            }
+        } catch (RemoteException e) {
+            Log.d(Constants.LOG_TAG,"RemoteException in restoreState" , e);
         }
         if(tempNonPersistentState == ActivityState.VULNERABILITY_LIST) {
             // TODO: show specific vulnerability here
             showDetailsNoTable(currentPatchlevelDate);
         }
-
     }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putSerializable("state", getActivityState());

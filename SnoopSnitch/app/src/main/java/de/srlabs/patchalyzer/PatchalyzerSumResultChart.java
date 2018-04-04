@@ -172,11 +172,7 @@ public class PatchalyzerSumResultChart extends View {
             paint.setTextSize(textSize);
             paint.setAntiAlias(true);
             //FIXME text position not correctly centered vertically!!
-            if (TestExecutorService.instance == null) {
-                canvas.drawText(this.getResources().getString(R.string.patchalyzer_no_test_result), (chartWidth * 0.3f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
-            } else {
-                canvas.drawText(this.getResources().getString(R.string.patchalyzer_analysis_in_progress), (chartWidth * 0.3f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
-            }
+            canvas.drawText(this.getResources().getString(R.string.patchalyzer_no_test_result), (chartWidth * 0.3f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
         }
 
         if (drawBorder) {
