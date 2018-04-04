@@ -40,11 +40,7 @@ public class TestSuite {
         this.testSuiteFile = testsuiteJSONFile;
     }
 
-    public void addBasicTestsToDB() throws IllegalStateException{ //FIXME this is the old version, not using chunks
-        addBasicTestsToDB(testSuiteFile);
-    }
-
-    private void addBasicTestsToDB(File file) throws IllegalStateException{ //FIXME this is the old version, not using chunks
+    private void addBasicTestsToDB(File file) throws IllegalStateException{
         if(file == null || !file.exists())
             throw new IllegalStateException("JSON file does not exist!");
         BasicTestParser parser = new BasicTestParser(file);
@@ -65,16 +61,6 @@ public class TestSuite {
         parser.finishReading();
     }
 
-    public void parseVulnerabilites(){ //FIXME this is the old version, not using chunks
-        if(testSuiteFile == null || !testSuiteFile.exists())
-            throw new IllegalStateException("testSuite JSON file does not exist!");
-        BasicTestParser parser = new BasicTestParser(testSuiteFile);
-        parser.initReadingVulnerabilities();
-        vulnerabilities = parser.parseVulnerabilities();
-        Log.d(Constants.LOG_TAG,"vulnerabilities:"+vulnerabilities.toString());
-        parser.finishReading();
-
-    }
     public void parseInfoFromJSON() throws IOException{ //TODO differentiate between IOException when parsing JSON or when downloading chunks
         if(testSuiteFile == null || !testSuiteFile.exists())
             throw new IllegalStateException("testSuiteJSON file does not exist!");

@@ -32,6 +32,10 @@ import de.srlabs.patchalyzer.signatures.RollingSignature;
 import de.srlabs.patchalyzer.signatures.Signature;
 import de.srlabs.patchalyzer.signatures.SymbolInformation;
 
+/**
+ * This class actually contains all the algorithms to perform basic tests
+ * and calculate the results for vulnerabilities (according to their defined logic equation) referencing basic test results
+ */
 public class TestEngine {
     public static Boolean runTest(BasicTestCache cache, Object testObject) throws JSONException, IOException {
         if (testObject instanceof String) {

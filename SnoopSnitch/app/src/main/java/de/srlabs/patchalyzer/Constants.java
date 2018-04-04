@@ -5,7 +5,6 @@ import android.graphics.Color;
 public class Constants {
     public static final String LOG_TAG="PatchAnalyzer";
     public static final int APP_VERSION = 10;
-    public static final String APP_VERSION_TEXT = "v4";
     public static final String DEFAULT_APK_UPGRADE_URL = "https://snoopsnitch-api.srlabs.de/patchalyzer.apk";
 
     //testmode (decide whether we want to test files on OS or external files extracted to /sdcard/system)
