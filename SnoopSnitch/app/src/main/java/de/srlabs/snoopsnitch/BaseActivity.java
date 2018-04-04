@@ -1,6 +1,7 @@
 package de.srlabs.snoopsnitch;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -76,7 +77,7 @@ public class BaseActivity extends FragmentActivity {
         ActionBar ab = getActionBar();
 
         ab.setTitle(R.string.actionBar_title);
-        ab.setSubtitle(setAppId());
+        ab.setSubtitle(getResources().getText(R.string.actionBar_subTitle) + " " +setAppId(this));
 
         handler.postDelayed(runnable, refresh_intervall);
 
@@ -243,11 +244,11 @@ public class BaseActivity extends FragmentActivity {
         }
     }
 
-    private String setAppId() {
-        if (MsdConfig.getAppId(this) == "") {
-            MsdConfig.setAppId(this, Utils.generateAppId());
+    public static String setAppId(Context context) {
+        if (MsdConfig.getAppId(context) == "") {
+            MsdConfig.setAppId(context, Utils.generateAppId());
         }
-        return getResources().getText(R.string.actionBar_subTitle) + " " + MsdConfig.getAppId(this);
+        return MsdConfig.getAppId(context);
     }
 
     protected Runnable runnable = new Runnable() {

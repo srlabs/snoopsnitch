@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
 
 import de.srlabs.patchalyzer.signatures.Section;
 import de.srlabs.patchalyzer.signatures.SymbolInformation;
+import de.srlabs.snoopsnitch.BaseActivity;
 
 public class TestUtils {
     public static HashMap<String,String> buildProperties = null;
@@ -504,26 +505,9 @@ public class TestUtils {
 
     public static String getAppId(Context context)
     {
-        String appid = sharedPrefs(context).getString("settings_appId", "");
-        if(appid == null || appid.equals("")) {
-            appid = generateAppId();
-            setAppId(context, appid);
-        }
-        return appid;
+        return BaseActivity.setAppId(context);
     }
 
-    public static void setAppId(Context context, String appID)
-    {
-        SharedPreferences.Editor editor = sharedPrefs(context).edit();
-        editor.putString("settings_appId", appID);
-        editor.commit();
-    }
-    public static String generateAppId(){
-        SecureRandom sr = new SecureRandom();
-        byte[] random = new byte[4];
-        sr.nextBytes(random);
-        return String.format("%02x%02x%02x%02x", random[0],random[1],random[2],random[3]);
-    }
     public static void validateFilename(String filename){
         if (Constants.IS_TEST_MODE && !filename.startsWith(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/")){
                 throw new IllegalArgumentException("Filename " + filename + " doesn't start with '"+Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/'");
