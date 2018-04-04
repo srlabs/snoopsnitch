@@ -47,7 +47,8 @@ public class TestSuite {
     private void addBasicTestsToDB(File file) throws IllegalStateException{ //FIXME this is the old version, not using chunks
         if(file == null || !file.exists())
             throw new IllegalStateException("JSON file does not exist!");
-        BasicTestParser parser = new BasicTestParser(context,file);
+        BasicTestParser parser = new BasicTestParser(file);
+        DBHelper db = new DBHelper(context);
         parser.initReadingBasicTests();
         JSONObject basicTest = null;
 
@@ -55,7 +56,7 @@ public class TestSuite {
         while ((basicTest = parser.getNextBasicTest()) != null) {
             try {
                 //Log.d(Constants.LOG_TAG,"Trying to insert basic test (uuid:"+basicTest.getString("uuid")+"to DB!");
-                parser.insertBasicTestToDB(basicTest);
+                db.insertBasicTestToDB(basicTest);
             }catch(SQLiteConstraintException e){
                 //ignore, cause this prevents redundant entries in the DB
                 //Log.d(Constants.LOG_TAG,"-> basicTest already in DB!");
@@ -67,7 +68,7 @@ public class TestSuite {
     public void parseVulnerabilites(){ //FIXME this is the old version, not using chunks
         if(testSuiteFile == null || !testSuiteFile.exists())
             throw new IllegalStateException("testSuite JSON file does not exist!");
-        BasicTestParser parser = new BasicTestParser(context, testSuiteFile);
+        BasicTestParser parser = new BasicTestParser(testSuiteFile);
         parser.initReadingVulnerabilities();
         vulnerabilities = parser.parseVulnerabilities();
         Log.d(Constants.LOG_TAG,"vulnerabilities:"+vulnerabilities.toString());
@@ -161,7 +162,7 @@ public class TestSuite {
                 jsonReader.endArray();
                 //for all chunks
                 ServerApi api = new ServerApi();
-                BasicTestParser database = new BasicTestParser(context);
+                DBHelper database = new DBHelper(context);
 
                 for(String basicTestChunkURL : basicTestChunkURLs){
                     Log.d(Constants.LOG_TAG,"Checking basic test chunk: "+basicTestChunkURL);
@@ -199,7 +200,7 @@ public class TestSuite {
                         //FIXME repeat download process?!
                     }
                 }
-                BasicTestParser parser = new BasicTestParser(context, chunkFile);
+                BasicTestParser parser = new BasicTestParser(chunkFile);
                 parser.initReadingVulnerabilities();
                 parser.parseAndAddVulnerabilities(allVulnerabilities);
             }

@@ -22,7 +22,7 @@ public class BasicTestCache {
     LinkedBlockingQueue<TestBundle> testQueue = new LinkedBlockingQueue<TestBundle>();
     LinkedBlockingQueue<BasicTestResult> resultQueue = new LinkedBlockingQueue<BasicTestResult>();
     private SharedPreferences sharedPrefs;
-    private BasicTestParser database;
+    private DBHelper database;
     private TestExecutorService service;
     int progressTotal = 0;
     int progressDone = 0;
@@ -38,7 +38,7 @@ public class BasicTestCache {
         this.apiLevel = apiLevel;
         this.service = service;
         this.sharedPrefs = service.getSharedPreferences("BasicTestCache", Context.MODE_PRIVATE);
-        this.database = new BasicTestParser(service);
+        this.database = new DBHelper(service);
         long currentBuildDate = TestUtils.getBuildDateUtc();
 
         // Invalidate cached results if the build fingerprint or the build timestamp (seconds since 1970) changes => Make sure that teste are repeated after a firmware upgrade
@@ -203,7 +203,9 @@ public class BasicTestCache {
             service.finishedBasicTests();
 
             if(!stopTesting) {
-                finishedRunnable.run();
+                if(finishedRunnable != null) {
+                    finishedRunnable.run();
+                }
             }
         }
 
