@@ -37,7 +37,7 @@ public class BasicTestCache {
         this.testSuiteVersion = testSuiteVersion;
         this.apiLevel = apiLevel;
         this.service = service;
-        this.sharedPrefs = service.getSharedPreferences("BasicTestCache", Context.MODE_PRIVATE);
+        this.sharedPrefs = service.getSharedPreferences("PATCHALYZER", Context.MODE_PRIVATE);
         this.database = new DBHelper(service);
         long currentBuildDate = TestUtils.getBuildDateUtc();
 
