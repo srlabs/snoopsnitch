@@ -80,6 +80,56 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private ActivityState nonPersistentState = ActivityState.PATCHLEVEL_DATES;
 
 
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        this.callbacks = new TestCallbacks();
+        Log.d(Constants.LOG_TAG, "onCreate() called");
+        handler = new Handler(Looper.getMainLooper());
+        setContentView(R.layout.activity_patchalyzer);
+        startTestButton = (Button) findViewById(R.id.btnDoIt);
+        webViewContent = (ScrollView) findViewById(R.id.scrollViewTable);
+        statusTextView = (TextView) findViewById(R.id.textView);
+        percentageText = (TextView) findViewById(R.id.textPercentage);
+        legendView = (WebView) findViewById(R.id.legend);
+        metaInfoText = (ScrollView) findViewById(R.id.scrollViewText);
+        //metaInfoText.setBackgroundColor(Color.TRANSPARENT);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
+        progressBox = (LinearLayout) findViewById(R.id.progress_box);
+        statusTextView.setText("");
+        percentageText.setText("");
+        ActionBar actionBar = getActionBar();
+
+
+        if(!Constants.IS_TEST_MODE) {
+            actionBar.setTitle("Patchalyzer");
+            actionBar.setSubtitle("App ID: "+TestUtils.getAppId(this));
+        }else{
+            actionBar.setTitle("Patchalyzer - TESTMODE");
+        }
+
+        // see onOptionsItemSelected
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        displayCutline();
+
+        if (savedInstanceState != null) {
+            //TODO: Move this to sharedprefs?
+            currentPatchlevelDate = savedInstanceState.getString("currentPatchlevelDate");
+        }
+
+        if(TestUtils.isTooOldAndroidAPIVersion()){
+            startTestButton.setEnabled(false);
+            progressBox.setVisibility(View.INVISIBLE);
+            showMetaInformation(this.getResources().getString(R.string.patchalyzer_too_old_android_api_level));
+        }
+        else {
+            initDatabase();
+            restoreState();
+        }
+    }
+
     protected ActivityState getActivityState() {
         SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
         return ActivityState.valueOf(settings.getString("state", ActivityState.PATCHLEVEL_DATES.toString()));
@@ -87,7 +137,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     // Saves ActivityState to sharedPrefs and triggers UI reload if PatchalyzerMainActivity.instance exists
     protected void setActivityState(ContextWrapper context, ActivityState state) {
-
 
         Log.d(Constants.LOG_TAG,"Writing " + state.toString() + " state to sharedPrefs");
         SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
@@ -249,49 +298,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         legendView.setBackgroundColor(Color.TRANSPARENT);
         legendView.loadData(html,"text/html",null);
     }
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        this.callbacks = new TestCallbacks();
-        Log.d(Constants.LOG_TAG, "onCreate() called");
-        handler = new Handler(Looper.getMainLooper());
-        setContentView(R.layout.activity_patchalyzer);
-        startTestButton = (Button) findViewById(R.id.btnDoIt);
-        webViewContent = (ScrollView) findViewById(R.id.scrollViewTable);
-        statusTextView = (TextView) findViewById(R.id.textView);
-        percentageText = (TextView) findViewById(R.id.textPercentage);
-        legendView = (WebView) findViewById(R.id.legend);
-        metaInfoText = (ScrollView) findViewById(R.id.scrollViewText);
-        //metaInfoText.setBackgroundColor(Color.TRANSPARENT);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
-        progressBox = (LinearLayout) findViewById(R.id.progress_box);
-        statusTextView.setText("");
-        percentageText.setText("");
-        ActionBar actionBar = getActionBar();
-
-
-        if(!Constants.IS_TEST_MODE) {
-            actionBar.setTitle("Patchalyzer");
-            actionBar.setSubtitle("App ID: "+TestUtils.getAppId(this));
-        }else{
-            actionBar.setTitle("Patchalyzer - TESTMODE");
-        }
-
-        // see onOptionsItemSelected
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        displayCutline();
-
-        if (savedInstanceState != null) {
-            //TODO: Move this to sharedprefs?
-            currentPatchlevelDate = savedInstanceState.getString("currentPatchlevelDate");
-        }
-
-        initDatabase();
-
-        restoreState();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -334,19 +341,19 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
-        intent.setAction(ITestExecutorServiceInterface.class.getName());
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        if(!TestUtils.isTooOldAndroidAPIVersion()) {
+            Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
+            intent.setAction(ITestExecutorServiceInterface.class.getName());
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
-        TestExecutorService.cancelNonStickyNotifications(this);
+            TestExecutorService.cancelNonStickyNotifications(this);
+        }
         isActivityActive = true;
-
     }
 
 
 
     private void startServiceIfNotRunning(){
-
         try {
             if (mITestExecutorService == null || !mITestExecutorService.isAnalysisRunning()) {
                 Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
@@ -382,10 +389,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 setButtonCancelAnalysis();
                 progressBox.setVisibility(View.VISIBLE);
                 resultChart.setVisibility(View.INVISIBLE);
+                resultChart.setAnalysisRunning(true);
                 webViewContent.setVisibility(View.INVISIBLE);
                 showMetaInformation(getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
             } else {
                 // Analysis is not running
+                resultChart.setAnalysisRunning(false);
                 setButtonStartAnalysis();
                 progressBox.setVisibility(View.INVISIBLE);
                 if (TestUtils.getAnalysisResult(this) == null) {
@@ -449,24 +458,25 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
 
     private void startTest(){
+        if(!TestUtils.isTooOldAndroidAPIVersion()) {
+            resultChart.resetCounts();
+            resultChart.invalidate();
+            TestUtils.clearSavedAnalysisResult(this);
 
-        resultChart.resetCounts();
-        resultChart.invalidate();
-        TestUtils.clearSavedAnalysisResult(this);
-
-        if(TestUtils.isConnectedToInternet(this)) {
-            noCVETestsForApiLevelMessage = null;
-            clearTable();
-            if(Constants.IS_TEST_MODE && !requestSdcardPermission()) {
-                return;
+            if (TestUtils.isConnectedToInternet(this)) {
+                noCVETestsForApiLevelMessage = null;
+                clearTable();
+                if (Constants.IS_TEST_MODE && !requestSdcardPermission()) {
+                    return;
+                }
+                startServiceIfNotRunning();
+                // restoreState should be called via callback
+            } else {
+                //no internet connection
+                Log.w(Constants.LOG_TAG, "Not testing, because of missing internet connection.");
+                showNoInternetConnectionDialog();
+                restoreState();
             }
-            startServiceIfNotRunning();
-            // restoreState should be called via callback
-        }else{
-            //no internet connection
-            Log.w(Constants.LOG_TAG,"Not testing, because of missing internet connection.");
-            showNoInternetConnectionDialog();
-            restoreState();
         }
     }
 
@@ -741,21 +751,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         showMetaInformation(information.toString());
     }
 
-    /**
-     * Simple method to dump the size of all components to debug layout problems
-     * @param v
-     * @param prefix
-     */
-    private void dumpLayout(View v, String prefix){
-        Log.i(Constants.LOG_TAG, "dumpLayout(): " + prefix + ": w=" + v.getWidth() + "  h=" + v.getHeight());
-        if(v instanceof ViewGroup) {
-            ViewGroup vg = (ViewGroup) v;
-            for (int i = 0; i < vg.getChildCount(); i++) {
-                View subView = vg.getChildAt(i);
-                dumpLayout(subView, prefix + ", " + i);
-            }
-        }
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         Log.d(Constants.LOG_TAG, "Received permission request result; code: " + requestCode);

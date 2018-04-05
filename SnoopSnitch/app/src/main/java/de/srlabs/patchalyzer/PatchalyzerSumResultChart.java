@@ -34,7 +34,7 @@ import de.srlabs.snoopsnitch.R;
 
 import de.srlabs.patchalyzer.TestUtils;
 
-/**This UI element visually summarizes the patchalyzer test results in a bar chart
+/**This UI element visually summarizes the patchalyzer test results in a horizontal,rectangular bar chart
  * Created by jonas on 20.02.18.
  */
 
@@ -48,6 +48,7 @@ public class PatchalyzerSumResultChart extends View {
     private boolean isSmall = false;
     private boolean drawBorder = true;
     static HashMap<String, ResultPart> parts = new HashMap<String, ResultPart>();
+    private static boolean isAnalysisRunning = false;
     private static JSONObject resultToDrawFrom = null;
     private final boolean PAINT_DEBUG = false; //set to true to e.g. see center of drawn parts
 
@@ -79,6 +80,10 @@ public class PatchalyzerSumResultChart extends View {
         parts.put("missing", new ResultPart(0, Constants.COLOR_MISSING));
         parts.put("notAffected", new ResultPart(0, Constants.COLOR_NOTAFFECTED));
         parts.put("notClaimed", new ResultPart(0, Constants.COLOR_NOTCLAIMED));
+    }
+
+    public void setAnalysisRunning(boolean running){
+        isAnalysisRunning = running;
     }
 
     public void increasePatched(int addition) {
@@ -118,17 +123,11 @@ public class PatchalyzerSumResultChart extends View {
             resultToDrawFrom = null;
         }
         this.canvas = canvas;
-        drawResultChart();
-    }
 
-    private void drawResultChart() {
         chartOffsetTopBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
-        Paint paint = new Paint();
-
         float marginleftright = getWidth() * 0.1f;
         float chartWidth = getWidth() - marginleftright;
         float chartHeight;
-        float textSize;
 
         //apply xml arguments
         if (isSmall) {
@@ -136,7 +135,6 @@ public class PatchalyzerSumResultChart extends View {
         } else {
             chartHeight = getHeight() * 0.8f;
         }
-        textSize = chartHeight * 0.6f;
 
         float borderWidth = chartHeight * 0.025f;
 
@@ -145,8 +143,74 @@ public class PatchalyzerSumResultChart extends View {
         for (ResultPart part : parts.values()) {
             sumCVEs += part.getCount();
         }
+
+        if(sumCVEs > 0 && !TestUtils.isTooOldAndroidAPIVersion()) {
+            drawResults(sumCVEs, chartHeight, marginleftright);
+        }
+        else{
+            drawNoResults(chartHeight, chartWidth, marginleftright);
+        }
+
+        //finally draw borders around chart
+        if (drawBorder) {
+            drawBorders(borderWidth, chartWidth, chartHeight, marginleftright);
+        }
+    }
+
+    private void drawNoResults(float chartHeight, float chartWidth, float marginleftright){
+        //default (no test results available)
+        Paint paint = new Paint();
+        float startX = marginleftright / 2f;
+        float textSize = chartHeight * 0.35f;
+
+        //draw chart with gray background
+        paint.setColor(this.getResources().getColor(R.color.common_button_state_default));
+        canvas.drawRect(new RectF(startX, chartOffsetTopBottom, startX + chartWidth, chartOffsetTopBottom + chartHeight), paint);
+
+        String text = null;
+        /*if (TestExecutorService.instance == null) {
+            text = this.getResources().getString(R.string.patchalyzer_no_test_result);
+        } else {
+            text = this.getResources().getString(R.string.patchalyzer_analysis_in_progress);
+        }*/
+        if(TestUtils.isTooOldAndroidAPIVersion()){
+            text = this.getResources().getString(R.string.patchalyzer_too_old_android_api_level_result_chart);
+        }
+        else if(isAnalysisRunning){
+            text = this.getResources().getString(R.string.patchalyzer_analysis_in_progress);
+        }
+        else {
+            text = this.getResources().getString(R.string.patchalyzer_no_test_result);
+        }
+
+        //calculate centered text position
+        float left = marginleftright;
+        float right = chartWidth;
+        float top = chartOffsetTopBottom;
+        float bottom = chartHeight + chartOffsetTopBottom;
+
+        if(PAINT_DEBUG) {
+            //indicate center of chart with blue line
+            paint.setColor(Color.BLUE);
+            paint.setStrokeWidth(2f);
+            canvas.drawLine((right - left) / 2f, top, (right - left) / 2f, bottom, paint);
+        }
+
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(textSize);
+        paint.setAntiAlias(true);
+        drawCenteredText(text, paint, left, right, top, bottom);
+
+    }
+
+    private void drawResults(int sumCVEs, float chartHeight, float marginleftright) {
+        Paint paint = new Paint();
+        float chartWidth = getWidth() - marginleftright;
+        float borderWidth = chartHeight * 0.025f;
         float startX = marginleftright / 2f;
         float partWidth;
+        float textSize = chartHeight * 0.5f;
+
         if (sumCVEs > 0) {
             //draw parts in list order
             for (String key : drawOrder) {
@@ -176,48 +240,19 @@ public class PatchalyzerSumResultChart extends View {
                 }
                 startX = partWidth;
             }
-        } else {
-            //default (no test results available)
-            paint.setColor(this.getResources().getColor(R.color.common_button_state_default));
-            canvas.drawRect(new RectF(startX, chartOffsetTopBottom, startX + chartWidth, chartOffsetTopBottom + chartHeight), paint);
-
-            String text = null;
-            /*if (TestExecutorService.instance == null) {
-                text = this.getResources().getString(R.string.patchalyzer_no_test_result);
-            } else {
-                text = this.getResources().getString(R.string.patchalyzer_analysis_in_progress);
-            }*/
-            text = this.getResources().getString(R.string.patchalyzer_no_test_result);
-
-            //calculate centered text position
-            float left = marginleftright;
-            float right = chartWidth;
-            float top = chartOffsetTopBottom;
-            float bottom = chartHeight + chartOffsetTopBottom;
-
-            if(PAINT_DEBUG) {
-                //indicate center of chart with blue line
-                paint.setColor(Color.BLUE);
-                paint.setStrokeWidth(2f);
-                canvas.drawLine((right - left) / 2f, top, (right - left) / 2f, bottom, paint);
-            }
-
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(textSize);
-            paint.setAntiAlias(true);
-            drawCenteredText(text, paint, left, right, top, bottom);
         }
-
-        if (drawBorder) {
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setColor(Color.DKGRAY);
-            paint.setStrokeWidth(borderWidth);
-            //Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
-            canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth/2 , paint);
-        }
-
     }
-    
+
+    private void drawBorders(float borderWidth, float chartWidth, float chartHeight, float marginleftright) {
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.DKGRAY);
+        paint.setStrokeWidth(borderWidth);
+        //Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
+        canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth/2 , paint);
+    }
+
+
     private void drawCenteredText(String text, Paint paint, float left, float right, float top, float bottom){
         Rect textBoundsRect = new Rect();
         paint.getTextBounds(text, 0, text.length(), textBoundsRect);

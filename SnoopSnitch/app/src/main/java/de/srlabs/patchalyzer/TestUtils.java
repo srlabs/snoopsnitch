@@ -782,4 +782,8 @@ public class TestUtils {
         return analysisResultJSON.toString();
     }
 
+    public static boolean isTooOldAndroidAPIVersion() {
+        return Build.VERSION.SDK_INT < 21;
+    }
+
 }

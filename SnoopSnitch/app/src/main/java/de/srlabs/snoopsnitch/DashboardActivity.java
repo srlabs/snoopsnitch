@@ -31,6 +31,7 @@ import junit.framework.Test;
 
 import de.srlabs.patchalyzer.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.TestExecutorService;
+import de.srlabs.patchalyzer.TestUtils;
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
@@ -136,13 +137,15 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
 
         resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
-        resultChart.loadValuesFromCachedResult(this);
         resultChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showPatchalyzer();
             }
         });
+        if(!TestUtils.isTooOldAndroidAPIVersion()) {
+            resultChart.loadValuesFromCachedResult(this);
+        }
 
         checkCompatibilityAndDisableFunctions();
 

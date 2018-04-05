@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.srlabs.patchalyzer.PatchalyzerMainActivity;
+import de.srlabs.patchalyzer.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -67,7 +68,8 @@ public class StartupActivity extends Activity {
     }
 
     private void proceedAppFlow() {
-        showNewPatchalyzerFeatureOnce();
+        if(!TestUtils.isTooOldAndroidAPIVersion()) //do not show notification, if users can not use it anyway
+            showNewPatchalyzerFeatureOnce();
 
         //continue with normal startup
         if (MsdConfig.getFirstRun(this)) {
