@@ -384,18 +384,24 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         ActivityState tempNonPersistentState = nonPersistentState;
         try {
             if (mITestExecutorService != null && mITestExecutorService.isAnalysisRunning()) {
+                // Analysis is running, show progress bar
                 startTestButton.setEnabled(false);
                 progressBox.setVisibility(View.VISIBLE);
                 resultChart.setVisibility(View.INVISIBLE);
                 webViewContent.setVisibility(View.INVISIBLE);
                 showMetaInformation("Testing your phone...");
             } else {
+                // Analysis is not running
                 startTestButton.setEnabled(true);
                 progressBox.setVisibility(View.INVISIBLE);
                 if (TestUtils.getAnalysisResult(this) == null) {
+                    // No analysis result available
                     resultChart.setVisibility(View.INVISIBLE);
                     webViewContent.setVisibility(View.INVISIBLE);
+                    showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": "
+                            + TestUtils.getPatchlevelDate() +"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
                 } else {
+                    // Previous analysis result available, show results table
                     resultChart.setVisibility(View.VISIBLE);
                     webViewContent.setVisibility(View.VISIBLE);
                     showPatchlevelDateNoTable();
@@ -405,7 +411,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             Log.d(Constants.LOG_TAG,"RemoteException in restoreState" , e);
         }
         if(tempNonPersistentState == ActivityState.VULNERABILITY_LIST) {
-            // TODO: show specific vulnerability here
+            // show vulnerability details for a specific category
             showDetailsNoTable(currentPatchlevelDate);
         }
     }
@@ -419,9 +425,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     private void startTest(){
 
-        progressBox.setVisibility(View.VISIBLE);
-        resultChart.setVisibility(View.INVISIBLE);
         resultChart.resetCounts();
+        resultChart.invalidate();
         TestUtils.clearSavedAnalysisResult(this);
 
         if(TestUtils.isConnectedToInternet(this)) {
@@ -434,16 +439,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             }
             startServiceIfNotRunning();
 
-            //statusTextView.setText("Testing your phone...");
-            metaInfoText.removeAllViews();
-            metaInfoText.addView(statusTextView);
-
-            restoreState();
         }else{
             //no internet connection
             Log.w(Constants.LOG_TAG,"Not testing, because of missing internet connection.");
             showNoInternetConnectionDialog();
         }
+        restoreState();
     }
 
     private boolean requestSdcardPermission(){
@@ -475,8 +476,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         try{
             JSONObject testResults = TestUtils.getAnalysisResult(this);
             if(TestUtils.getAnalysisResult(this) == null) {
-                // TODO: This could be used further down to display the analysis execution date.
-                showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": " + refPatchlevelDate+"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
                 return;
             }
             Vector<String> categories = new Vector<String>();
