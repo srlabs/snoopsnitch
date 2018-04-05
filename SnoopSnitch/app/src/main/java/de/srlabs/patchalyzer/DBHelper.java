@@ -28,13 +28,11 @@ import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 public class DBHelper {
 
     private SQLiteDatabase db;
-    private Context context;
     private static final int DB_LOCKED_RETRIES = 3;
     private static final String mTAG = "DBHelper: ";
 
 
     public DBHelper(Context context){
-        this.context = context;
         MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
     }
 

@@ -1,15 +1,10 @@
 package de.srlabs.patchalyzer.signatures;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Pattern;
 
-import de.srlabs.patchalyzer.ProcessHelper;
 import de.srlabs.patchalyzer.TestUtils;
 
 
@@ -22,7 +17,6 @@ public abstract class Signature {
 	private String signatureString;
 	private String symbol;
 	private boolean doStrip;
-	//private Context context;
 	private HashMap<String, SymbolInformation> symTable;
 
 	public Signature() {}
@@ -32,7 +26,6 @@ public abstract class Signature {
 		this.symbol = symbol;
 		this.filePath = filePath;
 		this.doStrip = doStrip;
-		//this.context = context;
 	}
 
 	public boolean check() throws Exception {

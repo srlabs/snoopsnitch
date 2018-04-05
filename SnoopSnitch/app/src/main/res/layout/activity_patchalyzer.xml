@@ -34,7 +34,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="Perform test"
+                android:text="@string/patchalyzer_button_start_analysis"
                 android:textColor="@drawable/custom_upload_button_color"
                 android:textStyle="bold" />
 
@@ -137,7 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/common_sectionBackground"
-            android:fadeScrollbars="false"></ScrollView>
+            android:fadeScrollbars="false"/>
 
         <View
             android:id="@+id/View44"

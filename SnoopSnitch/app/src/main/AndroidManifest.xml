@@ -152,7 +152,7 @@
         <activity
             android:name="de.srlabs.patchalyzer.PatchalyzerMainActivity"
             android:label="Patchalyzer"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/ic_patchalyzer"
             android:screenOrientation="portrait"
             android:launchMode="singleInstance"
             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">

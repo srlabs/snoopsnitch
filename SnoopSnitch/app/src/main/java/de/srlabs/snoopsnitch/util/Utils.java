@@ -562,9 +562,7 @@ public class Utils {
 
         //check default SIM card
         int simState = telMgr.getSimState();
-        if (simState == TelephonyManager.SIM_STATE_READY)
-            return true;
-        return false;
+        return simState == TelephonyManager.SIM_STATE_READY;
     }
 
     // http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android

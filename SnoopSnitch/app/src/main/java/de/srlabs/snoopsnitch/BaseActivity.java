@@ -256,7 +256,7 @@ public class BaseActivity extends FragmentActivity {
     }
 
     public static String setAppId(Context context) {
-        if (MsdConfig.getAppId(context) == "") {
+        if (MsdConfig.getAppId(context).equals("")) {
             MsdConfig.setAppId(context, Utils.generateAppId());
         }
         return MsdConfig.getAppId(context);

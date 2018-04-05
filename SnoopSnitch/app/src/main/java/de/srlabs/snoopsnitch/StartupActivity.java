@@ -22,7 +22,6 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.patchalyzer.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
@@ -30,7 +29,6 @@ import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.PermissionChecker;
-import de.srlabs.snoopsnitch.util.Utils;
 
 /**
  * This class is launched when starting the App. It will display a dialog if the

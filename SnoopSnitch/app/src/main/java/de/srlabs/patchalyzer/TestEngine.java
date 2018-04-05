@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -45,74 +44,79 @@ public class TestEngine {
             JSONObject test = (JSONObject) testObject;
             assert (test.has("testType"));
             String testType = test.getString("testType");
-            if (testType.equals("TRUE")) {
-                return true;
-            } else if (testType.equals("FALSE")) {
-                return false;
-            } else if (testType.equals("AND")) {
-                JSONArray subtests = test.getJSONArray("subtests");
-                boolean nullFound = false;
-                for (int i = 0; i < subtests.length(); i++) {
-                    Object subtest = subtests.get(i);
-                    Boolean subtestResult = runTest(cache, subtest);
-                    if(subtestResult == null)
-                        nullFound = true;
-                    else if(!subtestResult)
-                        return false;
+            switch (testType) {
+                case "TRUE":
+                    return true;
+                case "FALSE":
+                    return false;
+                case "AND": {
+                    JSONArray subtests = test.getJSONArray("subtests");
+                    boolean nullFound = false;
+                    for (int i = 0; i < subtests.length(); i++) {
+                        Object subtest = subtests.get(i);
+                        Boolean subtestResult = runTest(cache, subtest);
+                        if (subtestResult == null)
+                            nullFound = true;
+                        else if (!subtestResult)
+                            return false;
+                    }
+                    if (nullFound)
+                        return null;
+                    return true;
                 }
-                if(nullFound)
-                    return null;
-                return true;
-            } else if (testType.equals("NAND")) {
-                JSONArray subtests = test.getJSONArray("subtests");
-                boolean nullFound = false;
-                for (int i = 0; i < subtests.length(); i++) {
-                    Object subtest = subtests.get(i);
-                    Boolean subtestResult = runTest(cache, subtest);
-                    if(subtestResult == null)
-                        nullFound = true;
-                    else if(!subtestResult)
-                        return true;
+                case "NAND": {
+                    JSONArray subtests = test.getJSONArray("subtests");
+                    boolean nullFound = false;
+                    for (int i = 0; i < subtests.length(); i++) {
+                        Object subtest = subtests.get(i);
+                        Boolean subtestResult = runTest(cache, subtest);
+                        if (subtestResult == null)
+                            nullFound = true;
+                        else if (!subtestResult)
+                            return true;
+                    }
+                    if (nullFound)
+                        return null;
+                    return false;
                 }
-                if(nullFound)
-                    return null;
-                return false;
-            } else if (testType.equals("OR")) {
-                JSONArray subtests = test.getJSONArray("subtests");
-                boolean nullFound = false;
-                for (int i = 0; i < subtests.length(); i++) {
-                    Object subtest = subtests.get(i);
-                    Boolean subtestResult = runTest(cache, subtest);
-                    if(subtestResult == null)
-                        nullFound = true;
-                    else  if (subtestResult == true)
-                        return true;
+                case "OR": {
+                    JSONArray subtests = test.getJSONArray("subtests");
+                    boolean nullFound = false;
+                    for (int i = 0; i < subtests.length(); i++) {
+                        Object subtest = subtests.get(i);
+                        Boolean subtestResult = runTest(cache, subtest);
+                        if (subtestResult == null)
+                            nullFound = true;
+                        else if (subtestResult == true)
+                            return true;
+                    }
+                    if (nullFound)
+                        return null;
+                    return false;
                 }
-                if(nullFound)
-                    return null;
-                return false;
-            } else if (testType.equals("NOR")) {
-                JSONArray subtests = test.getJSONArray("subtests");
-                boolean nullFound = false;
-                for (int i = 0; i < subtests.length(); i++) {
-                    Object subtest = subtests.get(i);
-                    Boolean subtestResult = runTest(cache, subtest);
-                    if(subtestResult == null)
-                        nullFound = true;
-                    else  if (subtestResult == true)
-                        return false;
+                case "NOR": {
+                    JSONArray subtests = test.getJSONArray("subtests");
+                    boolean nullFound = false;
+                    for (int i = 0; i < subtests.length(); i++) {
+                        Object subtest = subtests.get(i);
+                        Boolean subtestResult = runTest(cache, subtest);
+                        if (subtestResult == null)
+                            nullFound = true;
+                        else if (subtestResult == true)
+                            return false;
+                    }
+                    if (nullFound)
+                        return null;
+                    return true;
                 }
-                if(nullFound)
-                    return null;
-                return true;
-            } else if (testType.equals("NOT")) {
-                Object subtest = test.get("subtest");
-                Boolean subtestResult = runTest(cache, subtest);
-                if(subtestResult == null)
-                    return null;
-                return !subtestResult;
-            } else{
-                throw new IllegalArgumentException("Unknown testType " + testType);
+                case "NOT":
+                    Object subtest = test.get("subtest");
+                    Boolean subtestResult = runTest(cache, subtest);
+                    if (subtestResult == null)
+                        return null;
+                    return !subtestResult;
+                default:
+                    throw new IllegalArgumentException("Unknown testType " + testType);
             }
         }
     }
@@ -130,222 +134,213 @@ public class TestEngine {
             throw new IllegalStateException("basic test has no testtype information: "+test.toString());
 
         String testType = test.getString("testType");
-        if(testType.equals("CHIPSET_VENDOR")){
-            if(TestUtils.getChipVendor().equals(test.getString("vendor"))){
+        switch (testType) {
+            case "CHIPSET_VENDOR":
+                return TestUtils.getChipVendor().equals(test.getString("vendor"));
+            case "CHIPSET_VENDOR_OR_UNKNOWN":
+                String vendor = TestUtils.getChipVendor();
+                return vendor.equals("UNKNOWN") || vendor.equals(test.getString("vendor"));
+            case "ANDROID_VERSION_LESS_EQUAL":
+                return true; // TODO
+
+            case "FILE_EXISTS": {
+                String filename = test.getString("filename");
+                if (Constants.IS_TEST_MODE)
+                    filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+                TestUtils.validateFilename(filename);
+                File f = new File(filename);
+                return f.exists();
+            }
+            case "FILE_CONTAINS_SUBSTRING": {
+                String filename = test.getString("filename");
+                if (Constants.IS_TEST_MODE)
+                    filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+                byte[] needle;
+                if (test.has("substring")) {
+                    if (test.has("substringB64"))
+                        throw new IllegalArgumentException("Test FILE_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both");
+                    needle = test.getString("substring").getBytes();
+                } else {
+                    needle = Base64.decode(test.getString("substringB64"), 0);
+                }
+                TestUtils.validateFilename(filename);
+                File f = new File(filename);
+                if (!f.exists())
+                    return null;
+                FileInputStream fis = new FileInputStream(f);
+                BufferedInputStream bis = new BufferedInputStream(fis, 4096);
+                return TestUtils.streamContainsSubstring(bis, needle);
+            }
+            case "XZ_CONTAINS_SUBSTRING": {
+                String filename = test.getString("filename");
+                if (Constants.IS_TEST_MODE)
+                    filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+                byte[] needle;
+                if (test.has("substring")) {
+                    if (test.has("substringB64"))
+                        throw new IllegalArgumentException("Test XZ_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both");
+                    needle = test.getString("substring").getBytes();
+                } else {
+                    needle = Base64.decode(test.getString("substringB64"), 0);
+                }
+                TestUtils.validateFilename(filename);
+                File f = new File(filename);
+                if (!f.exists())
+                    return null;
+                String[] cmd = new String[3];
+                cmd[0] = "/data/data/de.srlabs.patchalyzer/lib/libbusybox.so";
+                cmd[1] = "xzcat";
+                cmd[2] = filename;
+                Process p = Runtime.getRuntime().exec(cmd);
+                BufferedInputStream bis = new BufferedInputStream(p.getInputStream(), 4096);
+                return TestUtils.streamContainsSubstring(bis, needle);
+            }
+            case "ZIP_CONTAINS_SUBSTRING": {
+                String filename = test.getString("zipFile");
+                if (Constants.IS_TEST_MODE)
+                    filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+                String zipitem = test.getString("zipItem");
+                byte[] needle;
+                if (filename.equals("/system/framework/services.jar")) {
+                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
+                } else if (Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + "/system/framework/services.jar")) {
+                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
+                }
+                if (test.has("substring")) {
+                    if (test.has("substringB64"))
+                        throw new IllegalArgumentException("Test FILE_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both");
+                    needle = test.getString("substring").getBytes();
+                } else {
+                    needle = Base64.decode(test.getString("substringB64"), 0);
+                }
+                if (filename.equals("/system/framework/services.jar")) {
+                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
+                } else if (Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + "/system/framework/services.jar")) {
+                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
+                }
+                TestUtils.validateFilename(filename);
+                File f = new File(filename);
+                if (!f.exists())
+                    return null;
+                if (filename.equals("/system/framework/services.jar")) {
+                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
+                } else if (Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + "/system/framework/services.jar")) {
+                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
+                }
+                ZipFile zf = new ZipFile(f);
+                ZipEntry ze = zf.getEntry(zipitem);
+                if (ze == null)
+                    return null;
+                InputStream is = zf.getInputStream(ze);
+                BufferedInputStream bis = new BufferedInputStream(is, 4096);
+                boolean result = TestUtils.streamContainsSubstring(bis, needle);
+                if (filename.equals("/system/framework/services.jar")) {
+                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
+                } else if (Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + "/system/framework/services.jar")) {
+                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
+                }
+                return result;
+            }
+            case "ZIP_ENTRY_EXISTS": {
+                String filename = test.getString("zipFile");
+                if (Constants.IS_TEST_MODE)
+                    filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
+                String zipitem = test.getString("zipItem");
+                TestUtils.validateFilename(filename);
+                File f = new File(filename);
+                if (!f.exists())
+                    return null;
+                ZipFile zf = new ZipFile(f);
+                ZipEntry ze = zf.getEntry(zipitem);
+                if (ze == null)
+                    return false;
                 return true;
-            } else{
+            }
+            case "BINARY_CONTAINS_SYMBOL":
+                return runBinaryContainsSymbolTest(test, null);
+            case "DISAS_FUNCTION_CONTAINS_STRING":
+                return runDisasFunctionContainsStringTest(test, null);
+            case "DISAS_FUNCTION_MATCHES_REGEX":
+                return runDisasFunctionMatchesRegexTest(test, null);
+            case "MASK_SIGNATURE_SYMBOL":
+                return runMaskSignatureTest(test, null);
+            case "JAVA_TEST":
+                String testClassName = test.getString("testClassName");
+                // Make sure that the class name only contains valid characters
+                for (int i = 0; i < testClassName.length(); i++) {
+                    char c = testClassName.charAt(i);
+                    if (c >= 'a' && c <= 'z') {
+                        continue;
+                    }
+                    if (c >= 'A' && c <= 'Z') {
+                        continue;
+                    }
+                    if (c >= '0' && c <= '9') {
+                        continue;
+                    }
+                    if (c == '_') {
+                        continue;
+                    }
+                    throw new IllegalStateException("Invalid character '" + c + "' in  testClassName '" + testClassName + "'");
+                }
+                // Get an instance of testClassName via Reflection
+                // If the test class isn't included, it will throw an Exception (which will be reported to the server).
+                Class c = Class.forName(AslrTest.class.getPackage().getName() + "." + testClassName);
+                JavaBasicTest javaBasicTest = (JavaBasicTest) c.newInstance();
+                // Run the test, it may also throw an Exception.
+                return javaBasicTest.runTest(context);
+            case "ROLLING_SIGNATURE": {
+                String filename = test.getString("filename");
+                String rollingSignature = test.getString("rollingSignature");
+                RollingSignature signature = getRollingSignatureForTest(test);
+
+                MultiSignatureScanner scanner = new MultiSignatureScanner();
+                scanner.addSignatureChecker(signature);
+
+                Set<SymbolInformation> results = scanner.scanFile(filename);
+                for (SymbolInformation symbolInformation : results) {
+                    if (symbolInformation.getSymbolName().equals(rollingSignature))
+                        return true;
+                }
+                return false;
+
+            }
+            case "COMBINED_SIGNATURE": {
+                String filename = test.getString("filename");
+                //String rollingSignatureString = test.getString("rollingSignature"); -> already fetched in getRollingSignatureForTest()
+                String maskSignatureString = test.getString("maskSignature");
+
+                RollingSignature rollingSignature = getRollingSignatureForTest(test);
+
+                MultiSignatureScanner scanner = new MultiSignatureScanner();
+                scanner.addSignatureChecker(rollingSignature);
+
+
+                MaskSignature maskSignatureChecker = new MaskSignature();
+                maskSignatureChecker.parse(maskSignatureString);
+
+                Set<SymbolInformation> results = scanner.scanFile(filename);
+
+                for (SymbolInformation symbolInfo : results) {
+                    long symbolPos = symbolInfo.getPosition();
+                    int symbolLength = maskSignatureChecker.getCodeLength();
+
+                    //read file content region to byte array
+                    byte[] codeBuf = new byte[symbolLength];
+                    RandomAccessFile file = new RandomAccessFile(filename, "r");
+                    file.seek(symbolPos);
+                    file.read(codeBuf);
+                    file.close();
+
+                    //TODO cache codeBuf for mask signature test in TestBundle
+
+                    if (maskSignatureChecker.checkCodeBuf(codeBuf))
+                        return true;
+                }
                 return false;
             }
-        } else if(testType.equals("CHIPSET_VENDOR_OR_UNKNOWN")){
-            String vendor = TestUtils.getChipVendor();
-            if(vendor.equals("UNKNOWN") || vendor.equals(test.getString("vendor"))){
-                return true;
-            } else{
-                return false;
-            }
-        } else if(testType.equals("ANDROID_VERSION_LESS_EQUAL")){
-            return true; // TODO
-        } else if(testType.equals("FILE_EXISTS")){
-            String filename = test.getString("filename");
-            if(Constants.IS_TEST_MODE)
-                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
-            TestUtils.validateFilename(filename);
-            File f = new File(filename);
-            return f.exists();
-        } else if(testType.equals("FILE_CONTAINS_SUBSTRING")){
-            String filename = test.getString("filename");
-            if(Constants.IS_TEST_MODE)
-                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
-            byte[] needle;
-            if(test.has("substring")){
-                if(test.has("substringB64"))
-                    throw new IllegalArgumentException("Test FILE_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both");
-                needle = test.getString("substring").getBytes();
-            } else{
-                needle = Base64.decode(test.getString("substringB64"), 0);
-            }
-            TestUtils.validateFilename(filename);
-            File f = new File(filename);
-            if(!f.exists())
-                return null;
-            FileInputStream fis = new FileInputStream(f);
-            BufferedInputStream bis = new BufferedInputStream(fis, 4096);
-            return TestUtils.streamContainsSubstring(bis, needle);
-        } else if(testType.equals("XZ_CONTAINS_SUBSTRING")){
-            String filename = test.getString("filename");
-            if(Constants.IS_TEST_MODE)
-                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
-            byte[] needle;
-            if(test.has("substring")){
-                if(test.has("substringB64"))
-                    throw new IllegalArgumentException("Test XZ_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both");
-                needle = test.getString("substring").getBytes();
-            } else{
-                needle = Base64.decode(test.getString("substringB64"), 0);
-            }
-            TestUtils.validateFilename(filename);
-            File f = new File(filename);
-            if(!f.exists())
-                return null;
-            String[] cmd = new String[3];
-            cmd[0] = "/data/data/de.srlabs.patchalyzer/lib/libbusybox.so";
-            cmd[1] = "xzcat";
-            cmd[2] = filename;
-            Process p = Runtime.getRuntime().exec(cmd);
-            BufferedInputStream bis = new BufferedInputStream(p.getInputStream(), 4096);
-            return TestUtils.streamContainsSubstring(bis, needle);
-        } else if(testType.equals("ZIP_CONTAINS_SUBSTRING")){
-            String filename = test.getString("zipFile");
-            if(Constants.IS_TEST_MODE)
-                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
-            String zipitem = test.getString("zipItem");
-            byte[] needle;
-            if(filename.equals("/system/framework/services.jar")){
-                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
-            }
-            else if(Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/framework/services.jar")){
-                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
-            }
-            if(test.has("substring")){
-                if(test.has("substringB64"))
-                    throw new IllegalArgumentException("Test FILE_CONTAINS_SUBSTRING can only use SUBSTRING or SUBSTRING_B64, not both");
-                needle = test.getString("substring").getBytes();
-            } else{
-                needle = Base64.decode(test.getString("substringB64"), 0);
-            }
-            if(filename.equals("/system/framework/services.jar")){
-                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
-            }
-            else if(Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/framework/services.jar")){
-                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
-            }
-            TestUtils.validateFilename(filename);
-            File f = new File(filename);
-            if(!f.exists())
-                return null;
-            if(filename.equals("/system/framework/services.jar")){
-                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
-            }
-            else if(Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/framework/services.jar")){
-                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
-            }
-            ZipFile zf = new ZipFile(f);
-            ZipEntry ze = zf.getEntry(zipitem);
-            if(ze == null)
-                return null;
-            InputStream is = zf.getInputStream(ze);
-            BufferedInputStream bis = new BufferedInputStream(is, 4096);
-            boolean result =  TestUtils.streamContainsSubstring(bis, needle);
-            if(filename.equals("/system/framework/services.jar")){
-                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
-            }
-            else if(Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/framework/services.jar")){
-                Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
-            }
-            return result;
-        } else if(testType.equals("ZIP_ENTRY_EXISTS")) {
-            String filename = test.getString("zipFile");
-            if(Constants.IS_TEST_MODE)
-                filename = Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + filename;
-            String zipitem = test.getString("zipItem");
-            TestUtils.validateFilename(filename);
-            File f = new File(filename);
-            if (!f.exists())
-                return null;
-            ZipFile zf = new ZipFile(f);
-            ZipEntry ze = zf.getEntry(zipitem);
-            if (ze == null)
-                return false;
-            return true;
-        }else if(testType.equals("BINARY_CONTAINS_SYMBOL")){
-            return runBinaryContainsSymbolTest(test,null);
-        } else if(testType.equals("DISAS_FUNCTION_CONTAINS_STRING")){
-            return runDisasFunctionContainsStringTest(test,null);
-        } else if(testType.equals("DISAS_FUNCTION_MATCHES_REGEX")){
-            return runDisasFunctionMatchesRegexTest(test,null);
-        }else if(testType.equals("MASK_SIGNATURE_SYMBOL")) {
-            return runMaskSignatureTest(test,null);
-        } else if(testType.equals("JAVA_TEST")){
-            String testClassName = test.getString("testClassName");
-            // Make sure that the class name only contains valid characters
-            for(int i=0;i<testClassName.length();i++){
-                char c = testClassName.charAt(i);
-                if(c >= 'a' && c <= 'z'){
-                    continue;
-                }
-                if(c >= 'A' && c <= 'Z'){
-                    continue;
-                }
-                if(c >= '0' && c <= '9'){
-                    continue;
-                }
-                if(c == '_') {
-                    continue;
-                }
-                throw new IllegalStateException("Invalid character '" + c + "' in  testClassName '" + testClassName + "'");
-            }
-            // Get an instance of testClassName via Reflection
-            // If the test class isn't included, it will throw an Exception (which will be reported to the server).
-            Class c = Class.forName(AslrTest.class.getPackage().getName() + "." + testClassName);
-            JavaBasicTest javaBasicTest = (JavaBasicTest) c.newInstance();
-            // Run the test, it may also throw an Exception.
-            return javaBasicTest.runTest(context);
-        }
-        else if(testType.equals("ROLLING_SIGNATURE")){
-            String filename = test.getString("filename");
-            String rollingSignature = test.getString("rollingSignature");
-            RollingSignature signature = getRollingSignatureForTest(test);
-
-            MultiSignatureScanner scanner = new MultiSignatureScanner();
-            scanner.addSignatureChecker(signature);
-
-            Set<SymbolInformation> results = scanner.scanFile(filename);
-            for(SymbolInformation symbolInformation : results){
-                if(symbolInformation.getSymbolName().equals(rollingSignature))
-                    return true;
-            }
-            return false;
-
-        }
-        else if(testType.equals("COMBINED_SIGNATURE")){
-            String filename = test.getString("filename");
-            //String rollingSignatureString = test.getString("rollingSignature"); -> already fetched in getRollingSignatureForTest()
-            String maskSignatureString = test.getString("maskSignature");
-
-            RollingSignature rollingSignature = getRollingSignatureForTest(test);
-
-            MultiSignatureScanner scanner = new MultiSignatureScanner();
-            scanner.addSignatureChecker(rollingSignature);
-
-
-
-            MaskSignature maskSignatureChecker = new MaskSignature();
-            maskSignatureChecker.parse(maskSignatureString);
-
-            Set<SymbolInformation> results = scanner.scanFile(filename);
-
-            for(SymbolInformation symbolInfo : results){
-                long symbolPos = symbolInfo.getPosition();
-                int symbolLength = maskSignatureChecker.getCodeLength();
-
-                //read file content region to byte array
-                byte[] codeBuf = new byte[symbolLength];
-                RandomAccessFile file = new RandomAccessFile(filename, "r");
-                file.seek(symbolPos);
-                file.read(codeBuf);
-                file.close();
-
-                //TODO cache codeBuf for mask signature test in TestBundle
-
-                if(maskSignatureChecker.checkCodeBuf(codeBuf))
-                    return true;
-            }
-
-            return false;
-
-        }
-        else{
-            throw new IllegalArgumentException("Unknown testType " + testType);
+            default:
+                throw new IllegalArgumentException("Unknown testType " + testType);
         }
     }
 
@@ -486,9 +481,8 @@ public class TestEngine {
 
         //TODO cache codeBuf for mask signature test in TestBundle
 
-        boolean result = signatureChecker.checkCodeBuf(codeBuf);
         //Log.d(Constants.LOG_TAG, "Signature check result: " + result);
-        return result;
+        return signatureChecker.checkCodeBuf(codeBuf);
     }
 
     private static RollingSignature getRollingSignatureForTest(JSONObject test){

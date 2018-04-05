@@ -241,7 +241,6 @@ public class MsdService extends Service {
         }
     }
 
-    ;
     AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
     Process helper;
@@ -782,7 +781,6 @@ public class MsdService extends Service {
                         }
                     }
 
-                    ;
                 };
                 t.start();
                 t.join(3000);
@@ -825,7 +823,6 @@ public class MsdService extends Service {
                         }
                     }
 
-                    ;
                 };
                 t.start();
                 t.join(3000);
@@ -1077,16 +1074,22 @@ public class MsdService extends Service {
                     } else if (line.startsWith("RAT:")) {
                         String parserRat = line.substring("RAT:".length()).trim();
                         info(parserLogging, "Parser RAT: " + parserRat);
-                        if (parserRat.equals("GSM")) {
-                            parserRatGeneration = 2;
-                        } else if (parserRat.equals("3G")) {
-                            parserRatGeneration = 3;
-                        } else if (parserRat.equals("LTE")) {
-                            parserRatGeneration = 4;
-                        } else if (parserRat.equals("UNKNOWN")) {
-                            parserRatGeneration = 0;
-                        } else {
-                            handleFatalError("Invalid RAT: output from parser: " + line);
+                        switch (parserRat) {
+                            case "GSM":
+                                parserRatGeneration = 2;
+                                break;
+                            case "3G":
+                                parserRatGeneration = 3;
+                                break;
+                            case "LTE":
+                                parserRatGeneration = 4;
+                                break;
+                            case "UNKNOWN":
+                                parserRatGeneration = 0;
+                                break;
+                            default:
+                                handleFatalError("Invalid RAT: output from parser: " + line);
+                                break;
                         }
                     } else {
                         info("Parser: " + line);
@@ -1233,7 +1236,6 @@ public class MsdService extends Service {
                                     }
                                 }
                             }
-                            ;
 
                             int numEvents = MsdServiceAnalysis.runEventAnalysis(MsdService.this, db);
                             if (numEvents > 0) {
@@ -1250,11 +1252,9 @@ public class MsdService extends Service {
                                     }
                                 }
                             }
-                            ;
                             if (MsdServiceAnalysis.runSecurityAnalysis(MsdService.this, db)) {
                                 sendStateChanged(StateChangedReason.SEC_METRICS_CHANGED);
                             }
-                            ;
                             lastAnalysisTime = System.currentTimeMillis();
                             lastAnalysisTimeMs = System.currentTimeMillis();
 
@@ -1726,12 +1726,12 @@ public class MsdService extends Service {
             info("Parser handshake OK");
         } else {
             this.parser = null;
-            String stderrMsg = "";
+            StringBuilder stderrMsg = new StringBuilder();
             for (int i = 0; i < 100; i++) {
                 String line = this.parserStderr.readLine();
                 if (line == null)
                     break;
-                stderrMsg += line + "\n";
+                stderrMsg.append(line).append("\n");
             }
             this.parserStdout = null;
             this.parserStdin = null;
@@ -1959,7 +1959,6 @@ public class MsdService extends Service {
                     shutdownDueToError(finalMsg, e);
                 }
 
-                ;
             }));
         } else {
             // Only send the first fatal error to the UI
@@ -2140,7 +2139,6 @@ public class MsdService extends Service {
                     int posSpace = line.indexOf(" ");
                     BigInteger startAddr = new BigInteger(line.substring(0, posMinus), 16);
                     BigInteger endAddr = new BigInteger(line.substring(posMinus + 1, posSpace), 16);
-                    ;
                     long mappingSize = endAddr.subtract(startAddr).longValue();
                     if (line.contains("[heap]")) {
                         heapSize += mappingSize;

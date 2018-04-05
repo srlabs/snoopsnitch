@@ -148,7 +148,6 @@ public class MsdServiceNotifications {
                             .setLargeIcon(icon)
                             // .setAutoCancel(true)
                             .setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title));
-            ;
             if (errorId == ERROR_ROOT_PRIVILEGES_DENIED) {
                 notificationBuilder.setContentText(service.getString(R.string.error_root_privileges_denied));
             }

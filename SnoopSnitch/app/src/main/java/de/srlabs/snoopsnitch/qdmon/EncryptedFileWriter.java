@@ -251,7 +251,6 @@ public class EncryptedFileWriter {
                         }
                     }
 
-                    ;
                 };
                 t.start();
                 t.join(3000);

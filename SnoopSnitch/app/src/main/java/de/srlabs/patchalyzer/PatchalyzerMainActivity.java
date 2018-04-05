@@ -31,7 +31,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -232,15 +231,15 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received finished()");
             handler.post(new Runnable() {
                 @Override
-                public void run() {;
-                JSONObject resultJSON = null;
+                public void run() {
+                    JSONObject resultJSON = null;
                 try {
                     resultJSON = new JSONObject(analysisResultString);
                 } catch (JSONException e) {
                     Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
                 }
                 resultChart.setAnalysisRunning(false);
-                resultChart.setResultToDrawFromOnNextUpdate(resultJSON);
+                PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(resultJSON);
                 TestUtils.saveAnalysisResultNonPersistent(resultJSON);
                 if (isActivityActive) {
                     restoreState();
@@ -253,7 +252,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received handleFatalError()");
             handler.post(new Runnable() {
                 @Override
-                public void run() {;
+                public void run() {
                     startTestButton.setEnabled(false);
                     resultChart.setAnalysisRunning(false);
                     TestUtils.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerMainActivity.this);

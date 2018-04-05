@@ -12,7 +12,7 @@ public class Constants {
     public static final boolean IS_TEST_MODE=false;
     public static final String TEST_MODE_BASIC_TEST_FILE_PREFIX = "/sdcard";
 
-    public static enum ActivityState {START, PATCHLEVEL_DATES, VULNERABILITY_LIST, TESTING};
+    public enum ActivityState {START, PATCHLEVEL_DATES, VULNERABILITY_LIST, TESTING}
 
     //colors
     public static final int COLOR_INCONCLUSIVE=0xFF7575EC;

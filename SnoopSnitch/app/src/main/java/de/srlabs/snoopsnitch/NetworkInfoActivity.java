@@ -1,7 +1,6 @@
 package de.srlabs.snoopsnitch;
 
 import java.text.DateFormat;
-import java.util.Calendar;
 
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
@@ -13,9 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.telephony.TelephonyManager;
-import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
@@ -59,8 +56,6 @@ public class NetworkInfoActivity extends BaseActivity {
             handler.postDelayed(this, refreshInterval);
         }
     }
-
-    ;
 
 
     private void updateNetworkInfo() {

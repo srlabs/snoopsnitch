@@ -2,18 +2,13 @@ package de.srlabs.patchalyzer;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Shader;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -21,13 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import de.srlabs.patchalyzer.Constants;
 import de.srlabs.snoopsnitch.R;
@@ -40,8 +30,6 @@ import de.srlabs.patchalyzer.TestUtils;
 
 public class PatchalyzerSumResultChart extends View {
     private Canvas canvas;
-    private float itemHeight;
-    private float itemWidth;
     //private float chartWidth=30f;
     private float chartOffsetTopBottom;
     private boolean showNumbers = false;
@@ -56,8 +44,8 @@ public class PatchalyzerSumResultChart extends View {
 
     public PatchalyzerSumResultChart(Context context, AttributeSet attrs) {
         super(context, attrs);
-        itemHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getResources().getDisplayMetrics());
-        itemWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+        float itemHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getResources().getDisplayMetrics());
+        float itemWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
 
         // Read attribute from XML, so we can reuse the same view in SNSN overview and PA details
         TypedArray a = context.getTheme().obtainStyledAttributes(

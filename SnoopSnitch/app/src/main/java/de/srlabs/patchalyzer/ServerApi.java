@@ -13,11 +13,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -94,8 +91,7 @@ public class ServerApi {
         }
         if (stringBuilder.length() == 0 || stringBuilder.toString().equals("{}"))
             return null;
-        JSONObject result = new JSONObject(stringBuilder.toString());
-        return result;
+        return new JSONObject(stringBuilder.toString());
     }
     public JSONArray getRequests(String appid, int apiVersion , String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion) throws JSONException, IOException {
         Log.i(Constants.LOG_TAG, "getRequests(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate);

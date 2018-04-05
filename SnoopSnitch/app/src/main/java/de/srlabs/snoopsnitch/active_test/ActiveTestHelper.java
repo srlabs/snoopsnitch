@@ -10,20 +10,16 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.text.InputType;
-import android.util.Log;
 import android.widget.EditText;
 
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdService;
-import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
@@ -77,7 +73,6 @@ public class ActiveTestHelper {
         }
     }
 
-    ;
 
     class MyActiveTestCallback extends IActiveTestCallback.Stub {
         @Override

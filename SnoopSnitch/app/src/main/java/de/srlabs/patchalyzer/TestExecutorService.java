@@ -3,10 +3,8 @@ package de.srlabs.patchalyzer;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -18,7 +16,6 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -43,14 +40,11 @@ public class TestExecutorService extends Service {
     private boolean downloadingTestSuite = false;
     private Handler handler = null;
     private ServerApi api = null;
-    private SharedPreferences sharedPrefs;
     private Vector<ProgressItem> progressItems;
-    private boolean appIsOutdated = false;
     public static final String NO_INTERNET_CONNECTION_ERROR = "no_uplink";
     public static final int ONGOING_NOTIFICATION_ID = 1147;
     public static final int FINISHED_NOTIFICATION_ID = 1148;
     public static final int FAILED_NOTIFICATION_ID = 1149;
-    private volatile boolean cancelAnalysis = false;
     private boolean isAnalysisRunning = false;
 
 
@@ -58,21 +52,13 @@ public class TestExecutorService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        cancelAnalysis = false;
-
         Log.d(Constants.LOG_TAG,"onCreate() of TestExecutorService called...");
 
         handler = new Handler();
         api = new ServerApi();
         subThreads = new HashSet<Thread>();
 
-        try {
-            this.sharedPrefs = getSharedPreferences("TestSuite", Context.MODE_PRIVATE);
-        } catch (Exception e) {
-            Log.e(Constants.LOG_TAG, "Exception in TestExecutorService()",e);
-        }
     }
-
 
     private void doWorkAsync() {
 
@@ -87,15 +73,12 @@ public class TestExecutorService extends Service {
                     }
                 } catch (Exception e) {
                     Log.e(Constants.LOG_TAG, "startTest Exception", e);
-                } finally {
-
                 }
             }
         };
         t.start();
 
     }
-
 
     public static void cancelNonStickyNotifications(ContextWrapper context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -189,7 +172,7 @@ public class TestExecutorService extends Service {
             if(outdated){
                 Log.i(Constants.LOG_TAG, "Outdated app version! minAppVersion=" + minAppVersion);
                 String upgradeUrlTmp;
-                if(testSuite.getUpdradeUrl() != null && testSuite.getUpdradeUrl() != ""){
+                if(testSuite.getUpdradeUrl() != null && !testSuite.getUpdradeUrl().equals("")){
                     upgradeUrlTmp = testSuite.getUpdradeUrl();
                 } else {
                     upgradeUrlTmp = Constants.DEFAULT_APK_UPGRADE_URL;
@@ -205,19 +188,12 @@ public class TestExecutorService extends Service {
         }
     }
 
-    private String getCurrentTestVersion() throws JSONException{
-        if(testSuite == null || testSuite.getVersion() == null){
-            return sharedPrefs.getString("version","0");
-        }
-        return testSuite.getVersion();
-    }
-
     private final ITestExecutorServiceInterface.Stub mBinder = new ITestExecutorServiceInterface.Stub() {
 
         @Override
         public void updateCallback(final ITestExecutorCallbacks callback){
             Log.d(Constants.LOG_TAG,"Updating callbacks.");
-            TestExecutorService.this.callback = callback;
+            TestExecutorService.callback = callback;
             updateProgress();
         }
 
@@ -421,7 +397,7 @@ public class TestExecutorService extends Service {
                         apiRunning = false;
                     } catch( JSONException e){
                         Log.e(Constants.LOG_TAG,"JSONException in pendingTestResultsUploadRunnable: "+e.getMessage());
-                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));;
+                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                         apiRunning = false;
                     }
                 }
@@ -435,7 +411,7 @@ public class TestExecutorService extends Service {
                             apiRunning = true;
                             if (deviceInfoJson != null) {
                                 if(!isConnectedToInternet()){
-                                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));;
+                                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                                     return;
                                 }
                                 api.reportSys(deviceInfoJson, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -447,11 +423,11 @@ public class TestExecutorService extends Service {
                     } catch(IOException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
                         Log.e(Constants.LOG_TAG, "Exception in pendingDeviceInfoUploadRunnable()", e);
-                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));;
+                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                         apiRunning = false;
                     } catch(JSONException e){
                         Log.e(Constants.LOG_TAG,"JSONException in pendingDeviceInfoUploadRunnable: "+e.getMessage());
-                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));;
+                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                         apiRunning = false;
                     }
                 }

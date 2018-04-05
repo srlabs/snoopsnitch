@@ -440,7 +440,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="upload_debug_confirmation_msg">Your report ID is %s. Feel free to send additional information to snoopsnitch@srlabs.de</string>
 
 	<string name="copyright_text">
-Copyright (C) 2014 - 2017  Security Research Labs\n
+Copyright © 2014 - 2017  Security Research Labs\n
 \n
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -472,7 +472,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="alert_pcap_export_permissions_not_granted">Please grant the access to the storage for PCAP exports.</string>
 <string name="alert_pcap_export_permissions_not_granted_persistent">You have to grant access to the storage to use the PCAP export feature.</string>
 <string name="alert_msdservice_recording_not_possible">You have not granted the access to the location information, so Recording will not be possible.</string>
-<string name="alert_network_activity_permissions_not_granted">Please grant ALL requested information, to get all available Network <information class=""></information></string>
+<string name="alert_network_activity_permissions_not_granted">Please grant ALL requested information, to get all available Network</string>
 <string name="alert_network_activity_permissions_not_granted_persistent">You have to grant ALL requested permissions, to get further Network information.</string>
 <string name="alert_db_creation_failed_detail">Creating Database failed. Please remove the App data in the Android App settings and restart SnoopSnitch. If this does not solve the problem, please reinstall SnoopSnitch.</string>
 <string name="device_never_compatible">Your device does not have a MSM Qualcomm chip, and is therefore not able to run SnoopSnitch main features.</string>
@@ -488,7 +488,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_failed_notification_title">Patchalyzer analysis failed</string>
 <string name="patchalyzer_failed_notification_text">Tap for more details</string>
 <string name="patchalyzer_sum_result_chart_analysis_in_progress">Analysis in progress...</string>
-<string name="patchalyzer_meta_info_analysis_in_progress"><![CDATA[Analysis in progress...<br>An internet connection is required during the whole process. The progress bar may not move for several minutes at a time.]]></string>
+<string name="patchalyzer_meta_info_analysis_in_progress">Analysis in progress...\nAn internet connection is required during the whole process. The progress bar may not move for several minutes at a time.></string>
 
 <string name="patchalyzer_claimed_patchlevel_date">Claimed patch level</string>
 <string name="patchalyzer_general_tests" >General tests</string>

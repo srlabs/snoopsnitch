@@ -3,7 +3,6 @@ package de.srlabs.snoopsnitch;
 import de.srlabs.snoopsnitch.R;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.TextView;
 
 import de.srlabs.snoopsnitch.BuildConfig;

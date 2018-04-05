@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.Process;
 
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -39,10 +38,10 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +57,7 @@ import de.srlabs.snoopsnitch.BaseActivity;
 
 public class TestUtils {
     public static HashMap<String,String> buildProperties = null;
-    private static Object buildPropertiesLock = new Object();
+    private static final Object buildPropertiesLock = new Object();
     private static JSONArray protectedBroadcasts;
     private static JSONObject cachedResultJSON;
     private static String cachedStickyErrorMessage;
@@ -410,7 +409,7 @@ public class TestUtils {
             CharsetDecoder decode = Charset.forName("UTF8").newDecoder();
             return decode.decode(bb).toString();
         } catch(Exception e){
-            return "b64:" + Base64.encode(b,Base64.NO_WRAP);
+            return "b64:" + Arrays.toString(Base64.encode(b, Base64.NO_WRAP));
         }
     }
     public static String getPatchlevelDate(){
@@ -451,39 +450,19 @@ public class TestUtils {
         return buildProperties.get(name);
     }
     public static boolean isQualcomm(){
-        if(getBuildProperty("ro.board.platform").toUpperCase().startsWith("MSM")) {
-            return true;
-        } else{
-            return false;
-        }
+        return getBuildProperty("ro.board.platform").toUpperCase().startsWith("MSM");
     }
     public static boolean isMtk(){
-        if(getBuildProperty("ro.board.platform").toUpperCase().startsWith("MT")) {
-            return true;
-        } else {
-            return false;
-        }
+        return getBuildProperty("ro.board.platform").toUpperCase().startsWith("MT");
     }
     public static boolean isSpreadrum(){
-        if(getBuildProperty("ro.board.platform").toUpperCase().startsWith("SC")) {
-            return true;
-        } else {
-            return false;
-        }
+        return getBuildProperty("ro.board.platform").toUpperCase().startsWith("SC");
     }
     public static boolean isNvidia(){
-        if(getBuildProperty("ro.board.platform").toUpperCase().startsWith("TEGRA")) {
-            return true;
-        } else {
-            return false;
-        }
+        return getBuildProperty("ro.board.platform").toUpperCase().startsWith("TEGRA");
     }
     public static boolean isSamsung(){
-        if(getBuildProperty("ro.board.platform").toUpperCase().startsWith("EXYNOS")) {
-            return true;
-        } else {
-            return false;
-        }
+        return getBuildProperty("ro.board.platform").toUpperCase().startsWith("EXYNOS");
     }
     public static String getChipVendor(){
         if(isQualcomm())
@@ -608,7 +587,6 @@ public class TestUtils {
 
     public static HashMap<String, SymbolInformation> readSymbolTable(String filePath) throws Exception{
         //Log.i(Constants.LOG_TAG,"Creating symbol table for file: "+filePath);
-        String objFile = filePath;
         HashMap<String, SymbolInformation> symtable = new HashMap<>();
 
         if (filePath == null) {
@@ -617,7 +595,7 @@ public class TestUtils {
 
         Pattern patternWhitespaces = Pattern.compile("\\s+");
 
-        List<String> lines = ProcessHelper.getObjDumptTOutput(objFile);
+        List<String> lines = ProcessHelper.getObjDumptTOutput(filePath);
         for (String line : lines) {
             line = line.trim(); //.decode()
             if (!line.contains(".text"))
@@ -649,7 +627,7 @@ public class TestUtils {
             symtable.put(symbolName, new SymbolInformation(symbolName, addr, length));
         }
         ArrayList<Section> sections = new ArrayList<>();
-        for (String line : ProcessHelper.getObjDumpHW(objFile)) {
+        for (String line : ProcessHelper.getObjDumpHW(filePath)) {
             line = line.trim(); //.decode()
             if (line.contains("CODE")) {
                 // Idx Name Size VMA LMA File off
@@ -674,7 +652,7 @@ public class TestUtils {
         }
 
         if (filePath.endsWith(".o")) {
-            for (String line : ProcessHelper.getObjDumpHWwithCheck(objFile)) {
+            for (String line : ProcessHelper.getObjDumpHWwithCheck(filePath)) {
                 line = line.trim(); //.decode()
                 if (!line.contains(".text.")) {
                     continue;

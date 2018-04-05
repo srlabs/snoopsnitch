@@ -336,7 +336,6 @@ public class BasicTestCache {
             }
         }
 
-
         private BasicTestResult performTest(TestBundle bundle, JSONObject basicTest){
             try {
                 // run basic test and add result to result queue
@@ -348,36 +347,38 @@ public class BasicTestCache {
                     String testType = basicTest.getString("testType");
                     // all optimized tests here:
                     //      and all the information cached temporarily to aggregate test requirements and avoid e.g. redundant objdump calls
-                    if(testType.equals("MASK_SIGNATURE_SYMBOL")){
-                        if (bundle.getSymbolTable() == null) {
-                            String currentFilename = basicTest.getString("filename");
-                            bundle.setSymbolTable(TestUtils.readSymbolTable(currentFilename));
-                        }
-                        result = TestEngine.runMaskSignatureTest(basicTest, bundle.getSymbolTable());
-                    }
-                    else if(testType.equals("BINARY_CONTAINS_SYMBOL")){
-                        if(bundle.getObjdumpLines() == null){
-                            String currentFilename = basicTest.getString("filename");
-                            bundle.setObjdumpLines(ProcessHelper.runObjdumpCommand("-tT", currentFilename));
-                        }
-                        result = TestEngine.runBinaryContainsSymbolTest(basicTest,bundle.getObjdumpLines());
-                    }
-                    else if(testType.equals("DISAS_FUNCTION_CONTAINS_STRING")){
-                        if(bundle.getObjdumpLines() == null){
-                            String currentFilename = basicTest.getString("filename");
-                            bundle.setObjdumpLines(ProcessHelper.runObjdumpCommand("-tT", currentFilename));
-                        }
-                        result = TestEngine.runDisasFunctionContainsStringTest(basicTest,bundle.getObjdumpLines());
-                    }
-                    else if(testType.equals("DISAS_FUNCTION_MATCHES_REGEX")){
-                        if(bundle.getObjdumpLines() == null){
-                            String currentFilename = basicTest.getString("filename");
-                            bundle.setObjdumpLines(ProcessHelper.runObjdumpCommand("-tT", currentFilename));
-                        }
-                        result = TestEngine.runDisasFunctionMatchesRegexTest(basicTest,bundle.getObjdumpLines());
-                    }
-                    else {
-                        result = TestEngine.executeBasicTest(context, basicTest);
+                    switch (testType) {
+                        case "MASK_SIGNATURE_SYMBOL":
+                            if (bundle.getSymbolTable() == null) {
+                                String currentFilename = basicTest.getString("filename");
+                                bundle.setSymbolTable(TestUtils.readSymbolTable(currentFilename));
+                            }
+                            result = TestEngine.runMaskSignatureTest(basicTest, bundle.getSymbolTable());
+                            break;
+                        case "BINARY_CONTAINS_SYMBOL":
+                            if (bundle.getObjdumpLines() == null) {
+                                String currentFilename = basicTest.getString("filename");
+                                bundle.setObjdumpLines(ProcessHelper.runObjdumpCommand("-tT", currentFilename));
+                            }
+                            result = TestEngine.runBinaryContainsSymbolTest(basicTest, bundle.getObjdumpLines());
+                            break;
+                        case "DISAS_FUNCTION_CONTAINS_STRING":
+                            if (bundle.getObjdumpLines() == null) {
+                                String currentFilename = basicTest.getString("filename");
+                                bundle.setObjdumpLines(ProcessHelper.runObjdumpCommand("-tT", currentFilename));
+                            }
+                            result = TestEngine.runDisasFunctionContainsStringTest(basicTest, bundle.getObjdumpLines());
+                            break;
+                        case "DISAS_FUNCTION_MATCHES_REGEX":
+                            if (bundle.getObjdumpLines() == null) {
+                                String currentFilename = basicTest.getString("filename");
+                                bundle.setObjdumpLines(ProcessHelper.runObjdumpCommand("-tT", currentFilename));
+                            }
+                            result = TestEngine.runDisasFunctionMatchesRegexTest(basicTest, bundle.getObjdumpLines());
+                            break;
+                        default:
+                            result = TestEngine.executeBasicTest(context, basicTest);
+                            break;
                     }
                 } catch (Exception e) {
                     exception = e.getMessage();

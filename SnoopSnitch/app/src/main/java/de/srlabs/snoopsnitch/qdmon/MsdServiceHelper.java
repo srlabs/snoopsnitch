@@ -2,7 +2,6 @@ package de.srlabs.snoopsnitch.qdmon;
 
 import de.srlabs.snoopsnitch.qdmon.IMsdService;
 import de.srlabs.snoopsnitch.qdmon.IMsdServiceCallback;
-import de.srlabs.snoopsnitch.util.PermissionChecker;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,7 +29,6 @@ public class MsdServiceHelper {
                     callback.stateChanged(StateChangedReason.valueOf(reason));
                 }
 
-                ;
             });
         }
 
@@ -142,8 +140,6 @@ public class MsdServiceHelper {
             callback.stateChanged(StateChangedReason.RECORDING_STATE_CHANGED);
         }
     }
-
-    ;
 
     private void handleFatalError(String errorMsg, Exception e) {
         String msg = errorMsg;

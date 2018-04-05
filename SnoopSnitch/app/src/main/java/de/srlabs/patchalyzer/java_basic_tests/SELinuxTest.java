@@ -3,10 +3,8 @@ package de.srlabs.patchalyzer.java_basic_tests;
 import android.content.Context;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 

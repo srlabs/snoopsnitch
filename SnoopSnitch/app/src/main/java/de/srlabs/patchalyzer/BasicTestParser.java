@@ -1,12 +1,5 @@
 package de.srlabs.patchalyzer;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabaseLockedException;
-import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
@@ -20,17 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-
-import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
-import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 
 
 /** This class is parsing the testsuite JSON file step by step to avoid having the full testsuite in memory at once

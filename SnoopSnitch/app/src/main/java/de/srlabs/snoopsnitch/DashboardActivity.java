@@ -1,6 +1,5 @@
 package de.srlabs.snoopsnitch;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -27,10 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import junit.framework.Test;
-
 import de.srlabs.patchalyzer.PatchalyzerSumResultChart;
-import de.srlabs.patchalyzer.TestExecutorService;
 import de.srlabs.patchalyzer.TestUtils;
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;

@@ -14,12 +14,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.TestUtils;
 import de.srlabs.patchalyzer.signatures.Signature;
 
 /**This class contains all the helper methods for calling subprocess like e.g. objdump
@@ -75,7 +73,7 @@ public class ProcessHelper {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(base);
-            StringBuffer hexString = new StringBuffer();
+            StringBuilder hexString = new StringBuilder();
 
             for (int i = 0; i < hash.length; i++) {
                 String hex = Integer.toHexString(0xff & hash[i]);
@@ -92,12 +90,10 @@ public class ProcessHelper {
     public static Vector<String> runObjdumpCommand(String... params) throws IOException, InterruptedException {
         String[] cmd = new String[params.length + 1];
         cmd[0] = OBJDUMP_PATH;
-        for (int i = 0; i < params.length; i++) {
-            cmd[i + 1] = params[i];
-        }
-        String cmdStr = "";
+        System.arraycopy(params, 0, cmd, 1, params.length);
+        StringBuilder cmdStr = new StringBuilder();
         for (String x : cmd) {
-            cmdStr += cmd + " ";
+            cmdStr.append(cmd).append(" ");
         }
         //Log.i(Constants.LOG_TAG, "runObjdumpCommand: " + cmdStr);
         return runCommand(cmd);

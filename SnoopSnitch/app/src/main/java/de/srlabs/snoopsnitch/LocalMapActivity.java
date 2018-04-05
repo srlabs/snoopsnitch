@@ -1,11 +1,9 @@
 package de.srlabs.snoopsnitch;
 
 import de.srlabs.snoopsnitch.R;
-import de.srlabs.snoopsnitch.qdmon.Operator;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.webkit.WebView;
 
 public class LocalMapActivity extends BaseActivity {
