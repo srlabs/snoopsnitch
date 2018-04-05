@@ -88,6 +88,10 @@ import de.srlabs.snoopsnitch.util.Utils;
 public class MsdService extends Service {
     public static final String TAG = "msd-service";
 
+    //to improve battery consumption caused through location information, by finetuning these parameters:
+    private static final long LOCATION_MIN_MS_OFFSET = 60000;//request location update once a minute
+    private static final long LOCATION_MIN_METERS_OFFSET = 10; //request location update for a mininum distance of meters (from last info)
+
     // TODO: Watch storage utilisation and stop recording if limits are exceeded
     // TODO: Watch battery level and stop recording if battery level goes below configured limit
 
@@ -520,14 +524,14 @@ public class MsdService extends Service {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (MsdConfig.gpsRecordingEnabled(MsdService.this) && PermissionChecker.isAccessingFineLocationAllowed(MsdService.this)) {
             try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, myLocationListener);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_MIN_MS_OFFSET, LOCATION_MIN_METERS_OFFSET, myLocationListener);
             } catch (IllegalArgumentException e) {
                 info("GPS location recording not available");
             }
         }
         if (MsdConfig.networkLocationRecordingEnabled(MsdService.this) && PermissionChecker.isAccessingCoarseLocationAllowed(MsdService.this)) {
             try {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, myLocationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_MIN_MS_OFFSET, LOCATION_MIN_METERS_OFFSET, myLocationListener);
             } catch (IllegalArgumentException e) {
                 info("Network location recording not available");
             }
@@ -562,7 +566,7 @@ public class MsdService extends Service {
                 info("getAndUploadGpsLocation(): Requesting GPS location");
                 final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 try {
-                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, new LocationListener() {
+                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_MIN_MS_OFFSET, LOCATION_MIN_METERS_OFFSET, new LocationListener() {
                         @Override
                         public void onStatusChanged(String provider, int status, Bundle extras) {
                         }
