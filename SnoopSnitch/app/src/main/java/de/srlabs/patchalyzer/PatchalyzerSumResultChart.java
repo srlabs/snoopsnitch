@@ -49,6 +49,7 @@ public class PatchalyzerSumResultChart extends View {
     private boolean drawBorder = true;
     static HashMap<String, ResultPart> parts = new HashMap<String, ResultPart>();
     private static JSONObject resultToDrawFrom = null;
+    private final boolean PAINT_DEBUG = false; //set to true to e.g. see center of drawn parts
 
     private static final String[] drawOrder = {"patched", "missing", "notClaimed", "inconclusive", "notAffected"};
 
@@ -68,7 +69,7 @@ public class PatchalyzerSumResultChart extends View {
             isSmall = a.getBoolean(R.styleable.PatchalyzerSumResultChart_small, false);
             drawBorder = a.getBoolean(R.styleable.PatchalyzerSumResultChart_drawborder, true);
 
-            Log.d(Constants.LOG_TAG, "PatchalyzerSumResultChart created: " + (showNumbers ? "showing numbers" : "not showing numbers") + ";" + (isSmall ? "small" : "large"));
+            //Log.d(Constants.LOG_TAG, "PatchalyzerSumResultChart created: " + (showNumbers ? "showing numbers" : "not showing numbers") + ";" + (isSmall ? "small" : "large"));
         } finally {
             a.recycle();
         }
@@ -155,23 +156,29 @@ public class PatchalyzerSumResultChart extends View {
                 paint.setTextSize(textSize);
                 //Log.d(Constants.LOG_TAG, "" + part + " bar: " + startX + "|" + chartOffsetTopBottom + " -> " + partWidth + "|" + chartOffsetTopBottom + chartHeight);
                 canvas.drawRect(new RectF(startX, chartOffsetTopBottom, partWidth, chartOffsetTopBottom + chartHeight), paint);
-
+                if(PAINT_DEBUG) {
+                    //indicate center of parts with blue line
+                    paint.setColor(Color.BLUE);
+                    paint.setStrokeWidth(2f);
+                    canvas.drawLine((startX + partWidth) / 2f, chartOffsetTopBottom, (startX + partWidth) / 2f, chartOffsetTopBottom + chartHeight, paint);
+                }
+                //------
                 if (showNumbers) {
-                    if (isNumberFittingDrawnPart(part.getCount(),chartWidth * (1f * part.getCount() / sumCVEs),paint)) {
+                    if (isNumberFittingDrawnPart(part.getCount(),chartWidth * (1f * part.getCount() / sumCVEs), paint)) {
                         paint.setColor(Color.BLACK);
                         paint.setAntiAlias(true);
-                        canvas.drawText("" + part.getCount(), (startX + partWidth) / 2f - (textSize / 2f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
+                        float top = chartOffsetTopBottom;
+                        float bottom = chartHeight + chartOffsetTopBottom;
+                        drawCenteredText(""+part.getCount(), paint, startX-(marginleftright/20), partWidth, top, bottom);
+                        //canvas.drawText("" + part.getCount(), (startX + partWidth) / 2f - (textSize / 2f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
                     }
                 }
                 startX = partWidth;
             }
         } else {
             //default (no test results available)
-            paint.setColor(Color.GRAY);
+            paint.setColor(this.getResources().getColor(R.color.common_button_state_default));
             canvas.drawRect(new RectF(startX, chartOffsetTopBottom, startX + chartWidth, chartOffsetTopBottom + chartHeight), paint);
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(textSize);
-            paint.setAntiAlias(true);
 
             String text = null;
             /*if (TestExecutorService.instance == null) {
@@ -182,20 +189,22 @@ public class PatchalyzerSumResultChart extends View {
             text = this.getResources().getString(R.string.patchalyzer_no_test_result);
 
             //calculate centered text position
-            Rect textBoundsRect = new Rect();
             float left = marginleftright;
             float right = chartWidth;
             float top = chartOffsetTopBottom;
             float bottom = chartHeight + chartOffsetTopBottom;
 
-            paint.getTextBounds(text, 0, text.length(), textBoundsRect);
-            Paint.FontMetrics fm = paint.getFontMetrics();
+            if(PAINT_DEBUG) {
+                //indicate center of chart with blue line
+                paint.setColor(Color.BLUE);
+                paint.setStrokeWidth(2f);
+                canvas.drawLine((right - left) / 2f, top, (right - left) / 2f, bottom, paint);
+            }
 
-            float x = left + (right - left - textBoundsRect.width()) / 2;
-            float y = top + (bottom - top) / 2 - (fm.descent + fm.ascent) / 2;
-
-            canvas.drawText(text, x, y, paint);
-
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(textSize);
+            paint.setAntiAlias(true);
+            drawCenteredText(text, paint, left, right, top, bottom);
         }
 
         if (drawBorder) {
@@ -203,17 +212,29 @@ public class PatchalyzerSumResultChart extends View {
             paint.setColor(Color.DKGRAY);
             paint.setStrokeWidth(borderWidth);
             //Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
-            canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth , paint);
+            canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth/2 , paint);
         }
 
     }
 
+    private void drawCenteredText(String text, Paint paint, float left, float right, float top, float bottom){
+        Rect textBoundsRect = new Rect();
+        paint.getTextBounds(text, 0, text.length(), textBoundsRect);
+        Paint.FontMetrics fm = paint.getFontMetrics();
+
+        float x = left + (right - left - textBoundsRect.width()) / 2;
+        float y = top + (bottom - top) / 2 - (fm.descent + fm.ascent) / 2;
+
+        canvas.drawText(text, x, y, paint);
+    }
+
     private boolean isNumberFittingDrawnPart(int count, float partWidth, Paint paint) {
+        float NUMBER_MARGIN = 10f;
         Rect textBoundsRect = new Rect();
         String text = ""+count;
         paint.getTextBounds(text, 0, text.length(), textBoundsRect);
         //Log.d(Constants.LOG_TAG,"textwidth: "+textBoundsRect.width()+" partWidth:"+partWidth);
-        return textBoundsRect.width() < partWidth;
+        return textBoundsRect.width() + NUMBER_MARGIN < partWidth;
     }
 
     public void resetCounts() {
