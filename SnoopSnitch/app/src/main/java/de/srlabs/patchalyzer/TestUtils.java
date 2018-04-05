@@ -61,6 +61,7 @@ public class TestUtils {
     private static Object buildPropertiesLock = new Object();
     private static JSONArray protectedBroadcasts;
     private static JSONObject cachedResultJSON;
+    private static String cachedStickyErrorMessage;
     private static Pattern datePattern = Pattern.compile("^\\d{4}\\-\\d{2}(-\\d{2})?$");
 
     public static boolean checkAffectedAndroidVersion(String[] affectedAndroidVersions) {
@@ -782,8 +783,46 @@ public class TestUtils {
         return analysisResultJSON.toString();
     }
 
+
     public static boolean isTooOldAndroidAPIVersion() {
         return Build.VERSION.SDK_INT < 21;
     }
 
+    // Displayed in PatchalyzerMainactivity if no test result is available
+    public static void saveStickyErrorMessage(String stickyErrorMessage, ContextWrapper context) {
+        cachedStickyErrorMessage = stickyErrorMessage;
+
+        Log.d(Constants.LOG_TAG,"Writing stickyErrorMessage to sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("stickyErrorMessage", stickyErrorMessage);
+        editor.commit();
+
+    }
+
+    public static void clearSavedStickyErrorMessage(ContextWrapper context) {
+        cachedStickyErrorMessage = null;
+
+        Log.d(Constants.LOG_TAG,"Deleting stickyErrorMessage from sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("stickyErrorMessage", "");
+        editor.commit();
+    }
+
+    public static String getStickyErrorMessage(ContextWrapper context) {
+        if (cachedStickyErrorMessage != null) {
+            return cachedStickyErrorMessage;
+        }
+
+        Log.d(Constants.LOG_TAG,"Reading stickyErrorMessage from sharedPrefs");
+        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
+
+        String stickyErrorMessage = settings.getString("stickyErrorMessage", "");
+        if (stickyErrorMessage.equals("")) {
+            return null;
+        }
+
+        return stickyErrorMessage;
+    }
 }
