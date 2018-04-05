@@ -505,6 +505,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_new_version_available_instructions">This app version is out of date. Please download the latest version here</string>
 <string name="patchalyzer_notification_new_feature_title">New SnoopSnitch feature: Android patch analysis</string>
 <string name="patchalyzer_notification_new_feature_text">Test your phone security by starting a test here!</string>
+    <string name="patchalyzer_button_start_analysis">Perform test</string>
+    <string name="patchalyzer_button_cancel_analysis">Cancel</string>
 
 
 </resources>

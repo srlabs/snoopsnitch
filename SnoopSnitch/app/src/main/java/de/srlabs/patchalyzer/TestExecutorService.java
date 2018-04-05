@@ -242,6 +242,11 @@ public class TestExecutorService extends Service {
         }
 
         @Override
+        public void requestCancelAnalysis() {
+            TestExecutorService.this.cancelAnalysis();
+        }
+
+        @Override
         public boolean isDeviceInfoFinished() throws RemoteException {
             if(deviceInfoThread != null && deviceInfoThread.isAlive()){
                 return false;

@@ -203,7 +203,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {;
+                    startTestButton.setEnabled(false);
                     TestExecutorService.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
+                    restoreState();
                 }
             });
         }
@@ -254,12 +256,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
         progressBox = (LinearLayout) findViewById(R.id.progress_box);
-        startTestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTest();
-            }
-        });
         statusTextView.setText("");
         percentageText.setText("");
         ActionBar actionBar = getActionBar();
@@ -373,14 +369,14 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         try {
             if (mITestExecutorService != null && mITestExecutorService.isAnalysisRunning()) {
                 // Analysis is running, show progress bar
-                startTestButton.setEnabled(false);
+                setButtonCancelAnalysis();
                 progressBox.setVisibility(View.VISIBLE);
                 resultChart.setVisibility(View.INVISIBLE);
                 webViewContent.setVisibility(View.INVISIBLE);
                 showMetaInformation(getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
             } else {
                 // Analysis is not running
-                startTestButton.setEnabled(true);
+                setButtonStartAnalysis();
                 progressBox.setVisibility(View.INVISIBLE);
                 if (TestUtils.getAnalysisResult(this) == null) {
                     // No analysis result available
@@ -404,6 +400,37 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         }
     }
 
+    private void setButtonStartAnalysis() {
+        startTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTestButton.setEnabled(false);
+                startTest();
+            }
+        });
+        startTestButton.setText(getResources().getString(R.string.patchalyzer_button_start_analysis));
+        startTestButton.setEnabled(true);
+    }
+
+    private void setButtonCancelAnalysis() {
+        startTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTestButton.setEnabled(false);
+                ITestExecutorServiceInterface temp = PatchalyzerMainActivity.this.mITestExecutorService;
+                try {
+                    if (temp != null && temp.isAnalysisRunning()) {
+                        temp.requestCancelAnalysis();
+                    }
+                } catch (RemoteException e) {
+                    Log.e(Constants.LOG_TAG, "RemoteException while manually trying to cancel analysis:", e);
+                }
+            }
+        });
+        startTestButton.setText(getResources().getString(R.string.patchalyzer_button_cancel_analysis));
+        startTestButton.setEnabled(true);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putSerializable("state", getActivityState());
@@ -420,9 +447,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         if(TestUtils.isConnectedToInternet(this)) {
             noCVETestsForApiLevelMessage = null;
             clearTable();
-            startTestButton.setEnabled(false);
             if(Constants.IS_TEST_MODE && !requestSdcardPermission()) {
-                startTestButton.setEnabled(true);
                 return;
             }
             startServiceIfNotRunning();
