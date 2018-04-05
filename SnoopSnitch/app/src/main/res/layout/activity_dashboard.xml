@@ -157,7 +157,12 @@
                 android:layout_height="0dp"
                 android:layout_weight="10.5"
                 android:background="@color/common_applicationBackground"
-                android:divider="@null">
+                android:divider="@null"
+                android:fadeScrollbars="false"
+                android:scrollbarFadeDuration="0"
+                android:verticalScrollbarPosition="left"
+                android:scrollbarStyle="insideOverlay"
+                android:scrollbars="vertical">
 
             </ListView>
 

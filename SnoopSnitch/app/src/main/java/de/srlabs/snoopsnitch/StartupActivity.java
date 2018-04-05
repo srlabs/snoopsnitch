@@ -49,7 +49,7 @@ public class StartupActivity extends Activity {
         if(snsnIncompatibilityReason == null){
             isSNSNCompatible = true;
         }
-        
+
         proceedAppFlow();
 
     }
