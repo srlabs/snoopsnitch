@@ -239,6 +239,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 } catch (JSONException e) {
                     Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
                 }
+                resultChart.setAnalysisRunning(false);
                 resultChart.setResultToDrawFromOnNextUpdate(resultJSON);
                 TestUtils.saveAnalysisResultNonPersistent(resultJSON);
                 if (isActivityActive) {
@@ -254,6 +255,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 @Override
                 public void run() {;
                     startTestButton.setEnabled(false);
+                    resultChart.setAnalysisRunning(false);
                     TestUtils.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerMainActivity.this);
                     TestExecutorService.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
                     triggerCancelAnalysis();
@@ -448,6 +450,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     private void triggerCancelAnalysis() {
         startTestButton.setEnabled(false);
+        resultChart.setAnalysisRunning(false);
         ITestExecutorServiceInterface temp = PatchalyzerMainActivity.this.mITestExecutorService;
         try {
             if (temp != null && temp.isAnalysisRunning()) {
@@ -479,6 +482,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     return;
                 }
                 startServiceIfNotRunning();
+                resultChart.setAnalysisRunning(true);
                 // restoreState should be called via callback
             } else {
                 //no internet connection

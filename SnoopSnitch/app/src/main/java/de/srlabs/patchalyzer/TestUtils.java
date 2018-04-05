@@ -738,6 +738,8 @@ public class TestUtils {
         SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("analysisResult", "");
+        editor.putString("buildPropsAtLastAnalysis", "");
+        editor.putLong("timeStampAtLastAnalysis", 0);
         editor.commit();
     }
 
@@ -764,6 +766,11 @@ public class TestUtils {
 
     // @return: A stringified version of analysisResultJSON
     public static String saveAnalysisResult(JSONObject analysisResultJSON, ContextWrapper context) {
+        long timeStamp = System.currentTimeMillis();
+        if (buildProperties == null)
+            readBuildProperties();
+        JSONObject buildProps = new JSONObject(buildProperties);
+
         cachedResultJSON = analysisResultJSON;
         String analysisResultString = analysisResultJSON.toString();
 
@@ -771,6 +778,8 @@ public class TestUtils {
         SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("analysisResult", analysisResultString);
+        editor.putString("buildPropsAtLastAnalysis", buildProps.toString());
+        editor.putLong("timeStampAtLastAnalysis", timeStamp);
         editor.commit();
 
         return analysisResultString;

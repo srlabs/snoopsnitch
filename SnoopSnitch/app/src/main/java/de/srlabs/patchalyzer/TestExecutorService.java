@@ -317,6 +317,7 @@ public class TestExecutorService extends Service {
                 PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(result);
                 return TestUtils.saveAnalysisResult(result, TestExecutorService.this);
             } catch (Exception e) {
+                // TODO: Kill the service here
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
                 return e.toString();
             }
