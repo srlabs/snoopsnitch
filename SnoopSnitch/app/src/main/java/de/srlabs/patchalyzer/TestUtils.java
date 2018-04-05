@@ -709,15 +709,15 @@ public class TestUtils {
     }
 
 
-    public static void clearSavedAnalysisResult(ContextWrapper context) {
+    public static void clearSavedAnalysisResult(Context context) {
         cachedResultJSON = null;
 
         Log.d(Constants.LOG_TAG,"Deleting analysisResult from sharedPrefs");
         SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("analysisResult", "");
-        editor.putString("buildPropsAtLastAnalysis", "");
-        editor.putLong("timeStampAtLastAnalysis", 0);
+        //editor.putLong("buildDateUtcAtLastSuccessfulAnalysis", 0);
+        //editor.putLong("timeStampAtLastSuccessfulAnalysis", 0);
         editor.commit();
     }
 
@@ -735,7 +735,8 @@ public class TestUtils {
         }
 
         try {
-            return new JSONObject(analysisResultString);
+            cachedResultJSON = new JSONObject(analysisResultString);
+            return cachedResultJSON;
         } catch (JSONException e) {
             Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
             return null;
@@ -745,9 +746,7 @@ public class TestUtils {
     // @return: A stringified version of analysisResultJSON
     public static String saveAnalysisResult(JSONObject analysisResultJSON, ContextWrapper context) {
         long timeStamp = System.currentTimeMillis();
-        if (buildProperties == null)
-            readBuildProperties();
-        JSONObject buildProps = new JSONObject(buildProperties);
+        long buildDateUtc = getBuildDateUtc();
 
         cachedResultJSON = analysisResultJSON;
         String analysisResultString = analysisResultJSON.toString();
@@ -756,8 +755,8 @@ public class TestUtils {
         SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("analysisResult", analysisResultString);
-        editor.putString("buildPropsAtLastAnalysis", buildProps.toString());
-        editor.putLong("timeStampAtLastAnalysis", timeStamp);
+        editor.putLong("buildDateUtcAtLastSuccessfulAnalysis", buildDateUtc);
+        editor.putLong("timeStampAtLastSuccessfulAnalysis", timeStamp);
         editor.commit();
 
         return analysisResultString;

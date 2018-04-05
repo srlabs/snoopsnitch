@@ -256,7 +256,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     startTestButton.setEnabled(false);
                     resultChart.setAnalysisRunning(false);
                     TestUtils.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerMainActivity.this);
-                    TestExecutorService.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
+                    NotificationHelper.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
                     triggerCancelAnalysis();
                     if (isActivityActive) {
                         restoreState();
@@ -340,8 +340,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
             intent.setAction(ITestExecutorServiceInterface.class.getName());
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-
-            TestExecutorService.cancelNonStickyNotifications(this);
         }
         isActivityActive = true;
         restoreState();
@@ -378,7 +376,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
 
     private void restoreState(){
-        TestExecutorService.cancelNonStickyNotifications(this);
+        NotificationHelper.cancelNonStickyNotifications(this);
         ActivityState tempNonPersistentState = nonPersistentState;
         try {
             if (mITestExecutorService != null && mITestExecutorService.isAnalysisRunning()) {

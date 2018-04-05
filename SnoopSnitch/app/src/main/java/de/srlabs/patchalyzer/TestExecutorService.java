@@ -1,16 +1,13 @@
 package de.srlabs.patchalyzer;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -42,9 +39,6 @@ public class TestExecutorService extends Service {
     private ServerApi api = null;
     private Vector<ProgressItem> progressItems;
     public static final String NO_INTERNET_CONNECTION_ERROR = "no_uplink";
-    public static final int ONGOING_NOTIFICATION_ID = 1147;
-    public static final int FINISHED_NOTIFICATION_ID = 1148;
-    public static final int FAILED_NOTIFICATION_ID = 1149;
     private boolean isAnalysisRunning = false;
 
 
@@ -80,11 +74,6 @@ public class TestExecutorService extends Service {
 
     }
 
-    public static void cancelNonStickyNotifications(ContextWrapper context) {
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(FINISHED_NOTIFICATION_ID);
-        notificationManager.cancel(FAILED_NOTIFICATION_ID);
-    }
 
     @Override
     public void onDestroy() {
@@ -514,38 +503,6 @@ public class TestExecutorService extends Service {
         }
     }
 
-    private void showAnalysisFinishedNotification() {
-        Intent notificationIntent = new Intent(this, PatchalyzerMainActivity.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        Notification notification =
-                new Notification.Builder(this)
-                        .setContentTitle(getText(R.string.patchalyzer_finished_notification_title))
-                        .setContentText(getText(R.string.patchalyzer_finished_notification_text))
-                        .setSmallIcon(R.drawable.ic_patchalyzer)
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true)
-                        .build();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(FINISHED_NOTIFICATION_ID, notification);
-    }
-
-    public static void showAnalysisFailedNotification(ContextWrapper context) {
-        Log.d(Constants.LOG_TAG, "TestExeCutorService.showAnalysisFailedNotification called");
-        Intent notificationIntent = new Intent(context, PatchalyzerMainActivity.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        Notification notification =
-                new Notification.Builder(context)
-                        .setContentTitle(context.getText(R.string.patchalyzer_failed_notification_title))
-                        .setContentText(context.getText(R.string.patchalyzer_failed_notification_text))
-                        .setSmallIcon(R.drawable.ic_patchalyzer)
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true)
-                        .build();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(FAILED_NOTIFICATION_ID, notification);
-    }
 
     private void onFinishedAnalysis() {
         String analysisResultString = null;
@@ -557,7 +514,7 @@ public class TestExecutorService extends Service {
         isAnalysisRunning = false;
         sendFinishedToCallback(analysisResultString);
 
-        showAnalysisFinishedNotification();
+        NotificationHelper.showAnalysisFinishedNotification(this);
 
         stopForeground(true);
         stopSelf();
@@ -821,17 +778,8 @@ public class TestExecutorService extends Service {
 
         isAnalysisRunning = true;
 
-        Intent notificationIntent = new Intent(this, PatchalyzerMainActivity.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        Notification notification =
-                new Notification.Builder(this)
-                        .setContentTitle(getText(R.string.patchalyzer_running_notification_title))
-                        .setContentText(getText(R.string.patchalyzer_running_notification_text))
-                        .setSmallIcon(R.drawable.ic_patchalyzer)
-                        .setContentIntent(pendingIntent)
-                        .build();
-        startForeground(ONGOING_NOTIFICATION_ID, notification);
+        Notification notification = NotificationHelper.getAnalysisOngoingNotification(this);
+        startForeground(NotificationHelper.ONGOING_NOTIFICATION_ID, notification);
 
         sendReloadViewStateToCallback();
         doWorkAsync();
