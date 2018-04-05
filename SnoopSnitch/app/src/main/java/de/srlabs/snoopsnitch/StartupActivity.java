@@ -22,6 +22,7 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.srlabs.patchalyzer.NotificationHelper;
 import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.patchalyzer.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
@@ -69,7 +70,7 @@ public class StartupActivity extends Activity {
 
     private void proceedAppFlow() {
         if(!TestUtils.isTooOldAndroidAPIVersion()) //do not show notification, if users can not use it anyway
-            showNewPatchalyzerFeatureOnce();
+            NotificationHelper.showNewPatchalyzerFeatureOnce(this);
 
         //continue with normal startup
         if (MsdConfig.getFirstRun(this)) {
@@ -79,31 +80,7 @@ public class StartupActivity extends Activity {
         }
     }
 
-    private void showNewPatchalyzerFeatureOnce() {
-        SharedPreferences sharedPrefs = getSharedPreferences("PATCHALYZER", Context.MODE_PRIVATE);
-        boolean didShowAlready = sharedPrefs.getBoolean("didShowNewFeatureNotification",false);
 
-        if(!didShowAlready) {
-            Intent notificationIntent = new Intent(this, StartupActivity.class);
-            PendingIntent pendingIntent =
-                    PendingIntent.getActivity(this, 0, notificationIntent, 0);
-            Notification notification =
-                    new Notification.Builder(this)
-                            .setContentTitle(getText(R.string.patchalyzer_notification_new_feature_title))
-                            .setContentText(getText(R.string.patchalyzer_notification_new_feature_text))
-                            .setSmallIcon(R.drawable.ic_patchalyzer)
-                            .setContentIntent(pendingIntent)
-                            .setAutoCancel(true)
-                            .build();
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-            notificationManager.notify(42, notification);
-
-            //persist that we showed the notification already, to not show it again
-            SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putBoolean("didShowNewFeatureNotification",true);
-            editor.commit();
-        }
-    }
 
     public static boolean isSNSNCompatible(){
         return isSNSNCompatible;
