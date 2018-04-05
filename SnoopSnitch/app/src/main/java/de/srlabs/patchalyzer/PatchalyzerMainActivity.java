@@ -377,7 +377,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 progressBox.setVisibility(View.VISIBLE);
                 resultChart.setVisibility(View.INVISIBLE);
                 webViewContent.setVisibility(View.INVISIBLE);
-                showMetaInformation("Testing your phone...");
+                showMetaInformation(getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
             } else {
                 // Analysis is not running
                 startTestButton.setEnabled(true);
