@@ -178,6 +178,16 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             });
         }
         @Override
+        public void reloadViewState() throws RemoteException {
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received reloadViewState()");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    restoreState();
+                }
+            });
+        }
+        @Override
         public void finished(final String analysisResultString) throws RemoteException {
             Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received finished()");
             handler.post(new Runnable() {
@@ -451,13 +461,13 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 return;
             }
             startServiceIfNotRunning();
-
+            // restoreState should be called via callback
         }else{
             //no internet connection
             Log.w(Constants.LOG_TAG,"Not testing, because of missing internet connection.");
             showNoInternetConnectionDialog();
+            restoreState();
         }
-        restoreState();
     }
 
     private boolean requestSdcardPermission(){

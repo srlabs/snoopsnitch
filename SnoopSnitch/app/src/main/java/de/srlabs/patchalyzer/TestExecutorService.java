@@ -631,6 +631,18 @@ public class TestExecutorService extends Service {
             }
         });
     }
+    private void sendReloadViewStateToCallback(){
+        handler.post(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    callback.reloadViewState();
+                } catch (RemoteException e) {
+                    Log.e(Constants.LOG_TAG, "TestExecutorService.sendReloadViewStateToCallback() RemoteException", e);
+                }
+            }
+        });
+    }
     private void reportError(final String error){
         handler.post(new Runnable(){
             @Override
@@ -853,7 +865,7 @@ public class TestExecutorService extends Service {
                         .build();
         startForeground(ONGOING_NOTIFICATION_ID, notification);
 
-
+        sendReloadViewStateToCallback();
         doWorkAsync();
 
         return START_NOT_STICKY;
