@@ -164,7 +164,7 @@ public class TestExecutorService extends Service {
         testSuite = new TestSuite(this, testSuiteFile);
         testSuite.parseInfoFromJSON();
         parseTestSuiteProgress.update(1.0);
-        showStatus("Parsing testsuite and additional data chunks finished.");
+        Log.i(Constants.LOG_TAG,"Parsing testsuite and additional data chunks finished.");
         basicTestCache = new BasicTestCache(this, testSuite.getVersion(), Build.VERSION.SDK_INT);
         Log.d(Constants.LOG_TAG,"TestExecutorService: Finished parsing testsuite!");
 
@@ -242,6 +242,11 @@ public class TestExecutorService extends Service {
         }
 
         @Override
+        public void requestCancelAnalysis() {
+            TestExecutorService.this.cancelAnalysis();
+        }
+
+        @Override
         public boolean isDeviceInfoFinished() throws RemoteException {
             if(deviceInfoThread != null && deviceInfoThread.isAlive()){
                 return false;
@@ -275,7 +280,7 @@ public class TestExecutorService extends Service {
                 JSONObject result = new JSONObject();
                 if(testSuite == null)
                     return null;
-                showStatus("Creating result overview...");
+                Log.i(Constants.LOG_TAG,"Creating result overview...");
                 JSONObject vulnerabilities = testSuite.getVulnerabilities();
                 Iterator<String> identifierIterator = vulnerabilities.keys();
                 Vector<String> identifiers = new Vector<String>();
@@ -341,22 +346,22 @@ public class TestExecutorService extends Service {
         public void startWork(boolean updateTests, boolean generateDeviceInfo, final boolean evaluateTests, final boolean uploadTestResults, final boolean uploadDeviceInfo){
 
             if(downloadingTestSuite){
-                showStatus("Still downloading test suite...please be patient!");
+                Log.i(Constants.LOG_TAG,"Still downloading test suite...please be patient!");
                 return;
             }
             if(isAppOutdated(true)){
                 return;
             }
             if(apiRunning){
-                showStatus("Already work in progress, not starting: apiRunning");
+                Log.i(Constants.LOG_TAG,"Already work in progress, not starting: apiRunning");
                 return;
             }
             if(basicTestsRunning) {
-                showStatus("Already work in progress, not starting: basicTestsRunning");
+                Log.i(Constants.LOG_TAG,"Already work in progress, not starting: basicTestsRunning");
                 return;
             }
             if(deviceInfoRunning){
-                showStatus("Already work in progress, not starting: deviceInfoRunning");
+                Log.i(Constants.LOG_TAG,"Already work in progress, not starting: deviceInfoRunning");
                 return;
             }
 
@@ -411,9 +416,9 @@ public class TestExecutorService extends Service {
                                 cancelAnalysis();
                                 return;
                             }
-                            showStatus("Reporting test results to server...");
+                            Log.i(Constants.LOG_TAG,"Reporting test results to server...");
                             api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
-                            showStatus("Uploading test results finished...");
+                            Log.i(Constants.LOG_TAG,"Uploading test results finished...");
                             uploadTestResultsProgress.update(1.0);
                             apiRunning = false;
                         }
@@ -443,7 +448,7 @@ public class TestExecutorService extends Service {
                                 }
                                 api.reportSys(deviceInfoJson, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
                             }
-                            showStatus("Uploading device info finished...");
+                            Log.i(Constants.LOG_TAG,"Uploading device info finished...");
                             uploadDeviceInfoProgress.update(1.0);
                             apiRunning = false;
                         }
@@ -500,7 +505,7 @@ public class TestExecutorService extends Service {
         }
     }
     public void finishedBasicTests(){
-        showStatus("Finished performing basic tests.");
+        Log.i(Constants.LOG_TAG,"Finished performing basic tests.");
         //vulnerabilitiesJSONResult = getJSONFromVulnerabilitiesResults();
     }
     private void clearProgress(){
@@ -626,6 +631,18 @@ public class TestExecutorService extends Service {
             }
         });
     }
+    private void sendReloadViewStateToCallback(){
+        handler.post(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    callback.reloadViewState();
+                } catch (RemoteException e) {
+                    Log.e(Constants.LOG_TAG, "TestExecutorService.sendReloadViewStateToCallback() RemoteException", e);
+                }
+            }
+        });
+    }
     private void reportError(final String error){
         handler.post(new Runnable(){
             @Override
@@ -634,18 +651,6 @@ public class TestExecutorService extends Service {
                     callback.showErrorMessage(error);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService.reportError() RemoteException", e);
-                }
-            }
-        });
-    }
-    private void showStatus(final String status){
-        handler.post(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    callback.showStatusMessage(status);
-                } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "TestExecutorService.showStatus() RemoteException", e);
                 }
             }
         });
@@ -690,7 +695,7 @@ public class TestExecutorService extends Service {
                 downloadingTestSuite = true;
                 Log.d(Constants.LOG_TAG,"Downloading testsuite from server...");
                 File f = api.downloadTestSuite("newtestsuite",TestExecutorService.this,TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT,"0", Constants.APP_VERSION);
-                showStatus("Downloading testsuite finished. Fetching additional data chunks...");
+                Log.i(Constants.LOG_TAG,"Downloading testsuite finished. Fetching additional data chunks...");
                 downloadProgress.update(1.0);
                 Log.d(Constants.LOG_TAG,"Finished downloading testsuite JSON to file:"+f.getAbsolutePath());
                 downloadingTestSuite = false;
@@ -759,7 +764,7 @@ public class TestExecutorService extends Service {
                 }
                 JSONArray requestsJson = api.getRequests(TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT, TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
                 downloadRequestsProgress.update(1.0);
-                showStatus("Downloading requests finished...");
+                Log.i(Constants.LOG_TAG,"Downloading requests finished...");
                 for(int i=0;i<requestsJson.length();i++){
                     Log.i(Constants.LOG_TAG, "Adding progress item for request " + i);
                     requestProgress.add(addProgressItem("Request_" + i, 1.0));
@@ -785,7 +790,7 @@ public class TestExecutorService extends Service {
                         updateProgress();
                     }
                 }
-                showStatus("Reporting files to server finished...");
+                Log.i(Constants.LOG_TAG,"Reporting files to server finished...");
             } catch(Exception e){
                 Log.e(Constants.LOG_TAG, "RequestsThread.run() exception", e);
                 if(e instanceof IOException) { //TODO test
@@ -860,7 +865,7 @@ public class TestExecutorService extends Service {
                         .build();
         startForeground(ONGOING_NOTIFICATION_ID, notification);
 
-
+        sendReloadViewStateToCallback();
         doWorkAsync();
 
         return START_NOT_STICKY;

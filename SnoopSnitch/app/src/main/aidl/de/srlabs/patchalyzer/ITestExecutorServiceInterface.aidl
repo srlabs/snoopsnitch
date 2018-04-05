@@ -16,4 +16,5 @@ interface ITestExecutorServiceInterface {
     void updateCallback(ITestExecutorCallbacks callback);
     void startWork(boolean updateTests, boolean generateDeviceInfo, boolean evaluateTests, boolean uploadTestResults, boolean uploadDeviceInfo);
     boolean isAnalysisRunning();
+    void requestCancelAnalysis();
 }

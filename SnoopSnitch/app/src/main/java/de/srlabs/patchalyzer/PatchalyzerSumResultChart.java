@@ -156,21 +156,22 @@ public class PatchalyzerSumResultChart extends View {
                 paint.setTextSize(textSize);
                 //Log.d(Constants.LOG_TAG, "" + part + " bar: " + startX + "|" + chartOffsetTopBottom + " -> " + partWidth + "|" + chartOffsetTopBottom + chartHeight);
                 canvas.drawRect(new RectF(startX, chartOffsetTopBottom, partWidth, chartOffsetTopBottom + chartHeight), paint);
+
                 if(PAINT_DEBUG) {
                     //indicate center of parts with blue line
                     paint.setColor(Color.BLUE);
                     paint.setStrokeWidth(2f);
                     canvas.drawLine((startX + partWidth) / 2f, chartOffsetTopBottom, (startX + partWidth) / 2f, chartOffsetTopBottom + chartHeight, paint);
                 }
-                //------
+
                 if (showNumbers) {
                     if (isNumberFittingDrawnPart(part.getCount(),chartWidth * (1f * part.getCount() / sumCVEs), paint)) {
+
                         paint.setColor(Color.BLACK);
                         paint.setAntiAlias(true);
                         float top = chartOffsetTopBottom;
                         float bottom = chartHeight + chartOffsetTopBottom;
                         drawCenteredText(""+part.getCount(), paint, startX-(marginleftright/20), partWidth, top, bottom);
-                        //canvas.drawText("" + part.getCount(), (startX + partWidth) / 2f - (textSize / 2f), (chartOffsetTopBottom + chartHeight + textSize) / 2f, paint);
                     }
                 }
                 startX = partWidth;
@@ -216,7 +217,7 @@ public class PatchalyzerSumResultChart extends View {
         }
 
     }
-
+    
     private void drawCenteredText(String text, Paint paint, float left, float right, float top, float bottom){
         Rect textBoundsRect = new Rect();
         paint.getTextBounds(text, 0, text.length(), textBoundsRect);

@@ -142,18 +142,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         }
 
         @Override
-        public void showStatusMessage(final String text) throws RemoteException {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(text != null){
-                        statusTextView.setText(text);
-                    }
-                }
-            });
-        }
-
-        @Override
         public void showOutdatedError(String upgradeUrl) throws RemoteException {
             if(upgradeUrl == null)
                 upgradeUrl = Constants.DEFAULT_APK_UPGRADE_URL;
@@ -190,6 +178,16 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             });
         }
         @Override
+        public void reloadViewState() throws RemoteException {
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received reloadViewState()");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    restoreState();
+                }
+            });
+        }
+        @Override
         public void finished(final String analysisResultString) throws RemoteException {
             Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received finished()");
             handler.post(new Runnable() {
@@ -215,7 +213,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {;
+                    startTestButton.setEnabled(false);
                     TestExecutorService.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
+                    restoreState();
                 }
             });
         }
@@ -266,12 +266,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
         progressBox = (LinearLayout) findViewById(R.id.progress_box);
-        startTestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTest();
-            }
-        });
         statusTextView.setText("");
         percentageText.setText("");
         ActionBar actionBar = getActionBar();
@@ -384,18 +378,24 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         ActivityState tempNonPersistentState = nonPersistentState;
         try {
             if (mITestExecutorService != null && mITestExecutorService.isAnalysisRunning()) {
-                startTestButton.setEnabled(false);
+                // Analysis is running, show progress bar
+                setButtonCancelAnalysis();
                 progressBox.setVisibility(View.VISIBLE);
                 resultChart.setVisibility(View.INVISIBLE);
                 webViewContent.setVisibility(View.INVISIBLE);
-                showMetaInformation("Testing your phone...");
+                showMetaInformation(getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
             } else {
-                startTestButton.setEnabled(true);
+                // Analysis is not running
+                setButtonStartAnalysis();
                 progressBox.setVisibility(View.INVISIBLE);
                 if (TestUtils.getAnalysisResult(this) == null) {
+                    // No analysis result available
                     resultChart.setVisibility(View.INVISIBLE);
                     webViewContent.setVisibility(View.INVISIBLE);
+                    showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": "
+                            + TestUtils.getPatchlevelDate() +"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
                 } else {
+                    // Previous analysis result available, show results table
                     resultChart.setVisibility(View.VISIBLE);
                     webViewContent.setVisibility(View.VISIBLE);
                     showPatchlevelDateNoTable();
@@ -405,9 +405,40 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             Log.d(Constants.LOG_TAG,"RemoteException in restoreState" , e);
         }
         if(tempNonPersistentState == ActivityState.VULNERABILITY_LIST) {
-            // TODO: show specific vulnerability here
+            // show vulnerability details for a specific category
             showDetailsNoTable(currentPatchlevelDate);
         }
+    }
+
+    private void setButtonStartAnalysis() {
+        startTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTestButton.setEnabled(false);
+                startTest();
+            }
+        });
+        startTestButton.setText(getResources().getString(R.string.patchalyzer_button_start_analysis));
+        startTestButton.setEnabled(true);
+    }
+
+    private void setButtonCancelAnalysis() {
+        startTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTestButton.setEnabled(false);
+                ITestExecutorServiceInterface temp = PatchalyzerMainActivity.this.mITestExecutorService;
+                try {
+                    if (temp != null && temp.isAnalysisRunning()) {
+                        temp.requestCancelAnalysis();
+                    }
+                } catch (RemoteException e) {
+                    Log.e(Constants.LOG_TAG, "RemoteException while manually trying to cancel analysis:", e);
+                }
+            }
+        });
+        startTestButton.setText(getResources().getString(R.string.patchalyzer_button_cancel_analysis));
+        startTestButton.setEnabled(true);
     }
 
     @Override
@@ -419,30 +450,23 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     private void startTest(){
 
-        progressBox.setVisibility(View.VISIBLE);
-        resultChart.setVisibility(View.INVISIBLE);
         resultChart.resetCounts();
+        resultChart.invalidate();
         TestUtils.clearSavedAnalysisResult(this);
 
         if(TestUtils.isConnectedToInternet(this)) {
             noCVETestsForApiLevelMessage = null;
             clearTable();
-            startTestButton.setEnabled(false);
             if(Constants.IS_TEST_MODE && !requestSdcardPermission()) {
-                startTestButton.setEnabled(true);
                 return;
             }
             startServiceIfNotRunning();
-
-            //statusTextView.setText("Testing your phone...");
-            metaInfoText.removeAllViews();
-            metaInfoText.addView(statusTextView);
-
-            restoreState();
+            // restoreState should be called via callback
         }else{
             //no internet connection
             Log.w(Constants.LOG_TAG,"Not testing, because of missing internet connection.");
             showNoInternetConnectionDialog();
+            restoreState();
         }
     }
 
@@ -475,8 +499,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         try{
             JSONObject testResults = TestUtils.getAnalysisResult(this);
             if(TestUtils.getAnalysisResult(this) == null) {
-                // TODO: This could be used further down to display the analysis execution date.
-                showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": " + refPatchlevelDate+"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
                 return;
             }
             Vector<String> categories = new Vector<String>();

@@ -385,7 +385,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="action_switch_to_patchalyzer">Zu Patchalyzer wechseln</string>
     <string name="android_patchlevel_text">Android-Patch Level</string>
     <string name="patchalyzer_no_test_result">Keine Testergebnisse verfügbar</string>
-    <string name="patchalyzer_analysis_in_progress">Analyse wird durchgeführt...</string>
+    <string name="patchalyzer_sum_result_chart_analysis_in_progress">Analyse wird durchgeführt...</string>
     <string name="patchalyzer_running_notification_title">Analysiert Android-Patchlevel...</string>
     <string name="patchalyzer_running_notification_text">Für mehr Details hier tippen.</string>
     <string name="patchalyzer_finished_notification_title">Patchalyzer Analyse fertig.</string>
