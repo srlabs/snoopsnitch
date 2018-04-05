@@ -1,10 +1,8 @@
 package de.srlabs.patchalyzer;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -24,7 +22,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -114,7 +111,6 @@ public class TestExecutorService extends Service {
 
     protected void cancelAnalysis() {
         Log.d(Constants.LOG_TAG,"TestExecutorService.cancelAnalysis called");
-        sendCancelledToCallback();
         stopForeground(true);
         stopSelf();
         System.exit(0);
@@ -183,30 +179,25 @@ public class TestExecutorService extends Service {
         super.onRebind(intent);
     }
 
-    private boolean isAppOutdated(boolean notify){
+    private boolean assertAppIsUpToDate(){
         if(testSuite != null && testSuite.getMinAppVersion() != -1){
             int minAppVersion = testSuite.getMinAppVersion();
-            Log.i(Constants.LOG_TAG, "isAppOutdated(): Found minAppVersion=" + minAppVersion);
+            Log.i(Constants.LOG_TAG, "assertAppIsUpToDate(): Found minAppVersion=" + minAppVersion);
 
             boolean outdated = minAppVersion > Constants.APP_VERSION;
             //outdated = true;
-            if( notify && outdated ){
-                String upgradeUrlTmp = null;
-                if(testSuite.getUpdradeUrl() != null){
-
-                        upgradeUrlTmp = testSuite.getUpdradeUrl();
+            if(outdated){
+                Log.i(Constants.LOG_TAG, "Outdated app version! minAppVersion=" + minAppVersion);
+                String upgradeUrlTmp;
+                if(testSuite.getUpdradeUrl() != null && testSuite.getUpdradeUrl() != ""){
+                    upgradeUrlTmp = testSuite.getUpdradeUrl();
+                } else {
+                    upgradeUrlTmp = Constants.DEFAULT_APK_UPGRADE_URL;
                 }
-                final String upgradeUrl = upgradeUrlTmp;
-                handler.post(new Runnable(){
-                    @Override
-                    public void run() {
-                        try {
-                            callback.showOutdatedError(upgradeUrl);
-                        } catch (RemoteException e) {
-                            Log.e(Constants.LOG_TAG, "isAppOutdated RemoteException", e);
-                        }
-                    }
-                });
+                String errorMessage = "<p style=\"font-weight:bold;\">"+getResources().getString(R.string.patchalyzer_new_version_available_heading)
+                        +"</p>"+ getResources().getString(R.string.patchalyzer_new_version_available_instructions)
+                        +": <a href=\"" + upgradeUrlTmp + "\">" + upgradeUrlTmp + "</a>";
+                handleFatalErrorViaCallback(errorMessage);
             }
             return outdated;
         } else{
@@ -349,7 +340,7 @@ public class TestExecutorService extends Service {
                 Log.i(Constants.LOG_TAG,"Still downloading test suite...please be patient!");
                 return;
             }
-            if(isAppOutdated(true)){
+            if(assertAppIsUpToDate()){
                 return;
             }
             if(apiRunning){
@@ -413,7 +404,7 @@ public class TestExecutorService extends Service {
                         if(uploadTestResults){
                             apiRunning = true;
                             if(!isConnectedToInternet()){
-                                cancelAnalysis();
+                                handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                                 return;
                             }
                             Log.i(Constants.LOG_TAG,"Reporting test results to server...");
@@ -424,12 +415,12 @@ public class TestExecutorService extends Service {
                         }
                     } catch(IOException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
-                        cancelAnalysis();
+                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                         Log.e(Constants.LOG_TAG, "Exception in pendingTestResultsUploadRunnable", e);
                         apiRunning = false;
                     } catch( JSONException e){
                         Log.e(Constants.LOG_TAG,"JSONException in pendingTestResultsUploadRunnable: "+e.getMessage());
-                        cancelAnalysis();
+                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));;
                         apiRunning = false;
                     }
                 }
@@ -443,7 +434,7 @@ public class TestExecutorService extends Service {
                             apiRunning = true;
                             if (deviceInfoJson != null) {
                                 if(!isConnectedToInternet()){
-                                    cancelAnalysis();
+                                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));;
                                     return;
                                 }
                                 api.reportSys(deviceInfoJson, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -455,11 +446,11 @@ public class TestExecutorService extends Service {
                     } catch(IOException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
                         Log.e(Constants.LOG_TAG, "Exception in pendingDeviceInfoUploadRunnable()", e);
-                        cancelAnalysis();
+                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));;
                         apiRunning = false;
                     } catch(JSONException e){
                         Log.e(Constants.LOG_TAG,"JSONException in pendingDeviceInfoUploadRunnable: "+e.getMessage());
-                        cancelAnalysis();
+                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));;
                         apiRunning = false;
                     }
                 }
@@ -607,12 +598,12 @@ public class TestExecutorService extends Service {
             }
         });
     }
-    private void sendCancelledToCallback(){
+    private void handleFatalErrorViaCallback(final String stickyErrorMessage){
         handler.post(new Runnable(){
             @Override
             public void run() {
                 try {
-                    callback.cancelled();
+                    callback.handleFatalError(stickyErrorMessage);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "TestExecutorService => callback.cancelled() RemoteException", e);
                 }
@@ -689,7 +680,7 @@ public class TestExecutorService extends Service {
                 Log.i(Constants.LOG_TAG, "Starting to download testsuite");
                 apiRunning = true;
                 if(!isConnectedToInternet()){
-                    cancelAnalysis();
+                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                     return;
                 }
                 downloadingTestSuite = true;
@@ -700,7 +691,7 @@ public class TestExecutorService extends Service {
                 Log.d(Constants.LOG_TAG,"Finished downloading testsuite JSON to file:"+f.getAbsolutePath());
                 downloadingTestSuite = false;
                 parseTestSuiteFile(f,parsingProgress);
-                if(isAppOutdated(true)) {
+                if(assertAppIsUpToDate()) {
                     return;
                 }
                 checkIfCVETestsAvailable(testSuite);
@@ -712,7 +703,7 @@ public class TestExecutorService extends Service {
             } catch (IOException e) {
                 Log.e(Constants.LOG_TAG, "IOException in DownloadThread", e);
                 reportError(NO_INTERNET_CONNECTION_ERROR);
-                cancelAnalysis();
+                handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                 return;
             } finally{
                 apiRunning = false;
@@ -759,7 +750,7 @@ public class TestExecutorService extends Service {
             Vector<ProgressItem> requestProgress = new Vector<>();
             try {
                 if(!isConnectedToInternet()){
-                    cancelAnalysis();
+                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                     return;
                 }
                 JSONArray requestsJson = api.getRequests(TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT, TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -778,7 +769,7 @@ public class TestExecutorService extends Service {
                         TestUtils.validateFilename(filename);
                         Log.d(Constants.LOG_TAG,"Uploading file: "+filename);
                         if(!isConnectedToInternet()){
-                            cancelAnalysis();
+                            handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                             return;
                         }
                         api.reportFile(filename, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
@@ -795,7 +786,7 @@ public class TestExecutorService extends Service {
                 Log.e(Constants.LOG_TAG, "RequestsThread.run() exception", e);
                 if(e instanceof IOException) { //TODO test
                     reportError(NO_INTERNET_CONNECTION_ERROR);
-                    cancelAnalysis();
+                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                 }
                 downloadRequestsProgress.update(1.0);
                 for(ProgressItem x:requestProgress){

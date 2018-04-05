@@ -98,6 +98,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         restoreState();
     }
 
+    private void showErrorMessageInMetaInformation(String errorMessage) {
+        String html = "<p style=\"font-weight:bold;\">" + getResources().getString(R.string.patchalyzer_sticky_error_message_start)
+                + "</p><br>" + errorMessage;
+        showMetaInformation(html);
+    }
+
 
     private ServiceConnection mConnection = new ServiceConnection() {
         // Called when the connection with the service is established
@@ -141,22 +147,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             });
         }
 
-        @Override
-        public void showOutdatedError(String upgradeUrl) throws RemoteException {
-            if(upgradeUrl == null)
-                upgradeUrl = Constants.DEFAULT_APK_UPGRADE_URL;
-            final String finalUpgradeUrl = upgradeUrl;
-            handler.post(new Runnable() {
-                public void run() {
-                    startTestButton.setEnabled(false);
-                    webViewContent.removeAllViews();
-                    WebView wv = new WebView(PatchalyzerMainActivity.this);
-                    String html = "<html><body><h1>"+PatchalyzerMainActivity.this.getResources().getString(R.string.patchalyzer_new_version_available_heading)+"</h1>"+PatchalyzerMainActivity.this.getResources().getString(R.string.patchalyzer_new_version_available_instructions)+": <a href=\"" + finalUpgradeUrl + "\">" + finalUpgradeUrl + "</a></body></html>";
-                    wv.loadDataWithBaseURL("", html, "text/html", "UTF-8", "");
-                    webViewContent.addView(wv);
-                }
-            });
-        }
 
         @Override
         public void updateProgress(final double progressPercent) throws RemoteException {
@@ -183,7 +173,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    restoreState();
+                    if (isActivityActive) {
+                        restoreState();
+                    }
                 }
             });
         }
@@ -201,21 +193,25 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 }
                 resultChart.setResultToDrawFromOnNextUpdate(resultJSON);
                 TestUtils.saveAnalysisResultNonPersistent(resultJSON);
-                showMetaInformation("Finished");
-
-                recreate();
+                if (isActivityActive) {
+                    restoreState();
+                }
                 }
             });
         }
         @Override
-        public void cancelled() throws RemoteException {
-            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received cancelled()");
+        public void handleFatalError(final String stickyErrorMessage) throws RemoteException {
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received handleFatalError()");
             handler.post(new Runnable() {
                 @Override
                 public void run() {;
                     startTestButton.setEnabled(false);
+                    TestUtils.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerMainActivity.this);
                     TestExecutorService.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
-                    restoreState();
+                    triggerCancelAnalysis();
+                    if (isActivityActive) {
+                        restoreState();
+                    }
                 }
             });
         }
@@ -290,7 +286,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         initDatabase();
 
-        restoreState();
+        //restoreState();
     }
 
     @Override
@@ -340,7 +336,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         TestExecutorService.cancelNonStickyNotifications(this);
         isActivityActive = true;
-
+        restoreState();
     }
 
 
@@ -370,6 +366,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     protected void onDestroy(){
         super.onDestroy();
+        TestUtils.clearSavedStickyErrorMessage(PatchalyzerMainActivity.this);
     }
 
 
@@ -392,8 +389,16 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     // No analysis result available
                     resultChart.setVisibility(View.INVISIBLE);
                     webViewContent.setVisibility(View.INVISIBLE);
-                    showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": "
-                            + TestUtils.getPatchlevelDate() +"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
+                    String stickyErrorMessage = TestUtils.getStickyErrorMessage(this);
+                    if (stickyErrorMessage != null) {
+                        // Last analysis failed recently
+                        PatchalyzerMainActivity.this.showErrorMessageInMetaInformation(stickyErrorMessage);
+                    } else {
+                        // No analysis executed yet, show no error message
+                        showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": "
+                                + TestUtils.getPatchlevelDate() +"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
+                    }
+
                 } else {
                     // Previous analysis result available, show results table
                     resultChart.setVisibility(View.VISIBLE);
@@ -426,19 +431,23 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         startTestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startTestButton.setEnabled(false);
-                ITestExecutorServiceInterface temp = PatchalyzerMainActivity.this.mITestExecutorService;
-                try {
-                    if (temp != null && temp.isAnalysisRunning()) {
-                        temp.requestCancelAnalysis();
-                    }
-                } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "RemoteException while manually trying to cancel analysis:", e);
-                }
+                triggerCancelAnalysis();
             }
         });
         startTestButton.setText(getResources().getString(R.string.patchalyzer_button_cancel_analysis));
         startTestButton.setEnabled(true);
+    }
+
+    private void triggerCancelAnalysis() {
+        startTestButton.setEnabled(false);
+        ITestExecutorServiceInterface temp = PatchalyzerMainActivity.this.mITestExecutorService;
+        try {
+            if (temp != null && temp.isAnalysisRunning()) {
+                temp.requestCancelAnalysis();
+            }
+        } catch (RemoteException e) {
+            Log.e(Constants.LOG_TAG, "RemoteException in triggerCancelAnalysis:", e);
+        }
     }
 
     @Override
@@ -450,9 +459,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     private void startTest(){
 
+        TestUtils.clearSavedAnalysisResult(this);
+        TestUtils.clearSavedStickyErrorMessage(this);
         resultChart.resetCounts();
         resultChart.invalidate();
-        TestUtils.clearSavedAnalysisResult(this);
 
         if(TestUtils.isConnectedToInternet(this)) {
             noCVETestsForApiLevelMessage = null;

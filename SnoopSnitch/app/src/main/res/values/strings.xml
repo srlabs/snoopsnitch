@@ -485,9 +485,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_finished_notification_title">Patchalyzer analysis completed</string>
 <string name="patchalyzer_finished_notification_text">Tap to see results</string>
 <string name="patchalyzer_failed_notification_title">Patchalyzer analysis failed</string>
-<string name="patchalyzer_failed_notification_text">Tap to try again</string>
+<string name="patchalyzer_failed_notification_text">Tap for more details</string>
 <string name="patchalyzer_sum_result_chart_analysis_in_progress">Analysis in progress...</string>
-<string name="patchalyzer_meta_info_analysis_in_progress">Analysis in progress. An internet connection is required during the whole process. The progress bar may not move for several minutes at a time.</string>
+<string name="patchalyzer_meta_info_analysis_in_progress"><![CDATA[Analysis in progress...<br>An internet connection is required during the whole process. The progress bar may not move for several minutes at a time.]]></string>
 
 <string name="patchalyzer_claimed_patchlevel_date">Claimed patch level</string>
 <string name="patchalyzer_general_tests" >General tests</string>
@@ -507,6 +507,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_notification_new_feature_text">Test your phone security by starting a test here!</string>
 <string name="patchalyzer_button_start_analysis">Perform test</string>
 <string name="patchalyzer_button_cancel_analysis">Stop testing</string>
+    <string name="patchalyzer_sticky_error_message_start">Last analysis failed due to a fatal error:</string>
 
 
 </resources>

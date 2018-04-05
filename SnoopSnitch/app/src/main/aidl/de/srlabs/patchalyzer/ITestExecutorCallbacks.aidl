@@ -6,9 +6,8 @@ package de.srlabs.patchalyzer;
 interface ITestExecutorCallbacks {
     void updateProgress(double progressPercent);
     void showErrorMessage(String text);
-    void showOutdatedError(String updateUrl);
     void showNoCVETestsForApiLevel(String message);
     void finished(String analysisResultString);
-    void cancelled();
     void reloadViewState();
+    void handleFatalError(String stickyErrorMessage);
 }
