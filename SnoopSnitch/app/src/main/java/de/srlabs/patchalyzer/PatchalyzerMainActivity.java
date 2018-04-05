@@ -142,18 +142,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         }
 
         @Override
-        public void showStatusMessage(final String text) throws RemoteException {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(text != null){
-                        statusTextView.setText(text);
-                    }
-                }
-            });
-        }
-
-        @Override
         public void showOutdatedError(String upgradeUrl) throws RemoteException {
             if(upgradeUrl == null)
                 upgradeUrl = Constants.DEFAULT_APK_UPGRADE_URL;
