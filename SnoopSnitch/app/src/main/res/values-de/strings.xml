@@ -301,6 +301,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
 
      <!-- Compat check -->
      <string name="compat_snsn_features_not_working">SnoopSnitch\'s Hauptfunktionalität ist deshalb eingeschränkt.</string>
+     <string name="compat_snsn_features_not_working_short">Eingeschränkte Funktionalität auf diesem Gerät.</string>
      <string name="compat_no_diag">Kein Qualcomm Chipsatz oder ungeeignetes ROM (Gerät /dev/diag existiert nicht)</string>
      <string name="compat_broken_diag">DIAG Schnittstelle konnte nicht initialisiert werden</string>
 

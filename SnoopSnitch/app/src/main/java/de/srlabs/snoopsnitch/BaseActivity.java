@@ -42,6 +42,7 @@ public class BaseActivity extends FragmentActivity {
     protected final int refresh_intervall = 1000;
     // Static variable so that it is common to all Activities of the App
     private static boolean exitFlag = false;
+    protected String snsnIncompatibilityReason=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +60,6 @@ public class BaseActivity extends FragmentActivity {
         MsdLog.i("MSD", "MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 
         handler = new Handler();
-
-
     }
 
     @Override
@@ -83,11 +82,7 @@ public class BaseActivity extends FragmentActivity {
 
         setRecordingIcon();
 
-
-
         super.onResume();
-
-
     }
 
     @Override
@@ -156,9 +151,16 @@ public class BaseActivity extends FragmentActivity {
     }
 
     public void showPatchalyzer(){
-        //if(patchalyzerIntent == null)
         patchalyzerIntent = new Intent(this, PatchalyzerMainActivity.class);
         startActivity(patchalyzerIntent);
+    }
+
+    public void disableSNSNSpecificFunctionality(String snsnIncompatibilityReason){
+        this.snsnIncompatibilityReason = snsnIncompatibilityReason;
+    }
+
+    public void enableSNSNSpecificFunctionality(){
+        this.snsnIncompatibilityReason = null;
     }
 
     @Override
@@ -168,7 +170,12 @@ public class BaseActivity extends FragmentActivity {
                 showPatchalyzer();
                 break;
             case R.id.menu_action_scan:
-                toggleRecording();
+                if(snsnIncompatibilityReason == null) {
+                    toggleRecording();
+                }
+                else{
+                    showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
+                }
                 break;
             case R.id.menu_action_map:
                 showMap();
@@ -177,8 +184,12 @@ public class BaseActivity extends FragmentActivity {
                 showTestScreen();
                 break;
             case R.id.menu_action_active_test_advanced:
-                Intent intent = new Intent(this, ActiveTestAdvanced.class);
-                startActivity(intent);
+                if(snsnIncompatibilityReason == null) {
+                    Intent intent = new Intent(this, ActiveTestAdvanced.class);
+                    startActivity(intent);
+                }else{
+                    showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
+                }
                 break;
             case R.id.menu_action_upload_pending_files:
                 getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
@@ -290,6 +301,45 @@ public class BaseActivity extends FragmentActivity {
         if (this.getClass() == DashboardActivity.class) {
             System.exit(0);
         }
+    }
+
+    public void showSNSNFeaturesNotWorkingDialog(String snsnIncompatibilityReason){
+        if(snsnIncompatibilityReason.equals(getResources().getString(R.string.compat_no_baseband_messages_in_active_test))){
+            showDialogWarningNoBasebandMessages();
+        }
+        else {
+            showDeviceIncompatibleDialog(snsnIncompatibilityReason);
+        }
+    }
+
+    public void showDialogWarningNoBasebandMessages(){
+        MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.compat_no_baseband_messages_warning),
+                new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //do nothing here
+                    }
+                },
+                new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        quitApplication();
+                    }
+                },
+                null,
+                getResources().getString(R.string.warning_button_proceed_anyway),
+                getResources().getString(R.string.warning_button_quit),
+                false
+        ).show();
+    }
+
+    public void showDeviceIncompatibleDialog(String incompatibilityReason) {
+        Utils.showDeviceIncompatibleDialog(this, incompatibilityReason+"\n"+this.getResources().getString(R.string.compat_snsn_features_not_working), new Runnable() {
+            @Override
+            public void run() {
+                //do nothing here
+            }
+        });
     }
 
 }

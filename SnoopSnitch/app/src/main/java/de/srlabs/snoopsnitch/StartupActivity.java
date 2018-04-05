@@ -109,38 +109,7 @@ public class StartupActivity extends Activity {
         return isSNSNCompatible;
     }
 
-    private void showDialogWarningNoBasebandMessages(){
-        MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.compat_no_baseband_messages_warning),
-                new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //continue normal startup
-                        proceedAppFlow();
-                    }
-                },
-                new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        quitApplication();
-                    }
-                },
-                null,
-                getResources().getString(R.string.warning_button_proceed_anyway),
-                getResources().getString(R.string.warning_button_quit),
-                false
-        ).show();
-    }
 
-    private void showDeviceIncompatibleDialog(String incompatibilityReason) {
-        Utils.showDeviceIncompatibleDialog(this, incompatibilityReason+"\n"+this.getResources().getString(R.string.compat_snsn_features_not_working), new Runnable() {
-            @Override
-            public void run() {
-                //quitApplication();
-                //still start SNSN -> Patchalyzer feature can still be used
-                proceedAppFlow();
-            }
-        });
-    }
 
     private void showFirstRunDialog() {
         MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.alert_first_app_start_message),

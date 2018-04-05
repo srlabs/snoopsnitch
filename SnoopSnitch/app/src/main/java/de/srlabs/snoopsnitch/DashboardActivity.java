@@ -153,30 +153,29 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
     private void checkCompatibilityAndDisableFunctions(){
         LinearLayout dashboardEventCharts = (LinearLayout) findViewById(R.id.dashboardChartSection);
-        View toggleRecordingMenuItem = (View) findViewById(R.id.menu_action_scan);
-        View activeTestAdvancedMenuItem = (View) findViewById(R.id.menu_action_active_test_advanced);
-
-        String reason = DeviceCompatibilityChecker.checkDeviceCompatibility(this);
+        final String reason = DeviceCompatibilityChecker.checkDeviceCompatibility(this);
         if(reason != null){
+            txtLastAnalysisTime.setText(getString(R.string.compat_snsn_features_not_working_short));
             //SNSN features not fully accessible ; phone not compatible
-
             setViewAndChildrenEnabled(btnDashboardNetworkTest,false);
             setViewAndChildrenEnabled(dashboardEventCharts,false);
-            setViewAndChildrenEnabled(toggleRecordingMenuItem, false); //FIXME toggleRecordingMenuItem == null
-            setViewAndChildrenEnabled(activeTestAdvancedMenuItem, false);//FIXME activeTestAdvancedMenuItem == null
+
+            disableSNSNSpecificFunctionality(reason);
         }
         else{ //TODO necessary?
             setViewAndChildrenEnabled(btnDashboardNetworkTest,true);
             setViewAndChildrenEnabled(dashboardEventCharts,true);
-            setViewAndChildrenEnabled(toggleRecordingMenuItem, true);
-            setViewAndChildrenEnabled(activeTestAdvancedMenuItem, true);
+
+            enableSNSNSpecificFunctionality();
         }
     }
+
+
 
     private static void setViewAndChildrenEnabled(View view, boolean enabled) {
         if(view == null)
             return;
-        view.setEnabled(enabled);
+        //view.setEnabled(enabled);
         if(enabled)
             view.setAlpha(1.0f);
         else
@@ -211,7 +210,6 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     protected void onStart() {
         super.onStart();
 
-
         layout = (DashboardThreatChart) findViewById(R.id.SilentSMSChartMonth);
         vto = layout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
@@ -240,6 +238,10 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     }
 
     public void openDetailView(View view) {
+        if(snsnIncompatibilityReason != null){
+            showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
+            return;
+        }
         if (view.equals(findViewById(R.id.SilentSMSCharts)) || view.equals(findViewById(R.id.IMSICatcherCharts))) {
             Intent myIntent = new Intent(this, DetailChartActivity.class);
             myIntent.putExtra("ThreatType", view.getId());
@@ -422,11 +424,16 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     }
 
     public void toggleNetworkTest(View view) {
-        if (activeTestHelper.isActiveTestRunning()) {
-            activeTestHelper.stopActiveTest();
-        } else {
-            if (PermissionChecker.checkAndRequestPermissionsForActiveTest(this)) {
-                activeTestHelper.showConfirmDialogAndStart(true);
+        if(snsnIncompatibilityReason != null){
+            showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
+        }
+        else {
+            if (activeTestHelper.isActiveTestRunning()) {
+                activeTestHelper.stopActiveTest();
+            } else {
+                if (PermissionChecker.checkAndRequestPermissionsForActiveTest(this)) {
+                    activeTestHelper.showConfirmDialogAndStart(true);
+                }
             }
         }
     }
@@ -524,7 +531,8 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
                 if (notGrantedPermissions.isEmpty()) {
                     //Success: All neccessary permissions granted
-                    startRecording();
+                    if(snsnIncompatibilityReason == null)
+                        startRecording();
                 } else {
 
                     //ask again for all not granted permissions
@@ -611,5 +619,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
                     }
                 }, false).show();
     }
+
+
 
 }
