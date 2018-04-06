@@ -29,7 +29,7 @@ import de.srlabs.patchalyzer.helpers.NotificationHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 import de.srlabs.snoopsnitch.R;
 
-public class TestExecutorService extends Service {
+public class PatchalyzerService extends Service {
     private JSONObject deviceInfoJson = null;
     private TestSuite testSuite = null;
     private DeviceInfoThread deviceInfoThread = null;
@@ -50,7 +50,7 @@ public class TestExecutorService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        Log.d(Constants.LOG_TAG,"onCreate() of TestExecutorService called...");
+        Log.d(Constants.LOG_TAG,"onCreate() of PatchalyzerService called...");
 
         handler = new Handler();
         api = new ServerApi();
@@ -76,12 +76,12 @@ public class TestExecutorService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(Constants.LOG_TAG,"TestExecutorService.onDestroy called");
+        Log.d(Constants.LOG_TAG,"PatchalyzerService.onDestroy called");
         isAnalysisRunning = false;
     }
 
     protected void cancelAnalysis() {
-        Log.d(Constants.LOG_TAG,"TestExecutorService.cancelAnalysis called");
+        Log.d(Constants.LOG_TAG,"PatchalyzerService.cancelAnalysis called");
         stopForeground(true);
         stopSelf();
         System.exit(0);
@@ -94,14 +94,14 @@ public class TestExecutorService extends Service {
     }
 
     private void parseTestSuiteFile(File testSuiteFile,final ProgressItem parseTestSuiteProgress) throws IOException{
-        Log.d(Constants.LOG_TAG,"TestExecutorService: Parsing testsuite...");
-        Log.d(Constants.LOG_TAG, "TestExecutorService: testSuiteFile:" + testSuiteFile.getAbsolutePath());
+        Log.d(Constants.LOG_TAG,"PatchalyzerService: Parsing testsuite...");
+        Log.d(Constants.LOG_TAG, "PatchalyzerService: testSuiteFile:" + testSuiteFile.getAbsolutePath());
         testSuite = new TestSuite(this, testSuiteFile);
         testSuite.parseInfoFromJSON();
         parseTestSuiteProgress.update(1.0);
         Log.i(Constants.LOG_TAG,"Parsing testsuite and additional data chunks finished.");
         basicTestCache = new BasicTestCache(this, testSuite.getVersion(), Build.VERSION.SDK_INT);
-        Log.d(Constants.LOG_TAG,"TestExecutorService: Finished parsing testsuite!");
+        Log.d(Constants.LOG_TAG,"PatchalyzerService: Finished parsing testsuite!");
     }
 
     @Override
@@ -147,7 +147,7 @@ public class TestExecutorService extends Service {
         @Override
         public void updateCallback(final ITestExecutorCallbacks callback){
             Log.d(Constants.LOG_TAG,"Updating callbacks.");
-            TestExecutorService.callback = callback;
+            PatchalyzerService.callback = callback;
             updateProgress();
         }
 
@@ -164,7 +164,7 @@ public class TestExecutorService extends Service {
 
         @Override
         public void requestCancelAnalysis() {
-            TestExecutorService.this.cancelAnalysis();
+            PatchalyzerService.this.cancelAnalysis();
         }
 
         @Override
@@ -256,7 +256,7 @@ public class TestExecutorService extends Service {
                 basicTestCache.clearTemporaryTestResultCache();
                 PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(result);
 
-                return SharedPrefsHelper.saveAnalysisResult(result, TestExecutorService.this);
+                return SharedPrefsHelper.saveAnalysisResult(result, PatchalyzerService.this);
 
             } catch (Exception e) {
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
@@ -353,7 +353,7 @@ public class TestExecutorService extends Service {
                                 return;
                             }
                             Log.i(Constants.LOG_TAG,"Reporting test results to server...");
-                            api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
+                            api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
                             Log.i(Constants.LOG_TAG,"Uploading test results finished...");
                             uploadTestResultsProgress.update(1.0);
                             apiRunning = false;
@@ -383,7 +383,7 @@ public class TestExecutorService extends Service {
                                     handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                                     return;
                                 }
-                                api.reportSys(deviceInfoJson, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
+                                api.reportSys(deviceInfoJson, TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
                             }
                             Log.i(Constants.LOG_TAG,"Uploading device info finished...");
                             uploadDeviceInfoProgress.update(1.0);
@@ -510,7 +510,7 @@ public class TestExecutorService extends Service {
                 try {
                     callback.finished(analysisResultString);
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "TestExecutorService.updateProgress() => callback.finished() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService.updateProgress() => callback.finished() RemoteException", e);
                 }
             }
         });
@@ -527,7 +527,7 @@ public class TestExecutorService extends Service {
                 try {
                     callback.handleFatalError(stickyErrorMessage);
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "TestExecutorService => callback.cancelled() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService => callback.cancelled() RemoteException", e);
                 }
             }
         });
@@ -540,7 +540,7 @@ public class TestExecutorService extends Service {
                 try {
                     callback.updateProgress(totalProgress);
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "TestExecutorService.updateProgress() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService.updateProgress() RemoteException", e);
                 }
             }
         });
@@ -553,7 +553,7 @@ public class TestExecutorService extends Service {
                 try {
                     callback.reloadViewState();
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "TestExecutorService.sendReloadViewStateToCallback() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService.sendReloadViewStateToCallback() RemoteException", e);
                 }
             }
         });
@@ -566,7 +566,7 @@ public class TestExecutorService extends Service {
                 try {
                     callback.showErrorMessage(error);
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "TestExecutorService.reportError() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService.reportError() RemoteException", e);
                 }
             }
         });
@@ -579,7 +579,7 @@ public class TestExecutorService extends Service {
                 try {
                     callback.showNoCVETestsForApiLevel(message);
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "TestExecutorService.showNoCVETestsForApiLevel() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService.showNoCVETestsForApiLevel() RemoteException", e);
                 }
             }
         });
@@ -611,7 +611,7 @@ public class TestExecutorService extends Service {
                 }
                 downloadingTestSuite = true;
                 Log.d(Constants.LOG_TAG,"Downloading testsuite from server...");
-                File f = api.downloadTestSuite("newtestsuite",TestExecutorService.this,TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT,"0", Constants.APP_VERSION);
+                File f = api.downloadTestSuite("newtestsuite",PatchalyzerService.this,TestUtils.getAppId(PatchalyzerService.this), Build.VERSION.SDK_INT,"0", Constants.APP_VERSION);
                 Log.i(Constants.LOG_TAG,"Downloading testsuite finished. Fetching additional data chunks...");
                 downloadProgress.update(1.0);
                 Log.d(Constants.LOG_TAG,"Finished downloading testsuite JSON to file:"+f.getAbsolutePath());
@@ -657,7 +657,7 @@ public class TestExecutorService extends Service {
 
         @Override
         public void run() {
-            deviceInfoJson = TestUtils.makeDeviceinfoJson(TestExecutorService.this, progress);
+            deviceInfoJson = TestUtils.makeDeviceinfoJson(PatchalyzerService.this, progress);
             deviceInfoThread = null;
             deviceInfoRunning = false;
             if(onFinishedRunnable != null) {
@@ -679,7 +679,7 @@ public class TestExecutorService extends Service {
                     handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                     return;
                 }
-                JSONArray requestsJson = api.getRequests(TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT, TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
+                JSONArray requestsJson = api.getRequests(TestUtils.getAppId(PatchalyzerService.this), Build.VERSION.SDK_INT, TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
                 downloadRequestsProgress.update(1.0);
                 Log.i(Constants.LOG_TAG,"Downloading requests finished...");
                 for(int i=0;i<requestsJson.length();i++){
@@ -698,7 +698,7 @@ public class TestExecutorService extends Service {
                             handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                             return;
                         }
-                        api.reportFile(filename, TestUtils.getAppId(TestExecutorService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
+                        api.reportFile(filename, TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
                         requestProgress.get(i).update(1.0);
                         updateProgress();
                     } else{
@@ -724,7 +724,7 @@ public class TestExecutorService extends Service {
     }
 
     private boolean isConnectedToInternet(){
-        if(!TestUtils.isConnectedToInternet(TestExecutorService.this)){
+        if(!TestUtils.isConnectedToInternet(PatchalyzerService.this)){
             reportError(NO_INTERNET_CONNECTION_ERROR);
             return false;
         }

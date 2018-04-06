@@ -47,7 +47,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import de.srlabs.patchalyzer.Constants.ActivityState;
-import de.srlabs.patchalyzer.analysis.TestExecutorService;
+import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.patchalyzer.helpers.NotificationHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
@@ -172,7 +172,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 public void run() {
                     restoreState();
                     progressBox.setVisibility(View.INVISIBLE);
-                    if(text.equals(TestExecutorService.NO_INTERNET_CONNECTION_ERROR)){
+                    if(text.equals(PatchalyzerService.NO_INTERNET_CONNECTION_ERROR)){
                         showNoInternetConnectionDialog();
                     }
                     else {
@@ -328,7 +328,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     protected void onResume(){
         super.onResume();
         if(!TestUtils.isTooOldAndroidAPIVersion()) {
-            Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
+            Intent intent = new Intent(PatchalyzerMainActivity.this, PatchalyzerService.class);
             intent.setAction(ITestExecutorServiceInterface.class.getName());
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
@@ -341,7 +341,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private void startServiceIfNotRunning(){
         try {
             if (mITestExecutorService == null || !mITestExecutorService.isAnalysisRunning()) {
-                Intent intent = new Intent(PatchalyzerMainActivity.this, TestExecutorService.class);
+                Intent intent = new Intent(PatchalyzerMainActivity.this, PatchalyzerService.class);
                 intent.setAction(ITestExecutorServiceInterface.class.getName());
                 startService(intent);
                 bindService(intent, mConnection, Context.BIND_AUTO_CREATE);

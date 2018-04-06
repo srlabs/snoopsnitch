@@ -159,12 +159,12 @@
         </activity>
 
         <service
-            android:name="de.srlabs.patchalyzer.analysis.TestExecutorService"
+            android:name="de.srlabs.patchalyzer.analysis.PatchalyzerService"
             android:exported="false"
-            android:process=".TestExecutorService" />
+            android:process=".PatchalyzerService" />
 
 
-        <service android:name="de.srlabs.snoopsnitch.qdmon.MsdService" android:exported="false" android:process=".snoopsnitch_service" />
+        <service android:name="de.srlabs.snoopsnitch.qdmon.MsdService" android:exported="false" android:process=".SnoopSnitchService" />
     	<service android:name="de.srlabs.snoopsnitch.active_test.ActiveTestService" android:exported="false" />
 
         <receiver android:name="de.srlabs.patchalyzer.BootCompletedBroadcastReceiver">

@@ -175,7 +175,7 @@ public class SharedPrefsHelper {
     }
 
     // This is needed so that the cached value for the Main App process can be set while the
-    // TestExecutorService modifies the saved value in SharedPrefs
+    // PatchalyzerService modifies the saved value in SharedPrefs
     public static String saveAnalysisResultNonPersistent(JSONObject analysisResultJSON) {
         cachedResultJSON = analysisResultJSON;
         return analysisResultJSON.toString();

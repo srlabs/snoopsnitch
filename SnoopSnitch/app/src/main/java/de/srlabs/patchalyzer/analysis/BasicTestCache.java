@@ -28,7 +28,7 @@ public class BasicTestCache {
     LinkedBlockingQueue<BasicTestResult> resultQueue = new LinkedBlockingQueue<BasicTestResult>();
     private SharedPreferences sharedPrefs;
     private DBHelper database;
-    private TestExecutorService service;
+    private PatchalyzerService service;
     int progressTotal = 0;
     int progressDone = 0;
     final Object progressLock = new Object();
@@ -39,7 +39,7 @@ public class BasicTestCache {
     private HashMap<String,Boolean> cacheResults;
     private MasterWorkingThread masterWorkingThread;
 
-    public BasicTestCache(TestExecutorService service, String testSuiteVersion, int apiLevel){
+    public BasicTestCache(PatchalyzerService service, String testSuiteVersion, int apiLevel){
         this.testSuiteVersion = testSuiteVersion;
         this.apiLevel = apiLevel;
         this.service = service;
