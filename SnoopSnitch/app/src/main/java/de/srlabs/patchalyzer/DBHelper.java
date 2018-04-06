@@ -36,7 +36,6 @@ public class DBHelper {
         MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
     }
 
-    //----------------------------------------------------------------------------------------------
     /**
      * Write a JSONObject representation of a basic test to the SQLite DB
      * @param basicTest
@@ -95,106 +94,6 @@ public class DBHelper {
         }
     }
 
-    public Vector<JSONObject> getNotPerformedTests(int limit){
-        Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
-        //make sure DB access is ready
-        if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
-        }
-
-        Vector<JSONObject> results = new Vector<>();
-
-        //basic test table info
-        Cursor cursor = db.query(
-                "basictests",   // The table to query
-                null,             // The array of columns to return (pass null to get all)
-                "result = ? and exception IS NULL",              // The columns for the WHERE clause
-                new String[]{"-1"},          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                null,               // The sort order
-                ""+limit
-        );
-
-        Log.d(Constants.LOG_TAG,"Got batch of tests with size: "+cursor.getCount()+" from DB!");
-
-        while(cursor.moveToNext()){
-            try {
-                JSONObject basicTest = null;
-                basicTest = new JSONObject();
-                String[] columns = cursor.getColumnNames();
-                String testType = null;
-                for (String column : columns) {
-                    if (column.equals("result")) {
-                        int result = cursor.getInt(cursor.getColumnIndex("result"));
-                        if (result == 2 || result == -1) //inconclusive or not performed yet
-                            basicTest.put("result", JSONObject.NULL);
-                        else
-                            basicTest.put("result", (result == 1));
-                        continue;
-                    }
-                    basicTest.put(column, cursor.getString(cursor.getColumnIndex(column)));
-                }
-                results.add(basicTest);
-            }catch(JSONException e){
-                Log.d(Constants.LOG_TAG,"JSONException while parsing basic test:"+e.getMessage());
-            }
-        }
-        cursor.close();
-        return results;
-    }
-
-    public Vector<JSONObject> getNotPerformedTestsSortedByFilenameAndTestType( int limit){
-        Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
-        //make sure DB access is ready
-        if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
-        }
-
-        Vector<JSONObject> results = new Vector<>();
-
-        //basic test table info
-        Cursor cursor = db.query(
-                "basictests",   // The table to query
-                null,             // The array of columns to return (pass null to get all)
-                "result = ? and exception IS NULL",              // The columns for the WHERE clause
-                new String[]{"-1"},          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                "filename, testType DESC",               // The sort order
-                ""+limit
-        );
-
-        if(cursor == null || cursor.getCount() == 0)
-            return null;
-
-        Log.d(Constants.LOG_TAG,"Got batch of tests with size: "+cursor.getCount()+" from DB!");
-
-        while(cursor.moveToNext()){
-            try {
-                JSONObject basicTest = null;
-                basicTest = new JSONObject();
-                String[] columns = cursor.getColumnNames();
-                for (String column : columns) {
-                    if (column.equals("result")) {
-                        int result = cursor.getInt(cursor.getColumnIndex("result"));
-                        if (result == 2 || result == -1) //inconclusive or not performed yet
-                            basicTest.put("result", JSONObject.NULL);
-                        else
-                            basicTest.put("result", (result == 1));
-                        continue;
-                    }
-                    basicTest.put(column, cursor.getString(cursor.getColumnIndex(column)));
-                }
-                results.add(basicTest);
-            }catch(JSONException e){
-                Log.d(Constants.LOG_TAG,"JSONException while parsing basic test:"+e.getMessage());
-            }
-        }
-        cursor.close();
-        return results;
-    }
-
     public void addTestResultToDB(String uuid, Boolean result){
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
@@ -251,6 +150,106 @@ public class DBHelper {
         }
     }
 
+    public Vector<JSONObject> getNotPerformedTests(int limit){
+        Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
+        //make sure DB access is ready
+        if(db == null || !db.isOpen()){
+            db = MsdDatabaseManager.getInstance().openDatabase();
+        }
+
+        Vector<JSONObject> results = new Vector<>();
+
+        //basic test table info
+        Cursor cursor = db.query(
+                "basictests",
+                null,
+                "result = ? and exception IS NULL",
+                new String[]{"-1"},
+                null,
+                null,
+                null,
+                ""+limit
+        );
+
+        Log.d(Constants.LOG_TAG,"Got batch of tests with size: "+cursor.getCount()+" from DB!");
+
+        while(cursor.moveToNext()){
+            try {
+                JSONObject basicTest = null;
+                basicTest = new JSONObject();
+                String[] columns = cursor.getColumnNames();
+                String testType = null;
+                for (String column : columns) {
+                    if (column.equals("result")) {
+                        int result = cursor.getInt(cursor.getColumnIndex("result"));
+                        if (result == 2 || result == -1) //inconclusive or not performed yet
+                            basicTest.put("result", JSONObject.NULL);
+                        else
+                            basicTest.put("result", (result == 1));
+                        continue;
+                    }
+                    basicTest.put(column, cursor.getString(cursor.getColumnIndex(column)));
+                }
+                results.add(basicTest);
+            }catch(JSONException e){
+                Log.d(Constants.LOG_TAG,"JSONException while parsing basic test:"+e.getMessage());
+            }
+        }
+        cursor.close();
+        return results;
+    }
+
+    public Vector<JSONObject> getNotPerformedTestsSortedByFilenameAndTestType( int limit){
+        Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
+        //make sure DB access is ready
+        if(db == null || !db.isOpen()){
+            db = MsdDatabaseManager.getInstance().openDatabase();
+        }
+
+        Vector<JSONObject> results = new Vector<>();
+
+        //basic test table info
+        Cursor cursor = db.query(
+                "basictests",
+                null,
+                "result = ? and exception IS NULL",
+                new String[]{"-1"},
+                null,
+                null,
+                "filename, testType DESC",
+                ""+limit
+        );
+
+        if(cursor == null || cursor.getCount() == 0)
+            return null;
+
+        Log.d(Constants.LOG_TAG,"Got batch of tests with size: "+cursor.getCount()+" from DB!");
+
+        while(cursor.moveToNext()){
+            try {
+                JSONObject basicTest = null;
+                basicTest = new JSONObject();
+                String[] columns = cursor.getColumnNames();
+                for (String column : columns) {
+                    if (column.equals("result")) {
+                        int result = cursor.getInt(cursor.getColumnIndex("result"));
+                        if (result == 2 || result == -1) //inconclusive or not performed yet
+                            basicTest.put("result", JSONObject.NULL);
+                        else
+                            basicTest.put("result", (result == 1));
+                        continue;
+                    }
+                    basicTest.put(column, cursor.getString(cursor.getColumnIndex(column)));
+                }
+                results.add(basicTest);
+            }catch(JSONException e){
+                Log.d(Constants.LOG_TAG,"JSONException while parsing basic test:"+e.getMessage());
+            }
+        }
+        cursor.close();
+        return results;
+    }
+
     public Boolean getTestResult(String uuid){
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
@@ -290,13 +289,13 @@ public class DBHelper {
 
         //basic test table info
         Cursor cursor = db.query(
-                "basictests",   // The table to query
-                null,             // The array of columns to return (pass null to get all)
-                null,              // The columns for the WHERE clause
-                null,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                null               // The sort order
+                "basictests",
+                new String[]{"uuid"},
+                null,
+                null,
+                null,
+                null,
+                null
         );
 
         Log.d(Constants.LOG_TAG, mTAG + "" + cursor.getCount() + " basic tests in DB");
@@ -322,13 +321,13 @@ public class DBHelper {
 
         //basic test table info
         Cursor cursor = db.query(
-                "basictests",   // The table to query
-                null,             // The array of columns to return (pass null to get all)
-                null,              // The columns for the WHERE clause
-                null,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                null               // The sort order
+                "basictests",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
         );
 
         Log.d(Constants.LOG_TAG, mTAG + "" + cursor.getCount() + " basic tests in DB");
@@ -359,7 +358,7 @@ public class DBHelper {
     }
 
     public JSONObject getBasicTestByUUID(String uuid){
-        if(uuid == null || uuid.equals("")){ //TODO improve sanity check here
+        if(uuid == null || uuid.equals("")){
             Log.e(Constants.LOG_TAG,mTAG+"Malformated UUID.");
         }
         //make sure DB access is ready (read only)
@@ -370,13 +369,13 @@ public class DBHelper {
         try {
             //basic test table info
             cursor = db.query(
-                    "basictests",   // The table to query
-                    null,             // The array of columns to return (pass null to get all)
-                    "uuid = ?",              // The columns for the WHERE clause
-                    new String[]{uuid},          // The values for the WHERE clause
-                    null,                   // don't group the rows
-                    null,                   // don't filter by row groups
-                    null               // The sort order
+                    "basictests",
+                    null,
+                    "uuid = ?",
+                    new String[]{uuid},
+                    null,
+                    null,
+                    null
             );
 
             //Log.d(Constants.LOG_TAG,"DB Query: cursor: "+cursor.getCount()+" columns:"+ Arrays.toString(cursor.getColumnNames()));
@@ -437,18 +436,18 @@ public class DBHelper {
         }
     }
 
-    public int getNumberOfTotalNotPerformedTests() { //basic test table info
+    public int getNumberOfTotalNotPerformedTests() {
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
             db = MsdDatabaseManager.getInstance().openDatabase();
         }
         Cursor cursor = db.query(
-                "basictests",   // The table to query
-                new String[]{"uuid"},             // The array of columns to return (pass null to get all)
-                "result = ? and exception IS NULL",              // The columns for the WHERE clause
-                new String[]{"-1"},          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
+                "basictests",
+                new String[]{"uuid"},
+                "result = ? and exception IS NULL",
+                new String[]{"-1"},
+                null,
+                null,
                 null
         );
 
@@ -480,12 +479,12 @@ public class DBHelper {
             db = MsdDatabaseManager.getInstance().openDatabase();
         }
         Cursor cursor = db.query(
-                "basictest_chunks",   // The table to query
-                new String[]{"successful"},             // The array of columns to return (pass null to get all)
-                "url = ? and successful = ?",              // The columns for the WHERE clause
-                new String[]{basicTestChunkURL,""+1},          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
+                "basictest_chunks",
+                new String[]{"successful"},
+                "url = ? and successful = ?",
+                new String[]{basicTestChunkURL,""+1},
+                null,
+                null,
                 null
         );
 

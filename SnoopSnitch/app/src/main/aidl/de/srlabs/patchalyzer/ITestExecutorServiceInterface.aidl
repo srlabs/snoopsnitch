@@ -9,10 +9,8 @@ interface ITestExecutorServiceInterface {
     boolean isDeviceInfoFinished();
     String getDeviceInfoJson();
     void startBasicTests();
-    int getBasicTestsQueueSize();
     String evaluateVulnerabilitiesTests();
     void clearCache();
-    boolean updateTestsNeeded();
     void updateCallback(ITestExecutorCallbacks callback);
     void startWork(boolean updateTests, boolean generateDeviceInfo, boolean evaluateTests, boolean uploadTestResults, boolean uploadDeviceInfo);
     boolean isAnalysisRunning();

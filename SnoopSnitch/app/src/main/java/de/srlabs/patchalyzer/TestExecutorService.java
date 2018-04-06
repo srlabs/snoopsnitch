@@ -28,7 +28,6 @@ public class TestExecutorService extends Service {
     private JSONObject deviceInfoJson = null;
     private TestSuite testSuite = null;
     private DeviceInfoThread deviceInfoThread = null;
-    Set<Thread> subThreads = null;
     private BasicTestCache basicTestCache = null;
     private static ITestExecutorCallbacks callback = null;
     private boolean apiRunning = false;
@@ -50,12 +49,9 @@ public class TestExecutorService extends Service {
 
         handler = new Handler();
         api = new ServerApi();
-        subThreads = new HashSet<Thread>();
-
     }
 
     private void doWorkAsync() {
-
         final Thread t = new Thread() {
             @Override
             public void run() {
@@ -71,9 +67,7 @@ public class TestExecutorService extends Service {
             }
         };
         t.start();
-
     }
-
 
     @Override
     public void onDestroy() {
@@ -94,39 +88,7 @@ public class TestExecutorService extends Service {
         return mBinder;
     }
 
-    private void downloadTestSuite(final ProgressItem downloadTestSuiteProgress, final ProgressItem parseTestSuiteProgress){
-        downloadingTestSuite = true;
-        Thread thread = new Thread(){
-            @Override
-            public void run(){
-                ServerApi api = new ServerApi();
-                try{
-                    if(!isConnectedToInternet()){
-                        return;
-                    }
-                    Log.d(Constants.LOG_TAG,"Downloading testsuite from server...");
-                    File f = api.downloadTestSuite("newtestsuite",TestExecutorService.this,TestUtils.getAppId(TestExecutorService.this), Build.VERSION.SDK_INT,"0", Constants.APP_VERSION);
-                    downloadTestSuiteProgress.update(1.0);
-                    Log.d(Constants.LOG_TAG,"Finished downloading testsuite JSON to file:"+f.getAbsolutePath());
-                    downloadingTestSuite = false;
-                    parseTestSuiteFile(f,parseTestSuiteProgress);
-                    checkIfCVETestsAvailable(testSuite);
-
-                }catch(Exception e){
-                    Log.e(Constants.LOG_TAG,"Exception while downloading teststuite to file!"+e.getMessage());
-                    try {
-                        callback.showErrorMessage("Exception while downloading testsuite: " + e.getMessage());
-                    }catch(RemoteException ex){
-                        Log.e(Constants.LOG_TAG,"RemoteException when trying to show error message: "+ex.getMessage());
-                    }
-                }
-            }
-        };
-        thread.start();
-    }
-
     private void parseTestSuiteFile(File testSuiteFile,final ProgressItem parseTestSuiteProgress) throws IOException{
-
         Log.d(Constants.LOG_TAG,"TestExecutorService: Parsing testsuite...");
         Log.d(Constants.LOG_TAG, "TestExecutorService: testSuiteFile:" + testSuiteFile.getAbsolutePath());
         testSuite = new TestSuite(this, testSuiteFile);
@@ -135,19 +97,17 @@ public class TestExecutorService extends Service {
         Log.i(Constants.LOG_TAG,"Parsing testsuite and additional data chunks finished.");
         basicTestCache = new BasicTestCache(this, testSuite.getVersion(), Build.VERSION.SDK_INT);
         Log.d(Constants.LOG_TAG,"TestExecutorService: Finished parsing testsuite!");
-
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
-        Log.v(Constants.LOG_TAG, "in onUnbind");
+    public boolean onUnbind(Intent intent) { //TODO needed?
+        //Log.v(Constants.LOG_TAG, "in onUnbind");
         return true;
     }
 
-
     @Override
-    public void onRebind(Intent intent) {
-        Log.v(Constants.LOG_TAG, "onRebind() called");
+    public void onRebind(Intent intent) { //TODO needed?
+        //Log.v(Constants.LOG_TAG, "onRebind() called");
         super.onRebind(intent);
     }
 
@@ -160,15 +120,15 @@ public class TestExecutorService extends Service {
             //outdated = true;
             if(outdated){
                 Log.i(Constants.LOG_TAG, "Outdated app version! minAppVersion=" + minAppVersion);
-                String upgradeUrlTmp;
+                /*String upgradeUrlTmp;
                 if(testSuite.getUpdradeUrl() != null && !testSuite.getUpdradeUrl().equals("")){
                     upgradeUrlTmp = testSuite.getUpdradeUrl();
                 } else {
                     upgradeUrlTmp = Constants.DEFAULT_APK_UPGRADE_URL;
-                }
+                }*/
                 String errorMessage = "<p style=\"font-weight:bold;\">"+getResources().getString(R.string.patchalyzer_new_version_available_heading)
-                        +"</p>"+ getResources().getString(R.string.patchalyzer_new_version_available_instructions)
-                        +": <a href=\"" + upgradeUrlTmp + "\">" + upgradeUrlTmp + "</a>";
+                        +"</p>"+ getResources().getString(R.string.patchalyzer_new_version_available_instructions);
+                        //+": <a href=\"" + upgradeUrlTmp + "\">" + upgradeUrlTmp + "</a>";
                 handleFatalErrorViaCallback(errorMessage);
             }
             return outdated;
@@ -225,25 +185,26 @@ public class TestExecutorService extends Service {
             basicTestCache.startWorking();
         }
 
-        @Override
-        public int getBasicTestsQueueSize() throws RemoteException {
-            return basicTestCache.getQueueSize();
-        }
         public String evaluateVulnerabilitiesTests() throws RemoteException{
             try {
                 Log.d(Constants.LOG_TAG, "Starting to create result JSON...");
                 boolean is64BitSystem = TestUtils.is64BitSystem();
                 JSONObject result = new JSONObject();
+
                 if(testSuite == null)
                     return null;
+
                 Log.i(Constants.LOG_TAG,"Creating result overview...");
                 JSONObject vulnerabilities = testSuite.getVulnerabilities();
                 Iterator<String> identifierIterator = vulnerabilities.keys();
                 Vector<String> identifiers = new Vector<String>();
-                while (identifierIterator.hasNext())
+
+                while (identifierIterator.hasNext()) {
                     identifiers.add(identifierIterator.next());
+                }
                 Collections.sort(identifiers);
                 Log.d(Constants.LOG_TAG, "number of vulnerabilities to test: " + identifiers.size());
+
                 for (String identifier : identifiers) {
                     JSONObject vulnerability = vulnerabilities.getJSONObject(identifier);
 
@@ -251,7 +212,6 @@ public class TestExecutorService extends Service {
                         Boolean testRequires64Bit = vulnerability.getBoolean("testRequires64bit");
                         if (!is64BitSystem && testRequires64Bit) {
                             //test will not be possible; skip test
-                            //FIXME how to display test
                             continue;
                         }
                     } catch (JSONException e) {
@@ -261,10 +221,12 @@ public class TestExecutorService extends Service {
                     String category = vulnerability.getString("category");
                     JSONObject test_not_affected = vulnerability.getJSONObject("testNotAffected");
                     Boolean notAffected = TestEngine.runTest(basicTestCache, test_not_affected);
+
                     JSONObject vulnerabilityResult = new JSONObject();
                     vulnerabilityResult.put("identifier", identifier);
                     vulnerabilityResult.put("title", vulnerability.getString("title"));
                     vulnerabilityResult.put("notAffected", notAffected);
+
                     if (!notAffected) {
                         JSONObject testVulnerable = vulnerability.getJSONObject("testVulnerable");
                         Boolean vulnerable = TestEngine.runTest(basicTestCache, testVulnerable);
@@ -278,8 +240,10 @@ public class TestExecutorService extends Service {
                     }
                     result.getJSONArray(category).put(vulnerabilityResult);
                 }
+
                 basicTestCache.clearTemporaryTestResultCache();
                 PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(result);
+
                 return TestUtils.saveAnalysisResult(result, TestExecutorService.this);
             } catch (Exception e) {
                 // TODO: Kill the service here
@@ -287,6 +251,8 @@ public class TestExecutorService extends Service {
                 return e.toString();
             }
         }
+
+        @Override
         public void clearCache(){
             basicTestCache.clearCache();
         }
@@ -296,10 +262,7 @@ public class TestExecutorService extends Service {
             return isAnalysisRunning;
         }
 
-        public boolean updateTestsNeeded() throws RemoteException {
-            return true;
-        }
-
+        @Override
         public void startWork(boolean updateTests, boolean generateDeviceInfo, final boolean evaluateTests, final boolean uploadTestResults, final boolean uploadDeviceInfo){
 
             if(downloadingTestSuite){
@@ -325,26 +288,28 @@ public class TestExecutorService extends Service {
             clearProgress();
             updateProgress();
 
-            //TestUtils.clearSavedAnalysisResult(TestExecutorService.this);
-
+            //prepare progressitem's
             final ProgressItem uploadDeviceInfoProgress;
             if(uploadDeviceInfo) {
                 uploadDeviceInfoProgress = addProgressItem("uploadDeviceInfo", 2.0);
             } else{
                 uploadDeviceInfoProgress = null;
             }
+
             final ProgressItem uploadTestResultsProgress;
             if(uploadTestResults) {
                 uploadTestResultsProgress = addProgressItem("uploadTestResults", 1.0);
             } else{
                 uploadTestResultsProgress = null;
             }
+
             final ProgressItem basicTestsProgress;
             if(evaluateTests) {
                 basicTestsProgress = addProgressItem("basicTests", 6.0);
             } else{
                 basicTestsProgress = null;
             }
+
             final ProgressItem downloadTestSuiteProgress;
             final ProgressItem parseTestSuiteProgress;
             if(updateTests){
@@ -355,13 +320,14 @@ public class TestExecutorService extends Service {
                 downloadTestSuiteProgress = null;
                 parseTestSuiteProgress = null;
             }
+
             updateProgress();
-            if(true){
-                ProgressItem downloadRequestsProgress = addProgressItem("downloadRequests", 0.5);
-                Thread requestsThread = new RequestsThread(downloadRequestsProgress);
-                subThreads.add(requestsThread);
-                requestsThread.start();
-            }
+
+            ProgressItem downloadRequestsProgress = addProgressItem("downloadRequests", 0.5);
+            Thread requestsThread = new RequestsThread(downloadRequestsProgress);
+            requestsThread.start();
+
+            //prepare finish runnables
             final Runnable pendingTestResultsUploadRunnable = new Runnable(){
                 @Override
                 public void run() {
@@ -391,6 +357,7 @@ public class TestExecutorService extends Service {
                     }
                 }
             };
+
             final Runnable pendingDeviceInfoUploadRunnable = new Runnable(){
                 @Override
                 public void run() {
@@ -421,6 +388,7 @@ public class TestExecutorService extends Service {
                     }
                 }
             };
+
             if(generateDeviceInfo) {
                 ProgressItem deviceInfoProgress = addProgressItem("deviceInfo", 2);
                 // Run sysinfo in background
@@ -430,15 +398,14 @@ public class TestExecutorService extends Service {
                 if (deviceInfoJson != null)
                     deviceInfoJson = null;
                 deviceInfoThread = new DeviceInfoThread(deviceInfoProgress, pendingDeviceInfoUploadRunnable);
-                subThreads.add(deviceInfoThread);
                 Log.i(Constants.LOG_TAG, "Starting DeviceInfoThread");
                 deviceInfoRunning = true;
                 deviceInfoThread.start();
             }
+
             if(updateTests){
                 Thread downloadAndParseTestSuiteThread = new DownloadThread(downloadTestSuiteProgress, parseTestSuiteProgress,evaluateTests, basicTestsProgress, pendingTestResultsUploadRunnable);
                 downloadAndParseTestSuiteThread.start();
-                subThreads.add(downloadAndParseTestSuiteThread);
             } else{
                 if(evaluateTests){
                     Log.i(Constants.LOG_TAG, "Calling basicTestCache.startTesting()");
@@ -461,21 +428,24 @@ public class TestExecutorService extends Service {
             Log.e(Constants.LOG_TAG,"checkIfCVETestsAvailable: testSuite is null");
         }
     }
+
     public void finishedBasicTests(){
         Log.i(Constants.LOG_TAG,"Finished performing basic tests.");
         //vulnerabilitiesJSONResult = getJSONFromVulnerabilitiesResults();
     }
+
     private void clearProgress(){
         this.progressItems = new Vector<ProgressItem>();
     }
+
     private ProgressItem addProgressItem(String name, double weight){
         Log.d(Constants.LOG_TAG,"Adding progressItem: "+name+" weight:"+weight);
         ProgressItem item = new ProgressItem(this, name, weight);
         progressItems.add(item);
         return item;
     }
+
     private double getTotalProgress(){
-        //Log.i(Constants.LOG_TAG, "getTotalProgres()");
         double weightSum = 0;
         double progressSum = 0;
         if(progressItems == null){
@@ -495,6 +465,7 @@ public class TestExecutorService extends Service {
         //Log.i(Constants.LOG_TAG, "getTotalProgres() returns "+ totalProgress);
         return totalProgress;
     }
+
     public void updateProgress() {
         double totalProgress = getTotalProgress();
         sendProgressToCallback(totalProgress);
@@ -502,7 +473,6 @@ public class TestExecutorService extends Service {
             onFinishedAnalysis();
         }
     }
-
 
     private void onFinishedAnalysis() {
         String analysisResultString = null;
@@ -532,6 +502,7 @@ public class TestExecutorService extends Service {
             }
         });
     }
+
     private void handleFatalErrorViaCallback(final String stickyErrorMessage){
         handler.post(new Runnable(){
             @Override
@@ -544,6 +515,7 @@ public class TestExecutorService extends Service {
             }
         });
     }
+
     private void sendProgressToCallback(final double totalProgress){
         handler.post(new Runnable(){
             @Override
@@ -556,6 +528,7 @@ public class TestExecutorService extends Service {
             }
         });
     }
+
     private void sendReloadViewStateToCallback(){
         handler.post(new Runnable(){
             @Override
@@ -568,6 +541,7 @@ public class TestExecutorService extends Service {
             }
         });
     }
+
     private void reportError(final String error){
         handler.post(new Runnable(){
             @Override
@@ -580,6 +554,7 @@ public class TestExecutorService extends Service {
             }
         });
     }
+
     private void showNoCVETestsForApiLevel(final String message){
         handler.post(new Runnable(){
             @Override
@@ -648,7 +623,6 @@ public class TestExecutorService extends Service {
                 basicTestCache.startTesting(basicTestsProgress, pendingTestResultsUploadRunnable);
             }
         }
-
     }
 
     private class DeviceInfoThread extends Thread{
@@ -674,6 +648,7 @@ public class TestExecutorService extends Service {
             }
         }
     }
+
     private class RequestsThread extends Thread{
         private ProgressItem downloadRequestsProgress;
         public RequestsThread(ProgressItem downloadRequestsProgress){
@@ -718,7 +693,7 @@ public class TestExecutorService extends Service {
                 Log.i(Constants.LOG_TAG,"Reporting files to server finished...");
             } catch(Exception e){
                 Log.e(Constants.LOG_TAG, "RequestsThread.run() exception", e);
-                if(e instanceof IOException) { //TODO test
+                if(e instanceof IOException) {
                     reportError(NO_INTERNET_CONNECTION_ERROR);
                     handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                 }
@@ -728,7 +703,6 @@ public class TestExecutorService extends Service {
                 }
                 updateProgress();
             }
-
         }
     }
 
@@ -741,36 +715,6 @@ public class TestExecutorService extends Service {
             return true;
         }
     }
-
-    private void stopSubThreads(){
-        //reset test status
-        Log.d(Constants.LOG_TAG,"Resetting state and stopping TestExecutorService subthreads...");
-        apiRunning = false;
-        basicTestsRunning = false;
-        deviceInfoRunning = false;
-        downloadingTestSuite = false;
-
-        //if(basicTestCache != null)
-        ///    basicTestCache.stopTesting();
-
-        for(Thread thread : subThreads){
-            if(thread instanceof DeviceInfoThread){
-                DeviceInfoThread deviceInfoThread = (DeviceInfoThread) thread;
-                deviceInfoThread.doNotRunFinishedRunnable();
-            }
-            while(true) {
-                try {
-                    thread.join();
-                    Log.d(Constants.LOG_TAG,"Stopped TestExecutorService subthread.");
-                    break;
-                } catch (InterruptedException e) {
-                    Log.d(Constants.LOG_TAG, "InterruptedException while stopping running subThread: " + e.getMessage());
-                }
-            }
-        }
-    }
-
-
 
     @Override
     public int onStartCommand (Intent intent, int flags, int startId) {

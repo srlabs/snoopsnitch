@@ -154,14 +154,12 @@ public class BasicTestParser {
     }
 
     //----------------------------------------------------------------------------------------------
-    /**
-     * This will parse all vulnerabilites related info from the JSON to a JSON object
-     * Precondition: initReadingVulnerabilities
-     */
-    public JSONObject parseVulnerabilities(){
-        return parseAndAddVulnerabilities(null);
-    }
 
+    /**
+     * This will parse and add all vulnerabilities to the passed object (if null a new JSON object will be created)
+     * @param vulnerabilities
+     * @return
+     */
     public JSONObject parseAndAddVulnerabilities(JSONObject vulnerabilities){
         if(vulnerabilities == null)
             vulnerabilities = new JSONObject();
@@ -187,6 +185,13 @@ public class BasicTestParser {
         return vulnerabilities;
     }
 
+    /**
+     * Parses a single vulnerability by using the JsonReader to a JSONObject
+     * @param jsonReader
+     * @return JSONObject representation of vulnerability
+     * @throws IOException
+     * @throws JSONException
+     */
     private JSONObject parseVulnerability(JsonReader jsonReader) throws IOException,JSONException{
         jsonReader.beginObject();
         JSONObject vuln = new JSONObject();
@@ -233,6 +238,13 @@ public class BasicTestParser {
         return vuln;
     }
 
+    /**
+     * Parses vulnerability related subtest information (-> which basic test results are needed to calculate the result)
+     * @param jsonReader
+     * @return
+     * @throws IOException
+     * @throws JSONException
+     */
     private JSONObject parseSubTestInfo(JsonReader jsonReader) throws IOException, JSONException{
         jsonReader.beginObject();
         JSONObject subtests = new JSONObject();
@@ -255,6 +267,12 @@ public class BasicTestParser {
         return subtests;
     }
 
+    /**Used together with parseSubTestInfo() to parse the subtest information recursively
+     * @param jsonReader
+     * @return subtest information JSONArray
+     * @throws IOException
+     * @throws JSONException
+     */
     private JSONArray parseSubTests(JsonReader jsonReader) throws IOException, JSONException{
         jsonReader.beginArray();
         JSONArray subtests = new JSONArray();
@@ -272,6 +290,12 @@ public class BasicTestParser {
         return subtests;
     }
 
+    /**
+     * Makes sure that for a specific test type we find all the neccessary information or throws Exceptions instead
+     * @param basicTest
+     * @throws JSONException
+     * @throws IllegalStateException
+     */
     public static void checkTestTypeSufficientInfo(JSONObject basicTest) throws JSONException, IllegalStateException{
         if (basicTest == null || !basicTest.has("testType"))
             throw new IllegalStateException("basic test not valid!");

@@ -7,7 +7,7 @@ import java.util.Vector;
 
 import de.srlabs.patchalyzer.signatures.SymbolInformation;
 
-/**This class bundles similiar tests (== same file and probably same test type) together to cache certain information.
+/**This class bundles similar tests (== same file and probably same test type) together to cache certain information.
  * This way we can reduce the amount of redundant work like e.g. the same objdump calls.
  * Created by jonas on 15.03.18.
  */

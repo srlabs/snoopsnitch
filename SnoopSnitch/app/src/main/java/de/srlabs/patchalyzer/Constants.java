@@ -2,6 +2,9 @@ package de.srlabs.patchalyzer;
 
 import android.graphics.Color;
 
+/**
+ * Keeps some constant values, which are used by Patchalyzer
+ */
 public class Constants {
     public static final String LOG_TAG="PatchAnalyzer";
     public static final int APP_VERSION = 10;

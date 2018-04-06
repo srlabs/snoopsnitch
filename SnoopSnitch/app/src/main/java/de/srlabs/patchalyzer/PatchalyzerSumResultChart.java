@@ -30,7 +30,6 @@ import de.srlabs.patchalyzer.TestUtils;
 
 public class PatchalyzerSumResultChart extends View {
     private Canvas canvas;
-    //private float chartWidth=30f;
     private float chartOffsetTopBottom;
     private boolean showNumbers = false;
     private boolean isSmall = false;
@@ -145,6 +144,12 @@ public class PatchalyzerSumResultChart extends View {
         }
     }
 
+    /**
+     * Display status text instead of test results
+     * @param chartHeight
+     * @param chartWidth
+     * @param marginleftright
+     */
     private void drawNoResults(float chartHeight, float chartWidth, float marginleftright){
         //default (no test results available)
         Paint paint = new Paint();
@@ -156,11 +161,6 @@ public class PatchalyzerSumResultChart extends View {
         canvas.drawRect(new RectF(startX, chartOffsetTopBottom, startX + chartWidth, chartOffsetTopBottom + chartHeight), paint);
 
         String text = null;
-        /*if (TestExecutorService.instance == null) {
-            text = this.getResources().getString(R.string.patchalyzer_no_test_result);
-        } else {
-            text = this.getResources().getString(R.string.patchalyzer_analysis_in_progress);
-        }*/
         if(TestUtils.isTooOldAndroidAPIVersion()){
             text = this.getResources().getString(R.string.patchalyzer_too_old_android_api_level_result_chart);
         }
@@ -191,6 +191,14 @@ public class PatchalyzerSumResultChart extends View {
 
     }
 
+    /**
+     * Display the latest test result:
+     * calculate the individual percentage of the result parts and draw the parts accordingly
+     * optional: show the numbers of each part in the center (if they fit in there)
+     * @param sumCVEs
+     * @param chartHeight
+     * @param marginleftright
+     */
     private void drawResults(int sumCVEs, float chartHeight, float marginleftright) {
         Paint paint = new Paint();
         float chartWidth = getWidth() - marginleftright;
@@ -218,7 +226,6 @@ public class PatchalyzerSumResultChart extends View {
 
                 if (showNumbers) {
                     if (isNumberFittingDrawnPart(part.getCount(),chartWidth * (1f * part.getCount() / sumCVEs), paint)) {
-
                         paint.setColor(Color.BLACK);
                         paint.setAntiAlias(true);
                         float top = chartOffsetTopBottom;
@@ -231,6 +238,13 @@ public class PatchalyzerSumResultChart extends View {
         }
     }
 
+    /**
+     * Draw the borders of the chart in darkgray
+     * @param borderWidth
+     * @param chartWidth
+     * @param chartHeight
+     * @param marginleftright
+     */
     private void drawBorders(float borderWidth, float chartWidth, float chartHeight, float marginleftright) {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
@@ -239,7 +253,6 @@ public class PatchalyzerSumResultChart extends View {
         //Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
         canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth/2 , paint);
     }
-
 
     private void drawCenteredText(String text, Paint paint, float left, float right, float top, float bottom){
         Rect textBoundsRect = new Rect();
@@ -252,6 +265,13 @@ public class PatchalyzerSumResultChart extends View {
         canvas.drawText(text, x, y, paint);
     }
 
+    /**
+     * Decide whether the number really fits in the part we want to draw it onto by calculating the bounds and adding a margin
+     * @param count
+     * @param partWidth
+     * @param paint
+     * @return
+     */
     private boolean isNumberFittingDrawnPart(int count, float partWidth, Paint paint) {
         float NUMBER_MARGIN = 10f;
         Rect textBoundsRect = new Rect();
@@ -267,33 +287,10 @@ public class PatchalyzerSumResultChart extends View {
         }
     }
 
-    protected class ResultPart {
-        private int count;
-        private int color;
-
-        public ResultPart(int count, int color) {
-            this.count = count;
-            this.color = color;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public int getColor() {
-            return color;
-        }
-
-        public void addCount(int addition) {
-            this.count += addition;
-        }
-    }
-
-
+    /**
+     * Load the results from the JSONObject and display these
+     * @param analysisResult
+     */
     public void loadValuesFromJSONResult(JSONObject analysisResult) {
         if (analysisResult == null) {
             resetCounts();
@@ -349,6 +346,35 @@ public class PatchalyzerSumResultChart extends View {
 
     public void loadValuesFromCachedResult(ContextWrapper context){
         loadValuesFromJSONResult(TestUtils.getAnalysisResult(context));
+    }
+
+    /**
+     * local container class here
+     */
+    protected class ResultPart {
+        private int count;
+        private int color;
+
+        public ResultPart(int count, int color) {
+            this.count = count;
+            this.color = color;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public int getColor() {
+            return color;
+        }
+
+        public void addCount(int addition) {
+            this.count += addition;
+        }
     }
 
 }

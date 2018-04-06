@@ -20,6 +20,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 
+/**
+ * This class handles all the up- and downloads to/from the backend
+ */
 public class ServerApi {
     public static final String API_URL="https://snoopsnitch-api.srlabs.de/v1/";
 
@@ -69,30 +72,6 @@ public class ServerApi {
         return outputFile;
     }
 
-    public JSONObject downlaodTests(String appid, int apiVersion, String currentVersion, int appVersion) throws JSONException, IOException {
-        URL url = new URL(API_URL + "test/suite?appId=" + appid + "&androidApiVersion=" + apiVersion + "&testVersion=" + URLEncoder.encode(currentVersion, "UTF-8") + "&appVersion=" + appVersion);
-        Log.i(Constants.LOG_TAG,"Downloading tests: "+url.toString());
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setConnectTimeout(10000);
-        connection.setReadTimeout(100000);
-        connection.setInstanceFollowRedirects(false);
-        connection.connect();
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(connection.getInputStream())));
-            String line = "";
-            while ((line = responseStreamReader.readLine()) != null) {
-                stringBuilder.append(line).append("\n");
-            }
-            responseStreamReader.close();
-        }finally {
-            connection.disconnect();
-        }
-        if (stringBuilder.length() == 0 || stringBuilder.toString().equals("{}"))
-            return null;
-        return new JSONObject(stringBuilder.toString());
-    }
     public JSONArray getRequests(String appid, int apiVersion , String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion) throws JSONException, IOException {
         Log.i(Constants.LOG_TAG, "getRequests(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate);
         URL url = new URL(API_URL + "get/requests?appId=" + URLEncoder.encode(appid,"UTF-8") + "&androidApiVersion=" + apiVersion +

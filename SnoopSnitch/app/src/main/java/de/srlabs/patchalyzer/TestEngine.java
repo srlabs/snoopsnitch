@@ -120,6 +120,7 @@ public class TestEngine {
             }
         }
     }
+
     public static Boolean executeBasicTest(Context context, JSONObject test) throws Exception {
         if(Constants.IS_TEST_MODE){
             File folder = new File(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/");
@@ -307,7 +308,6 @@ public class TestEngine {
             }
             case "COMBINED_SIGNATURE": {
                 String filename = test.getString("filename");
-                //String rollingSignatureString = test.getString("rollingSignature"); -> already fetched in getRollingSignatureForTest()
                 String maskSignatureString = test.getString("maskSignature");
 
                 RollingSignature rollingSignature = getRollingSignatureForTest(test);

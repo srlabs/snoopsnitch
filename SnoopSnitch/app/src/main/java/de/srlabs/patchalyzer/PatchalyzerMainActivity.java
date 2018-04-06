@@ -197,7 +197,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         @Override
         public void updateProgress(final double progressPercent) throws RemoteException {
-            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received updateProgress(" + progressPercent + ")"+ PatchalyzerMainActivity.this + " - "+mITestExecutorService);
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received updateProgress(" + progressPercent + ")");
             handler.post(new Runnable() {
                 @Override
                 public void run() {

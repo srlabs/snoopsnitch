@@ -1,5 +1,8 @@
 package de.srlabs.patchalyzer;
 
+/**
+ * This class can hold results or exception we get, when performing a single basic test
+ */
 public class BasicTestResult {
 
     private String basicTestUUID;
