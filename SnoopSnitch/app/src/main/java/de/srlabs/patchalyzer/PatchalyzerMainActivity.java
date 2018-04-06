@@ -113,8 +113,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         displayCutline();
 
+
+        // This is not persisted right now
         if (savedInstanceState != null) {
-            //TODO: Move this to sharedprefs?
             currentPatchlevelDate = savedInstanceState.getString("currentPatchlevelDate");
         }
 
@@ -126,23 +127,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         else {
             initDatabase();
         }
-    }
-
-    protected ActivityState getActivityState() {
-        SharedPreferences settings = getSharedPreferences("PATCHALYZER", 0);
-        return ActivityState.valueOf(settings.getString("state", ActivityState.PATCHLEVEL_DATES.toString()));
-    }
-
-    // Saves ActivityState to sharedPrefs and triggers UI reload if PatchalyzerMainActivity.instance exists
-    protected void setActivityState(ContextWrapper context, ActivityState state) {
-
-        Log.d(Constants.LOG_TAG,"Writing " + state.toString() + " state to sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("state", state.toString());
-        editor.commit();
-
-        restoreState();
     }
 
     private void showErrorMessageInMetaInformation(String errorMessage) {
@@ -240,7 +224,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 }
                 resultChart.setAnalysisRunning(false);
                 PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(resultJSON);
-                TestUtils.saveAnalysisResultNonPersistent(resultJSON);
+                    SharedPrefsHelper.saveAnalysisResultNonPersistent(resultJSON);
                 if (isActivityActive) {
                     restoreState();
                 }
@@ -255,7 +239,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 public void run() {
                     startTestButton.setEnabled(false);
                     resultChart.setAnalysisRunning(false);
-                    TestUtils.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerMainActivity.this);
+                    SharedPrefsHelper.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerMainActivity.this);
                     NotificationHelper.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
                     triggerCancelAnalysis();
                     if (isActivityActive) {
@@ -371,7 +355,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        TestUtils.clearSavedStickyErrorMessage(PatchalyzerMainActivity.this);
+        SharedPrefsHelper.clearSavedStickyErrorMessage(PatchalyzerMainActivity.this);
     }
 
 
@@ -392,11 +376,11 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 resultChart.setAnalysisRunning(false);
                 setButtonStartAnalysis();
                 progressBox.setVisibility(View.INVISIBLE);
-                if (TestUtils.getAnalysisResult(this) == null) {
+                if (SharedPrefsHelper.getAnalysisResult(this) == null) {
                     // No analysis result available
                     resultChart.setVisibility(View.INVISIBLE);
                     webViewContent.setVisibility(View.INVISIBLE);
-                    String stickyErrorMessage = TestUtils.getStickyErrorMessage(this);
+                    String stickyErrorMessage = SharedPrefsHelper.getStickyErrorMessage(this);
                     if (stickyErrorMessage != null) {
                         // Last analysis failed recently
                         PatchalyzerMainActivity.this.showErrorMessageInMetaInformation(stickyErrorMessage);
@@ -460,15 +444,14 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable("state", getActivityState());
         savedInstanceState.putString("currentPatchlevelDate", currentPatchlevelDate);
         super.onSaveInstanceState(savedInstanceState);
     }
 
     private void startTest(){
         if(!TestUtils.isTooOldAndroidAPIVersion()) {
-            TestUtils.clearSavedAnalysisResult(this);
-            TestUtils.clearSavedStickyErrorMessage(this);
+            SharedPrefsHelper.clearSavedAnalysisResult(this);
+            SharedPrefsHelper.clearSavedStickyErrorMessage(this);
             resultChart.resetCounts();
             resultChart.invalidate();
 
@@ -517,8 +500,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         resultChart.resetCounts();
         //Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable(): w=" + webViewContent.getWidth() + "  h=" + webViewContent.getHeight() + "  innerW=" + webViewContent.getChildAt(0).getWidth() + "  innerH=" + webViewContent.getChildAt(0).getHeight());
         try{
-            JSONObject testResults = TestUtils.getAnalysisResult(this);
-            if(TestUtils.getAnalysisResult(this) == null) {
+            JSONObject testResults = SharedPrefsHelper.getAnalysisResult(this);
+            if(SharedPrefsHelper.getAnalysisResult(this) == null) {
                 return;
             }
             Vector<String> categories = new Vector<String>();
@@ -617,7 +600,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         Log.i(Constants.LOG_TAG, "refPatchlevelDate=" + refPatchlevelDate);
         int numAffectedVulnerabilities = 0;
         try{
-            JSONObject testResults = TestUtils.getAnalysisResult(this);
+            JSONObject testResults = SharedPrefsHelper.getAnalysisResult(this);
             if(testResults == null){
                 showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": " + refPatchlevelDate+"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
 

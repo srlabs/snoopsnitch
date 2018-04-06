@@ -38,16 +38,16 @@ public class BasicTestCache {
         this.testSuiteVersion = testSuiteVersion;
         this.apiLevel = apiLevel;
         this.service = service;
-        this.sharedPrefs = service.getSharedPreferences("PATCHALYZER", Context.MODE_PRIVATE);
+        this.sharedPrefs = SharedPrefsHelper.getSharedPrefs(service);
         this.database = new DBHelper(service);
         long currentBuildDate = TestUtils.getBuildDateUtc();
 
         // Invalidate cached results if the build fingerprint or the build timestamp (seconds since 1970) changes => Make sure that teste are repeated after a firmware upgrade
         // Also invalidate cache and rerun test if this app is updated.
-        if(currentBuildDate != sharedPrefs.getLong("buildDateUtc", -1) ||
-                !TestUtils.getBuildFingerprint().equals(sharedPrefs.getString("buildFingerprint", "INVALID")) ||
-                !TestUtils.getBuildDisplayName().equals(sharedPrefs.getString("buildDisplayName", "INVALID")) ||
-                ! ( Constants.APP_VERSION == sharedPrefs.getInt("appVersion", -1) )
+        if(currentBuildDate != sharedPrefs.getLong(SharedPrefsHelper.KEY_BUILD_DATE, -1) ||
+                !TestUtils.getBuildFingerprint().equals(sharedPrefs.getString(SharedPrefsHelper.KEY_BUILD_FINGERPRINT, "INVALID")) ||
+                !TestUtils.getBuildDisplayName().equals(sharedPrefs.getString(SharedPrefsHelper.KEY_BUILD_DISPLAY_NAME, "INVALID")) ||
+                ! ( Constants.APP_VERSION == sharedPrefs.getInt(SharedPrefsHelper.KEY_BUILD_APPVERSION, -1) )
                 ) {
             clearCache();
         }
@@ -55,15 +55,7 @@ public class BasicTestCache {
     }
     public void clearCache(){
         Log.i(Constants.LOG_TAG, "BasicTestCache.clearCache() called");
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-        editor.clear();
-        editor.putLong("buildDateUtc", TestUtils.getBuildDateUtc());
-        editor.putString("buildFingerprint", TestUtils.getBuildFingerprint());
-        editor.putString("buildDisplayName", TestUtils.getBuildDisplayName());
-        editor.putInt("appVersion", Constants.APP_VERSION);
-        editor.commit();
-        this.sharedPrefs = service.getSharedPreferences("BasicTestCache", Context.MODE_PRIVATE);
-
+        SharedPrefsHelper.resetSharedPrefs(service);
         resetDBInformation();
         clearTemporaryTestResultCache();
     }

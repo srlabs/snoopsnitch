@@ -348,7 +348,7 @@ public class PatchalyzerSumResultChart extends View {
     }
 
     public void loadValuesFromCachedResult(ContextWrapper context){
-        loadValuesFromJSONResult(TestUtils.getAnalysisResult(context));
+        loadValuesFromJSONResult(SharedPrefsHelper.getAnalysisResult(context));
     }
 
 }

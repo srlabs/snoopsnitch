@@ -31,8 +31,8 @@ public class NotificationHelper {
     }
 
     public static void showNewPatchalyzerFeatureOnce(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences("PATCHALYZER", Context.MODE_PRIVATE);
-        boolean didShowAlready = sharedPrefs.getBoolean("didShowNewFeatureNotification",false);
+        SharedPreferences sharedPrefs = SharedPrefsHelper.getPersistentSharedPrefs(context);
+        boolean didShowAlready = sharedPrefs.getBoolean(SharedPrefsHelper.KEY_DID_SHOW_NEW_FEATURE,false);
 
         if(!didShowAlready) {
             Intent notificationIntent = new Intent(context, StartupActivity.class);
@@ -51,7 +51,7 @@ public class NotificationHelper {
 
             //persist that we showed the notification already, to not show it again
             SharedPreferences.Editor editor = sharedPrefs.edit();
-            editor.putBoolean("didShowNewFeatureNotification",true);
+            editor.putBoolean(SharedPrefsHelper.KEY_DID_SHOW_NEW_FEATURE, true);
             editor.commit();
         }
     }

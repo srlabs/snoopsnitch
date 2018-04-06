@@ -280,7 +280,7 @@ public class TestExecutorService extends Service {
                 }
                 basicTestCache.clearTemporaryTestResultCache();
                 PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(result);
-                return TestUtils.saveAnalysisResult(result, TestExecutorService.this);
+                return SharedPrefsHelper.saveAnalysisResult(result, TestExecutorService.this);
             } catch (Exception e) {
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
                 //TODO: Change error message here?

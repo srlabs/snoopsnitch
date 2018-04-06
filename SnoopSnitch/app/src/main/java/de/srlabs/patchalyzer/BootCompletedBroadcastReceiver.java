@@ -14,13 +14,19 @@ public class BootCompletedBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: Show this only once when the build date changes, not on every reboot
-        SharedPreferences sharedPrefs = context.getSharedPreferences("PATCHALYZER", Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = SharedPrefsHelper.getPersistentSharedPrefs(context);
         long currentBuildDate = TestUtils.getBuildDateUtc();
-        long buildDateUtcAtLastSuccessfulAnalysis = sharedPrefs.getLong("buildDateUtcAtLastSuccessfulAnalysis", 0);
-        if (buildDateUtcAtLastSuccessfulAnalysis != 0 && buildDateUtcAtLastSuccessfulAnalysis != currentBuildDate) {
-            TestUtils.clearSavedAnalysisResult(context);
-            NotificationHelper.showBuildVersionChangedNotification(context);
+        long buildDateUtcAtLastSuccessfulAnalysis = sharedPrefs.getLong(SharedPrefsHelper.KEY_BUILD_DATE_LAST_ANALYSIS, -1);
+        long buildDateNotificationDisplayed = sharedPrefs.getLong(SharedPrefsHelper.KEY_BUILD_DATE_NOTIFICATION_DISPLAYED, -1);
+
+        if (currentBuildDate != buildDateNotificationDisplayed && currentBuildDate != buildDateUtcAtLastSuccessfulAnalysis) {
+            SharedPrefsHelper.clearSavedAnalysisResult(context);
+            SharedPrefsHelper.putLongPersistent(SharedPrefsHelper.KEY_BUILD_DATE_NOTIFICATION_DISPLAYED, currentBuildDate, context);
+            if (buildDateUtcAtLastSuccessfulAnalysis == -1) {
+                NotificationHelper.showNewPatchalyzerFeatureOnce(context);
+            } else {
+                NotificationHelper.showBuildVersionChangedNotification(context);
+            }
         }
     }
 }

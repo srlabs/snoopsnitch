@@ -1,8 +1,6 @@
 package de.srlabs.patchalyzer;
 
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -59,8 +57,6 @@ public class TestUtils {
     public static HashMap<String,String> buildProperties = null;
     private static final Object buildPropertiesLock = new Object();
     private static JSONArray protectedBroadcasts;
-    private static JSONObject cachedResultJSON;
-    private static String cachedStickyErrorMessage;
     private static Pattern datePattern = Pattern.compile("^\\d{4}\\-\\d{2}(-\\d{2})?$");
 
     public static boolean checkAffectedAndroidVersion(String[] affectedAndroidVersions) {
@@ -478,10 +474,6 @@ public class TestUtils {
         else
             return "UNKNOWN";
     }
-    private static SharedPreferences sharedPrefs(Context context)
-    {
-        return context.getSharedPreferences("de.srlabs.patchanalyzer", Context.MODE_PRIVATE);
-    }
 
     public static String getAppId(Context context)
     {
@@ -709,107 +701,10 @@ public class TestUtils {
     }
 
 
-    public static void clearSavedAnalysisResult(Context context) {
-        cachedResultJSON = null;
-
-        Log.d(Constants.LOG_TAG,"Deleting analysisResult from sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("analysisResult", "");
-        //editor.putLong("buildDateUtcAtLastSuccessfulAnalysis", 0);
-        //editor.putLong("timeStampAtLastSuccessfulAnalysis", 0);
-        editor.commit();
-    }
-
-    public static JSONObject getAnalysisResult(ContextWrapper context) {
-        if (cachedResultJSON != null) {
-            return cachedResultJSON;
-        }
-
-        Log.d(Constants.LOG_TAG,"Reading analysisResult from sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-
-        String analysisResultString = settings.getString("analysisResult", "");
-        if (analysisResultString.equals("")) {
-            return null;
-        }
-
-        try {
-            cachedResultJSON = new JSONObject(analysisResultString);
-            return cachedResultJSON;
-        } catch (JSONException e) {
-            Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
-            return null;
-        }
-    }
-
-    /**
-     * @return A stringified version of analysisResultJSON
-     */
-    public static String saveAnalysisResult(JSONObject analysisResultJSON, ContextWrapper context) {
-        long timeStamp = System.currentTimeMillis();
-        long buildDateUtc = getBuildDateUtc();
-
-        cachedResultJSON = analysisResultJSON;
-        String analysisResultString = analysisResultJSON.toString();
-
-        Log.d(Constants.LOG_TAG,"Writing analysisResult to sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("analysisResult", analysisResultString);
-        editor.putLong("buildDateUtcAtLastSuccessfulAnalysis", buildDateUtc);
-        editor.putLong("timeStampAtLastSuccessfulAnalysis", timeStamp);
-        editor.commit();
-
-        return analysisResultString;
-    }
-
-    // This is needed so that the cached value for the Main App process can be set while the
-    // TestExecutorService modifies the saved value in SharedPrefs
-    public static String saveAnalysisResultNonPersistent(JSONObject analysisResultJSON) {
-        cachedResultJSON = analysisResultJSON;
-        return analysisResultJSON.toString();
-    }
 
     public static boolean isTooOldAndroidAPIVersion() {
         return Build.VERSION.SDK_INT < 21;
     }
 
-    // Displayed in PatchalyzerMainactivity if no test result is available
-    public static void saveStickyErrorMessage(String stickyErrorMessage, ContextWrapper context) {
-        cachedStickyErrorMessage = stickyErrorMessage;
 
-        Log.d(Constants.LOG_TAG,"Writing stickyErrorMessage to sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("stickyErrorMessage", stickyErrorMessage);
-        editor.commit();
-
-    }
-
-    public static void clearSavedStickyErrorMessage(ContextWrapper context) {
-        cachedStickyErrorMessage = null;
-
-        Log.d(Constants.LOG_TAG,"Deleting stickyErrorMessage from sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("stickyErrorMessage", "");
-        editor.commit();
-    }
-
-    public static String getStickyErrorMessage(ContextWrapper context) {
-        if (cachedStickyErrorMessage != null) {
-            return cachedStickyErrorMessage;
-        }
-
-        Log.d(Constants.LOG_TAG,"Reading stickyErrorMessage from sharedPrefs");
-        SharedPreferences settings = context.getSharedPreferences("PATCHALYZER", 0);
-
-        String stickyErrorMessage = settings.getString("stickyErrorMessage", "");
-        if (stickyErrorMessage.equals("")) {
-            return null;
-        }
-
-        return stickyErrorMessage;
-    }
 }
