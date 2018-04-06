@@ -106,6 +106,7 @@ public class NotificationHelper {
         notificationManager.notify(FAILED_NOTIFICATION_ID, notification);
     }
 
+    // Displayed via Service.startForeground
     public static Notification getAnalysisOngoingNotification(Context context) {
         Intent notificationIntent = new Intent(context, PatchalyzerMainActivity.class);
         PendingIntent pendingIntent =

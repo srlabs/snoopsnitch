@@ -721,11 +721,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        if(nonPersistentState == ActivityState.PATCHLEVEL_DATES)
-            showPatchlevelDateNoTable();
-        else if(nonPersistentState == ActivityState.VULNERABILITY_LIST){
-            showDetailsNoTable(currentPatchlevelDate);
-        }
+        super.onConfigurationChanged(newConfig);
+        restoreState();
     }
     public void showNoInternetConnectionDialog(){
         if(isActivityActive && !noInternetDialogShowing) {
