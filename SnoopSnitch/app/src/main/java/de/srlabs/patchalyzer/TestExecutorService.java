@@ -195,7 +195,14 @@ public class TestExecutorService extends Service {
                     return null;
 
                 Log.i(Constants.LOG_TAG,"Creating result overview...");
-                JSONObject vulnerabilities = testSuite.getVulnerabilities();
+                JSONObject vulnerabilities = null;
+                try {
+                    vulnerabilities = testSuite.getVulnerabilities();
+                } catch(IOException e){
+                    Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
+                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                    return e.toString();
+                }
                 Iterator<String> identifierIterator = vulnerabilities.keys();
                 Vector<String> identifiers = new Vector<String>();
 
@@ -244,10 +251,11 @@ public class TestExecutorService extends Service {
                 basicTestCache.clearTemporaryTestResultCache();
                 PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(result);
 
-                return TestUtils.saveAnalysisResult(result, TestExecutorService.this);
+                return SharedPrefsHelper.saveAnalysisResult(result, TestExecutorService.this);
+
             } catch (Exception e) {
-                // TODO: Kill the service here
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
+                handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_error_creating_result_overview));
                 return e.toString();
             }
         }
@@ -503,6 +511,10 @@ public class TestExecutorService extends Service {
         });
     }
 
+    /**
+     * Calling this will cause the service to be killed: handleFatalError calls requestCancelAnalysis after saving the stickyErrorMessage
+     * This double-callback behavior is neccessary to ensure the service does not get killed before the stickyErrorMessage was saved.
+     */
     private void handleFatalErrorViaCallback(final String stickyErrorMessage){
         handler.post(new Runnable(){
             @Override

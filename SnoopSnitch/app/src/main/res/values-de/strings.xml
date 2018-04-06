@@ -413,5 +413,6 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="patchalyzer_too_old_android_api_level">Ihre aktuelle Android-Version ist zu alt.\nWir bieten keine Tests für alle Android-Versionen an, die älter als Version 5.0 sind.</string>
     <string name="patchalyzer_too_old_android_api_level_result_chart">Android-Version nicht unterstützt</string>
     <string name="patchalyzer_analysis_in_progress">Analyse wird durchgeführt...</string>
+    <string name="patchalyzer_error_creating_result_overview">Es ist ein Fehler beim Erstellen der Ergebnisübersicht aufgetreten!</string>
 
 </resources>
