@@ -202,7 +202,7 @@ public class DBHelper {
     }
 
     public Vector<JSONObject> getNotPerformedTestsSortedByFilenameAndTestType( int limit){
-        Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
+        //Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
             db = MsdDatabaseManager.getInstance().openDatabase();

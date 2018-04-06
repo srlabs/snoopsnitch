@@ -249,7 +249,7 @@ public class BasicTestCache {
                         } else {
                             String currentFilename = basicTest.getString("filename");
                             if (!lastFilename.equals(currentFilename)) {
-                                Log.d(Constants.LOG_TAG,"Creating new bundle as filename is different from previous test!");
+                                Log.d(Constants.LOG_TAG,"Creating new test bundle...");
                                 lastFilename = currentFilename;
 
                                 if (currentTestBundle != null) {
@@ -259,7 +259,6 @@ public class BasicTestCache {
                                 }
                                 //create new testbundle
                                 currentTestBundle = new TestBundle(currentFilename);
-                                Log.d(Constants.LOG_TAG,"currentTestBundle: "+currentTestBundle);
                             }
                             //Log.d(Constants.LOG_TAG,"Adding basic test to bundle: "+currentTestBundle.getFilename());
                             currentTestBundle.add(basicTest);
