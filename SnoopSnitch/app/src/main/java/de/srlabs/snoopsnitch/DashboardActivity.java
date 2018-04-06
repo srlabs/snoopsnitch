@@ -26,8 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import de.srlabs.patchalyzer.PatchalyzerSumResultChart;
-import de.srlabs.patchalyzer.TestUtils;
+import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
+import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;

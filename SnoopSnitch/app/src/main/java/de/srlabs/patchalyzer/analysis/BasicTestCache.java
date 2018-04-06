@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.analysis;
 
 
 import android.content.Context;
@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.Queue;
 import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.helpers.DBHelper;
+import de.srlabs.patchalyzer.helpers.ProcessHelper;
+import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 
 public class BasicTestCache {
     private final String testSuiteVersion;

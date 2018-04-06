@@ -17,8 +17,8 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.srlabs.patchalyzer.NotificationHelper;
-import de.srlabs.patchalyzer.TestUtils;
+import de.srlabs.patchalyzer.helpers.NotificationHelper;
+import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;

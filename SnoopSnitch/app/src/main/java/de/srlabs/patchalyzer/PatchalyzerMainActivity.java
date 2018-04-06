@@ -6,11 +6,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -49,6 +47,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import de.srlabs.patchalyzer.Constants.ActivityState;
+import de.srlabs.patchalyzer.analysis.TestExecutorService;
+import de.srlabs.patchalyzer.analysis.TestUtils;
+import de.srlabs.patchalyzer.helpers.NotificationHelper;
+import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
+import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
+import de.srlabs.patchalyzer.views.PatchlevelDateOverviewChart;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
@@ -103,7 +107,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         if(!Constants.IS_TEST_MODE) {
             actionBar.setTitle("Patchalyzer");
-            actionBar.setSubtitle("App ID: "+TestUtils.getAppId(this));
+            actionBar.setSubtitle("App ID: "+ TestUtils.getAppId(this));
         }else{
             actionBar.setTitle("Patchalyzer - TESTMODE");
         }

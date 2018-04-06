@@ -1,11 +1,11 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.analysis;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Vector;
 
-import de.srlabs.patchalyzer.signatures.SymbolInformation;
+import de.srlabs.patchalyzer.analysis.signatures.SymbolInformation;
 
 /**This class bundles similar tests (== same file and probably same test type) together to cache certain information.
  * This way we can reduce the amount of redundant work like e.g. the same objdump calls.

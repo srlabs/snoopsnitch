@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import de.srlabs.patchalyzer.analysis.TestUtils;
+import de.srlabs.patchalyzer.helpers.NotificationHelper;
+import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
+
 /**
  * Checks whether a new build version was installed and prompts the user to perform a new analysis
  */

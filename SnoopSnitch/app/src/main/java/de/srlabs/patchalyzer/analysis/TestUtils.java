@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.analysis;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -49,8 +49,10 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.srlabs.patchalyzer.signatures.Section;
-import de.srlabs.patchalyzer.signatures.SymbolInformation;
+import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.helpers.ProcessHelper;
+import de.srlabs.patchalyzer.analysis.signatures.Section;
+import de.srlabs.patchalyzer.analysis.signatures.SymbolInformation;
 import de.srlabs.snoopsnitch.BaseActivity;
 
 public class TestUtils {

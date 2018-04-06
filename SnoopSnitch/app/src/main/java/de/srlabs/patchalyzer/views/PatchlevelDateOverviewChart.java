@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.views;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -1,14 +1,15 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.helpers;
 
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import junit.framework.Test;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.analysis.TestUtils;
 
 /**
  * Handles interaction with SharedPreferences

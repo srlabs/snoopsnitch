@@ -159,7 +159,7 @@
         </activity>
 
         <service
-            android:name="de.srlabs.patchalyzer.TestExecutorService"
+            android:name="de.srlabs.patchalyzer.analysis.TestExecutorService"
             android:exported="false"
             android:process=".TestExecutorService" />
 

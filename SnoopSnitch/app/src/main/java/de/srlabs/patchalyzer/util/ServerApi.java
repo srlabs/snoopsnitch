@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.util;
 
 
 import android.content.Context;
@@ -20,6 +20,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 
+import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.analysis.TestUtils;
+
 /**
  * This class handles all the up- and downloads to/from the backend
  */
@@ -27,7 +30,7 @@ public class ServerApi {
     public static final String API_URL="https://snoopsnitch-api.srlabs.de/v1/";
 
     public File downloadTestSuite(String filenamePrefix, Context context, String appid, int apiVersion, String currentVersion, int appVersion) throws JSONException, IOException{
-        URL url = new URL(API_URL + "test/suite?appId=" + appid + "&androidApiVersion=" + apiVersion + "&testVersion=" + URLEncoder.encode(currentVersion, "UTF-8") + "&appVersion=" + appVersion + "&64bit="+TestUtils.is64BitSystem());
+        URL url = new URL(API_URL + "test/suite?appId=" + appid + "&androidApiVersion=" + apiVersion + "&testVersion=" + URLEncoder.encode(currentVersion, "UTF-8") + "&appVersion=" + appVersion + "&64bit="+ TestUtils.is64BitSystem());
         Log.i(Constants.LOG_TAG,"Downloading tests: "+url.toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");

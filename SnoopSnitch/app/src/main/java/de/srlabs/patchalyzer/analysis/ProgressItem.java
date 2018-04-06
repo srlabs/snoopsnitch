@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.analysis;
 
 class ProgressItem{
     private TestExecutorService service;

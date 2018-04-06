@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.analysis;
 
 import android.app.Notification;
 import android.app.Service;
@@ -17,11 +17,16 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Vector;
 
+import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.ITestExecutorCallbacks;
+import de.srlabs.patchalyzer.ITestExecutorServiceInterface;
+import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
+import de.srlabs.patchalyzer.util.ServerApi;
+import de.srlabs.patchalyzer.helpers.NotificationHelper;
+import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 import de.srlabs.snoopsnitch.R;
 
 public class TestExecutorService extends Service {

@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.analysis;
 
 /**
  * This class can hold results or exception we get, when performing a single basic test

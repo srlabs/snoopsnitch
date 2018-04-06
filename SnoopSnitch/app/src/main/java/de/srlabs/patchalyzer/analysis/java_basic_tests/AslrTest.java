@@ -1,9 +1,9 @@
-package de.srlabs.patchalyzer.java_basic_tests;
+package de.srlabs.patchalyzer.analysis.java_basic_tests;
 
 
 import android.content.Context;
 import java.util.HashMap;
-import de.srlabs.patchalyzer.TestUtils;
+import de.srlabs.patchalyzer.analysis.TestUtils;
 
 public class AslrTest implements JavaBasicTest {
     @Override

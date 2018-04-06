@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.analysis;
 
 import android.util.Base64;
 import android.util.Log;
@@ -15,6 +15,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+
+import de.srlabs.patchalyzer.Constants;
 
 public class DirectoryTreeLister {
     private BlockingQueue<Runnable> hashingQueue;

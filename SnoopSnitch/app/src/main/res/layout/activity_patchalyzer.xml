@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <de.srlabs.patchalyzer.PatchalyzerSumResultChart
+            <de.srlabs.patchalyzer.views.PatchalyzerSumResultChart
                 android:id="@+id/sumResultChart"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"

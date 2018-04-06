@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.helpers;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.StartupActivity;
 

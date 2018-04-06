@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.helpers;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Vector;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.signatures.Signature;
+import de.srlabs.patchalyzer.analysis.signatures.Signature;
 
 /**This class contains all the helper methods for calling subprocess like e.g. objdump
  * Created by jonas on 15.12.17.

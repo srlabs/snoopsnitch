@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer.signatures;
+package de.srlabs.patchalyzer.analysis.signatures;
 
 import android.util.Log;
 
@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.ProcessHelper;
+import de.srlabs.patchalyzer.helpers.ProcessHelper;
 
 /**
  * Scanner for searching for a set of multiple rolling signatures in a file

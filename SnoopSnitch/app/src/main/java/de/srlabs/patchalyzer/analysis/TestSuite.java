@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.analysis;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,6 +16,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
+
+import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.helpers.DBHelper;
+import de.srlabs.patchalyzer.util.BasicTestParser;
+import de.srlabs.patchalyzer.util.ServerApi;
 
 /** This class contains all the testsuite meta information
  * Created by jonas on 02.03.18.

@@ -1,11 +1,11 @@
-package de.srlabs.patchalyzer.signatures;
+package de.srlabs.patchalyzer.analysis.signatures;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import de.srlabs.patchalyzer.TestUtils;
+import de.srlabs.patchalyzer.analysis.TestUtils;
 
 
 /** Generic superclass for all signature types

@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.views;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -20,9 +20,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.PatchalyzerMainActivity;
+import de.srlabs.patchalyzer.analysis.TestUtils;
+import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 import de.srlabs.snoopsnitch.R;
-
-import de.srlabs.patchalyzer.TestUtils;
 
 /**This UI element visually summarizes the patchalyzer test results in a horizontal,rectangular bar chart
  * Created by jonas on 20.02.18.

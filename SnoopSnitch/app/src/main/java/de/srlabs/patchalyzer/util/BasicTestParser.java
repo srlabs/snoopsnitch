@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.util;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+
+import de.srlabs.patchalyzer.Constants;
 
 
 /** This class is parsing the testsuite JSON file step by step to avoid having the full testsuite in memory at once

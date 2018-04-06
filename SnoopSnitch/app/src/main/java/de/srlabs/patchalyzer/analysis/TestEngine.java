@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.analysis;
 
 import android.content.Context;
 import android.util.Base64;
@@ -23,13 +23,15 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import de.srlabs.patchalyzer.java_basic_tests.AslrTest;
-import de.srlabs.patchalyzer.java_basic_tests.JavaBasicTest;
-import de.srlabs.patchalyzer.signatures.MaskSignature;
-import de.srlabs.patchalyzer.signatures.MultiSignatureScanner;
-import de.srlabs.patchalyzer.signatures.RollingSignature;
-import de.srlabs.patchalyzer.signatures.Signature;
-import de.srlabs.patchalyzer.signatures.SymbolInformation;
+import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.helpers.ProcessHelper;
+import de.srlabs.patchalyzer.analysis.java_basic_tests.AslrTest;
+import de.srlabs.patchalyzer.analysis.java_basic_tests.JavaBasicTest;
+import de.srlabs.patchalyzer.analysis.signatures.MaskSignature;
+import de.srlabs.patchalyzer.analysis.signatures.MultiSignatureScanner;
+import de.srlabs.patchalyzer.analysis.signatures.RollingSignature;
+import de.srlabs.patchalyzer.analysis.signatures.Signature;
+import de.srlabs.patchalyzer.analysis.signatures.SymbolInformation;
 
 /**
  * This class actually contains all the algorithms to perform basic tests

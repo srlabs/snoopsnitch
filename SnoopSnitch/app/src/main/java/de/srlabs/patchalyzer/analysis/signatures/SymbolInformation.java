@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer.signatures;
+package de.srlabs.patchalyzer.analysis.signatures;
 
 /** This object contains all the information about symbols
  * Created by jonas on 14.12.17.

@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer.signatures;
+package de.srlabs.patchalyzer.analysis.signatures;
 
 import android.util.Log;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.ProcessHelper;
+import de.srlabs.patchalyzer.helpers.ProcessHelper;
 
 
 /** Contains code length, checksum (SHA256) and list of masks

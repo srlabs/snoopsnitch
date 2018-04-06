@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer;
+package de.srlabs.patchalyzer.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
+import de.srlabs.patchalyzer.util.BasicTestParser;
+import de.srlabs.patchalyzer.Constants;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 

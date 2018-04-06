@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer.signatures;
+package de.srlabs.patchalyzer.analysis.signatures;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import android.content.Context;
 import android.util.Log;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.ProcessHelper;
+import de.srlabs.patchalyzer.helpers.ProcessHelper;
 
 /**
  * This class represents a rolling signature. Rolling signatures are based on the rsync rolling checksum algorithm:
