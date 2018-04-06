@@ -220,11 +220,11 @@ public class ProcessHelper {
         OutputStream stdin = p.getOutputStream();
 
         //write bytesToSendToStdin to stdin of sigtool
-        Log.d(Constants.LOG_TAG, "DEBUG: writing bytes to stdin of sigtool:" + Signature.bytesToHex(bytesToSendToStdin));
+        //Log.d(Constants.LOG_TAG, "DEBUG: writing bytes to stdin of sigtool:" + Signature.bytesToHex(bytesToSendToStdin));
         stdin.write(bytesToSendToStdin);
         stdin.flush();
         stdin.close();
-        Log.d(Constants.LOG_TAG, "DEBUG: finished writing bytes to stdin of sigtool!");
+        //Log.d(Constants.LOG_TAG, "DEBUG: finished writing bytes to stdin of sigtool!");
 
         //read stdout of sigtool and parse to byte[]
         ByteArrayOutputStream stdoutBuffer = new ByteArrayOutputStream();
@@ -232,7 +232,7 @@ public class ProcessHelper {
         for (int len; (len = stdout.read(buffer)) != -1;) {
             stdoutBuffer.write(buffer, 0, len);
         }
-        Log.d(Constants.LOG_TAG, "DEBUG: Finished reading stdout of sigtool!");
+        //Log.d(Constants.LOG_TAG, "DEBUG: Finished reading stdout of sigtool!");
 
         /*try {
             p.waitFor();

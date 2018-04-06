@@ -205,9 +205,9 @@ public class TestEngine {
                 String zipitem = test.getString("zipItem");
                 byte[] needle;
                 if (filename.equals("/system/framework/services.jar")) {
-                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
+                    //Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
                 } else if (Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + "/system/framework/services.jar")) {
-                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
+                    //Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL01");
                 }
                 if (test.has("substring")) {
                     if (test.has("substringB64"))
@@ -217,18 +217,18 @@ public class TestEngine {
                     needle = Base64.decode(test.getString("substringB64"), 0);
                 }
                 if (filename.equals("/system/framework/services.jar")) {
-                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
+                    //Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
                 } else if (Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + "/system/framework/services.jar")) {
-                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
+                    //Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL02: needle=" + new String(needle));
                 }
                 TestUtils.validateFilename(filename);
                 File f = new File(filename);
                 if (!f.exists())
                     return null;
                 if (filename.equals("/system/framework/services.jar")) {
-                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
+                    //Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
                 } else if (Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + "/system/framework/services.jar")) {
-                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
+                    //Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL03: needle=" + new String(needle));
                 }
                 ZipFile zf = new ZipFile(f);
                 ZipEntry ze = zf.getEntry(zipitem);
@@ -238,9 +238,9 @@ public class TestEngine {
                 BufferedInputStream bis = new BufferedInputStream(is, 4096);
                 boolean result = TestUtils.streamContainsSubstring(bis, needle);
                 if (filename.equals("/system/framework/services.jar")) {
-                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
+                    //Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
                 } else if (Constants.IS_TEST_MODE && filename.equals(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX + "/system/framework/services.jar")) {
-                    Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
+                    //Log.i(Constants.LOG_TAG, "ZIP_CONTAINS_SUBSTRING JL06: needle=" + new String(needle) + "  result=" + result);
                 }
                 return result;
             }

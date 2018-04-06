@@ -255,7 +255,6 @@ public class BasicTestCache {
                                 if (currentTestBundle != null) {
                                     //add current testBundle to queue
                                     testQueue.add(currentTestBundle);
-                                    Log.d(Constants.LOG_TAG,"currentTestBundle: "+currentTestBundle);
                                 }
                                 //create new testbundle
                                 currentTestBundle = new TestBundle(currentFilename);
