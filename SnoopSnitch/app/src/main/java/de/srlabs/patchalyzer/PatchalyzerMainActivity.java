@@ -126,7 +126,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         if(TestUtils.isTooOldAndroidAPIVersion()){
             startTestButton.setEnabled(false);
             progressBox.setVisibility(View.INVISIBLE);
-            showMetaInformation(this.getResources().getString(R.string.patchalyzer_too_old_android_api_level));
+            showMetaInformation(this.getResources().getString(R.string.patchalyzer_too_old_android_api_level),null);
         }
         else {
             initDatabase();
@@ -135,8 +135,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     private void showErrorMessageInMetaInformation(String errorMessage) {
         String html = "<p style=\"font-weight:bold;\">" + getResources().getString(R.string.patchalyzer_sticky_error_message_start)
-                + "</p><br>" + errorMessage;
-        showMetaInformation(html);
+                + "</p>";
+        showMetaInformation(html,errorMessage);
     }
 
 
@@ -258,12 +258,15 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             noCVETestsForApiLevelMessage = message;
         }
     }
-    public void showMetaInformation(String status){
+    public void showMetaInformation(String status, String explain){
         metaInfoText.removeAllViews();
         WebView wv = new WebView(PatchalyzerMainActivity.this);
         String html = "<html><body>\n";
         if(status != null)
-            html += "\t" + status + "</body></html>\n";
+            html += "\t" + status;
+        if(explain != null)
+            html += "<br/>" + explain;
+        html += "</body></html>\n";
         Log.i(Constants.LOG_TAG,"Meta information text:\n"+html);
         wv.setBackgroundColor(Color.TRANSPARENT);
         wv.loadData(html, "text/html; charset=utf-8","utf-8");
@@ -374,7 +377,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 resultChart.setVisibility(View.INVISIBLE);
                 resultChart.setAnalysisRunning(true);
                 webViewContent.setVisibility(View.INVISIBLE);
-                showMetaInformation(getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
+                showMetaInformation(getResources().getString(R.string.patchalyzer_analysis_in_progress),getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
             } else {
                 // Analysis is not running
                 resultChart.setAnalysisRunning(false);
@@ -391,7 +394,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     } else {
                         // No analysis executed yet, show no error message
                         showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": "
-                                + TestUtils.getPatchlevelDate() +"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
+                                + TestUtils.getPatchlevelDate(),this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
                     }
 
                 } else {
@@ -495,9 +498,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
 
     private void showPatchlevelDateNoTable(){
-        showMetaInformation(null);
         String refPatchlevelDate = TestUtils.getPatchlevelDate();
-        showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": <b>" + refPatchlevelDate +"</b>");
+        showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": <b>" + refPatchlevelDate +"</b>",null);
         Log.i(Constants.LOG_TAG, "refPatchlevelDate=" + refPatchlevelDate);
         Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable()");
         webViewContent.removeAllViews();
@@ -606,8 +608,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         try{
             JSONObject testResults = SharedPrefsHelper.getAnalysisResult(this);
             if(testResults == null){
-                showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": " + refPatchlevelDate+"<br>"+this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
-
+                showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": " + refPatchlevelDate,this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
                 return;
             }
             JSONArray vulnerabilitiesForPatchlevelDate = testResults.getJSONArray(category);
@@ -664,7 +665,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             infoText.append("<h4 style=\"margin-bottom:0px\">"+this.getResources().getString(R.string.patchalyzer_general_tests)+"</h4>\n<hr>");
             infoText.append("<p><b>"+ numCVEs + "</b> tests total</p>");
         }
-        showMetaInformation(infoText.toString());
+        showMetaInformation(infoText.toString(),null);
     }
 
     /**
@@ -714,7 +715,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     public void showNoInternetConnectionDialog(){
         if(isActivityActive && !noInternetDialogShowing) {
             Log.d(Constants.LOG_TAG,"Showing internet connection issues dialog");
-            showMetaInformation("");
+            showMetaInformation("",null);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(PatchalyzerMainActivity.this);
 
@@ -742,7 +743,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         information.append("<b><u>"+this.getResources().getString(R.string.patchalyzer_dialog_note_title)+"</u></b></br>");
         information.append(message+"</br>");
         information.append("Android OS version: "+ Build.VERSION.RELEASE);
-        showMetaInformation(information.toString());
+        showMetaInformation(information.toString(),null);
     }
 
     @Override

@@ -488,7 +488,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_failed_notification_title">Patchalyzer analysis failed</string>
 <string name="patchalyzer_failed_notification_text">Tap for more details</string>
 <string name="patchalyzer_sum_result_chart_analysis_in_progress">Analysis in progress...</string>
-<string name="patchalyzer_meta_info_analysis_in_progress">Analysis in progress...\nAn internet connection is required during the whole process. The progress bar may not move for several minutes at a time.</string>
+<string name="patchalyzer_meta_info_analysis_in_progress">An internet connection is required during the whole process. The progress bar may not move for several minutes at a time.</string>
 
 <string name="patchalyzer_claimed_patchlevel_date">Claimed patch level</string>
 <string name="patchalyzer_general_tests" >General tests</string>
