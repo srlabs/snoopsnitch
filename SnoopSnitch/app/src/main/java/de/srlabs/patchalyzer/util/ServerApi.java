@@ -28,6 +28,8 @@ import de.srlabs.patchalyzer.analysis.TestUtils;
  */
 public class ServerApi {
     public static final String API_URL="https://snoopsnitch-api.srlabs.de/v1/";
+    // For Testing:
+    //public static final String API_URL="https://v22018043785564093.megasrv.de/v1/";
 
     public File downloadTestSuite(String filenamePrefix, Context context, String appid, int apiVersion, String currentVersion, int appVersion) throws JSONException, IOException{
         URL url = new URL(API_URL + "test/suite?appId=" + appid + "&androidApiVersion=" + apiVersion + "&testVersion=" + URLEncoder.encode(currentVersion, "UTF-8") + "&appVersion=" + appVersion + "&64bit="+ TestUtils.is64BitSystem());
@@ -207,7 +209,7 @@ public class ServerApi {
         throw new IllegalStateException("reportSys(): The server returned an invalid response code " + code + "  Response contents: " + stringBuilder.toString());
     }
     public void reportTest(JSONObject testData, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion) throws JSONException, IOException {
-        Log.i(Constants.LOG_TAG, "reportTest(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate + ", uploadSize=" + testData.toString().length());
+        Log.i(Constants.LOG_TAG, "reportTest(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate);
         URL url = new URL(API_URL + "report/test?appId=" + URLEncoder.encode(appid,"UTF-8") +
                 "&phoneModel=" + URLEncoder.encode(phoneModel, "UTF-8") + "&romBuildFingerprint=" + URLEncoder.encode(romBuildFingerprint, "UTF-8") +
                 "&romDisplayName=" + URLEncoder.encode(romDisplayName, "UTF-8") + "&romBuildDate=" + romBuildDate + "&appVersion=" + appVersion);
