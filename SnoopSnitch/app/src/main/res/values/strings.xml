@@ -493,7 +493,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_claimed_patchlevel_date">Claimed patch level</string>
 <string name="patchalyzer_general_tests" >General tests</string>
 <string name="patchalyzer_dialog_no_internet_connection_title">No network connection</string>
-<string name="patchalyzer_dialog_no_internet_connection_text">Could not establish connection to backend server.\nPlease make sure your device is connected to the internet and try again later.</string>
+<string name="patchalyzer_dialog_no_internet_connection_text">Could not establish connection to backend server. \nPlease make sure your device is connected to the internet and try again later.</string>
+<string name="patchalyzer_error_out_of_memory">Not enough memory to finish analysis. Please try closing a few applications before re-running the analysis.</string>
 <string name="patchalyzer_dialog_note_title">NOTE</string>
 
 <string name="patchalyzer_patched">Patched</string>
@@ -513,7 +514,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_too_old_android_api_level">Your current Android OS version is too old.\nWe do not offer tests for all Android versions lower than 5.0 .</string>
 <string name="patchalyzer_too_old_android_api_level_result_chart">Android version not supported</string>
 <string name="patchalyzer_analysis_in_progress">Analysis running...</string>
-<string name="patchalyzer_sticky_error_message_start">Last analysis failed due to a fatal error:</string>
+<string name="patchalyzer_sticky_error_message_start">Last analysis failed due to:</string>
 <string name="patchalyzer_error_creating_result_overview">A problem occured while creating the result overview!</string>
 
 </resources>

@@ -364,9 +364,13 @@ public class PatchalyzerService extends Service {
                         Log.e(Constants.LOG_TAG, "Exception in pendingTestResultsUploadRunnable", e);
                         apiRunning = false;
                     } catch( JSONException e){
+                        reportError(NO_INTERNET_CONNECTION_ERROR);
                         Log.e(Constants.LOG_TAG,"JSONException in pendingTestResultsUploadRunnable: "+e.getMessage());
                         handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                         apiRunning = false;
+                    } catch(OutOfMemoryError e) {
+                        Log.e(Constants.LOG_TAG,"OutOfMemoryError in pendingTestResultsUploadRunnable: "+e.getMessage());
+                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_error_out_of_memory));
                     }
                 }
             };

@@ -170,13 +170,14 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             handler.post(new Runnable(){
                 @Override
                 public void run() {
-                    restoreState();
-                    progressBox.setVisibility(View.INVISIBLE);
-                    if(text.equals(PatchalyzerService.NO_INTERNET_CONNECTION_ERROR)){
-                        showNoInternetConnectionDialog();
-                    }
-                    else {
-                        statusTextView.setText(text);
+                    if (isActivityActive) {
+                        restoreState();
+                        progressBox.setVisibility(View.INVISIBLE);
+                        if(text.equals(PatchalyzerService.NO_INTERNET_CONNECTION_ERROR)){
+                            showNoInternetConnectionDialog();
+                        } else {
+                            statusTextView.setText(text);
+                        }
                     }
                 }
             });
@@ -189,16 +190,18 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setMax(1000);
-                    progressBar.setProgress((int) (progressPercent * 1000.0));
-                    String percentageString = ""+progressPercent*100.0;
-                    if(percentageString.length() > 4){
-                        percentageString = percentageString.substring(0, 4);
-                        if (percentageString.endsWith(".")) {
-                            percentageString = percentageString.substring(0, percentageString.length() - 1);
+                    if (isActivityActive) {
+                        progressBar.setMax(1000);
+                        progressBar.setProgress((int) (progressPercent * 1000.0));
+                        String percentageString = ""+progressPercent*100.0;
+                        if(percentageString.length() > 4){
+                            percentageString = percentageString.substring(0, 4);
+                            if (percentageString.endsWith(".")) {
+                                percentageString = percentageString.substring(0, percentageString.length() - 1);
+                            }
                         }
+                        percentageText.setText(percentageString+"%");
                     }
-                    percentageText.setText(percentageString+"%");
                 }
             });
         }
@@ -221,17 +224,16 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 @Override
                 public void run() {
                     JSONObject resultJSON = null;
-                try {
-                    resultJSON = new JSONObject(analysisResultString);
-                } catch (JSONException e) {
-                    Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
-                }
-                resultChart.setAnalysisRunning(false);
-                PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(resultJSON);
-                    SharedPrefsHelper.saveAnalysisResultNonPersistent(resultJSON);
-                if (isActivityActive) {
-                    restoreState();
-                }
+                    try {
+                        resultJSON = new JSONObject(analysisResultString);
+                    } catch (JSONException e) {
+                        Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
+                    }
+                    resultChart.setAnalysisRunning(false);
+                    PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(resultJSON);SharedPrefsHelper.saveAnalysisResultNonPersistent(resultJSON);
+                    if (isActivityActive) {
+                        restoreState();
+                    }
                 }
             });
         }
@@ -377,7 +379,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 resultChart.setVisibility(View.INVISIBLE);
                 resultChart.setAnalysisRunning(true);
                 webViewContent.setVisibility(View.INVISIBLE);
-                showMetaInformation(getResources().getString(R.string.patchalyzer_analysis_in_progress),getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
+                showMetaInformation(getResources().getString(R.string.patchalyzer_sum_result_chart_analysis_in_progress), getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
             } else {
                 // Analysis is not running
                 resultChart.setAnalysisRunning(false);
