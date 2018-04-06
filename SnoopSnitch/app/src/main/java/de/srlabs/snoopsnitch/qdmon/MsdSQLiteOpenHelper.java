@@ -13,7 +13,7 @@ import de.srlabs.snoopsnitch.util.Utils;
 
 public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "msd.db";
-    private static final int DATABASE_VERSION = 22;
+    private static final int DATABASE_VERSION = 23;
     private static final boolean verbose = false;
     private Context context;
 
@@ -143,7 +143,7 @@ public class MsdSQLiteOpenHelper extends SQLiteOpenHelper {
         try {
             readSQLAsset(context, db, "basictests.sql", verbose);
         }catch(Exception e){
-            Log.d("MSD","Failed to upgrade Patchalyzer basic tests tables",e);
+            Log.e("MSD","Failed to upgrade Patchalyzer basic tests tables",e);
         }
     }
 }

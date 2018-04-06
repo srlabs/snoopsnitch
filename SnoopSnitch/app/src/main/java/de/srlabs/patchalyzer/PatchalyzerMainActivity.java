@@ -262,7 +262,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             html += "\t" + status + "</body></html>\n";
         Log.i(Constants.LOG_TAG,"Meta information text:\n"+html);
         wv.setBackgroundColor(Color.TRANSPARENT);
-        wv.loadData(html, "text/html",null);
+        wv.loadData(html, "text/html; charset=utf-8","utf-8");
         metaInfoText.addView(wv);
     }
     public void displayCutline(){
@@ -276,7 +276,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     "\t</div>\n"+
                 "</body></html>";
         legendView.setBackgroundColor(Color.TRANSPARENT);
-        legendView.loadData(html,"text/html",null);
+        legendView.loadData(html,"text/html; charset=utf-8","utf-8");
     }
 
     @Override
@@ -639,7 +639,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             }
             html.append("</table></body></html>");
             wv.setBackgroundColor(Color.TRANSPARENT);
-            wv.loadData(html.toString(), "text/html",null);
+            wv.loadData(html.toString(), "text/html; charset=utf-8","utf-8");
             webViewContent.removeAllViews();
             webViewContent.addView(wv);
 
