@@ -247,12 +247,22 @@ public class PatchalyzerSumResultChart extends View {
      * @param marginleftright
      */
     private void drawBorders(float borderWidth, float chartWidth, float chartHeight, float marginleftright) {
+        //Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
+
+        // Fix rounding issues
+        borderWidth = (float) Math.ceil(borderWidth);
+        float left = marginleftright / 2;
+        float top = chartOffsetTopBottom;
+        float right = chartWidth + marginleftright / 2;
+        float bottom = (float) Math.ceil(Math.floor(chartOffsetTopBottom + chartHeight) - borderWidth / 2);
+
+
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(getResources().getColor(R.color.common_sectionSeparator));
         paint.setStrokeWidth(borderWidth);
-        //Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
-        canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth/2 , paint);
+
+        canvas.drawRect(left, top, right, bottom, paint);
     }
 
     private void drawCenteredText(String text, Paint paint, float left, float right, float top, float bottom){
