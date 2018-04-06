@@ -282,8 +282,9 @@ public class TestExecutorService extends Service {
                 PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(result);
                 return TestUtils.saveAnalysisResult(result, TestExecutorService.this);
             } catch (Exception e) {
-                // TODO: Kill the service here
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
+                //TODO: Change error message here?
+                handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                 return e.toString();
             }
         }
@@ -532,6 +533,8 @@ public class TestExecutorService extends Service {
             }
         });
     }
+    // Calling this will cause the service to be killed: handleFatalError calls requestCancelAnalysis after saving the stickyErrorMessage
+    // This double-callback behavior is neccessary to ensure the service does not get killed before the stickyErrorMessage was saved.
     private void handleFatalErrorViaCallback(final String stickyErrorMessage){
         handler.post(new Runnable(){
             @Override

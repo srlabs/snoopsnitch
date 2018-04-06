@@ -743,7 +743,9 @@ public class TestUtils {
         }
     }
 
-    // @return: A stringified version of analysisResultJSON
+    /**
+     * @return A stringified version of analysisResultJSON
+     */
     public static String saveAnalysisResult(JSONObject analysisResultJSON, ContextWrapper context) {
         long timeStamp = System.currentTimeMillis();
         long buildDateUtc = getBuildDateUtc();
@@ -768,7 +770,6 @@ public class TestUtils {
         cachedResultJSON = analysisResultJSON;
         return analysisResultJSON.toString();
     }
-
 
     public static boolean isTooOldAndroidAPIVersion() {
         return Build.VERSION.SDK_INT < 21;
