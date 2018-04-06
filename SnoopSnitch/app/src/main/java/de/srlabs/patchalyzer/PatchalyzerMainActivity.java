@@ -106,10 +106,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
 
         if(!Constants.IS_TEST_MODE) {
-            actionBar.setTitle("Patchalyzer");
+            actionBar.setTitle("Patch analysis");
             actionBar.setSubtitle("App ID: "+ TestUtils.getAppId(this));
         }else{
-            actionBar.setTitle("Patchalyzer - TESTMODE");
+            actionBar.setTitle("Patch analysis - TESTMODE");
         }
 
         // see onOptionsItemSelected
@@ -125,7 +125,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         if(TestUtils.isTooOldAndroidAPIVersion()){
             startTestButton.setEnabled(false);
-            progressBox.setVisibility(View.INVISIBLE);
+            progressBox.setVisibility(View.GONE);
             showMetaInformation(this.getResources().getString(R.string.patchalyzer_too_old_android_api_level),null);
         }
         else {
@@ -171,7 +171,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 @Override
                 public void run() {
                     restoreState();
-                    progressBox.setVisibility(View.INVISIBLE);
+                    progressBox.setVisibility(View.GONE);
                     if(text.equals(PatchalyzerService.NO_INTERNET_CONNECTION_ERROR)){
                         showNoInternetConnectionDialog();
                     }
@@ -374,7 +374,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 // Analysis is running, show progress bar
                 setButtonCancelAnalysis();
                 progressBox.setVisibility(View.VISIBLE);
-                resultChart.setVisibility(View.INVISIBLE);
+                resultChart.setVisibility(View.GONE);
                 resultChart.setAnalysisRunning(true);
                 webViewContent.setVisibility(View.INVISIBLE);
                 showMetaInformation(getResources().getString(R.string.patchalyzer_analysis_in_progress),getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
@@ -382,10 +382,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 // Analysis is not running
                 resultChart.setAnalysisRunning(false);
                 setButtonStartAnalysis();
-                progressBox.setVisibility(View.INVISIBLE);
+                progressBox.setVisibility(View.GONE);
                 if (SharedPrefsHelper.getAnalysisResult(this) == null) {
                     // No analysis result available
-                    resultChart.setVisibility(View.INVISIBLE);
+                    resultChart.setVisibility(View.GONE);
                     webViewContent.setVisibility(View.INVISIBLE);
                     String stickyErrorMessage = SharedPrefsHelper.getStickyErrorMessage(this);
                     if (stickyErrorMessage != null) {
@@ -594,7 +594,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
             resultChart.invalidate();
             resultChart.setVisibility(View.VISIBLE);
-            progressBox.setVisibility(View.INVISIBLE);
+            progressBox.setVisibility(View.GONE);
 
         } catch(Exception e){
             Log.e(Constants.LOG_TAG, "showPatchlevelDateTable Exception", e);

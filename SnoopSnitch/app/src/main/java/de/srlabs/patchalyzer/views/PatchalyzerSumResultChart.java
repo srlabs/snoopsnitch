@@ -113,7 +113,7 @@ public class PatchalyzerSumResultChart extends View {
         this.canvas = canvas;
 
         chartOffsetTopBottom = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
-        float marginleftright = getWidth() * 0.1f;
+        float marginleftright = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
         float chartWidth = getWidth() - marginleftright;
         float chartHeight;
 
@@ -249,7 +249,7 @@ public class PatchalyzerSumResultChart extends View {
     private void drawBorders(float borderWidth, float chartWidth, float chartHeight, float marginleftright) {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.DKGRAY);
+        paint.setColor(getResources().getColor(R.color.common_sectionSeparator));
         paint.setStrokeWidth(borderWidth);
         //Log.d(Constants.LOG_TAG,"chartHeight: "+chartHeight+" borderWidth:"+borderWidth+" border: "+(marginleftright / 2)+"|"+chartOffsetTopBottom+" -> "+(chartWidth + marginleftright / 2)+"|"+(chartOffsetTopBottom + chartHeight - borderWidth));
         canvas.drawRect(marginleftright / 2, chartOffsetTopBottom, chartWidth + marginleftright / 2, chartOffsetTopBottom + chartHeight - borderWidth/2 , paint);

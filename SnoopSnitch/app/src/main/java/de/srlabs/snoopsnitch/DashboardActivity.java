@@ -133,7 +133,8 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
 
         resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
-        resultChart.setOnClickListener(new View.OnClickListener() {
+        LinearLayout patch_analysis_box = (LinearLayout) findViewById(R.id.patchalyzer_summary);
+        patch_analysis_box.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showPatchalyzer();

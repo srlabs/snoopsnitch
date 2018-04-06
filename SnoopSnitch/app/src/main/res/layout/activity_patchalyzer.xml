@@ -14,10 +14,9 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-       >
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -27,27 +26,21 @@
                 style="@style/Widget.AppCompat.Button.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="false"
-                android:layout_centerInParent="false"
-                android:layout_centerVertical="true"
-                android:layout_gravity="right|center_vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical|center_horizontal"
+                android:layout_gravity="left|center"
                 android:text="@string/patchalyzer_button_start_analysis"
                 android:textColor="@drawable/custom_upload_button_color"
                 android:textStyle="bold" />
 
             <WebView
+                android:id="@+id/legend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_gravity="right|center"
                 android:scrollbars="none"
                 android:text="Legend"
-                android:id="@+id/legend"
-                android:layout_toRightOf="@+id/btnDoIt"/>
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/status_box"
@@ -60,7 +53,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_weight="2"
-                android:visibility="invisible"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone"
                 custom:drawborder="true"
                 custom:shownumbers="true"
                 custom:small="false" />
@@ -68,21 +62,25 @@
             <LinearLayout
                 android:id="@+id/progress_box"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="2"
-                android:gravity="center_vertical|center_horizontal|center"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textPercentage"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="0.0%"
-                    android:textColor="@color/common_text" />
+                    android:textAlignment="center"
+                    android:textColor="@color/common_text"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"

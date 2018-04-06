@@ -478,14 +478,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="device_never_compatible">Your device does not have a MSM Qualcomm chip, and is therefore not able to run SnoopSnitch main features.</string>
 <string name="device_not_compatible_now_no_diag">Your device is not compatible currently. This might change with an upcoming firmware update.</string>
 
-<string name="action_switch_to_patchalyzer">Switch to Patchalyzer</string>
+<string name="action_switch_to_patchalyzer">Switch to Patch Analysis</string>
 <string name="android_patchlevel_text">Android patch level</string>
 <string name="patchalyzer_no_test_result">No test results available</string>
 <string name="patchalyzer_running_notification_title">Patch level analysis running...</string>
 <string name="patchalyzer_running_notification_text">Tap for more details</string>
-<string name="patchalyzer_finished_notification_title">Patchalyzer analysis completed</string>
+<string name="patchalyzer_finished_notification_title">Patch Analysis analysis completed</string>
 <string name="patchalyzer_finished_notification_text">Tap to see results</string>
-<string name="patchalyzer_failed_notification_title">Patchalyzer analysis failed</string>
+<string name="patchalyzer_failed_notification_title">Patch Analysis analysis failed</string>
 <string name="patchalyzer_failed_notification_text">Tap for more details</string>
 <string name="patchalyzer_sum_result_chart_analysis_in_progress">Analysis in progress...</string>
 <string name="patchalyzer_meta_info_analysis_in_progress">An internet connection is required during the whole process. The progress bar may not move for several minutes at a time.</string>
@@ -504,10 +504,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="patchalyzer_test_finished">Finished</string>
 <string name="patchalyzer_new_version_available_heading">New version available</string>
 <string name="patchalyzer_new_version_available_instructions">This app version is out of date. Please download the latest version of SnoopSnitch.</string>
-<string name="patchalyzer_notification_new_feature_title">New SnoopSnitch feature: Android patch analysis</string>
+<string name="patchalyzer_notification_new_feature_title">New SnoopSnitch feature: Android Patch Analysis</string>
 <string name="patchalyzer_notification_new_feature_text">Test your phone security by starting a test here!</string>
 <string name="patchalyzer_notification_build_changed_title">An Android update was installed</string>
-<string name="patchalyzer_notification_build_changed_text">Check installed security patches with Patchalyzer</string>
+<string name="patchalyzer_notification_build_changed_text">Check installed security patches with Patch Analysis</string>
 <string name="patchalyzer_button_start_analysis">Perform test</string>
 <string name="patchalyzer_button_cancel_analysis">Stop testing</string>
 <string name="patchalyzer_too_old_android_api_level">Your current Android OS version is too old.\nWe do not offer tests for all Android versions lower than 5.0 .</string>
