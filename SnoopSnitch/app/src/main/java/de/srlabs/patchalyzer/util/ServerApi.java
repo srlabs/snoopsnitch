@@ -28,8 +28,6 @@ import de.srlabs.patchalyzer.analysis.TestUtils;
  */
 public class ServerApi {
     public static final String API_URL="https://snoopsnitch-api.srlabs.de/v1/";
-    // For Testing:
-    //public static final String API_URL="https://v22018043785564093.megasrv.de/v1/";
 
     public File downloadTestSuite(String filenamePrefix, Context context, String appid, int apiVersion, String currentVersion, int appVersion) throws JSONException, IOException{
         URL url = new URL(API_URL + "test/suite?appId=" + appid + "&androidApiVersion=" + apiVersion + "&testVersion=" + URLEncoder.encode(currentVersion, "UTF-8") + "&appVersion=" + appVersion + "&64bit="+ TestUtils.is64BitSystem());
