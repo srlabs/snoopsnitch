@@ -26,6 +26,8 @@ public class GSMmap {
 
     public boolean dataPresent() {
         boolean result;
+        if(db == null)
+            return false;
         Cursor c = db.query("gsmmap_operators", new String[]{"id"}, null, null, null, null, null);
         result = c.getCount() > 0;
         c.close();
