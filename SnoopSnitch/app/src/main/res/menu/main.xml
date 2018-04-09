@@ -11,9 +11,9 @@
           android:showAsAction="ifRoom" />
     
     <!-- Items of the more menu -->
-	<item android:id="@+id/menu_action_switch_to_patchalyzer"
+	<item android:id="@+id/label_patch_analysis_long"
 		android:icon="@drawable/ic_patchalyzer"
-		android:title="@string/action_switch_to_patchalyzer"
+		android:title="@string/label_patch_analysis_long"
 		android:showAsAction="ifRoom" />
   	<item
         android:id="@+id/menu_action_info"
