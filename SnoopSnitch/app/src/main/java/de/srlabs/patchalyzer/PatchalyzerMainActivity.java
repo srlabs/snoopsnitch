@@ -107,7 +107,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         ActionBar actionBar = getActionBar();
 
 
-        String title = this.getResources().getString(R.string.label_patch_analysis_long);
+        String title = this.getResources().getString(R.string.patchalyzer_label_long);
         if(!Constants.IS_TEST_MODE) {
             actionBar.setSubtitle("\nApp ID: "+ TestUtils.getAppId(this));
         }else{
@@ -259,7 +259,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     resultChart.setAnalysisRunning(false);
                     SharedPrefsHelper.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerMainActivity.this);
                     NotificationHelper.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
-                    triggerCancelAnalysis();
                     if (isActivityActive) {
                         restoreState();
                     }
@@ -709,11 +708,11 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private void showCategoryMetaInfo(String category, int numCVEs) {
         StringBuilder infoText = new StringBuilder();
         if(!category.equals("other")) {
-            infoText.append("<h4 style=\"margin-bottom:0px\">" + category + "</h4>\n<hr>");
-            infoText.append("<p><b>" + numCVEs + "</b> CVEs total</p>");
+            infoText.append("<span style=\"font-weight:bold;\">" + category);
+            infoText.append("</span><span>: " + numCVEs + " CVEs total</span>");
         }else{
-            infoText.append("<h4 style=\"margin-bottom:0px\">"+this.getResources().getString(R.string.patchalyzer_general_tests)+"</h4>\n<hr>");
-            infoText.append("<p><b>"+ numCVEs + "</b> tests total</p>");
+            infoText.append("<span style=\"font-weight:bold;\">"+this.getResources().getString(R.string.patchalyzer_general_tests));
+            infoText.append("</span><span>: " + numCVEs + " tests total</span>");
         }
         showMetaInformation(infoText.toString(),null);
     }

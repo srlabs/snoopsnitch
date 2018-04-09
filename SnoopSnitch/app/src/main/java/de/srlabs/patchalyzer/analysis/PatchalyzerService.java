@@ -520,10 +520,7 @@ public class PatchalyzerService extends Service {
         });
     }
 
-    /**
-     * Calling this will cause the service to be killed: handleFatalError calls requestCancelAnalysis after saving the stickyErrorMessage
-     * This double-callback behavior is neccessary to ensure the service does not get killed before the stickyErrorMessage was saved.
-     */
+    // Calling this will cause the service to be killed
     private void handleFatalErrorViaCallback(final String stickyErrorMessage){
         handler.post(new Runnable(){
             @Override
@@ -533,6 +530,7 @@ public class PatchalyzerService extends Service {
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "PatchalyzerService => callback.cancelled() RemoteException", e);
                 }
+                cancelAnalysis();
             }
         });
     }
