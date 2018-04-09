@@ -38,7 +38,9 @@
                 android:layout_gravity="right|center"
                 android:scrollbars="none"
                 android:text="Legend"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/common_text"
+                android:textSize="11sp"/>
 
         </LinearLayout>
 
@@ -76,6 +78,7 @@
                     android:gravity="center"
                     android:text="0.0%"
                     android:textAlignment="center"
+                    android:fontFamily="sans-serif-condensed"
                     android:textColor="@color/common_text"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -103,7 +106,7 @@
                 android:paddingLeft="10dp">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/errorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
@@ -111,8 +114,10 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentStart="true"
-                    android:text="Small Text"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:text=""
+                    android:fontFamily="sans-serif-condensed"
+                    android:textColor="@color/common_text"
+                    android:textSize="11sp"/>
 
             </ScrollView>
 
@@ -133,7 +138,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/common_sectionBackground"
-            android:fadeScrollbars="false"/>
+            android:fadeScrollbars="false"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/common_text"
+            android:textSize="11sp"/>
 
         <View
             android:id="@+id/View44"

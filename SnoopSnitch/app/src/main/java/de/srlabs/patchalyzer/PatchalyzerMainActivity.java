@@ -26,6 +26,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,9 +62,9 @@ import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 public class PatchalyzerMainActivity extends FragmentActivity {
     private Handler handler;
     private Button startTestButton;
-    private TextView statusTextView, percentageText;
+    private TextView errorTextView, percentageText;
     private WebView legendView;
-    private ScrollView webViewContent, metaInfoText;
+    private ScrollView webViewContent, metaInfoTextScrollView;
     private ProgressBar progressBar;
     private LinearLayout progressBox;
     private PatchalyzerSumResultChart resultChart;
@@ -92,15 +93,15 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         setContentView(R.layout.activity_patchalyzer);
         startTestButton = (Button) findViewById(R.id.btnDoIt);
         webViewContent = (ScrollView) findViewById(R.id.scrollViewTable);
-        statusTextView = (TextView) findViewById(R.id.textView);
+        errorTextView = (TextView) findViewById(R.id.errorText);
         percentageText = (TextView) findViewById(R.id.textPercentage);
         legendView = (WebView) findViewById(R.id.legend);
-        metaInfoText = (ScrollView) findViewById(R.id.scrollViewText);
-        //metaInfoText.setBackgroundColor(Color.TRANSPARENT);
+        metaInfoTextScrollView = (ScrollView) findViewById(R.id.scrollViewText);
+        //metaInfoTextScrollView.setBackgroundColor(Color.TRANSPARENT);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
         progressBox = (LinearLayout) findViewById(R.id.progress_box);
-        statusTextView.setText("");
+        errorTextView.setText("");
         percentageText.setText("");
         ActionBar actionBar = getActionBar();
 
@@ -164,6 +165,15 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         }
     };
 
+    private String getWebViewFontStyle() {
+        return "<head><style type=\"text/css\">body { " +
+                    "    font-family: sans-serif-condensed;\n" +
+                    "    font-size: 11sp;\n" +
+                    "    font-color: #58585b;\n" +
+                    "    text-align: justify;\n" +
+                    "}</style></head>";
+    }
+
     class TestCallbacks extends ITestExecutorCallbacks.Stub{
         @Override
         public void showErrorMessage(final String text) throws RemoteException {
@@ -176,7 +186,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                         if(text.equals(PatchalyzerService.NO_INTERNET_CONNECTION_ERROR)){
                             showNoInternetConnectionDialog();
                         } else {
-                            statusTextView.setText(text);
+                            errorTextView.setText(text);
                         }
                     }
                 }
@@ -261,9 +271,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         }
     }
     public void showMetaInformation(String status, String explain){
-        metaInfoText.removeAllViews();
+        metaInfoTextScrollView.removeAllViews();
         WebView wv = new WebView(PatchalyzerMainActivity.this);
-        String html = "<html><body>\n";
+        String html = "<html>"+getWebViewFontStyle()+"<body>\n";
         if(status != null)
             html += "\t" + status;
         if(explain != null)
@@ -272,10 +282,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         Log.i(Constants.LOG_TAG,"Meta information text:\n"+html);
         wv.setBackgroundColor(Color.TRANSPARENT);
         wv.loadData(html, "text/html; charset=utf-8","utf-8");
-        metaInfoText.addView(wv);
+        metaInfoTextScrollView.addView(wv);
     }
     public void displayCutline(){
-        String html =
+        String html = "<html>"+getWebViewFontStyle()+"<body>\n"+
                     "\t<div style=\"text-align:right\">\n"+
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_PATCHED)+"\">"+this.getResources().getString(R.string.patchalyzer_patched)+"</span>&nbsp;&nbsp;<br>\n" +
                         "\t<span style=\"color:"+toColorString(Constants.COLOR_MISSING)+"\">"+this.getResources().getString(R.string.patchalyzer_patch_missing)+"</span>&nbsp;&nbsp;<br>\n" +
@@ -534,6 +544,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     truncatedCategory = "General";
                 }
                 button.setText(truncatedCategory);
+                button.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -617,7 +628,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
             WebView wv = new WebView(PatchalyzerMainActivity.this);
             StringBuilder html = new StringBuilder();
-            html.append("<html><body><table style=\"border-collapse:collapse;\">\n");
+            html.append("<html>"+getWebViewFontStyle()+"<body><table style=\"border-collapse:collapse;\">\n");
 
             for(int i=0;i<vulnerabilitiesForPatchlevelDate.length();i++) {
                 JSONObject vulnerability = vulnerabilitiesForPatchlevelDate.getJSONObject(i);

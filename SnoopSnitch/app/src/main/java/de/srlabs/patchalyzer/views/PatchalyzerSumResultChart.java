@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -267,6 +268,7 @@ public class PatchalyzerSumResultChart extends View {
 
     private void drawCenteredText(String text, Paint paint, float left, float right, float top, float bottom){
         Rect textBoundsRect = new Rect();
+        paint.setTypeface(Typeface.create("sans-serif-condensed",Typeface.NORMAL));
         paint.getTextBounds(text, 0, text.length(), textBoundsRect);
         Paint.FontMetrics fm = paint.getFontMetrics();
 
@@ -284,7 +286,7 @@ public class PatchalyzerSumResultChart extends View {
      * @return
      */
     private boolean isNumberFittingDrawnPart(int count, float partWidth, Paint paint) {
-        float NUMBER_MARGIN = 10f;
+        float NUMBER_MARGIN = 20f;
         Rect textBoundsRect = new Rect();
         String text = ""+count;
         paint.getTextBounds(text, 0, text.length(), textBoundsRect);

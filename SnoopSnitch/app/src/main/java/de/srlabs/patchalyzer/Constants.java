@@ -19,8 +19,8 @@ public class Constants {
 
     //colors
     public static final int COLOR_INCONCLUSIVE=0xFF7575EC;
-    public static final int COLOR_MISSING= Color.RED;
-    public static final int COLOR_PATCHED=Color.GREEN;
+    public static final int COLOR_MISSING= 0xFFD36031;
+    public static final int COLOR_PATCHED=0xFF84B538;
     public static final int COLOR_NOTAFFECTED=Color.GRAY;
     public static final int COLOR_NOTCLAIMED=0xFFFF8000;
 
