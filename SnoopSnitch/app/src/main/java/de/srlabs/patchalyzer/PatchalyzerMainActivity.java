@@ -106,7 +106,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         ActionBar actionBar = getActionBar();
 
 
-        String title = this.getResources().getString(R.string.label_patch_analysis_long);
+        String title = this.getResources().getString(R.string.patchalyzer_label_long);
         if(!Constants.IS_TEST_MODE) {
             actionBar.setSubtitle("\nApp ID: "+ TestUtils.getAppId(this));
         }else{
