@@ -8,6 +8,7 @@ import java.util.Vector;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -69,7 +70,7 @@ public class UploadDebugActivity extends BaseActivity {
         }
         String whatToReport = this.editTextUploadDebugWhatToReport.getText().toString().trim();
         String contactInfo = this.editTextUploadDebugContactInfo.getText().toString().trim();
-        if (!noContactInfoConfirmed && (contactInfo.length() < 5 || !contactInfo.contains("@"))) {
+        if (!noContactInfoConfirmed && !isValidEmail(contactInfo)) {
             MsdDialog.makeConfirmationDialog(this, getString(R.string.upload_debug_confirm_no_contact), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -93,19 +94,26 @@ public class UploadDebugActivity extends BaseActivity {
         try {
             SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
             if (uploadRadioTraces) {
-                for (DumpFile df : DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, System.currentTimeMillis() - 3600 * 1000L, System.currentTimeMillis(), 0)) {
-                    files.add(df);
-                    df.markForUpload(db);
+                Vector<DumpFile> dumpFiles = DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, System.currentTimeMillis() - 3600 * 1000L, System.currentTimeMillis(), 0);
+                if(dumpFiles != null && dumpFiles.size() > 0) {
+                    for (DumpFile df : dumpFiles) {
+                        files.add(df);
+                        df.markForUpload(db);
+                    }
                 }
             }
             if (uploadSnoopsnitchDebugLogs) {
                 long debugLogId = getMsdServiceHelperCreator().getMsdServiceHelper().reopenAndUploadDebugLog();
                 DumpFile df = DumpFile.get(db, debugLogId);
-                df.markForUpload(db);
-                files.add(df);
+                if(df != null) {
+                    df.markForUpload(db);
+                    files.add(df);
+                }
             }
             if (uploadDatabaseMetadata) {
-                files.add(Utils.uploadMetadata(this, db, null, System.currentTimeMillis(), System.currentTimeMillis(), "meta-suspicious-"));
+                DumpFile dbMetaData = Utils.uploadMetadata(this, db, null, System.currentTimeMillis(), System.currentTimeMillis(), "meta-suspicious-");
+                if(dbMetaData != null)
+                    files.add(dbMetaData);
             }
             String json = "{\n\"APPID\":\"" + MsdConfig.getAppId(this) + "\",\n";
             json += "\"REPORT_CONTACT\":" + escape(contactInfo) + ",\n";
@@ -153,6 +161,10 @@ public class UploadDebugActivity extends BaseActivity {
         if (input == null)
             return "undefined";
         return "\"" + input.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n") + "\"";
+    }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
 }

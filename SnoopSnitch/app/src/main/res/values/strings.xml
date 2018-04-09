@@ -428,15 +428,15 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <!-- Debug Uploads -->
     <string name="debug_what_to_report">Please describe the problem you want to report:</string>
     <string name="debug_contact_info">Please enter your email address so that we can contact you:</string>
-    <string name="debug_upload_snoopsnitch_debug_logs">Upload SnoopSnitch debug logs</string>
+    <string name="debug_upload_snoopsnitch_debug_logs">Upload SnoopSnitch network scan logs</string>
     <string name="debug_upload_radio_traces">Upload radio traces (past hour)</string>
-    <string name="debug_upload_metadata">Upload database metadata</string>
+    <string name="debug_upload_metadata">Upload anonymized database metadata for suspicious events</string>
     <string name="debug_upload">Upload</string>
     <string name="debug_cancel">Cancel</string>
 
     <string name="upload_debug_please_select">Please select at least one item to upload!</string>
-    <string name="upload_debug_confirm_no_contact">Are you sure you want to send the report without contact information?</string>
-    <string name="upload_debug_confirm_no_description">Are you sure you want to send the report without a description of the problem?</string>
+    <string name="upload_debug_confirm_no_contact">Are you sure you want to send the report without a valid email address to contact you?</string>
+    <string name="upload_debug_confirm_no_description">Are you sure you want to send the report without a proper description of the problem?</string>
     <string name="upload_debug_confirmation_msg">Your report ID is %s. Feel free to send additional information to snoopsnitch@srlabs.de</string>
 
 	<string name="copyright_text">
