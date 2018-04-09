@@ -258,7 +258,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     resultChart.setAnalysisRunning(false);
                     SharedPrefsHelper.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerMainActivity.this);
                     NotificationHelper.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
-                    triggerCancelAnalysis();
                     if (isActivityActive) {
                         restoreState();
                     }
