@@ -123,6 +123,9 @@ public class StartupActivity extends Activity {
                     MsdDatabaseManager msdDatabaseManager = MsdDatabaseManager.getInstance();
                     SQLiteDatabase db = msdDatabaseManager.openDatabase();
                     //testing DB init
+                    if(db == null)
+                        throw new SQLException("Failed to create instance of database object");
+
                     db.rawQuery("SELECT * FROM config", null).close();
                     msdDatabaseManager.closeDatabase();
 
