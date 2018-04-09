@@ -81,8 +81,8 @@ public class NotificationHelper {
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
         Notification notification =
                 new Notification.Builder(context)
-                        .setContentTitle(context.getText(R.string.patchalyzer_finished_notification_title))
-                        .setContentText(context.getText(R.string.patchalyzer_finished_notification_text))
+                        .setContentTitle(context.getText(R.string.patchalyzer_notification_finished_title))
+                        .setContentText(context.getText(R.string.patchalyzer_notification_finished_text))
                         .setSmallIcon(R.drawable.ic_patchalyzer)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
@@ -98,8 +98,8 @@ public class NotificationHelper {
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
         Notification notification =
                 new Notification.Builder(context)
-                        .setContentTitle(context.getText(R.string.patchalyzer_failed_notification_title))
-                        .setContentText(context.getText(R.string.patchalyzer_failed_notification_text))
+                        .setContentTitle(context.getText(R.string.patchalyzer_notification_failed_title))
+                        .setContentText(context.getText(R.string.patchalyzer_notification_failed_text))
                         .setSmallIcon(R.drawable.ic_patchalyzer)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
@@ -115,8 +115,8 @@ public class NotificationHelper {
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
         Notification notification =
                 new Notification.Builder(context)
-                        .setContentTitle(context.getText(R.string.patchalyzer_running_notification_title))
-                        .setContentText(context.getText(R.string.patchalyzer_running_notification_text))
+                        .setContentTitle(context.getText(R.string.patchalyzer_notification_running_title))
+                        .setContentText(context.getText(R.string.patchalyzer_notification_running_text))
                         .setSmallIcon(R.drawable.ic_patchalyzer)
                         .setContentIntent(pendingIntent)
                         .build();
