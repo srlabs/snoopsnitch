@@ -43,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -117,7 +118,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         // see onOptionsItemSelected
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        displayCutline();
+        displayCutline(null);
 
 
         // This is not persisted right now
@@ -285,18 +286,45 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         wv.loadData(html, "text/html; charset=utf-8","utf-8");
         metaInfoTextScrollView.addView(wv);
     }
-    public void displayCutline(){
-        String html = "<html>"+getWebViewFontStyle()+"<body>\n"+
-                    "\t<div style=\"text-align:right\">\n"+
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_PATCHED)+"\">"+this.getResources().getString(R.string.patchalyzer_patched)+"</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_MISSING)+"\">"+this.getResources().getString(R.string.patchalyzer_patch_missing)+"</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTCLAIMED)+"\">"+this.getResources().getString(R.string.patchalyzer_after_claimed_patchlevel)+"</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_INCONCLUSIVE)+"\">"+this.getResources().getString(R.string.patchalyzer_inconclusive)+"</span>&nbsp;&nbsp;<br>\n" +
-                        "\t<span style=\"color:"+toColorString(Constants.COLOR_NOTAFFECTED)+"\">"+this.getResources().getString(R.string.patchalyzer_not_affected)+"</span>&nbsp;&nbsp;\n" +
-                    "\t</div>\n"+
+    public void displayCutline(HashMap<String,PatchalyzerSumResultChart.ResultPart> results){
+        String html = "<html>" + getWebViewFontStyle() + "<body>\n" +
+                "<table style=\"border:0px collapse; text-align:right;\">";
+        if(results == null) {
+            html +=
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + this.getResources().getString(R.string.patchalyzer_patched) +
+                            "</span></td><td></td></tr>" +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_MISSING) + "\">" + this.getResources().getString(R.string.patchalyzer_patch_missing) +
+                            "</span></td><td></td></tr>" +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTCLAIMED) + "\">" + this.getResources().getString(R.string.patchalyzer_after_claimed_patchlevel) +
+                            "</span></td><td></td></tr>" +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + this.getResources().getString(R.string.patchalyzer_inconclusive) +
+                            "</span></td><td></td></tr>" +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + this.getResources().getString(R.string.patchalyzer_not_affected) +
+                            "</span></td><td></td></tr>";
+        }else if(results.size() == 5 && results.containsKey("patched") && results.containsKey("missing") && results.containsKey("notClaimed") &&
+                results.containsKey("inconclusive") && results.containsKey("notAffected")){
+            //display number of results for each category
+            html +=
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + this.getResources().getString(R.string.patchalyzer_patched) +
+                    "</span></td><td>"+results.get("patched").getCount()+"</td></tr>" +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_MISSING) + "\">" + this.getResources().getString(R.string.patchalyzer_patch_missing) +
+                    "</span></td><td>"+results.get("missing").getCount()+"</td></tr>" +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTCLAIMED) + "\">" + this.getResources().getString(R.string.patchalyzer_after_claimed_patchlevel) +
+                    "</span></td><td>"+results.get("notClaimed").getCount()+"</td></tr>" +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + this.getResources().getString(R.string.patchalyzer_inconclusive) +
+                    "</span></td><td>"+results.get("inconclusive").getCount()+"</td></tr>" +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + this.getResources().getString(R.string.patchalyzer_not_affected) +
+                    "</span></td><td>"+results.get("notAffected").getCount()+"</td></tr>";
+        }
+        else{
+            Log.e(Constants.LOG_TAG,"displayCutline: Result information missing!");
+        }
+
+        html += "</table>\n" +
                 "</body></html>";
         legendView.setBackgroundColor(Color.TRANSPARENT);
         legendView.loadData(html,"text/html; charset=utf-8","utf-8");
+        legendView.reload();
     }
 
     @Override
@@ -401,6 +429,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     resultChart.setVisibility(View.GONE);
                     webViewContent.setVisibility(View.INVISIBLE);
                     String stickyErrorMessage = SharedPrefsHelper.getStickyErrorMessage(this);
+
+                    //do not show results in cutline
+                    displayCutline(null);
+
                     if (stickyErrorMessage != null) {
                         // Last analysis failed recently
                         PatchalyzerMainActivity.this.showErrorMessageInMetaInformation(stickyErrorMessage);
@@ -431,6 +463,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 startTestButton.setEnabled(false);
+                displayCutline(null);
                 startTest();
             }
         });
@@ -609,6 +642,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             resultChart.invalidate();
             resultChart.setVisibility(View.VISIBLE);
             progressBox.setVisibility(View.GONE);
+
+            //update counts in cutline
+            displayCutline(resultChart.getParts());
 
         } catch(Exception e){
             Log.e(Constants.LOG_TAG, "showPatchlevelDateTable Exception", e);

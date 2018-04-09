@@ -17,9 +17,10 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginRight="0dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnDoIt"
@@ -29,18 +30,24 @@
                 android:layout_gravity="left|center"
                 android:text="@string/patchalyzer_button_start_analysis"
                 android:textColor="@drawable/custom_upload_button_color"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <WebView
                 android:id="@+id/legend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center"
-                android:scrollbars="none"
-                android:text="Legend"
+                android:layout_marginRight="0dp"
                 android:fontFamily="sans-serif-condensed"
+                android:gravity="right|end"
+                android:paddingRight="0dp"
+                android:scrollbars="none"
                 android:textColor="@color/common_text"
-                android:textSize="11sp"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
 

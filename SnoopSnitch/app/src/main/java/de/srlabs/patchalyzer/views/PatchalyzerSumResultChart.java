@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Vector;
 
 import de.srlabs.patchalyzer.Constants;
 import de.srlabs.patchalyzer.PatchalyzerMainActivity;
@@ -361,10 +362,14 @@ public class PatchalyzerSumResultChart extends View {
         loadValuesFromJSONResult(SharedPrefsHelper.getAnalysisResult(context));
     }
 
+    public HashMap<String, ResultPart> getParts(){
+        return parts;
+    }
+
     /**
      * local container class here
      */
-    protected class ResultPart {
+    public class ResultPart {
         private int count;
         private int color;
 
