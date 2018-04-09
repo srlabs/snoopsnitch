@@ -26,9 +26,9 @@ import javax.net.ssl.TrustManagerFactory;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -38,7 +38,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
+import android.widget.TextView;
 
 import de.srlabs.snoopsnitch.BuildConfig;
 import de.srlabs.snoopsnitch.EncryptedFileWriterError;
@@ -220,27 +224,18 @@ public class Utils {
 
     public static void showDeviceIncompatibleDialog(Activity activity, String incompatibilityReason, final Runnable callback) {
         String dialogMessage =
-                activity.getResources().getString(R.string.alert_deviceCompatibility_header) + " " + incompatibilityReason + " " +
-                        activity.getResources().getString(R.string.alert_deviceCompatibility_message);
+                activity.getResources().getString(R.string.alert_deviceCompatibility_header) + " " + incompatibilityReason + " " + activity.getResources().getString(R.string.alert_deviceCompatibility_message);
+        final SpannableString spannableString = new SpannableString(dialogMessage);
+        Linkify.addLinks(spannableString,Linkify.ALL);
 
-        MsdDialog.makeConfirmationDialog(activity, dialogMessage, new OnClickListener() {
+        Dialog dialog = MsdDialog.makeOKButtonOnlyConfirmationDialog(activity, spannableString, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         callback.run();
                     }
-                }, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        callback.run();
-                    }
-                },
-                new OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        callback.run();
-                    }
-                }, true
-        ).show();
+                });
+        dialog.show();
+        ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private static String dumpRow(Cursor c) {

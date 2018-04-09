@@ -53,7 +53,7 @@
 
 <string name="alert_deviceCompatibility_header">Your device is not compatible.\n\nREASON:</string>
 
-<string name="alert_deviceCompatibility_message">\n\nVisit the project website for details (https://opensource.srlabs.de/projects/snoopsnitch).</string>
+<string name="alert_deviceCompatibility_message">\n\nVisit the project website for details:\nhttps://opensource.srlabs.de/projects/snoopsnitch</string>
 
 <string name="alert_upload_message">
 Thank you for contributing radio data related to this security event
@@ -300,8 +300,8 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
      <string name="at_lte_not_supported">Please disable LTE for active test.</string>
 
      <!-- Compat check -->
-     <string name="compat_snsn_features_not_working">SnoopSnitch\'s main features will not work properly.</string>
-     <string name="compat_snsn_features_not_working_short">Some features not working on this device.</string>
+     <string name="compat_snsn_features_not_working">SnoopSnitch\'s network scan will not work properly.</string>
+     <string name="compat_snsn_features_not_working_short">Network scan &amp; attack detection not working on this device.</string>
      <string name="compat_no_diag">Device /dev/diag does not exist, no Qualcomm chipset or unsuitable ROM.</string>
      <string name="compat_broken_diag">Could not initialize DIAG interface.</string>
 
