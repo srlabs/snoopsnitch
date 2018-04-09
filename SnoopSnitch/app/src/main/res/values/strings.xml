@@ -19,7 +19,7 @@
     <string name="action_map">Map</string>
     <string name="action_info">Info</string>
     <string name="action_upload_pending_files">Upload pending files</string>
-    <string name="action_active_test_advanced">Active test (advanced mode)</string>
+    <string name="action_active_test_advanced">Advanced active network test</string>
     <string name="action_upload_suspicious_dumps">Upload suspicious activity</string>
     <string name="action_upload_debug_logs">Submit feedback/questions</string>
     <string name="action_network_info">Network Info</string>
@@ -91,7 +91,7 @@ For example, a German (+49) number of 12345678 would be written:\n
 <string name="alert_networktest_privacy_disclaimer">
 Following the test, the resulting radio data is uploaded to our servers
 automatically. If you do not agree with this, press Cancel now and disable
-recording for active tests in the settings menu. Note that radio traces may
+recording for active network tests in the settings menu. Note that radio traces may
 contain private data and location information as a side effect.\n
 </string>
 
@@ -223,7 +223,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="settings_applicationid_summary">Your can use your app ID to hint us at the files you uploaded. Refresh it anytime by tapping here.</string>
     
     <string name="settings_active_test_force_offline_title">Force offline test</string>
-    <string name="settings_active_test_force_offline_summary">Force using offline mode in active test. No data connection is used in this case.</string>
+    <string name="settings_active_test_force_offline_summary">Force using offline mode in active network test. No data connection is used in this case.</string>
 
     <string name="settings_active_test_sms_mo_disabled_title">Disable outgoing SMS</string>
     <string name="settings_active_test_sms_mo_disabled_summary">Sending SMS to an invalid destination can still cost money for some providers.</string>
@@ -231,18 +231,18 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="settings_active_test_sms_mo_number_title">Outgoing SMS number</string>
     <string name="settings_active_test_sms_mo_number_summary">Please enter a number to which you can send SMS for free. The default \"*4*\" is an invalid number and most providers don\'t charge for SMS sent to this number.</string>
     
-    <string name="settings_active_test_num_iterations_title">Active test iterations</string>
-    <string name="settings_active_test_num_iterations_dialogtitle">Number of iterations for each active test.</string>
+    <string name="settings_active_test_num_iterations_title">Active network test iterations</string>
+    <string name="settings_active_test_num_iterations_dialogtitle">Number of iterations for each active network test.</string>
     
-    <string name="settings_active_test_disable_upload_title">Don\'t upload test results</string>
-    <string name="settings_active_test_disable_upload_summary">Evaluate active test results on the phone only. No radio data is uploaded to our servers in this case.</string>
+    <string name="settings_active_test_disable_upload_title">Don\'t upload network test result</string>
+    <string name="settings_active_test_disable_upload_summary">Evaluate active network test results on the phone only. No radio data is uploaded to our servers in this case.</string>
 
     <!-- Settings categories -->
     <string name="settings_cat_location">Location Recording</string>
-    <string name="settings_cat_cleanup">Log file cleanup</string>
-    <string name="settings_cat_log_encryption">Log file encryption</string>
+    <string name="settings_cat_cleanup">Network test log file cleanup</string>
+    <string name="settings_cat_log_encryption">Network test log file encryption</string>
     <string name="settings_cat_privacy">Privacy</string>
-    <string name="settings_cat_active_test">Active test parameters</string>
+    <string name="settings_cat_active_test">Network test parameters</string>
     
      <!-- List view row -->
      <string name="listview_sms_item_type">Type:</string>
@@ -279,7 +279,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
          name, your current operator name and the MCC/MNC.
      </string>
 
-     <!-- Active test -->
+     <!-- Active network test -->
      <string name="test_and_upload">Test and Upload</string>
      <string name="at_invalid">INVALID</string>
      <string name="at_running">Test running</string>
@@ -297,11 +297,11 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
      <string name="at_idle"></string>
      <string name="at_progress">Progress</string>
      <string name="at_fatal">Test terminated with fatal error</string>
-     <string name="at_lte_not_supported">Please disable LTE for active test.</string>
+     <string name="at_lte_not_supported">Please disable LTE for active network test.</string>
 
      <!-- Compat check -->
      <string name="compat_snsn_features_not_working">SnoopSnitch\'s network scan will not work properly.</string>
-     <string name="compat_snsn_features_not_working_short">Network scan &amp; attack detection not working on this device.</string>
+     <string name="compat_snsn_features_not_working_short">Network test and attack detection require root.</string>
      <string name="compat_no_diag">Device /dev/diag does not exist, no Qualcomm chipset or unsuitable ROM.</string>
      <string name="compat_broken_diag">Could not initialize DIAG interface.</string>
 
@@ -310,7 +310,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
      <string name="compat_root_denied">Root access denied by su. Check permissions.</string>
      <string name="compat_no_root">Root access failed.</string>
      
-     <string name="compat_no_baseband_messages_in_active_test">Error, no baseband messages received during active test.</string>
+     <string name="compat_no_baseband_messages_in_active_test">Error, no baseband messages received during active network test.</string>
      <string name="compat_no_baseband_messages">Error, no baseband messages.</string>
      <string name="compat_no_baseband_messages_warning">SnoopSnitch was not able to parse baseband messages, during the last run.\nIt might be that your device is not compatible,\n and therefore the main features of SnoopSnitch will not work properly.</string>
 
@@ -465,8 +465,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="notification_vibrate_and_ring">Vibration and Sound notification</string>
 <string name="settings_imsi_catcher_notification_summary">You can choose how you want to get alarmed, when an IMSI catcher is detected.</string>
 <string name="settings_sms_event_notification_summary">You can choose how you want to get alarmed, when a SMS/SS7 attack is detected.</string>
-<string name="alert_active_test_permissions_not_granted">Please grant ALL requested permissions to run an Active Test.</string>
-<string name="alert_active_test_permissions_not_granted_persistent"> You have to grant ALL requested permissions to be able to run an Active Test with SnoopSnitch</string>
+<string name="alert_active_test_permissions_not_granted">Please grant ALL requested permissions to run an Active network Test.</string>
+<string name="alert_active_test_permissions_not_granted_persistent"> You have to grant ALL requested permissions to be able to run an Active network Test with SnoopSnitch</string>
 <string name="alert_msdservice_permissions_not_granted">Please grant ALL requested permissions to enable running SnoopSnitch\'s background service.</string>
 <string name="alert_msdservice_permissions_not_granted_persistent">You have to grant ALL requested permissions to enable SnoopSnitch\'s background service.</string>
 <string name="alert_pcap_export_permissions_not_granted">Please grant the access to the storage for PCAP exports.</string>
@@ -478,8 +478,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
 <string name="device_never_compatible">Your device does not have a MSM Qualcomm chip, and is therefore not able to run SnoopSnitch main features.</string>
 <string name="device_not_compatible_now_no_diag">Your device is not compatible currently. This might change with an upcoming firmware update.</string>
 
-<string name="action_switch_to_patchalyzer">Switch to Patch Analysis</string>
-<string name="android_patchlevel_text">Android patch level</string>
+<string name="label_patch_analysis_long">Android patch level analysis</string>
+<string name="label_patch_analysis_short">Patch analysis</string>
 <string name="patchalyzer_no_test_result">No test results available</string>
 <string name="patchalyzer_running_notification_title">Patch level analysis running...</string>
 <string name="patchalyzer_running_notification_text">Tap for more details</string>

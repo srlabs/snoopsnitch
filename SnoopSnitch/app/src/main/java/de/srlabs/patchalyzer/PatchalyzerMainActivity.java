@@ -105,12 +105,13 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         ActionBar actionBar = getActionBar();
 
 
+        String title = this.getResources().getString(R.string.label_patch_analysis_long);
         if(!Constants.IS_TEST_MODE) {
-            actionBar.setTitle("Patch analysis");
-            actionBar.setSubtitle("App ID: "+ TestUtils.getAppId(this));
+            actionBar.setSubtitle("\nApp ID: "+ TestUtils.getAppId(this));
         }else{
-            actionBar.setTitle("Patch analysis - TESTMODE");
+            title += "- TESTMODE";
         }
+        actionBar.setTitle(title);
 
         // see onOptionsItemSelected
         actionBar.setDisplayHomeAsUpEnabled(true);

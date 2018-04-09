@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical"
-                    android:text="@string/android_patchlevel_text"
+                    android:text="@string/label_patch_analysis_long"
                     android:textColor="@color/common_text"
                     android:textSize="@dimen/text_large"
                     android:textStyle="bold"

@@ -166,7 +166,7 @@ public class BaseActivity extends FragmentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_action_switch_to_patchalyzer:
+            case R.id.label_patch_analysis_long:
                 showPatchalyzer();
                 break;
             case R.id.menu_action_scan:
