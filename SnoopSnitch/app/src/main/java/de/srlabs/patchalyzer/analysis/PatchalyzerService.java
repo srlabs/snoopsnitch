@@ -23,6 +23,7 @@ import java.util.Vector;
 import de.srlabs.patchalyzer.Constants;
 import de.srlabs.patchalyzer.ITestExecutorCallbacks;
 import de.srlabs.patchalyzer.ITestExecutorServiceInterface;
+import de.srlabs.patchalyzer.util.CertifiedBuildChecker;
 import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.util.ServerApi;
 import de.srlabs.patchalyzer.helpers.NotificationHelper;
@@ -301,6 +302,8 @@ public class PatchalyzerService extends Service {
             clearProgress();
             updateProgress();
 
+            final CertifiedBuildChecker certifiedBuildChecker = CertifiedBuildChecker.getInstance();
+
             //prepare progressitem's
             final ProgressItem uploadDeviceInfoProgress;
             if(uploadDeviceInfo) {
@@ -337,7 +340,7 @@ public class PatchalyzerService extends Service {
             updateProgress();
 
             ProgressItem downloadRequestsProgress = addProgressItem("downloadRequests", 0.5);
-            Thread requestsThread = new RequestsThread(downloadRequestsProgress);
+            Thread requestsThread = new RequestsThread(downloadRequestsProgress, certifiedBuildChecker);
             requestsThread.start();
 
             //prepare finish runnables
@@ -353,7 +356,8 @@ public class PatchalyzerService extends Service {
                                 return;
                             }
                             Log.i(Constants.LOG_TAG,"Reporting test results to server...");
-                            api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
+                            api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(),
+                                    TestUtils.getBuildDateUtc(), Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse());
                             Log.i(Constants.LOG_TAG,"Uploading test results finished...");
                             uploadTestResultsProgress.update(1.0);
                             apiRunning = false;
@@ -387,7 +391,8 @@ public class PatchalyzerService extends Service {
                                     handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                                     return;
                                 }
-                                api.reportSys(deviceInfoJson, TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
+                                api.reportSys(deviceInfoJson, TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(),
+                                        TestUtils.getBuildDateUtc(), Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse());
                             }
                             Log.i(Constants.LOG_TAG,"Uploading device info finished...");
                             uploadDeviceInfoProgress.update(1.0);
@@ -670,8 +675,10 @@ public class PatchalyzerService extends Service {
 
     private class RequestsThread extends Thread{
         private ProgressItem downloadRequestsProgress;
-        public RequestsThread(ProgressItem downloadRequestsProgress){
+        private CertifiedBuildChecker certifiedBuildChecker;
+        public RequestsThread(ProgressItem downloadRequestsProgress, CertifiedBuildChecker certifiedBuildChecker){
             this.downloadRequestsProgress = downloadRequestsProgress;
+            this.certifiedBuildChecker = certifiedBuildChecker;
         }
         @Override
         public void run(){
@@ -700,7 +707,8 @@ public class PatchalyzerService extends Service {
                             handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                             return;
                         }
-                        api.reportFile(filename, TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
+                        api.reportFile(filename, TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(),
+                                Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse());
                         requestProgress.get(i).update(1.0);
                         updateProgress();
                     } else{

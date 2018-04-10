@@ -53,6 +53,7 @@ import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.patchalyzer.helpers.NotificationHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
+import de.srlabs.patchalyzer.util.CertifiedBuildChecker;
 import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.views.PatchlevelDateOverviewChart;
 import de.srlabs.snoopsnitch.R;
@@ -119,6 +120,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         displayCutline(null);
+
+        //TODO: for testing purposes here
+        CertifiedBuildChecker certifiedBuildChecker = CertifiedBuildChecker.getInstance();
+        certifiedBuildChecker.startChecking(this);
 
 
         // This is not persisted right now

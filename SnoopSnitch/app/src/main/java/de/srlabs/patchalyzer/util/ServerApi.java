@@ -113,11 +113,14 @@ public class ServerApi {
         connection.disconnect();
         throw new IllegalStateException("getRequests(): The server returned an invalid response code " + code + "  Response contents: " + stringBuilder.toString());
     }
-    public void reportFile(String filename, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion) throws JSONException, IOException {
+    public void reportFile(String filename, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion, boolean ctsProfileMatch, boolean basicIntegrity) throws JSONException, IOException {
         Log.i(Constants.LOG_TAG, "reportFile(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate + ", filename=" + filename);
+
         URL url = new URL(API_URL + "report/file?appId=" + URLEncoder.encode(appid,"UTF-8") +
                 "&phoneModel=" + URLEncoder.encode(phoneModel, "UTF-8") + "&romBuildFingerprint=" + URLEncoder.encode(romBuildFingerprint, "UTF-8") +
-                "&romDisplayName=" + URLEncoder.encode(romDisplayName, "UTF-8") + "&romBuildDate=" + romBuildDate + "&appVersion=" + appVersion + "&filename=" + URLEncoder.encode(filename, "UTF-8"));
+                "&romDisplayName=" + URLEncoder.encode(romDisplayName, "UTF-8") + "&romBuildDate=" + romBuildDate + "&appVersion=" + appVersion + "&filename=" + URLEncoder.encode(filename, "UTF-8")
+                + "&ctsProfileMatch="+ ctsProfileMatch + "&basicIntegrity="+basicIntegrity);
+
         Log.i(Constants.LOG_TAG, "reportFile() URL: " + url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("connection", "close");
@@ -163,11 +166,12 @@ public class ServerApi {
         connection.disconnect();
         throw new IllegalStateException("reportFile(): The server returned an invalid response code " + code + "  Response contents: " + stringBuilder.toString());
     }
-    public void reportSys(JSONObject sysinfo, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion) throws JSONException, IOException {
+    public void reportSys(JSONObject sysinfo, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion,boolean ctsProfileMatch, boolean basicIntegrity) throws JSONException, IOException {
         Log.i(Constants.LOG_TAG, "reportSys(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate + ", uploadSize=" + sysinfo.toString().length());
         URL url = new URL(API_URL + "report/system?appId=" + URLEncoder.encode(appid,"UTF-8") +
                 "&phoneModel=" + URLEncoder.encode(phoneModel, "UTF-8") + "&romBuildFingerprint=" + URLEncoder.encode(romBuildFingerprint, "UTF-8") +
-                "&romDisplayName=" + URLEncoder.encode(romDisplayName, "UTF-8") + "&romBuildDate=" + romBuildDate + "&appVersion=" + appVersion);
+                "&romDisplayName=" + URLEncoder.encode(romDisplayName, "UTF-8") + "&romBuildDate=" + romBuildDate + "&appVersion=" + appVersion+
+                "&ctsProfileMatch="+ ctsProfileMatch + "&basicIntegrity="+basicIntegrity);
         Log.i(Constants.LOG_TAG, "reportSys() URL: " + url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("connection", "close");
@@ -206,11 +210,12 @@ public class ServerApi {
         connection.disconnect();
         throw new IllegalStateException("reportSys(): The server returned an invalid response code " + code + "  Response contents: " + stringBuilder.toString());
     }
-    public void reportTest(JSONObject testData, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion) throws JSONException, IOException {
+    public void reportTest(JSONObject testData, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion,boolean ctsProfileMatch, boolean basicIntegrity) throws JSONException, IOException {
         Log.i(Constants.LOG_TAG, "reportTest(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate);
         URL url = new URL(API_URL + "report/test?appId=" + URLEncoder.encode(appid,"UTF-8") +
                 "&phoneModel=" + URLEncoder.encode(phoneModel, "UTF-8") + "&romBuildFingerprint=" + URLEncoder.encode(romBuildFingerprint, "UTF-8") +
-                "&romDisplayName=" + URLEncoder.encode(romDisplayName, "UTF-8") + "&romBuildDate=" + romBuildDate + "&appVersion=" + appVersion);
+                "&romDisplayName=" + URLEncoder.encode(romDisplayName, "UTF-8") + "&romBuildDate=" + romBuildDate + "&appVersion=" + appVersion +
+                "&ctsProfileMatch="+ ctsProfileMatch + "&basicIntegrity="+basicIntegrity);
         Log.i(Constants.LOG_TAG, "reportTest() URL: " + url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
