@@ -60,7 +60,7 @@ public class StartupActivity extends Activity {
             NotificationHelper.showNewPatchalyzerFeatureOnce(this);
 
         //continue with normal startup
-        if (MsdConfig.getFirstRun(this) && isSNSNCompatible()) {
+        if (MsdConfig.getFirstRun(this)) {
             showFirstRunDialog();
         } else {
             createDatabaseAndStartDashboard();

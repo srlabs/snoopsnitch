@@ -445,7 +445,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     // Previous analysis result available, show results table
                     resultChart.setVisibility(View.VISIBLE);
                     webViewContent.setVisibility(View.VISIBLE);
-                    showPatchlevelDateNoTable();
+                    showPatchlevelDateNoTable();//should also update the cutline info
                 }
             }
         } catch (RemoteException e) {
