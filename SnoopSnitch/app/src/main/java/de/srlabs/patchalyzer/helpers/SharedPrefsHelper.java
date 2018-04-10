@@ -22,6 +22,7 @@ public class SharedPrefsHelper {
     // To be stored in SHAREDPREFS_FILE_CLEAR_ON_UPGRADE
     public static final String KEY_STICKY_ERROR_MESSAGE = "KEY_STICKY_ERROR_MESSAGE";
     public static final String KEY_ANALYSIS_RESULT = "KEY_ANALYSIS_RESULT";
+    public static final String KEY_LAST_BUILD_CERTIFIED = "KEY_LAST_BUILD_CERTIFIED";
 
     public static final String KEY_BUILD_DATE = "KEY_BUILD_DATE";
     public static final String KEY_BUILD_FINGERPRINT = "KEY_BUILD_FINGERPRINT";
@@ -36,6 +37,7 @@ public class SharedPrefsHelper {
 
     private static JSONObject cachedResultJSON;
     private static String cachedStickyErrorMessage;
+    private static Boolean isBuildFromLastAnalysisCertified;
 
 
     // Shorthand methods
@@ -126,9 +128,17 @@ public class SharedPrefsHelper {
 
     public static void clearSavedAnalysisResult(Context context) {
         cachedResultJSON = null;
+        isBuildFromLastAnalysisCertified = null;
 
         Log.d(Constants.LOG_TAG,"Deleting analysisResult from sharedPrefs");
         putString(KEY_ANALYSIS_RESULT, "", context);
+    }
+
+    public static boolean isBuildFromLastAnalysisCertified(Context context) {
+        if (isBuildFromLastAnalysisCertified == null) {
+            isBuildFromLastAnalysisCertified = getSharedPrefs(context).getBoolean(KEY_LAST_BUILD_CERTIFIED, false);
+        }
+        return isBuildFromLastAnalysisCertified;
     }
 
     public static JSONObject getAnalysisResult(ContextWrapper context) {
@@ -156,7 +166,7 @@ public class SharedPrefsHelper {
     /**
      * @return A stringified version of analysisResultJSON
      */
-    public static String saveAnalysisResult(JSONObject analysisResultJSON, Context context) {
+    public static String saveAnalysisResult(JSONObject analysisResultJSON, boolean isBuildCertified, Context context) {
         long timeStamp = System.currentTimeMillis();
         long buildDateUtc = TestUtils.getBuildDateUtc();
 
@@ -164,7 +174,10 @@ public class SharedPrefsHelper {
         String analysisResultString = analysisResultJSON.toString();
 
         Log.d(Constants.LOG_TAG,"Writing analysisResult to sharedPrefs");
-        putString(KEY_ANALYSIS_RESULT, analysisResultString, context);
+        SharedPreferences.Editor clearOnUpgradeEditor = getSharedPrefsEditor(context);
+        clearOnUpgradeEditor.putString(KEY_ANALYSIS_RESULT, analysisResultString);
+        clearOnUpgradeEditor.putBoolean(KEY_LAST_BUILD_CERTIFIED, isBuildCertified);
+        clearOnUpgradeEditor.commit();
 
         SharedPreferences.Editor persistentEditor = getPersistentSharedPrefsEditor(context);
         persistentEditor.putLong(KEY_BUILD_DATE_LAST_ANALYSIS, buildDateUtc);
@@ -176,8 +189,9 @@ public class SharedPrefsHelper {
 
     // This is needed so that the cached value for the Main App process can be set while the
     // PatchalyzerService modifies the saved value in SharedPrefs
-    public static String saveAnalysisResultNonPersistent(JSONObject analysisResultJSON) {
+    public static String saveAnalysisResultNonPersistent(JSONObject analysisResultJSON, boolean isBuildCertified) {
         cachedResultJSON = analysisResultJSON;
+        isBuildFromLastAnalysisCertified = isBuildCertified;
         return analysisResultJSON.toString();
     }
 
