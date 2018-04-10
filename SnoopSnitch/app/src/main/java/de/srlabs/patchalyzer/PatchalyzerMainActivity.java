@@ -121,11 +121,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
         displayCutline(null);
 
-        //TODO: for testing purposes here
-        CertifiedBuildChecker certifiedBuildChecker = CertifiedBuildChecker.getInstance();
-        certifiedBuildChecker.startChecking(this);
-
-
         // This is not persisted right now
         if (savedInstanceState != null) {
             currentPatchlevelDate = savedInstanceState.getString("currentPatchlevelDate");

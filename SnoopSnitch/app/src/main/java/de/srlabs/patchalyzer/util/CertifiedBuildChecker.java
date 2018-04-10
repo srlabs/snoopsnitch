@@ -1,6 +1,7 @@
 package de.srlabs.patchalyzer.util;
 
 import android.app.Activity;
+import android.app.Service;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -23,6 +24,8 @@ import java.util.Random;
 
 import de.srlabs.patchalyzer.Constants;
 
+import de.srlabs.patchalyzer.PatchalyzerMainActivity;
+import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
@@ -45,6 +48,7 @@ public class CertifiedBuildChecker {
     private static boolean ctsProfileMatch=false;
     private static boolean basicIntegrity=false;
     private static CertifiedBuildChecker instance;
+    private PatchalyzerService service;
 
     public static CertifiedBuildChecker getInstance(){
         if(instance == null){
@@ -56,7 +60,8 @@ public class CertifiedBuildChecker {
     private CertifiedBuildChecker(){
     }
 
-    public void startChecking(final Activity context){
+    public void startChecking(final PatchalyzerService context){
+        this.service = context;
         Thread checkThread = new Thread(){
             @Override
             public void run(){
@@ -69,8 +74,8 @@ public class CertifiedBuildChecker {
                     SafetyNetClient client = SafetyNet.getClient(context);
                     Task<SafetyNetApi.AttestationResponse> task = client.attest(nonce, API_KEY);
                     Log.d(Constants.LOG_TAG,"Sending SafetyNet request for this device...");
-                    task.addOnSuccessListener(context, mSuccessListener)
-                            .addOnFailureListener(context, mFailureListener);
+                    task.addOnSuccessListener(mSuccessListener)
+                            .addOnFailureListener(mFailureListener);
                 }
                 else{
                     // not possible to test, as play services not available or up-to-date
@@ -112,6 +117,7 @@ public class CertifiedBuildChecker {
                     result = attestationResponse.getJwsResult();
                     //Log.d(Constants.LOG_TAG, "SafetyNet result:\n" + result + "\n");
                     parseJWSResponse(result);
+                    tellServiceFinished();
                 }
             };
 
@@ -134,6 +140,7 @@ public class CertifiedBuildChecker {
                 // A different, unknown type of error occurred.
                 Log.d(Constants.LOG_TAG, "SafetyNet Error:" + e.getMessage());
             }
+            tellServiceFinished();
 
         }
     };
@@ -173,5 +180,9 @@ public class CertifiedBuildChecker {
         if(!wasTestSuccesful())
             return null;
         return basicIntegrity;
+    }
+
+    public void tellServiceFinished(){
+        service.finishCertifiedBuildCheck();
     }
 }
