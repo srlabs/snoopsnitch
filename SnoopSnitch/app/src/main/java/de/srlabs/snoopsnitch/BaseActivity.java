@@ -200,7 +200,11 @@ public class BaseActivity extends FragmentActivity {
                 quitApplication();
                 break;
             case R.id.menu_action_network_info:
-                showNetworkInfo();
+                if(snsnIncompatibilityReason == null) {
+                    showNetworkInfo();
+                }else{
+                    showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
+                }
                 break;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
