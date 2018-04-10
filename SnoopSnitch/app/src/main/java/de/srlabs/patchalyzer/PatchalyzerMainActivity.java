@@ -322,8 +322,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         html += "</table>\n" +
                 "</body></html>";
         legendView.setBackgroundColor(Color.TRANSPARENT);
-        legendView.loadData(html,"text/html; charset=utf-8","utf-8");
-        legendView.reload();
+        legendView.loadUrl("about:blank");
+        legendView.loadDataWithBaseURL(Constants.WEBVIEW_URL_LOADDATA, html,"text/html; charset=utf-8","utf-8", null);
+        //legendView.reload();
     }
 
     @Override

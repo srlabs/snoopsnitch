@@ -9,6 +9,8 @@ public class Constants {
     public static final String LOG_TAG="PatchAnalyzer";
     public static final int APP_VERSION = 10;
     public static final String DEFAULT_APK_UPGRADE_URL = "https://snoopsnitch-api.srlabs.de/patchalyzer.apk";
+    // needed so that subsequent calls to loaddata work on the same webview
+    public static final String WEBVIEW_URL_LOADDATA = "arbitrary://invalid/url";
 
     //testmode (decide whether we want to test files on OS or external files extracted to /sdcard/system)
     // can be useful when testing 64Bit builds on a 32Bit device
