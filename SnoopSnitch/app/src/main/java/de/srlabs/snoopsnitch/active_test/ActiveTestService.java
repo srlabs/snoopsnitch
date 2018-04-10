@@ -699,7 +699,7 @@ public class ActiveTestService extends Service {
     @Override
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
         final String action = intent.getAction();
-        if (ACTION_SMS_SENT.equals(action)) {
+        if (action != null && ACTION_SMS_SENT.equals(action)) {
             if (stateMachine != null)
                 stateMachine.handleSmsSent();
         }
