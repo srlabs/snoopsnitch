@@ -102,11 +102,6 @@ public class BaseActivity extends FragmentActivity {
         startActivity(intent);
     }
 
-    protected void showTestScreen() {
-        Intent intent = new Intent(this, MsdServiceHelperTest.class);
-        startActivity(intent);
-    }
-
     protected void showSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
@@ -179,9 +174,6 @@ public class BaseActivity extends FragmentActivity {
                 break;
             case R.id.menu_action_map:
                 showMap();
-                break;
-            case R.id.menu_action_info:
-                showTestScreen();
                 break;
             case R.id.menu_action_active_test_advanced:
                 if(snsnIncompatibilityReason == null) {

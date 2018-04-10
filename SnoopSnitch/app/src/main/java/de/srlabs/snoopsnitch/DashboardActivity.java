@@ -150,7 +150,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
     private void checkCompatibilityAndDisableFunctions(){
         LinearLayout dashboardEventCharts = (LinearLayout) findViewById(R.id.dashboardChartSection);
-        final String reason = DeviceCompatibilityChecker.checkDeviceCompatibility(this);
+        final String reason = StartupActivity.snsnIncompatibilityReason;
         if(reason != null){
             txtLastAnalysisTime.setText(getString(R.string.compat_snsn_features_not_working_short));
             //SNSN features not fully accessible ; phone not compatible

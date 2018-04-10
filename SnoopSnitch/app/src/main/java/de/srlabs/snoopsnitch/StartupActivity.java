@@ -39,12 +39,13 @@ public class StartupActivity extends Activity {
     private boolean alreadyClicked = false;
     private ProgressDialog progressDialog;
     private static boolean isSNSNCompatible = false;
+    public static String snsnIncompatibilityReason;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
+        snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
 
         if(snsnIncompatibilityReason == null){
             isSNSNCompatible = true;

@@ -83,15 +83,7 @@
              android:screenOrientation="portrait"
              android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">     
         </activity>
-        
-        <!-- Test Activity -->
-        <activity
-            android:name="de.srlabs.snoopsnitch.MsdServiceHelperTest"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" 
-            android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">
-        </activity>
-        
+
         <!-- Settings Activity -->
         <activity
             android:name="de.srlabs.snoopsnitch.SettingsActivity"
