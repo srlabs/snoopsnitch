@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.srlabs.patchalyzer.PatchalyzerMainActivity;
+import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -162,7 +163,9 @@ public class BaseActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.label_patch_analysis_long:
-                showPatchalyzer();
+                if (!TestUtils.isTooOldAndroidAPIVersion()) {
+                    showPatchalyzer();
+                }
                 break;
             case R.id.menu_action_scan:
                 if(snsnIncompatibilityReason == null) {
