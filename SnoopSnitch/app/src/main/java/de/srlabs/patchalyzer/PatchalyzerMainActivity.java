@@ -242,7 +242,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                         Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
                     }
                     resultChart.setAnalysisRunning(false);
-                    PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(resultJSON);SharedPrefsHelper.saveAnalysisResultNonPersistent(resultJSON);
+                    PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(resultJSON);
+                    SharedPrefsHelper.saveAnalysisResultNonPersistent(resultJSON);
                     if (isActivityActive) {
                         restoreState();
                     }

@@ -1,8 +1,5 @@
 package de.srlabs.patchalyzer.util;
 
-import android.app.Activity;
-import android.app.Service;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
