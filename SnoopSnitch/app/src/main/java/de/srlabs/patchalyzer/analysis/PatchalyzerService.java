@@ -753,11 +753,24 @@ public class PatchalyzerService extends Service {
         startForeground(NotificationHelper.ONGOING_NOTIFICATION_ID, notification);
 
         sendReloadViewStateToCallback();
-        doWorkAsync();
+
+        //first this, when finished will start doWorkAsync()
+        checkBuildCertifiedAndStartWorking();
 
         return START_NOT_STICKY;
 
         // stopSelf is called in updateProgress when 100% progress has been reached
+    }
+
+    public void checkBuildCertifiedAndStartWorking(){
+        Log.d(Constants.LOG_TAG,"Starting CertifiedBuildChecker test...");
+        CertifiedBuildChecker certifiedBuildChecker = CertifiedBuildChecker.getInstance();
+        certifiedBuildChecker.startChecking(this);//will call finishCertifiedBuildCheck when finished, no matter what is the result
+    }
+
+    public void finishCertifiedBuildCheck(){
+        Log.d(Constants.LOG_TAG,"CertifiedBuildChecker is finished testing!");
+        doWorkAsync();
     }
 
 }
