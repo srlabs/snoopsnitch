@@ -292,7 +292,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
     public void displayCutline(HashMap<String,PatchalyzerSumResultChart.ResultPart> results){
         String html = "<html>" + getWebViewFontStyle() + "<body>\n" +
-                "<table style=\"border:0px collapse; text-align:right;\">";
+                "<table style=\"border:0px collapse; text-align:left;\">";
         if(results == null) {
             html +=
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + this.getResources().getString(R.string.patchalyzer_patched) +
