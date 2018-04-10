@@ -422,6 +422,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 resultChart.setVisibility(View.GONE);
                 resultChart.setAnalysisRunning(true);
                 webViewContent.setVisibility(View.INVISIBLE);
+                displayCutline(null);
                 showMetaInformation(getResources().getString(R.string.patchalyzer_sum_result_chart_analysis_in_progress), getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
             } else {
                 // Analysis is not running
@@ -433,10 +434,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     resultChart.setVisibility(View.GONE);
                     webViewContent.setVisibility(View.INVISIBLE);
                     String stickyErrorMessage = SharedPrefsHelper.getStickyErrorMessage(this);
-
-                    //do not show results in cutline
                     displayCutline(null);
-
                     if (stickyErrorMessage != null) {
                         // Last analysis failed recently
                         PatchalyzerMainActivity.this.showErrorMessageInMetaInformation(stickyErrorMessage);
@@ -467,7 +465,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 startTestButton.setEnabled(false);
-                displayCutline(null);
                 startTest();
             }
         });
@@ -558,6 +555,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         try{
             JSONObject testResults = SharedPrefsHelper.getAnalysisResult(this);
             if(SharedPrefsHelper.getAnalysisResult(this) == null) {
+                displayCutline(null);
                 return;
             }
             Vector<String> categories = new Vector<String>();
