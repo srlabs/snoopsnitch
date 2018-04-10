@@ -292,7 +292,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     }
     public void displayCutline(HashMap<String,PatchalyzerSumResultChart.ResultPart> results){
         String html = "<html>" + getWebViewFontStyle() + "<body>\n" +
-                "<table style=\"border:0px collapse; text-align:left;\">";
+                "<table style=\"border:0px collapse;\">";
         if(results == null) {
             html +=
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + this.getResources().getString(R.string.patchalyzer_patched) +
@@ -310,15 +310,15 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             //display number of results for each category
             html +=
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + this.getResources().getString(R.string.patchalyzer_patched) +
-                    "</span></td><td>"+results.get("patched").getCount()+"</td></tr>" +
+                    "</span></td><td style=\"text-align:right;\">"+results.get("patched").getCount()+"</td></tr>" +
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_MISSING) + "\">" + this.getResources().getString(R.string.patchalyzer_patch_missing) +
-                    "</span></td><td>"+results.get("missing").getCount()+"</td></tr>" +
+                    "</span></td><td style=\"text-align:right;\">"+results.get("missing").getCount()+"</td></tr>" +
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTCLAIMED) + "\">" + this.getResources().getString(R.string.patchalyzer_after_claimed_patchlevel) +
-                    "</span></td><td>"+results.get("notClaimed").getCount()+"</td></tr>" +
+                    "</span></td><td style=\"text-align:right;\">"+results.get("notClaimed").getCount()+"</td></tr>" +
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + this.getResources().getString(R.string.patchalyzer_inconclusive) +
-                    "</span></td><td>"+results.get("inconclusive").getCount()+"</td></tr>" +
+                    "</span></td><td style=\"text-align:right;\">"+results.get("inconclusive").getCount()+"</td></tr>" +
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + this.getResources().getString(R.string.patchalyzer_not_affected) +
-                    "</span></td><td>"+results.get("notAffected").getCount()+"</td></tr>";
+                    "</span></td><td style=\"text-align:right;\">"+results.get("notAffected").getCount()+"</td></tr>";
         }
         else{
             Log.e(Constants.LOG_TAG,"displayCutline: Result information missing!");
