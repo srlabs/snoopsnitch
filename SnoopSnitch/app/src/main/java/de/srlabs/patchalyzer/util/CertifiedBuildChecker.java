@@ -81,6 +81,7 @@ public class CertifiedBuildChecker {
                     // not possible to test, as play services not available or up-to-date
                     // do nothing then
                     Log.d(Constants.LOG_TAG,"Not able to test for certified build, as Google Play services not available.");
+                    tellServiceFinished();
                 }
             }
         };
