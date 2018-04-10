@@ -257,7 +257,7 @@ public class PatchalyzerService extends Service {
                 basicTestCache.clearTemporaryTestResultCache();
                 PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(result);
 
-                return SharedPrefsHelper.saveAnalysisResult(result, PatchalyzerService.this);
+                return SharedPrefsHelper.saveAnalysisResult(result, PatchalyzerService.this.isBuildCertified(), PatchalyzerService.this);
 
             } catch (Exception e) {
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
@@ -496,6 +496,13 @@ public class PatchalyzerService extends Service {
         }
     }
 
+    private boolean isBuildCertified() {
+        CertifiedBuildChecker certifiedBuildChecker = CertifiedBuildChecker.getInstance();
+        Boolean basicIntegrity = certifiedBuildChecker.getBasicIntegrityResponse();
+        Boolean ctsProfileMatch = certifiedBuildChecker.getCtsProfileMatchResponse();
+        return basicIntegrity == Boolean.TRUE && ctsProfileMatch == Boolean.TRUE;
+    }
+
     private void onFinishedAnalysis() {
         String analysisResultString = null;
         try {
@@ -504,7 +511,7 @@ public class PatchalyzerService extends Service {
             e.printStackTrace();
         }
         isAnalysisRunning = false;
-        sendFinishedToCallback(analysisResultString);
+        sendFinishedToCallback(analysisResultString, isBuildCertified());
 
         NotificationHelper.showAnalysisFinishedNotification(this);
 
@@ -512,12 +519,12 @@ public class PatchalyzerService extends Service {
         stopSelf();
     }
 
-    private void sendFinishedToCallback(final String analysisResultString){
+    private void sendFinishedToCallback(final String analysisResultString, final boolean isBuildCertified){
         handler.post(new Runnable(){
             @Override
             public void run() {
                 try {
-                    callback.finished(analysisResultString);
+                    callback.finished(analysisResultString, isBuildCertified);
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "PatchalyzerService.updateProgress() => callback.finished() RemoteException", e);
                 }

@@ -7,7 +7,7 @@ interface ITestExecutorCallbacks {
     void updateProgress(double progressPercent);
     void showErrorMessage(String text);
     void showNoCVETestsForApiLevel(String message);
-    void finished(String analysisResultString);
+    void finished(String analysisResultString, boolean isBuildCertified);
     void reloadViewState();
     void handleFatalError(String stickyErrorMessage);
 }

@@ -53,7 +53,6 @@ import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.patchalyzer.helpers.NotificationHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
-import de.srlabs.patchalyzer.util.CertifiedBuildChecker;
 import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.views.PatchlevelDateOverviewChart;
 import de.srlabs.snoopsnitch.R;
@@ -230,7 +229,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             });
         }
         @Override
-        public void finished(final String analysisResultString) throws RemoteException {
+        public void finished(final String analysisResultString, final boolean isBuildCertified) throws RemoteException {
             Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received finished()");
             handler.post(new Runnable() {
                 @Override
@@ -243,7 +242,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     }
                     resultChart.setAnalysisRunning(false);
                     PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(resultJSON);
-                    SharedPrefsHelper.saveAnalysisResultNonPersistent(resultJSON);
+
+                    SharedPrefsHelper.saveAnalysisResultNonPersistent(resultJSON, isBuildCertified);
                     if (isActivityActive) {
                         restoreState();
                     }
@@ -323,8 +323,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         html += "</table>\n" +
                 "</body></html>";
         legendView.setBackgroundColor(Color.TRANSPARENT);
-        legendView.loadData(html,"text/html; charset=utf-8","utf-8");
-        legendView.reload();
+        legendView.loadUrl("about:blank");
+        legendView.loadDataWithBaseURL(Constants.WEBVIEW_URL_LOADDATA, html,"text/html; charset=utf-8","utf-8", null);
+        //legendView.reload();
     }
 
     @Override
@@ -542,7 +543,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     private void showPatchlevelDateNoTable(){
         String refPatchlevelDate = TestUtils.getPatchlevelDate();
-        showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": <b>" + refPatchlevelDate +"</b>",null);
         Log.i(Constants.LOG_TAG, "refPatchlevelDate=" + refPatchlevelDate);
         Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable()");
         webViewContent.removeAllViews();
@@ -550,10 +550,16 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         //Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable(): w=" + webViewContent.getWidth() + "  h=" + webViewContent.getHeight() + "  innerW=" + webViewContent.getChildAt(0).getWidth() + "  innerH=" + webViewContent.getChildAt(0).getHeight());
         try{
             JSONObject testResults = SharedPrefsHelper.getAnalysisResult(this);
+            String metaInfo = this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": <b>" + refPatchlevelDate +"</b>";
             if(SharedPrefsHelper.getAnalysisResult(this) == null) {
+                showMetaInformation(metaInfo,null);
                 displayCutline(null);
                 return;
             }
+            if (SharedPrefsHelper.isBuildFromLastAnalysisCertified(this)) {
+                metaInfo += " " + this.getResources().getString(R.string.patchalyzer_certified_build);
+            }
+            showMetaInformation(metaInfo,null);
             Vector<String> categories = new Vector<String>();
             Iterator<String> categoryIterator = testResults.keys();
             while (categoryIterator.hasNext())
