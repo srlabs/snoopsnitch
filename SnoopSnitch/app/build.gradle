@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '25.0.3'
     defaultConfig {
         applicationId "de.srlabs.snoopsnitch"
         minSdkVersion 16
@@ -34,18 +34,15 @@ android {
 	    }
         }
     }
+
     lintOptions {
         disable 'MissingTranslation'
-	disable 'ExtraTranslation'
-	disable 'ValidFragment'
-	abortOnError false
+        disable 'ExtraTranslation'
+	    disable 'ValidFragment'
+        checkReleaseBuilds false
+	    abortOnError false
     }
     useLibrary 'org.apache.http.legacy'
-
-    defaultConfig {
-        buildConfigField("String", "SAFETY_NET_API_KEY", "\"AIzaSyAmgMRmYWCQpEkOLeIXeHU36V9J-nYFwwQ\"")
-    }
-
 
 }
 
@@ -57,5 +54,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.0'
     //adding safetynet dependency here
     compile 'com.google.android.gms:play-services-safetynet:11.0.0'
+    compile 'io.jsonwebtoken:jjwt:0.7.0'
     testCompile 'junit:junit:4.12'
 }

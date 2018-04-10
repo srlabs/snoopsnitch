@@ -16,28 +16,31 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Random;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.snoopsnitch.BuildConfig;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
 
 /**Calls the Google SafetyNet API to check whether this build is certified or not.
  * Only works with available and up-to-date Google Play services.
  * For more details refer to:
  * https://developer.android.com/training/safetynet/attestation.html#check-gps-version
  *
+ * As the responses are delivered in a signed JWS format, we use the 'io.jsonwebtoken:jjwt' library to help parsing those.
+ *
  * Created by jonas on 10.04.18.
  */
 
 public class CertifiedBuildChecker {
-    public static final String API_KEY= BuildConfig.SAFETY_NET_API_KEY;
-    private final Random secureRandom;
+    public static final String API_KEY= "AIzaSyAmgMRmYWCQpEkOLeIXeHU36V9J-nYFwwQ";
+    private final Random secureRandom = new SecureRandom();
     private static String result;
     private static boolean ctsProfileMatch=false;
     private static boolean basicIntegrity=false;
@@ -51,7 +54,6 @@ public class CertifiedBuildChecker {
     }
 
     private CertifiedBuildChecker(){
-        secureRandom = new SecureRandom();
     }
 
     public void startChecking(final Activity context){
@@ -80,7 +82,6 @@ public class CertifiedBuildChecker {
         checkThread.start();
     }
 
-
     private byte[] getRequestNonce(String data) {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         byte[] bytes = new byte[24];
@@ -94,7 +95,6 @@ public class CertifiedBuildChecker {
 
         return byteStream.toByteArray();
     }
-
 
     /**
         * Called after successfully communicating with the SafetyNet API.
@@ -110,23 +110,8 @@ public class CertifiedBuildChecker {
                      Successfully communicated with SafetyNet API.
                      */
                     result = attestationResponse.getJwsResult();
-                    try {
-                        Log.d(Constants.LOG_TAG, "SafetyNet result:\n" + result + "\n");
-                        JSONObject resultJSON = new JSONObject(result);
-                        if(resultJSON != null){
-                            if(resultJSON.has("ctsProfileMatch")){
-                                ctsProfileMatch = resultJSON.getBoolean("ctsProfileMatch");
-                                Log.d(Constants.LOG_TAG,"ctsProfileMatch -> "+ctsProfileMatch);
-                            }
-                            if(resultJSON.has("basicIntegrity")){
-                                basicIntegrity = resultJSON.getBoolean("basicIntegrity");
-                                Log.d(Constants.LOG_TAG,"basicIntegrity -> "+basicIntegrity);
-                            }
-                        }
-                    }catch(JSONException e){
-                        Log.d(Constants.LOG_TAG,"JSONException when parsing JWS result from SafetyNet API",e);
-                        result = null;
-                    }
+                    //Log.d(Constants.LOG_TAG, "SafetyNet result:\n" + result + "\n");
+                    parseJWSResponse(result);
                 }
             };
 
@@ -153,19 +138,40 @@ public class CertifiedBuildChecker {
         }
     };
 
+    public void parseJWSResponse(String jwsString){
+        if(!wasTestSuccesful())
+            return;
+
+        //ref : https://github.com/jwtk/jjwt/issues/135
+        int i = jwsString.lastIndexOf('.');
+        String withoutSignature = jwsString.substring(0, i+1);
+        Jwt<Header,Claims> untrusted = Jwts.parser().parseClaimsJwt(withoutSignature);
+        if(untrusted != null && untrusted.getBody() != null) {
+            //Log.d(Constants.LOG_TAG,"JWS response object (without signature checking): "+untrusted.getBody().toString());
+            if(untrusted.getBody().containsKey("ctsProfileMatch")) {
+                this.ctsProfileMatch = (Boolean) untrusted.getBody().get("ctsProfileMatch");
+                Log.d(Constants.LOG_TAG, "ctsProfileMatch: " + ctsProfileMatch);
+            }
+            if(untrusted.getBody().containsKey("basicIntegrity")) {
+                this.basicIntegrity = (Boolean) untrusted.getBody().get("basicIntegrity");
+                Log.d(Constants.LOG_TAG, "basicIntegrity: " + basicIntegrity);
+            }
+        }
+    }
+
     public boolean wasTestSuccesful(){
         return result != null;
     }
 
-    public boolean getCtsProfileMatchResponse(){
+    public Boolean getCtsProfileMatchResponse(){
         if(!wasTestSuccesful())
-            return false;
+            return null;
         return ctsProfileMatch;
     }
 
-    public boolean getBasicIntegrityResponse(){
+    public Boolean getBasicIntegrityResponse(){
         if(!wasTestSuccesful())
-            return false;
+            return null;
         return basicIntegrity;
     }
 }
