@@ -197,7 +197,7 @@ public class AnalysisEventData implements AnalysisEventDataInterface {
         Cursor c = null;
 
         try {
-            db.query("catcher", catcher_cols, "strftime('%s',timestamp) >= ? AND strftime('%s',timestamp) <= ?",
+            c = db.query("catcher", catcher_cols, "strftime('%s',timestamp) >= ? AND strftime('%s',timestamp) <= ?",
                     new String[]{Long.toString(startTime / 1000), Long.toString(endTime / 1000)}, null, null, null);
             if (c.moveToFirst()) {
                 do {
