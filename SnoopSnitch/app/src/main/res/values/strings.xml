@@ -481,8 +481,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="patchalyzer_test_finished">Finished</string>
 
     <!-- Buttons -->
-    <string name="patchalyzer_button_start_analysis">Perform test</string>
-    <string name="patchalyzer_button_cancel_analysis">Stop testing</string>
+    <string name="patchalyzer_button_start_analysis">Start test</string>
+    <string name="patchalyzer_button_cancel_analysis">Stop test</string>
 
     <!-- Notifications -->
     <string name="patchalyzer_notification_running_title">Patch level analysis running...</string>
