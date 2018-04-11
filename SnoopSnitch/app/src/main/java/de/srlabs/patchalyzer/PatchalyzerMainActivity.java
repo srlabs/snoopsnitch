@@ -52,6 +52,8 @@ import de.srlabs.patchalyzer.Constants.ActivityState;
 import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.patchalyzer.helpers.NotificationHelper;
+import de.srlabs.patchalyzer.helpers.PADatabaseManager;
+import de.srlabs.patchalyzer.helpers.PASQLiteOpenHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.views.PatchlevelDateOverviewChart;
@@ -348,14 +350,14 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             public void run() {
                 try {
                     Log.d(Constants.LOG_TAG,"Creating SQLite database...");
-                    MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(PatchalyzerMainActivity.this));
-                    MsdDatabaseManager msdDatabaseManager = MsdDatabaseManager.getInstance();
-                    SQLiteDatabase db = msdDatabaseManager.openDatabase();
+                    PADatabaseManager.initializeInstance(new PASQLiteOpenHelper(PatchalyzerMainActivity.this));
+                    PADatabaseManager paDatabaseManager = PADatabaseManager.getInstance();
+                    SQLiteDatabase db = paDatabaseManager.openDatabase();
                     //testing DB init
                     Cursor cursor = db.rawQuery("SELECT * FROM basictests", null);
                     Log.d(Constants.LOG_TAG,"Got "+cursor.getCount()+" test entries!");
                     cursor.close();
-                    msdDatabaseManager.closeDatabase();
+                    paDatabaseManager.closeDatabase();
 
                 }catch(SQLException e){
                     // Testing if the DB creation worked successfully failed

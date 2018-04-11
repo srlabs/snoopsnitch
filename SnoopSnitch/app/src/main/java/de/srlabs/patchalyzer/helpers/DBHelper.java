@@ -32,19 +32,19 @@ public class DBHelper {
     private SQLiteDatabase db;
     private static final int DB_LOCKED_RETRIES = 3;
     private static final String mTAG = "DBHelper: ";
-    private MsdDatabaseManager msdDatabaseManager;
+    private PADatabaseManager paDatabaseManager;
 
 
     public DBHelper(Context context){
-        MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
-        msdDatabaseManager = MsdDatabaseManager.getInstance();
+        PADatabaseManager.initializeInstance(new PASQLiteOpenHelper(context));
+        paDatabaseManager = PADatabaseManager.getInstance();
         if(db == null || !db.isOpen())
-            db = msdDatabaseManager.openDatabase();
+            db = paDatabaseManager.openDatabase();
     }
 
     public void closeDB(){
-        if(msdDatabaseManager != null)
-            msdDatabaseManager.closeDatabase();
+        if(paDatabaseManager != null)
+            paDatabaseManager.closeDatabase();
     }
 
     /**
@@ -62,7 +62,7 @@ public class DBHelper {
 
         try {
             if(db == null || !db.isOpen())
-                db = MsdDatabaseManager.getInstance().openDatabase();
+                db = PADatabaseManager.getInstance().openDatabase();
             //get all keys from basic test
             Iterator<String> keyIterator = basicTest.keys();
             Set<String> keys = new HashSet<String>();
@@ -108,7 +108,7 @@ public class DBHelper {
     public void addTestResultToDB(String uuid, Boolean result){
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
+            db = PADatabaseManager.getInstance().openDatabase();
         }
         ContentValues values = new ContentValues();
         //write to basictests table
@@ -140,7 +140,7 @@ public class DBHelper {
             return;
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
+            db = PADatabaseManager.getInstance().openDatabase();
         }
         ContentValues values = new ContentValues();
         //write to basictests table
@@ -165,7 +165,7 @@ public class DBHelper {
         Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
+            db = PADatabaseManager.getInstance().openDatabase();
         }
 
         Vector<JSONObject> results = new Vector<>();
@@ -214,7 +214,7 @@ public class DBHelper {
         //Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabaseReadOnly();
+            db = PADatabaseManager.getInstance().openDatabaseReadOnly();
         }
 
         Vector<JSONObject> results = new Vector<>();
@@ -264,7 +264,7 @@ public class DBHelper {
     public Boolean getTestResult(String uuid){
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabaseReadOnly();
+            db = PADatabaseManager.getInstance().openDatabaseReadOnly();
         }
         //basic test table info
         Cursor cursor = db.query(
@@ -289,7 +289,7 @@ public class DBHelper {
     public Vector<String> getAllBasicTestsUUIDs() throws JSONException {
         //make sure DB access is ready (read only)
         if (db == null || !db.isOpen()) {
-            db = MsdDatabaseManager.getInstance().openDatabaseReadOnly();
+            db = PADatabaseManager.getInstance().openDatabaseReadOnly();
         }
 
         //basic test table info
@@ -321,7 +321,7 @@ public class DBHelper {
     public Vector<JSONObject> getAllBasicTests() throws JSONException, UnsupportedEncodingException {
         //make sure DB access is ready (read only)
         if (db == null || !db.isOpen()) {
-            db = MsdDatabaseManager.getInstance().openDatabaseReadOnly();
+            db = PADatabaseManager.getInstance().openDatabaseReadOnly();
         }
 
         //basic test table info
@@ -368,7 +368,7 @@ public class DBHelper {
         }
         //make sure DB access is ready (read only)
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabaseReadOnly();
+            db = PADatabaseManager.getInstance().openDatabaseReadOnly();
         }
         Cursor cursor = null;
         try {
@@ -418,7 +418,7 @@ public class DBHelper {
     public void resetAllBasicTests() {
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
+            db = PADatabaseManager.getInstance().openDatabase();
         }
         ContentValues values = new ContentValues();
         //write to basictests table
@@ -444,7 +444,7 @@ public class DBHelper {
     public int getNumberOfTotalNotPerformedTests() {
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabaseReadOnly();
+            db = PADatabaseManager.getInstance().openDatabaseReadOnly();
         }
         Cursor cursor = db.query(
                 "basictests",
@@ -468,7 +468,7 @@ public class DBHelper {
             return;
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
+            db = PADatabaseManager.getInstance().openDatabase();
         }
         Log.d(Constants.LOG_TAG,"Marking basicTestChunkURL: "+basicTestChunkURL+" as downloaded and parsed successfully in DB");
         ContentValues values = new ContentValues();
@@ -481,7 +481,7 @@ public class DBHelper {
     public boolean wasBasicTestChunkSuccessful(String basicTestChunkURL) {
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
+            db = PADatabaseManager.getInstance().openDatabase();
         }
         Cursor cursor = db.query(
                 "basictest_chunks",
