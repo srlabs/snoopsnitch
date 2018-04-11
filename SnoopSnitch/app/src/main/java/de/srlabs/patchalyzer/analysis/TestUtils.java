@@ -420,6 +420,10 @@ public class TestUtils {
     }
 
     public static boolean isPatchDateClaimed(String patchReleaseDate) {
+        // Prevent NPE in some rare cases
+        if (getPatchlevelDate() == null) {
+            return false;
+        }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
         try {
             Date requestedDate = format.parse(patchReleaseDate);
