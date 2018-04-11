@@ -200,6 +200,7 @@ public class BasicTestCache {
                 }
             }
             terminateThreads();
+            database.closeDB();
 
             if(!stopTesting) {
                 progressItem.update(1.0);

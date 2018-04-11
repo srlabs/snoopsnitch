@@ -53,7 +53,7 @@ public class TestSuite {
         parser.initReadingBasicTests();
         JSONObject basicTest = null;
 
-        // write all basic test to DB
+        // write all basic tests to DB
         while ((basicTest = parser.getNextBasicTest()) != null) {
             try {
                 //Log.d(Constants.LOG_TAG,"Trying to insert basic test (uuid:"+basicTest.getString("uuid")+"to DB!");
@@ -64,6 +64,7 @@ public class TestSuite {
             }
         }
         parser.finishReading();
+        db.closeDB();
     }
 
     public void parseInfoFromJSON() throws IOException{ //TODO differentiate between IOException when parsing JSON or when downloading chunks
@@ -144,6 +145,7 @@ public class TestSuite {
 
     private void parseBasicTestChunks(JsonReader jsonReader) {
         if(jsonReader != null){
+            DBHelper database = new DBHelper(context);
             try {
                 Set<String> basicTestChunkURLs = new HashSet<String>();
                 jsonReader.beginArray();
@@ -153,7 +155,7 @@ public class TestSuite {
                 jsonReader.endArray();
                 //for all chunks
                 ServerApi api = new ServerApi();
-                DBHelper database = new DBHelper(context);
+
 
                 for(String basicTestChunkURL : basicTestChunkURLs){
                     Log.d(Constants.LOG_TAG,"Checking basic test chunk: "+basicTestChunkURL);
@@ -172,6 +174,9 @@ public class TestSuite {
                 }
             }catch(IOException e){
                 Log.e(Constants.LOG_TAG,"Exception while parsing basicTestChunks: "+e.getMessage());
+            }
+            finally {
+                database.closeDB();
             }
         }
     }

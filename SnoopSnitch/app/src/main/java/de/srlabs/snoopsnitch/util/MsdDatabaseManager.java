@@ -75,7 +75,7 @@ public class MsdDatabaseManager {
                 mDatabase = mDatabaseHelper.getReadableDatabase();
             }
             catch (SQLException e){
-                Log.e(TAG,"SQLException when trying to retrieve writeable DB object: "+e.getMessage());
+                Log.e(TAG,"SQLException when trying to retrieve readable DB object: "+e.getMessage());
 
                 numFailedDBRetrievingTries++;
                 if(numFailedDBRetrievingTries <= MAX_FAILED_DB_RETRV_TRIES){
@@ -86,8 +86,8 @@ public class MsdDatabaseManager {
                         Log.w(TAG,"Sleeping before retrying to access DB again was interrupted: " + e1.getMessage());
                     }
 
-                    Log.w(TAG,"Trying to retrieve writeabele DB object again.");
-                    return openDatabase();
+                    Log.w(TAG,"Trying to retrieve readable DB object again.");
+                    return openDatabaseReadOnly();
                 }
                 else{
                     // cause App crash
@@ -102,7 +102,6 @@ public class MsdDatabaseManager {
         if (mOpenCounter.decrementAndGet() == 0) {
             // Closing database
             mDatabase.close();
-
         }
     }
 }

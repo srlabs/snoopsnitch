@@ -117,7 +117,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     public void onDestroyView() {
         super.onDestroyView();
 
-        MSDServiceHelperCreator msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(getActivity(), true);
+        MSDServiceHelperCreator msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(getActivity());
         MsdServiceHelper msdServiceHelper = msdServiceHelperCreator.getMsdServiceHelper();
 
         if (settingsChanged) {

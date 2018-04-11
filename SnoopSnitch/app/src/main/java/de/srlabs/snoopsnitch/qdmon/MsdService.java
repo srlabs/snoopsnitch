@@ -1160,6 +1160,7 @@ public class MsdService extends Service {
                 try {
                     if (shuttingDown && pendingSqlStatements.isEmpty()) {
                         info("SqliteThread shutting down due to shuttingDown && pendingSqlStatements.isEmpty()");
+                        MsdDatabaseManager.getInstance().closeDatabase();
                         return;
                     }
                     if (pendingSqlStatements.isEmpty())
@@ -1177,6 +1178,7 @@ public class MsdService extends Service {
                         sql.postRunHook();
                     } catch (SQLException e) {
                         handleFatalError("SQLException " + e.getMessage() + " while running: " + sql);
+                        MsdDatabaseManager.getInstance().closeDatabase();
                         return;
                     }
                     if (System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS && !MsdService.this.shuttingDown.get()) {
@@ -1280,6 +1282,7 @@ public class MsdService extends Service {
                         handleFatalError("SqliteThread received InterruptedException but pendingSqlStatements is not empty!");
                     }
                     info("SqliteThread terminating due to InterruptedException");
+                    MsdDatabaseManager.getInstance().closeDatabase();
                     return;
                 }
             }
@@ -1777,6 +1780,8 @@ public class MsdService extends Service {
         } catch (SQLException e) {
             handleFatalError("SQLException in getNextRowId(" + tableName + "): ", e);
             return 0;
+        } finally {
+            MsdDatabaseManager.getInstance().closeDatabase();
         }
     }
 
@@ -1801,6 +1806,8 @@ public class MsdService extends Service {
         } catch (SQLException e) {
             handleFatalError("SQLException in getNextRowId(" + tableName + "): ", e);
             return 0;
+        } finally {
+            MsdDatabaseManager.getInstance().closeDatabase();
         }
     }
 
@@ -2219,18 +2226,22 @@ public class MsdService extends Service {
         String encryptedFilename = null;
         String plaintextFilename = null;
         for (int i = 0; i < 300; i++) {
-            plaintextFilename = baseFilename + (i > 0 ? "." + i : "") + ".gz";
-            encryptedFilename = plaintextFilename + ".smime";
-            Cursor cur = db.query("files", null, "filename='" + encryptedFilename + "'", null, null, null, "_id");
-            boolean existingInDb = cur.moveToFirst();
-            cur.close();
-            if (existingInDb ||
-                    (new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() ||
-                    (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists()) {
-                plaintextFilename = null;
-                encryptedFilename = null;
-            } else {
-                break;
+            try{
+                plaintextFilename = baseFilename + (i > 0 ? "." + i : "") + ".gz";
+                encryptedFilename = plaintextFilename + ".smime";
+                Cursor cur = db.query("files", null, "filename='" + encryptedFilename + "'", null, null, null, "_id");
+                boolean existingInDb = cur.moveToFirst();
+                cur.close();
+                if (existingInDb ||
+                        (new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() ||
+                        (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists()) {
+                    plaintextFilename = null;
+                    encryptedFilename = null;
+                } else {
+                    break;
+                }
+            }catch(SQLException e){
+                Log.e(TAG,"SQLException when checking if debug log file '"+encryptedFilename+"' exists in DB: "+ e.getMessage());
             }
         }
         if (encryptedFilename == null) {

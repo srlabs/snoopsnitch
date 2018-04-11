@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import de.srlabs.snoopsnitch.BaseActivity;
+import de.srlabs.snoopsnitch.StartupActivity;
 import de.srlabs.snoopsnitch.analysis.AnalysisEvent;
 import de.srlabs.snoopsnitch.analysis.Event;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceCallback;
@@ -28,8 +29,9 @@ public class MSDServiceHelperCreator implements MsdServiceCallback {
         this.autostartRecordingPending = autostartRecording;
     }
 
-    public static MSDServiceHelperCreator getInstance(Context context, boolean autostartRecording) {
+    public static MSDServiceHelperCreator getInstance(Context context) {
         if (_instance == null) {
+            boolean autostartRecording = StartupActivity.isSNSNCompatible() && (PermissionChecker.isAccessingFineLocationAllowed(context) || PermissionChecker.isAccessingCoarseLocationAllowed(context));
             _instance = new MSDServiceHelperCreator(context, autostartRecording);
         }
 

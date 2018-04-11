@@ -32,10 +32,19 @@ public class DBHelper {
     private SQLiteDatabase db;
     private static final int DB_LOCKED_RETRIES = 3;
     private static final String mTAG = "DBHelper: ";
+    private MsdDatabaseManager msdDatabaseManager;
 
 
     public DBHelper(Context context){
         MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(context));
+        msdDatabaseManager = MsdDatabaseManager.getInstance();
+        if(db == null || !db.isOpen())
+            db = msdDatabaseManager.openDatabase();
+    }
+
+    public void closeDB(){
+        if(msdDatabaseManager != null)
+            msdDatabaseManager.closeDatabase();
     }
 
     /**
@@ -205,7 +214,7 @@ public class DBHelper {
         //Log.d(Constants.LOG_TAG,"getNotPerformedTests called with limit: "+limit);
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
+            db = MsdDatabaseManager.getInstance().openDatabaseReadOnly();
         }
 
         Vector<JSONObject> results = new Vector<>();
@@ -259,13 +268,13 @@ public class DBHelper {
         }
         //basic test table info
         Cursor cursor = db.query(
-                "basictests",   // The table to query
-                new String[]{"result"},             // The array of columns to return (pass null to get all)
-                "uuid = ?",              // The columns for the WHERE clause
-                new String[]{uuid},          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                null               // The sort order
+                "basictests",
+                new String[]{"result"},
+                "uuid = ?",
+                new String[]{uuid},
+                null,
+                null,
+                null
         );
         cursor.moveToFirst();
         int result = cursor.getInt(cursor.getColumnIndex("result"));
@@ -276,12 +285,6 @@ public class DBHelper {
         return (result == 1);
     }
 
-    private String getTableNameForTestType(String testType) throws IllegalStateException{
-        if(testType == null || testType.equals("")){
-            throw new IllegalStateException("Invalid testType of basicTest!");
-        }
-        return "test_"+testType.toLowerCase();
-    }
 
     public Vector<String> getAllBasicTestsUUIDs() throws JSONException {
         //make sure DB access is ready (read only)
@@ -441,7 +444,7 @@ public class DBHelper {
     public int getNumberOfTotalNotPerformedTests() {
         //make sure DB access is ready
         if(db == null || !db.isOpen()){
-            db = MsdDatabaseManager.getInstance().openDatabase();
+            db = MsdDatabaseManager.getInstance().openDatabaseReadOnly();
         }
         Cursor cursor = db.query(
                 "basictests",
