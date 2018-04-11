@@ -420,7 +420,7 @@ public class TestUtils {
     }
 
     public static boolean isPatchDateClaimed(String patchReleaseDate) {
-        // Preven NPE in some rare cases
+        // Prevent NPE in some rare cases
         if (getPatchlevelDate() == null) {
             return false;
         }
