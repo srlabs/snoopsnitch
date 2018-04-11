@@ -52,14 +52,12 @@ import de.srlabs.patchalyzer.Constants.ActivityState;
 import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.patchalyzer.helpers.NotificationHelper;
-import de.srlabs.patchalyzer.helpers.PADatabaseManager;
-import de.srlabs.patchalyzer.helpers.PASQLiteOpenHelper;
+import de.srlabs.patchalyzer.helpers.database.PADatabaseManager;
+import de.srlabs.patchalyzer.helpers.database.PASQLiteOpenHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.views.PatchlevelDateOverviewChart;
 import de.srlabs.snoopsnitch.R;
-import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
-import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 
 
 public class PatchalyzerMainActivity extends FragmentActivity {

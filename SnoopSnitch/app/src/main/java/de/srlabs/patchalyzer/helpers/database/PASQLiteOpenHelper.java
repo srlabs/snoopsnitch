@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer.helpers;
+package de.srlabs.patchalyzer.helpers.database;
 
 import android.content.Context;
 import android.database.SQLException;

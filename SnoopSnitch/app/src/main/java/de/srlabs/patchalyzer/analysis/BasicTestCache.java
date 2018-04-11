@@ -15,7 +15,7 @@ import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.helpers.DBHelper;
+import de.srlabs.patchalyzer.helpers.database.DBHelper;
 import de.srlabs.patchalyzer.helpers.ProcessHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 

@@ -1,4 +1,4 @@
-package de.srlabs.patchalyzer.helpers;
+package de.srlabs.patchalyzer.helpers.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,8 +20,6 @@ import java.util.Vector;
 
 import de.srlabs.patchalyzer.util.BasicTestParser;
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
-import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 
 /**This class acts as a helper to query the SQLite DB
  * Created by jonas on 04.04.18.

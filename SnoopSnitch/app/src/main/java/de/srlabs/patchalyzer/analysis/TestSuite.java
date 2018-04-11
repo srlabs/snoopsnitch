@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.helpers.DBHelper;
+import de.srlabs.patchalyzer.helpers.database.DBHelper;
 import de.srlabs.patchalyzer.util.BasicTestParser;
 import de.srlabs.patchalyzer.util.ServerApi;
 

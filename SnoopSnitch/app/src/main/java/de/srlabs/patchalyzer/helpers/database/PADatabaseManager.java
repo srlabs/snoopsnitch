@@ -1,12 +1,10 @@
-package de.srlabs.patchalyzer.helpers;
+package de.srlabs.patchalyzer.helpers.database;
 
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 
 // Class for concurrent database access.
 // Cf. http://dmytrodanylyk.com/pages/blog/concurrent-database.html
