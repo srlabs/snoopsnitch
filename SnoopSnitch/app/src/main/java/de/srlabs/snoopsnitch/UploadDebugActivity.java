@@ -17,6 +17,7 @@ import android.widget.EditText;
 
 import de.srlabs.snoopsnitch.qdmon.EncryptedFileWriter;
 import de.srlabs.snoopsnitch.upload.DumpFile;
+import de.srlabs.snoopsnitch.upload.FileUploadThread;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdDialog;
@@ -44,6 +45,17 @@ public class UploadDebugActivity extends BaseActivity {
         this.checkDebugUploadDatabaseMetadata = (CheckBox) findViewById(R.id.checkDebugUploadDatabaseMetadata);
         this.checkDebugUploadRadioTraces = (CheckBox) findViewById(R.id.checkDebugUploadRadioTraces);
         this.checkDebugUploadSnoopsnitchDebugLogs = (CheckBox) findViewById(R.id.checkDebugUploadSnoopsnitchDebugLogs);
+
+        if(!StartupActivity.isSNSNCompatible()){
+            //disable checkboxes
+            checkDebugUploadDatabaseMetadata.setChecked(false);
+            checkDebugUploadDatabaseMetadata.setEnabled(false);
+            checkDebugUploadRadioTraces.setChecked(false);
+            checkDebugUploadRadioTraces.setEnabled(false);
+            checkDebugUploadSnoopsnitchDebugLogs.setChecked(false);
+            checkDebugUploadSnoopsnitchDebugLogs.setEnabled(false);
+        }
+
         this.btnDebugCancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,7 +153,16 @@ public class UploadDebugActivity extends BaseActivity {
             df.recordingStopped();
             df.insert(db);
             df.markForUpload(db);
-            getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
+            if(StartupActivity.isSNSNCompatible()) {
+                //let MsdService do the uploading
+                getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
+            }
+            else{
+                //no MSdService, so we do the work here
+                FileUploadThread uploadThread = new FileUploadThread(this);
+                uploadThread.requestUploadRound();
+                uploadThread.start();
+            }
             String reportId = df.getReportId();
             MsdDialog.makeNotificationDialog(this, String.format(getString(R.string.upload_debug_confirmation_msg), reportId), new DialogInterface.OnClickListener() {
                 @Override

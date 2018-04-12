@@ -20,15 +20,15 @@ import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.Utils;
 
-public class MsdServiceUploadThread extends Thread {
-    private static final String TAG = "MsdServiceUploadThread";
+public class FileUploadThread extends Thread {
+    private static final String TAG = "FileUploadThread";
     private UploadState uploadState;
-    private MsdService msdService;
+    private Context context;
     private boolean stopUploading;
     private boolean newUploadRoundRequested = false;
 
-    public MsdServiceUploadThread(MsdService msdService) {
-        this.msdService = msdService;
+    public FileUploadThread(Context context) {
+        this.context = context;
     }
 
     public void requestUploadRound() {
@@ -38,18 +38,18 @@ public class MsdServiceUploadThread extends Thread {
     @Override
     public void run() {
         newUploadRoundRequested = false;
-        MsdLog.i(TAG, "MsdServiceUploadThread starting first upload round");
+        MsdLog.i(TAG, "FileUploadThread starting first upload round");
         do_pending_uploads();
         while (newUploadRoundRequested) {
-            MsdLog.i(TAG, "MsdServiceUploadThread starting another upload round due to newUploadRoundRequested");
+            MsdLog.i(TAG, "FileUploadThread starting another upload round due to newUploadRoundRequested");
             newUploadRoundRequested = false;
             do_pending_uploads();
         }
-        MsdLog.i(TAG, "MsdServiceUploadThread terminating");
+        MsdLog.i(TAG, "FileUploadThread terminating");
     }
 
     public void do_pending_uploads() {
-        uploadState = createUploadState(msdService);
+        uploadState = createUploadState(context);
         if (uploadState.getAllFiles().length == 0) {
             MsdLog.i(TAG, "do_pending_uploads(): Nothing to upload");
             return;
@@ -74,9 +74,9 @@ public class MsdServiceUploadThread extends Thread {
         try {
             if (stopUploading)
                 return;
-            String uploadFileName = MsdConfig.getAppId(msdService) + "_" + file.getReportId() + "_" + file.getFilename();
+            String uploadFileName = MsdConfig.getAppId(context) + "_" + file.getReportId() + "_" + file.getFilename();
             MsdLog.i(TAG, "Starting to upload file " + file.getFilename() + " as " + uploadFileName);
-            HttpsURLConnection connection = Utils.openUrlWithPinning(msdService, Constants.UPLOAD_URL);
+            HttpsURLConnection connection = Utils.openUrlWithPinning(context, Constants.UPLOAD_URL);
             connection.setConnectTimeout((int) Constants.CONNECT_TIMEOUT);
             connection.setReadTimeout((int) Constants.READ_TIMEOUT);
             connection.setRequestMethod("POST");
@@ -86,7 +86,7 @@ public class MsdServiceUploadThread extends Thread {
             connection.setDoOutput(true);
             connection.connect();
 
-            FileInputStream is = msdService.openFileInput(file.getFilename());
+            FileInputStream is = context.openFileInput(file.getFilename());
 
             final OutputStream os = connection.getOutputStream();
             OutputStreamWriter out = new OutputStreamWriter(os);
@@ -124,26 +124,26 @@ public class MsdServiceUploadThread extends Thread {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
                 if (!file.updateState(db, DumpFile.STATE_PENDING, DumpFile.STATE_UPLOADED, null)) {
-                    logUploadError("Failed to change state for file " + file.getFilename() + " from STATE_PENDING to STATE_UPLOADED");
+                    logUploadError("Failed to change state for file " + file.getFilename() + " from STATE_PENDING to STATE_UPLOADED", null);
                     return;
                 }
                 MsdDatabaseManager.getInstance().closeDatabase();
-                msdService.deleteFile(file.getFilename());
+                context.deleteFile(file.getFilename());
                 uploadState.addCompletedFile(file, counter);
                 MsdLog.i(TAG, "uploading file " + file.getFilename() + " succeeded");
             } else {
                 String errorStr = "Invalid response code: " + responseCode + " while uplaoding " + file.getFilename();
-                logUploadError(errorStr);
+                logUploadError(errorStr,null);
             }
         } catch (Exception e) {
             String errorStr = "Exception while uploading " + file.getFilename() + ": " + e.getMessage();
-            logUploadError(errorStr);
+            logUploadError(errorStr,e);
         }
     }
 
-    void logUploadError(String errorStr) {
+    void logUploadError(String errorStr, Exception e) {
         uploadState.error(errorStr);
-        MsdLog.e(TAG, errorStr);
+        MsdLog.e(TAG, errorStr, e);
     }
 
     public static UploadState createUploadState(Context context) {

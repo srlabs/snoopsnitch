@@ -45,6 +45,11 @@ public class MsdLog {
         printlnToLog(getTimePrefix() + tag + ": ERROR: " + msg);
     }
 
+    public static void e(String tag, String msg, Exception e){
+        Log.e(tag, msg, e);
+        printlnToLog(getTimePrefix() + tag + ": ERROR: " + msg + " exception:"+ e.toString());
+    }
+
     public static void v(String tag, String msg) {
         Log.v(tag, msg);
         printlnToLog(getTimePrefix() + tag + ": VERBOSE: " + msg);

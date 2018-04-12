@@ -76,7 +76,7 @@ import de.srlabs.snoopsnitch.analysis.GSMmap;
 import de.srlabs.snoopsnitch.analysis.ImsiCatcher;
 import de.srlabs.snoopsnitch.upload.DumpFile;
 import de.srlabs.snoopsnitch.upload.FileState;
-import de.srlabs.snoopsnitch.upload.MsdServiceUploadThread;
+import de.srlabs.snoopsnitch.upload.FileUploadThread;
 import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -298,7 +298,7 @@ public class MsdService extends Service {
     private EncryptedFileWriter extraRecordingRawFileWriter;
     private long extraRecordingFileId = 0;
 
-    private MsdServiceUploadThread uploadThread = null;
+    private FileUploadThread uploadThread = null;
     private DownloadDataJsThread downloadDataJsThread = null;
 
     public int parserRatGeneration = 0;
@@ -353,7 +353,7 @@ public class MsdService extends Service {
         if (uploadThread != null && uploadThread.isAlive())
             uploadThread.requestUploadRound();
         if (uploadThread == null || !uploadThread.isAlive()) {
-            uploadThread = new MsdServiceUploadThread(this);
+            uploadThread = new FileUploadThread(this);
             uploadThread.requestUploadRound();
             info("MsdService.triggerUploading() calling uploadThread.start()");
             uploadThread.start();
