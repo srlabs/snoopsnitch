@@ -14,17 +14,20 @@ public class MapActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        WebView webview = (WebView) findViewById(R.id.map_web_view);
+        webview.getSettings().setJavaScriptEnabled(true);
+        String mcc;
         try {
-            WebView webview = (WebView) findViewById(R.id.map_web_view);
-            webview.getSettings().setJavaScriptEnabled(true);
-
             Operator currentOperator = new Operator(this);
-            String mcc = ""+currentOperator.getMcc();
-            Log.i("SNSN: "+getLocalClassName(), "Showing gsmmap for MCC: "+mcc);
-            webview.loadUrl("https://gsmmap.org/?n=" + mcc);
+            mcc = "" + currentOperator.getMcc();
         } catch (Exception e) {
-            Log.e(getLocalClassName(), e.getMessage());
+            Log.e(getLocalClassName(),  "Failed to get mcc, setting it to 0. Exception: " + e.getMessage());
+            mcc = null;
         }
+        if (mcc == null) {
+            mcc = "0";
+        }
+        Log.i("SNSN: "+getLocalClassName(), "Showing gsmmap for MCC: "+mcc);
+        webview.loadUrl("https://gsmmap.org/?n=" + mcc);
     }
 }
