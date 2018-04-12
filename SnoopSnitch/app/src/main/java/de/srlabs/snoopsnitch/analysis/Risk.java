@@ -1,6 +1,7 @@
 package de.srlabs.snoopsnitch.analysis;
 
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import de.srlabs.snoopsnitch.qdmon.Operator;
 
@@ -20,6 +21,7 @@ public class Risk {
     private int mcc = 0;
     private int mnc = 0;
     private boolean valid = false;
+    private Pattern validColorPattern = Pattern.compile("^#[a-fA-F0-9]{6}$");
 
     private Vector<Risk> serverData = null;
 
@@ -160,7 +162,7 @@ public class Risk {
     }
 
     public String getOperatorColor() {
-        if (operatorColor == null) {
+        if (operatorColor == null || !validColorPattern.matcher(operatorColor).matches()) {
             return "#111111";
         }
         return operatorColor;
