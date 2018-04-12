@@ -160,9 +160,9 @@
                 android:divider="@null"
                 android:fadeScrollbars="false"
                 android:scrollbarFadeDuration="0"
-                android:verticalScrollbarPosition="left"
                 android:scrollbarStyle="insideOverlay"
-                android:scrollbars="vertical">
+                android:scrollbars="vertical"
+                android:verticalScrollbarPosition="left">
 
             </ListView>
 
@@ -188,6 +188,7 @@
             android:weightSum="17">
 
             <LinearLayout
+                android:id="@+id/network_scan_info_and_button"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
@@ -226,6 +227,7 @@
                 android:background="@color/common_applicationSeparator" />
 
             <LinearLayout
+                android:id="@+id/chart_headers"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3">
@@ -269,11 +271,12 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="10.5">
+                android:layout_weight="9">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:visibility="visible"
                     android:weightSum="2">
 
                     <de.srlabs.snoopsnitch.views.DashboardProviderChart
@@ -282,6 +285,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:onClick="openLocalMapView"
+                        android:visibility="visible"
                         custom:type="interception" />
 
                     <View
@@ -296,6 +300,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:onClick="openLocalMapView"
+                        android:visibility="visible"
                         custom:type="impersonation" />
 
                 </LinearLayout>
@@ -351,6 +356,7 @@
                 android:background="@color/common_applicationSeparator" />
 
             <LinearLayout
+                android:id="@+id/chart_descriptions"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -440,6 +446,7 @@
             </LinearLayout>
 
         </LinearLayout>
+
 
     </LinearLayout>
 
@@ -805,7 +812,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:orientation="horizontal"
             android:weightSum="20">
 
