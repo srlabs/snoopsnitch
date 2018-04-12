@@ -51,7 +51,7 @@
     <!-- Device compatibility check failure -->
     <string name="alert_deviceCompatibility_title">Compatibility check failed</string>
 
-    <string name="alert_deviceCompatibility_header">Your device is not compatible.\n\nREASON:</string>
+    <string name="alert_deviceCompatibility_header">Network scan is not possible.\n\nREASON:</string>
 
     <string name="alert_deviceCompatibility_message">\n\nVisit the project website for details:\nhttps://opensource.srlabs.de/projects/snoopsnitch</string>
 
