@@ -143,7 +143,10 @@ public class FileUploadThread extends Thread {
 
     void logUploadError(String errorStr, Exception e) {
         uploadState.error(errorStr);
-        MsdLog.e(TAG, errorStr, e);
+        if(e != null)
+            MsdLog.e(TAG, errorStr, e);
+        else
+            MsdLog.e(TAG, errorStr);
     }
 
     public static UploadState createUploadState(Context context) {
