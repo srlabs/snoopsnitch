@@ -64,10 +64,10 @@ public class UploadDebugActivity extends BaseActivity {
         boolean uploadDatabaseMetadata = checkDebugUploadDatabaseMetadata.isChecked();
         boolean uploadRadioTraces = checkDebugUploadRadioTraces.isChecked();
         boolean uploadSnoopsnitchDebugLogs = checkDebugUploadSnoopsnitchDebugLogs.isChecked();
-        if (!uploadDatabaseMetadata && !uploadRadioTraces && !uploadSnoopsnitchDebugLogs) {
+        /*if (!uploadDatabaseMetadata && !uploadRadioTraces && !uploadSnoopsnitchDebugLogs) {
             MsdDialog.makeNotificationDialog(this, getString(R.string.upload_debug_please_select), null, true).show();
             return;
-        }
+        }*/
         String whatToReport = this.editTextUploadDebugWhatToReport.getText().toString().trim();
         String contactInfo = this.editTextUploadDebugContactInfo.getText().toString().trim();
         if (!noContactInfoConfirmed && !isValidEmail(contactInfo)) {
