@@ -157,7 +157,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="dashboard_timeline_lasthour">last hour</string>
     <string name="dashboard_timeline_today">24 hours</string>
     <string name="dashboard_network_security_title">Network Security</string>
-    <string name="dashboard_network_security_provider_scrollview_header">Provider results in comparison:</string>
+    <string name="dashboard_network_security_provider_scrollview_header">Provider comparison</string>
     <string name="dashboard_network_security_interception_title">Intercept</string>
     <string name="dashboard_network_security_impersonation_title">Impersonation</string>
     <string name="dashboard_network_security_protectionLevel_high">higher\nprotection</string>
@@ -287,7 +287,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="at_invalid_number">Invalid number</string>
     <string name="at_invalid_sms_mo_number">Invalid number for outgoing SMS</string>
     <string name="at_update">Please update SnoopSnitch</string>
-    <string name="at_done">Done - You may want to test both 2G and 3G</string>
+    <string name="at_done">Done - Please test both 2G and 3G</string>
     <string name="at_idle"></string>
     <string name="at_progress">Progress</string>
     <string name="at_fatal">Test terminated with fatal error</string>
