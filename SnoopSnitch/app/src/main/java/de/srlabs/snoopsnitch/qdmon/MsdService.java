@@ -475,14 +475,14 @@ public class MsdService extends Service {
         try {
             openOrReopenDebugLog(false, false);
         } catch (EncryptedFileWriterError e1) {
-            handleFatalError("Exception when opening debug logs", e1);
+            handleFatalError("Exception when opening debug logs", e1); //TODO check if CrashUploadActivity runs into problems in upload(), cause service is not connected yet
         }
         mainThreadHandler.post(new ExceptionHandlingRunnable(periodicFlushRunnable));
         Thread.setDefaultUncaughtExceptionHandler(
                 new Thread.UncaughtExceptionHandler() {
                     @Override
                     public void uncaughtException(Thread t, Throwable e) {
-                        handleFatalError("Uncaught Exception in MsdService Thread " + t.getClass(), e);
+                        handleFatalError("Uncaught Exception in MsdService Thread " + t.getClass(), e);//TODO check if CrashUploadActivity runs into problems in upload()
                     }
                 });
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);

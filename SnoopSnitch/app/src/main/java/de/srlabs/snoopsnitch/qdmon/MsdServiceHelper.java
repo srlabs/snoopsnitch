@@ -1,5 +1,6 @@
 package de.srlabs.snoopsnitch.qdmon;
 
+import de.srlabs.snoopsnitch.StartupActivity;
 import de.srlabs.snoopsnitch.qdmon.IMsdService;
 import de.srlabs.snoopsnitch.qdmon.IMsdServiceCallback;
 
@@ -46,13 +47,19 @@ public class MsdServiceHelper {
     public MsdServiceHelper(Context context, MsdServiceCallback callback) {
         this.context = context;
         this.callback = callback;
-        startService();
+        bootstrap();
+    }
+
+    private void bootstrap(){
+        if(StartupActivity.isSNSNCompatible()){ //only start MsdService if we think that this device is compatible
+            startService();
+        }
+        data = new AnalysisEventData(context);
     }
 
     private void startService() {
         context.startService(new Intent(context, MsdService.class));
         context.bindService(new Intent(context, MsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
-        data = new AnalysisEventData(context);
     }
 
     public boolean isConnected() {

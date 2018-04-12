@@ -50,6 +50,10 @@ public class StartupActivity extends Activity {
         if(snsnIncompatibilityReason == null){
             isSNSNCompatible = true;
         }
+        else{
+            //disable starting MsdService by BootCompletedIntentReceiver on next boot
+            MsdConfig.setStartOnBoot(this,false);
+        }
 
         proceedAppFlow();
 
