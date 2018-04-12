@@ -22,6 +22,7 @@ import android.widget.Toast;
 import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
+import de.srlabs.snoopsnitch.upload.FileUploadThread;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDialog;
@@ -44,6 +45,7 @@ public class BaseActivity extends FragmentActivity {
     // Static variable so that it is common to all Activities of the App
     private static boolean exitFlag = false;
     protected String snsnIncompatibilityReason=null;
+    private FileUploadThread uploadThread = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,8 @@ public class BaseActivity extends FragmentActivity {
         MsdLog.i("MSD", "MSD_ACTIVITY_CREATED: " + getClass().getCanonicalName());
 
         handler = new Handler();
+
+        uploadThread = new FileUploadThread(this);
     }
 
     @Override
@@ -167,10 +171,9 @@ public class BaseActivity extends FragmentActivity {
                 }
                 break;
             case R.id.menu_action_scan:
-                if(snsnIncompatibilityReason == null) {
+                if (snsnIncompatibilityReason == null) {
                     toggleRecording();
-                }
-                else{
+                } else {
                     showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
                 }
                 break;
@@ -178,15 +181,25 @@ public class BaseActivity extends FragmentActivity {
                 showMap();
                 break;
             case R.id.menu_action_active_test_advanced:
-                if(snsnIncompatibilityReason == null) {
+                if (snsnIncompatibilityReason == null) {
                     Intent intent = new Intent(this, ActiveTestAdvanced.class);
                     startActivity(intent);
-                }else{
+                } else {
                     showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
                 }
                 break;
             case R.id.menu_action_upload_pending_files:
-                getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
+                if (StartupActivity.isSNSNCompatible()){
+                    //no MSdService, so we do the work here
+                    if(uploadThread != null) {
+                        uploadThread.requestUploadRound();
+                        uploadThread.start();
+                    }
+                }
+                else{
+                    //let the MsdServic do the work
+                    getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
+                }
                 break;
             case R.id.menu_action_upload_debug_logs:
                 Intent intent2 = new Intent(this, UploadDebugActivity.class);
