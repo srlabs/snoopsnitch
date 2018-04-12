@@ -18,7 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3"
+            android:layout_weight="3.5"
             android:orientation="vertical">
 
             <LinearLayout
@@ -136,7 +136,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_weight="3"
+                android:layout_weight="2"
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="left|center_vertical"
                 android:paddingLeft="5dp"
@@ -155,7 +155,7 @@
                 android:id="@+id/lstDashboardProviderList"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="10.5"
+                android:layout_weight="10"
                 android:background="@color/common_applicationBackground"
                 android:divider="@null"
                 android:fadeScrollbars="false"
@@ -230,7 +230,7 @@
                 android:id="@+id/chart_headers"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3">
+                android:layout_weight="2">
 
                 <TextView
                     android:id="@+id/TextView05"
@@ -271,7 +271,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="9">
+                android:layout_weight="10">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -371,7 +371,7 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/common_3g_title"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium"
+                    android:textSize="10sp"
                     android:textStyle="bold" />
 
                 <View
@@ -391,7 +391,7 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/common_2g_title"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium" />
+                    android:textSize="10sp" />
 
                 <View
                     android:id="@+id/View38"
@@ -441,7 +441,7 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/common_2g_title"
                     android:textColor="@color/common_text"
-                    android:textSize="@dimen/text_medium" />
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
