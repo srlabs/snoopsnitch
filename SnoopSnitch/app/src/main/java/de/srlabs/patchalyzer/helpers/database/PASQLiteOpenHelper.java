@@ -13,6 +13,7 @@ import de.srlabs.snoopsnitch.qdmon.MsdService;
 import de.srlabs.snoopsnitch.util.Utils;
 
 public class PASQLiteOpenHelper extends SQLiteOpenHelper {
+    private static final String TAG = "PASQLiteOpenHelper";
     private static final String DATABASE_NAME = "pa.db";
     private static final int DATABASE_VERSION = 10;
     private static final boolean verbose = false;
@@ -29,25 +30,25 @@ public class PASQLiteOpenHelper extends SQLiteOpenHelper {
 
         Long tmp = System.currentTimeMillis();
 
-        Log.i(MsdService.TAG, "MsdSQLiteOpenHelper.readSQLAsset(" + file + ") called");
+        Log.i(TAG, "PASQLiteOpenHelper.readSQLAsset(" + file + ") called");
 
         try {
             wl.acquire();
             db.beginTransaction();
             String sql = Utils.readFromAssets(context, file);
             if (verbose) {
-                Log.i(MsdService.TAG, "MsdSQLiteOpenHelper.readSQLAsset(" + file + "): " + sql);
+                Log.i(TAG, "PASQLiteOpenHelper.readSQLAsset(" + file + "): " + sql);
             }
             for (String statement : sql.split(";")) {
                 if (statement.trim().length() > 0 && !statement.trim().startsWith("/*!")) {
                     if (verbose) {
-                        Log.i(MsdService.TAG, "MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement=" + statement);
+                        Log.i(TAG, "PASQLiteOpenHelper.readSQLAsset(" + file + "): statement=" + statement);
                     }
                     long startTime = System.currentTimeMillis();
                     db.execSQL(statement);
                     if (verbose) {
                         long durationMs = System.currentTimeMillis() - startTime;
-                        Log.i(MsdService.TAG, "MsdSQLiteOpenHelper.readSQLAsset(" + file + "): statement took " + durationMs);
+                        Log.i(TAG, "PASQLiteOpenHelper.readSQLAsset(" + file + "): statement took " + durationMs);
                     }
                 }
             }
@@ -56,18 +57,18 @@ public class PASQLiteOpenHelper extends SQLiteOpenHelper {
             db.endTransaction();
             wl.release();
         }
-        Log.i(MsdService.TAG, "MsdSQLiteOpenHelper.readSQLAsset(" + file + ") done, took " + (System.currentTimeMillis() - tmp) + "ms");
+        Log.i(TAG, "PASQLiteOpenHelper.readSQLAsset(" + file + ") done, took " + (System.currentTimeMillis() - tmp) + "ms");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.i(MsdService.TAG, "MsdSQLiteOpenHelper.onCreate() called");
+        Log.i(TAG, "PASQLiteOpenHelper.onCreate() called");
         try {
             readSQLAsset(context, db, "basictests.sql",verbose);
         } catch (Exception e) {
             Log.e("MSD", "Failed to create database", e);
         }
-        Log.i(MsdService.TAG, "MsdSQLiteOpenHelper.onCreate() done");
+        Log.i(TAG, "PASQLiteOpenHelper.onCreate() done");
     }
 
     @Override
@@ -75,7 +76,7 @@ public class PASQLiteOpenHelper extends SQLiteOpenHelper {
         try {
             readSQLAsset(context, db, "basictests.sql", verbose);
         }catch(Exception e){
-            Log.e("MSD","Failed to upgrade Patchalyzer basic tests tables",e);
+            Log.e(TAG,"Failed to upgrade Patchalyzer basic tests tables",e);
         }
     }
 }
