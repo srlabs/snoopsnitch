@@ -497,7 +497,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="patchalyzer_notification_build_changed_text">Check installed security patches with Android Patch Analysis</string>
 
     <!-- Colored summary result chart -->
-    <string name="patchalyzer_no_test_result">No test results available</string>
+    <string name="patchalyzer_no_test_result">Click here to test patch level</string>
     <string name="patchalyzer_sum_result_chart_analysis_in_progress">Analysis in progress...</string>
 
     <!-- Colored summary result chart legend -->
