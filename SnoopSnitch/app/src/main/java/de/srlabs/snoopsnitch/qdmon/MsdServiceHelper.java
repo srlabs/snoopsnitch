@@ -73,6 +73,10 @@ public class MsdServiceHelper {
             Log.w(TAG,"MsdServiceHelper.startRecording() not allowed - User did not grant ACCESS_COARSE_LOCATION permission");
 			return false;
 		}*/
+		if(!connected) {
+            Log.i(TAG, "MsdServiceHelper.isRecording(): Not connected => false");
+            return false;
+        }
 
         boolean result = false;
         try {
@@ -86,6 +90,10 @@ public class MsdServiceHelper {
 
     public boolean stopRecording() {
         Log.i(TAG, "MsdServiceHelper.stopRecording() called");
+        if(!connected) {
+            Log.i(TAG, "MsdServiceHelper.isRecording(): Not connected => false");
+            return false;
+        }
         boolean result = false;
         try {
             result = mIMsdService.stopRecording();
