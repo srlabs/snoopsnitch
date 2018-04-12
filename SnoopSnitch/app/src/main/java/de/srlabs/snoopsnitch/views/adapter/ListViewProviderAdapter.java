@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.StartupActivity;
 import de.srlabs.snoopsnitch.analysis.Risk;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.views.DashboardProviderList;
@@ -73,6 +74,11 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk> {
 
         View rowView;
 
+        // Skip own test results
+        if (!StartupActivity.isSNSNCompatible()) {
+            position++;
+        }
+
         if (position == 0) {
             rowView = inflater.inflate(R.layout.custom_row_layout_provider, parent, false);
 
@@ -112,7 +118,11 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk> {
 
     @Override
     public int getCount() {
-        return values.size();
+        if (StartupActivity.isSNSNCompatible()) {
+            return values.size();
+        } else {
+            return Math.max(values.size() - 1, 0);
+        }
     }
 
     private void sortOwnProvider() {
