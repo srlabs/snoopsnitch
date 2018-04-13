@@ -513,6 +513,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="patchalyzer_claimed_patchlevel_date">Claimed patch level</string>
     <string name="patchalyzer_general_tests">General tests</string>
     <string name="patchalyzer_certified_build">(certified)</string>
+    <string name="patchalyzer_no_results_yet">No results available yet, please start a test</string>
 
     <!-- Error messages -->
     <string name="patchalyzer_sticky_error_message_start">Last analysis failed due to:</string>
