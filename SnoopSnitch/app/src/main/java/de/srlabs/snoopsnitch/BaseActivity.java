@@ -191,7 +191,7 @@ public class BaseActivity extends FragmentActivity {
             case R.id.menu_action_upload_pending_files:
                 if (!StartupActivity.isSNSNCompatible()){
                     //no MSdService, so we do the work here
-                    if(uploadThread != null) {
+                    if(uploadThread != null && !uploadThread.isAlive()) {
                         uploadThread.requestUploadRound();
                         uploadThread.start();
                     }
