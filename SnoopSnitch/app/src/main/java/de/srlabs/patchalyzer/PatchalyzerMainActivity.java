@@ -396,6 +396,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     protected void onPause(){
         super.onPause();
+        NotificationHelper.cancelNonStickyNotifications(this);
         if(isServiceBound)
             unbindService(mConnection);
         isActivityActive = false;
