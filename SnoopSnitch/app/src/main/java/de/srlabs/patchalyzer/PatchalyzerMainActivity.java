@@ -378,8 +378,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     protected void onPause(){
         super.onPause();
         NotificationHelper.cancelNonStickyNotifications(this);
-        if(isServiceBound)
-            unbindService(mConnection);
         isActivityActive = false;
     }
 
@@ -420,7 +418,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     } else {
                         // No analysis executed yet, show no error message
                         showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": "
-                                + TestUtils.getPatchlevelDate(),this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
+                                + TestUtils.getPatchlevelDate(),this.getResources().getString(R.string.patchalyzer_no_results_yet));
                     }
 
                 } else {
