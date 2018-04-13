@@ -11,9 +11,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
@@ -52,12 +49,10 @@ import de.srlabs.patchalyzer.Constants.ActivityState;
 import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.patchalyzer.helpers.NotificationHelper;
-import de.srlabs.patchalyzer.helpers.database.PADatabaseManager;
-import de.srlabs.patchalyzer.helpers.database.PASQLiteOpenHelper;
+import de.srlabs.patchalyzer.helpers.ServiceConnectionHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.views.PatchlevelDateOverviewChart;
-import de.srlabs.snoopsnitch.DashboardActivity;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.StartupActivity;
 
@@ -165,6 +160,19 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         }
     };
 
+    private void setProgressBarPercent (double progressPercent) {
+        progressBar.setMax(1000);
+        progressBar.setProgress((int) (progressPercent * 1000.0));
+        String percentageString = ""+progressPercent*100.0;
+        if(percentageString.length() > 4){
+            percentageString = percentageString.substring(0, 4);
+            if (percentageString.endsWith(".")) {
+                percentageString = percentageString.substring(0, percentageString.length() - 1);
+            }
+        }
+        percentageText.setText(percentageString+"%");
+    }
+
     private String getWebViewFontStyle() {
         return "<head><style type=\"text/css\">body { " +
                     "    font-family: sans-serif-condensed;\n" +
@@ -201,16 +209,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 @Override
                 public void run() {
                     if (isActivityActive) {
-                        progressBar.setMax(1000);
-                        progressBar.setProgress((int) (progressPercent * 1000.0));
-                        String percentageString = ""+progressPercent*100.0;
-                        if(percentageString.length() > 4){
-                            percentageString = percentageString.substring(0, 4);
-                            if (percentageString.endsWith(".")) {
-                                percentageString = percentageString.substring(0, percentageString.length() - 1);
-                            }
-                        }
-                        percentageText.setText(percentageString+"%");
+                        PatchalyzerMainActivity.this.setProgressBarPercent(progressPercent);
                     }
                 }
             });
@@ -228,21 +227,14 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             });
         }
         @Override
-        public void finished(final String analysisResultString, final boolean isBuildCertified) throws RemoteException {
+        public void finished(final String analysisResultString, final boolean isBuildCertified,
+                             final long currentAnalysisTimestamp) throws RemoteException {
             Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received finished()");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    JSONObject resultJSON = null;
-                    try {
-                        resultJSON = new JSONObject(analysisResultString);
-                    } catch (JSONException e) {
-                        Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
-                    }
-                    resultChart.setAnalysisRunning(false);
-                    PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(resultJSON);
-
-                    SharedPrefsHelper.saveAnalysisResultNonPersistent(resultJSON, isBuildCertified);
+                    ServiceConnectionHelper.executeFinishedOncePerAnalysis(analysisResultString,
+                            isBuildCertified, currentAnalysisTimestamp);
                     if (isActivityActive) {
                         restoreState();
                     }
@@ -250,15 +242,13 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             });
         }
         @Override
-        public void handleFatalError(final String stickyErrorMessage) throws RemoteException {
+        public void handleFatalError(final String stickyErrorMessage, final long currentAnalysisTimestamp) throws RemoteException {
             Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received handleFatalError()");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     startTestButton.setEnabled(false);
-                    resultChart.setAnalysisRunning(false);
-                    SharedPrefsHelper.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerMainActivity.this);
-                    NotificationHelper.showAnalysisFailedNotification(PatchalyzerMainActivity.this);
+                    ServiceConnectionHelper.executeCancelledOncePerAnalysis(stickyErrorMessage, currentAnalysisTimestamp);
                     if (isActivityActive) {
                         restoreState();
                     }
@@ -350,12 +340,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        isActivityActive = true;
         if(!TestUtils.isTooOldAndroidAPIVersion()) {
             Intent intent = new Intent(PatchalyzerMainActivity.this, PatchalyzerService.class);
             intent.setAction(ITestExecutorServiceInterface.class.getName());
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
-        isActivityActive = true;
         restoreState();
     }
 
@@ -484,7 +474,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             SharedPrefsHelper.clearSavedAnalysisResult(this);
             SharedPrefsHelper.clearSavedStickyErrorMessage(this);
             resultChart.resetCounts();
+            PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(null);
             resultChart.invalidate();
+            setProgressBarPercent(0);
 
             if (TestUtils.isConnectedToInternet(this)) {
                 noCVETestsForApiLevelMessage = null;

@@ -25,8 +25,8 @@ import java.util.Vector;
 
 import de.srlabs.patchalyzer.Constants;
 import de.srlabs.patchalyzer.ITestExecutorCallbacks;
+import de.srlabs.patchalyzer.ITestExecutorDashboardCallbacks;
 import de.srlabs.patchalyzer.ITestExecutorServiceInterface;
-import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.patchalyzer.helpers.database.PADatabaseManager;
 import de.srlabs.patchalyzer.helpers.database.PASQLiteOpenHelper;
 import de.srlabs.patchalyzer.util.CertifiedBuildChecker;
@@ -41,7 +41,8 @@ public class PatchalyzerService extends Service {
     private TestSuite testSuite = null;
     private DeviceInfoThread deviceInfoThread = null;
     private BasicTestCache basicTestCache = null;
-    private static ITestExecutorCallbacks callback = null;
+    private static ITestExecutorCallbacks patchalyzerMainActivityCallback = null;
+    private static ITestExecutorDashboardCallbacks dashboardActivityCallback = null;
     private boolean apiRunning = false;
     private boolean basicTestsRunning = false;
     private boolean deviceInfoRunning = false;
@@ -51,7 +52,7 @@ public class PatchalyzerService extends Service {
     private Vector<ProgressItem> progressItems;
     public static final String NO_INTERNET_CONNECTION_ERROR = "no_uplink";
     private boolean isAnalysisRunning = false;
-
+    private long currentAnalysisTimestamp;
 
     @Override
     public void onCreate() {
@@ -180,8 +181,14 @@ public class PatchalyzerService extends Service {
         @Override
         public void updateCallback(final ITestExecutorCallbacks callback){
             Log.d(Constants.LOG_TAG,"Updating callbacks.");
-            PatchalyzerService.callback = callback;
+            PatchalyzerService.patchalyzerMainActivityCallback = callback;
             updateProgress();
+        }
+
+        @Override
+        public void updateDashboardCallback(final ITestExecutorDashboardCallbacks callback){
+            Log.d(Constants.LOG_TAG,"Updating callbacks.");
+            PatchalyzerService.dashboardActivityCallback = callback;
         }
 
         @Override
@@ -552,9 +559,19 @@ public class PatchalyzerService extends Service {
             @Override
             public void run() {
                 try {
-                    callback.finished(analysisResultString, isBuildCertified);
+                    if (dashboardActivityCallback != null) {
+                        dashboardActivityCallback.finished(analysisResultString, isBuildCertified, PatchalyzerService.this.currentAnalysisTimestamp);
+                    }
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "PatchalyzerService.updateProgress() => callback.finished() RemoteException", e);
+                    Log.i(Constants.LOG_TAG, "PatchalyzerService.updateProgress() => dashboardActivityCallback.sendFinishedToCallback() RemoteException");
+                }
+
+                try {
+                    if (patchalyzerMainActivityCallback != null) {
+                        patchalyzerMainActivityCallback.finished(analysisResultString, isBuildCertified, PatchalyzerService.this.currentAnalysisTimestamp);
+                    }
+                } catch (RemoteException e) {
+                    Log.i(Constants.LOG_TAG, "PatchalyzerService.updateProgress() => patchalyzerMainActivityCallback.sendFinishedToCallback() RemoteException");
                 }
             }
         });
@@ -562,13 +579,25 @@ public class PatchalyzerService extends Service {
 
     // Calling this will cause the service to be killed
     private void handleFatalErrorViaCallback(final String stickyErrorMessage){
+        SharedPrefsHelper.saveStickyErrorMessage(stickyErrorMessage, PatchalyzerService.this);
+        NotificationHelper.showAnalysisFailedNotification(PatchalyzerService.this);
         handler.post(new Runnable(){
             @Override
             public void run() {
                 try {
-                    callback.handleFatalError(stickyErrorMessage);
+                    if (patchalyzerMainActivityCallback != null) {
+                        patchalyzerMainActivityCallback.handleFatalError(stickyErrorMessage, PatchalyzerService.this.currentAnalysisTimestamp);
+                    }
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "PatchalyzerService => callback.cancelled() RemoteException", e);
+                    Log.i(Constants.LOG_TAG, "PatchalyzerService => patchalyzerMainActivityCallback.handleFatalErrorViaCallback() RemoteException");
+                }
+
+                try {
+                    if (dashboardActivityCallback != null) {
+                        dashboardActivityCallback.handleFatalError(stickyErrorMessage, PatchalyzerService.this.currentAnalysisTimestamp);
+                    }
+                } catch (RemoteException e) {
+                    Log.i(Constants.LOG_TAG, "PatchalyzerService => dashboardActivityCallback.handleFatalErrorViaCallback() RemoteException");
                 }
                 cancelAnalysis();
             }
@@ -580,7 +609,9 @@ public class PatchalyzerService extends Service {
             @Override
             public void run() {
                 try {
-                    callback.updateProgress(totalProgress);
+                    if (patchalyzerMainActivityCallback != null) {
+                        patchalyzerMainActivityCallback.updateProgress(totalProgress);
+                    }
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "PatchalyzerService.updateProgress() RemoteException", e);
                 }
@@ -593,7 +624,9 @@ public class PatchalyzerService extends Service {
             @Override
             public void run() {
                 try {
-                    callback.reloadViewState();
+                    if (patchalyzerMainActivityCallback != null) {
+                        patchalyzerMainActivityCallback.reloadViewState();
+                    }
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "PatchalyzerService.sendReloadViewStateToCallback() RemoteException", e);
                 }
@@ -606,7 +639,9 @@ public class PatchalyzerService extends Service {
             @Override
             public void run() {
                 try {
-                    callback.showErrorMessage(error);
+                    if (patchalyzerMainActivityCallback != null) {
+                        patchalyzerMainActivityCallback.showErrorMessage(error);
+                    }
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "PatchalyzerService.reportError() RemoteException", e);
                 }
@@ -619,7 +654,9 @@ public class PatchalyzerService extends Service {
             @Override
             public void run() {
                 try {
-                    callback.showNoCVETestsForApiLevel(message);
+                    if (patchalyzerMainActivityCallback != null) {
+                        patchalyzerMainActivityCallback.showNoCVETestsForApiLevel(message);
+                    }
                 } catch (RemoteException e) {
                     Log.e(Constants.LOG_TAG, "PatchalyzerService.showNoCVETestsForApiLevel() RemoteException", e);
                 }
@@ -777,8 +814,12 @@ public class PatchalyzerService extends Service {
     @Override
     public int onStartCommand (Intent intent, int flags, int startId) {
         Log.v(Constants.LOG_TAG, "onStartCommand called");
+        if (isAnalysisRunning) {
+            return START_NOT_STICKY;
+        }
 
         isAnalysisRunning = true;
+        currentAnalysisTimestamp = System.currentTimeMillis();
 
         Notification notification = NotificationHelper.getAnalysisOngoingNotification(this);
         startForeground(NotificationHelper.ONGOING_NOTIFICATION_ID, notification);
