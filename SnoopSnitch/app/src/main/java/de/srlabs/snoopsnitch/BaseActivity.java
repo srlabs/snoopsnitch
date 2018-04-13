@@ -299,8 +299,10 @@ public class BaseActivity extends FragmentActivity {
 
     protected void quitApplication() {
         MsdLog.i("MSD", "BaseActivity.quitApplication() called");
-        msdServiceHelperCreator.getMsdServiceHelper().stopRecording();
-        msdServiceHelperCreator.getMsdServiceHelper().stopService();
+        if (StartupActivity.isAppInitialized() && StartupActivity.isSNSNCompatible()) {
+            msdServiceHelperCreator.getMsdServiceHelper().stopRecording();
+            msdServiceHelperCreator.getMsdServiceHelper().stopService();
+        }
         // If we call System.exit() here from an activity launched by
         // DashboardActivity, the Android system will restart the App to resume
         // DashboardActivity (which is still on the activity stack). So
