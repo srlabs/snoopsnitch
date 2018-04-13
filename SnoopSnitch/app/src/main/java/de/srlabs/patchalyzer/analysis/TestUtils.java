@@ -499,6 +499,8 @@ public class TestUtils {
     }
     public static long getBuildDateUtc(){
         String buildDateUtc = getBuildProperty("ro.build.date.utc");
+        if(buildDateUtc == null)
+            return -1;
         return Long.parseLong(buildDateUtc);
     }
     public static String getBuildFingerprint(){

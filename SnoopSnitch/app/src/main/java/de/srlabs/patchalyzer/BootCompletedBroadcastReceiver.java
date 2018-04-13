@@ -22,6 +22,8 @@ public class BootCompletedBroadcastReceiver extends BroadcastReceiver {
         Log.d(Constants.LOG_TAG,"Boot completed event received...");
         SharedPreferences sharedPrefs = SharedPrefsHelper.getPersistentSharedPrefs(context);
         long currentBuildDate = TestUtils.getBuildDateUtc();
+        if(currentBuildDate == -1)
+            Log.d(Constants.LOG_TAG, "Found invalid builddate timestamp");
         long buildDateUtcAtLastSuccessfulAnalysis = sharedPrefs.getLong(SharedPrefsHelper.KEY_BUILD_DATE_LAST_ANALYSIS, -1);
         long buildDateNotificationDisplayed = sharedPrefs.getLong(SharedPrefsHelper.KEY_BUILD_DATE_NOTIFICATION_DISPLAYED, -1);
 
