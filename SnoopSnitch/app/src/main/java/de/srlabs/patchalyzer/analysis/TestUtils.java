@@ -501,7 +501,15 @@ public class TestUtils {
         String buildDateUtc = getBuildProperty("ro.build.date.utc");
         if(buildDateUtc == null)
             return -1;
-        return Long.parseLong(buildDateUtc);
+
+        try {
+            long buildDate = Long.parseLong(buildDateUtc);
+            return buildDate;
+        }catch(NumberFormatException e){
+            Log.d(Constants.LOG_TAG,"Found invalid, malformated builddate: "+buildDateUtc);
+            return -1;
+        }
+
     }
     public static String getBuildFingerprint(){
         String result = getBuildProperty("ro.build.fingerprint");
