@@ -14,6 +14,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -29,7 +30,7 @@ import de.srlabs.patchalyzer.analysis.TestUtils;
 public class ServerApi {
     public static final String API_URL="https://snoopsnitch-api.srlabs.de/v1/";
 
-    public File downloadTestSuite(String filenamePrefix, Context context, String appid, int apiVersion, String currentVersion, int appVersion) throws JSONException, IOException{
+    public File downloadTestSuite(String filenamePrefix, Context context, String appid, int apiVersion, String currentVersion, int appVersion) throws IllegalStateException, IOException{
         URL url = new URL(API_URL + "test/suite?appId=" + appid + "&androidApiVersion=" + apiVersion + "&testVersion=" + URLEncoder.encode(currentVersion, "UTF-8") + "&appVersion=" + appVersion + "&64bit="+ TestUtils.is64BitSystem());
         Log.i(Constants.LOG_TAG,"Downloading tests: "+url.toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -39,17 +40,24 @@ public class ServerApi {
         connection.setInstanceFollowRedirects(false);
         connection.connect();
 
-        File outputFile = new File(context.getCacheDir(), filenamePrefix+"_"+apiVersion+".json");
-        try {
-            // pipe testSuite JSON to cache file
-            TestUtils.writeInputstreamToFile(connection.getInputStream(), outputFile);
-        }finally{
-            connection.disconnect();
+        int code = connection.getResponseCode();
+        if(code == 200 || code == 304) {
+            File outputFile = new File(context.getCacheDir(), filenamePrefix + "_" + apiVersion + ".json");
+            try {
+                // pipe testSuite JSON to cache file
+                TestUtils.writeInputstreamToFile(connection.getInputStream(), outputFile);
+            } finally {
+                connection.disconnect();
+            }
+            return outputFile;
         }
-        return outputFile;
+        // no valid return code received
+        String errorResponse = readErrorResponse(connection.getErrorStream());
+        connection.disconnect();
+        throw new IllegalStateException("downloadTestSuite(): The server returned an invalid response code " + code + "  Response contents: " + errorResponse);
     }
 
-    public File downloadBasicTestChunk(Context context, String urlString) throws IOException{
+    public File downloadBasicTestChunk(Context context, String urlString) throws IllegalStateException, IOException{
         URL url = new URL(urlString);
         Log.i(Constants.LOG_TAG,"Downloading basic test chunk: "+url.toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -59,20 +67,28 @@ public class ServerApi {
         connection.setInstanceFollowRedirects(false);
         connection.connect();
 
-        String[] parts = urlString.split("/");
-        String chunkName = parts[parts.length-1];
+        int code = connection.getResponseCode();
+        if(code == 200 || code == 304) {
 
-        File outputFile = new File(context.getCacheDir(), chunkName);
-        Log.d(Constants.LOG_TAG,"Saving basic test chunk file to :"+outputFile.getAbsolutePath());
+            String[] parts = urlString.split("/");
+            String chunkName = parts[parts.length - 1];
+
+            File outputFile = new File(context.getCacheDir(), chunkName);
+            Log.d(Constants.LOG_TAG, "Saving basic test chunk file to :" + outputFile.getAbsolutePath());
 
 
-        try {
-            // pipe testSuite JSON to cache file
-            TestUtils.writeInputstreamToFile(connection.getInputStream(), outputFile);
-        }finally{
-            connection.disconnect();
+            try {
+                // pipe testSuite JSON to cache file
+                TestUtils.writeInputstreamToFile(connection.getInputStream(), outputFile);
+            } finally {
+                connection.disconnect();
+            }
+            return outputFile;
         }
-        return outputFile;
+        // no valid return code received
+        String errorResponse = readErrorResponse(connection.getErrorStream());
+        connection.disconnect();
+        throw new IllegalStateException("downloadBasicTestChunk(): The server returned an invalid response code " + code + "  Response contents: " + errorResponse);
     }
 
     public JSONArray getRequests(String appid, int apiVersion , String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion) throws JSONException, IOException {
@@ -102,18 +118,12 @@ public class ServerApi {
                 Log.i(Constants.LOG_TAG, "getRequests received json: " + stringBuilder.toString());
             return new JSONArray(stringBuilder.toString());
         }
-        // Read response
-        BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(connection.getErrorStream())));
-        String line = "";
-        StringBuilder stringBuilder = new StringBuilder();
-        while ((line = responseStreamReader.readLine()) != null) {
-            stringBuilder.append(line).append("\n");
-        }
-        responseStreamReader.close();
+        // no valid return code received
+        String errorResponse = readErrorResponse(connection.getErrorStream());
         connection.disconnect();
-        throw new IllegalStateException("getRequests(): The server returned an invalid response code " + code + "  Response contents: " + stringBuilder.toString());
+        throw new IllegalStateException("getRequests(): The server returned an invalid response code " + code + "  Response contents: " + errorResponse);
     }
-    public void reportFile(String filename, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion, Boolean ctsProfileMatch, Boolean basicIntegrity) throws JSONException, IOException {
+    public void reportFile(String filename, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion, Boolean ctsProfileMatch, Boolean basicIntegrity) throws IllegalStateException, IOException {
         Log.i(Constants.LOG_TAG, "reportFile(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate + ", filename=" + filename);
 
         URL url = new URL(API_URL + "report/file?appId=" + URLEncoder.encode(appid,"UTF-8") +
@@ -155,18 +165,12 @@ public class ServerApi {
             connection.disconnect();
             return;
         }
-        // Read response
-        BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(connection.getErrorStream())));
-        String line = "";
-        StringBuilder stringBuilder = new StringBuilder();
-        while ((line = responseStreamReader.readLine()) != null) {
-            stringBuilder.append(line).append("\n");
-        }
-        responseStreamReader.close();
+        // no valid return code received
+        String errorResponse = readErrorResponse(connection.getErrorStream());
         connection.disconnect();
-        throw new IllegalStateException("reportFile(): The server returned an invalid response code " + code + "  Response contents: " + stringBuilder.toString());
+        throw new IllegalStateException("reportFile(): The server returned an invalid response code " + code + "  Response contents: " + errorResponse);
     }
-    public void reportSys(JSONObject sysinfo, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion,Boolean ctsProfileMatch, Boolean basicIntegrity) throws JSONException, IOException {
+    public void reportSys(JSONObject sysinfo, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion,Boolean ctsProfileMatch, Boolean basicIntegrity) throws IllegalStateException, IOException {
         Log.i(Constants.LOG_TAG, "reportSys(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate + ", uploadSize=" + sysinfo.toString().length());
         URL url = new URL(API_URL + "report/system?appId=" + URLEncoder.encode(appid,"UTF-8") +
                 "&phoneModel=" + URLEncoder.encode(phoneModel, "UTF-8") + "&romBuildFingerprint=" + URLEncoder.encode(romBuildFingerprint, "UTF-8") +
@@ -199,18 +203,12 @@ public class ServerApi {
             connection.disconnect();
             return;
         }
-        // Read response
-        BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(connection.getErrorStream())));
-        String line = "";
-        StringBuilder stringBuilder = new StringBuilder();
-        while ((line = responseStreamReader.readLine()) != null) {
-            stringBuilder.append(line).append("\n");
-        }
-        responseStreamReader.close();
+        // no valid return code received
+        String errorResponse = readErrorResponse(connection.getErrorStream());
         connection.disconnect();
-        throw new IllegalStateException("reportSys(): The server returned an invalid response code " + code + "  Response contents: " + stringBuilder.toString());
+        throw new IllegalStateException("reportSys(): The server returned an invalid response code " + code + "  Response contents: " + errorResponse);
     }
-    public void reportTest(JSONObject testData, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion,Boolean ctsProfileMatch, Boolean basicIntegrity) throws JSONException, IOException {
+    public void reportTest(JSONObject testData, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion,Boolean ctsProfileMatch, Boolean basicIntegrity) throws IllegalStateException, IOException {
         Log.i(Constants.LOG_TAG, "reportTest(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate);
         URL url = new URL(API_URL + "report/test?appId=" + URLEncoder.encode(appid,"UTF-8") +
                 "&phoneModel=" + URLEncoder.encode(phoneModel, "UTF-8") + "&romBuildFingerprint=" + URLEncoder.encode(romBuildFingerprint, "UTF-8") +
@@ -239,25 +237,13 @@ public class ServerApi {
             connection.disconnect();
             return;
         }
-        // Read response
-        BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(connection.getErrorStream())));
-        String line = "";
-        StringBuilder stringBuilder = new StringBuilder();
-        while ((line = responseStreamReader.readLine()) != null) {
-            stringBuilder.append(line).append("\n");
-        }
-        responseStreamReader.close();
+        // no valid return code received
+        String errorResponse = readErrorResponse(connection.getErrorStream());
         connection.disconnect();
-        throw new IllegalStateException("reportTest(): The server returned an invalid response code " + code + "  Response contents: " + stringBuilder.toString());
-    }
-    private String generateBoundary(){
-        SecureRandom sr = new SecureRandom();
-        byte[] random = new byte[16];
-        sr.nextBytes(random);
-        return TestUtils.byteArrayToHex(random);
+        throw new IllegalStateException("reportTest(): The server returned an invalid response code " + code + "  Response contents: " + errorResponse);
     }
 
-    public File downloadVulnerabilityChunk(Context context, String urlString) throws IOException{
+    public File downloadVulnerabilityChunk(Context context, String urlString) throws IOException, IllegalStateException{
         URL url = new URL(urlString);
         Log.i(Constants.LOG_TAG,"Downloading vulnerability chunk: "+url.toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -267,35 +253,41 @@ public class ServerApi {
         connection.setInstanceFollowRedirects(false);
         connection.connect();
 
-        String[] parts = urlString.split("/");
-        String chunkName = parts[parts.length-1];
+        int code = connection.getResponseCode();
+        if(code == 200 || code == 304) {
 
-        StringBuilder stringBuilder = new StringBuilder();
-        String jsonString = null;
-        try {
-            BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(connection.getInputStream())));
-            String line = "";
-            while ((line = responseStreamReader.readLine()) != null) {
-                stringBuilder.append(line).append("\n");
+            String[] parts = urlString.split("/");
+            String chunkName = parts[parts.length - 1];
+
+            StringBuilder stringBuilder = new StringBuilder();
+            String jsonString = null;
+            try {
+                BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(connection.getInputStream())));
+                String line = "";
+                while ((line = responseStreamReader.readLine()) != null) {
+                    stringBuilder.append(line).append("\n");
+                }
+                responseStreamReader.close();
+
+                //try to parse to JSONObject
+                jsonString = stringBuilder.toString();
+                new JSONObject(jsonString);
+
+                File outputFile = new File(context.getCacheDir(), chunkName);
+                TestUtils.writeStringToFile(jsonString, outputFile);
+
+                connection.disconnect();
+
+                return outputFile;
+            } catch (JSONException e) {
+                Log.e(Constants.LOG_TAG, "Exception while downloading and parsing vulnerability chunk to JSON: " + e.getMessage());
+                //writeStringToFile(jsonString, new File(context.getDataDir(), chunkName+".tmp"));
             }
-            responseStreamReader.close();
-
-            //try to parse to JSONObject
-            jsonString = stringBuilder.toString();
-            new JSONObject(jsonString);
-
-            File outputFile = new File(context.getCacheDir(),chunkName);
-            TestUtils.writeStringToFile(jsonString, outputFile);
-
-            connection.disconnect();
-
-            return outputFile;
-        }catch(JSONException e){
-            Log.e(Constants.LOG_TAG,"Exception while downloading and parsing vulnerability chunk to JSON: "+e.getMessage());
-            //writeStringToFile(jsonString, new File(context.getDataDir(), chunkName+".tmp"));
         }
+        // no valid return code received
+        String errorResponse = readErrorResponse(connection.getErrorStream());
         connection.disconnect();
-        return null;
+        throw new IllegalStateException("downloadVulnerabilityChunk(): The server returned an invalid response code " + code + "  Response contents: " + errorResponse);
     }
 
     public File getVulnerabilityChunkCacheFile(Context context, String urlString) throws IOException{
@@ -307,6 +299,25 @@ public class ServerApi {
             return null;
         }
         return file;
+    }
+
+    private String generateBoundary(){
+        SecureRandom sr = new SecureRandom();
+        byte[] random = new byte[16];
+        sr.nextBytes(random);
+        return TestUtils.byteArrayToHex(random);
+    }
+
+    private String readErrorResponse(InputStream errorStream) throws IOException{
+        // Read response
+        BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(errorStream)));
+        String line = "";
+        StringBuilder stringBuilder = new StringBuilder();
+        while ((line = responseStreamReader.readLine()) != null) {
+            stringBuilder.append(line).append("\n");
+        }
+        responseStreamReader.close();
+        return stringBuilder.toString();
     }
 }
 

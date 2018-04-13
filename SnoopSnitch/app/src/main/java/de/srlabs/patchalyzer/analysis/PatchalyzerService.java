@@ -394,7 +394,7 @@ public class PatchalyzerService extends Service {
                             uploadTestResultsProgress.update(1.0);
                             apiRunning = false;
                         }
-                    } catch(IOException e){
+                    } catch(IOException | IllegalStateException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
                         handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                         Log.e(Constants.LOG_TAG, "Exception in pendingTestResultsUploadRunnable", e);
@@ -430,13 +430,9 @@ public class PatchalyzerService extends Service {
                             uploadDeviceInfoProgress.update(1.0);
                             apiRunning = false;
                         }
-                    } catch(IOException e){
+                    } catch(IllegalStateException | IOException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
                         Log.e(Constants.LOG_TAG, "Exception in pendingDeviceInfoUploadRunnable()", e);
-                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
-                        apiRunning = false;
-                    } catch(JSONException e){
-                        Log.e(Constants.LOG_TAG,"JSONException in pendingDeviceInfoUploadRunnable: "+e.getMessage());
                         handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                         apiRunning = false;
                     }
@@ -668,12 +664,8 @@ public class PatchalyzerService extends Service {
                 }
                 checkIfCVETestsAvailable(testSuite);
 
-            } catch (JSONException e) {
-                Log.e(Constants.LOG_TAG, "JSONException in DownloadThread", e);
-                reportError("JSONException in api.downloadTests" + e);
-                return;
-            } catch (IOException e) {
-                Log.e(Constants.LOG_TAG, "IOException in DownloadThread", e);
+            } catch (IllegalStateException | IOException e) {
+                Log.e(Constants.LOG_TAG, "Exception in DownloadThread", e);
                 reportError(NO_INTERNET_CONNECTION_ERROR);
                 handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                 return;
@@ -759,7 +751,7 @@ public class PatchalyzerService extends Service {
                 Log.i(Constants.LOG_TAG,"Reporting files to server finished...");
             } catch(Exception e){
                 Log.e(Constants.LOG_TAG, "RequestsThread.run() exception", e);
-                if(e instanceof IOException) {
+                if(e instanceof IOException || e instanceof IllegalStateException) {
                     reportError(NO_INTERNET_CONNECTION_ERROR);
                     handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
                 }

@@ -134,7 +134,9 @@ public class TestSuite {
             for(String vulnerabilityChunk : vulnerabilitesChunks){
                 if(api.getVulnerabilityChunkCacheFile(context, vulnerabilityChunk) == null) {
                     //if not download file with .tmp suffix -> try to parse it to JSONObject -> without problems then rename file to erase .tmp suffix and replace with .json
-                    if (api.downloadVulnerabilityChunk(context, vulnerabilityChunk) == null) {
+                    try{
+                        api.downloadVulnerabilityChunk(context, vulnerabilityChunk);
+                    }catch(IOException | IllegalStateException e){
                         throw new IOException("Downloading and parsing vulnerability chunk " + vulnerabilityChunk + " failed");
                     }
                 }
@@ -189,9 +191,10 @@ public class TestSuite {
                 File chunkFile = api.getVulnerabilityChunkCacheFile(context, vulnerabilityChunk);
                 if (chunkFile == null) {
                     Log.d(Constants.LOG_TAG, "Vulnerability chunk file missing: " + vulnerabilityChunk);
-                    chunkFile = api.downloadVulnerabilityChunk(context, vulnerabilityChunk);
-                    if (chunkFile == null) {
-                        Log.e(Constants.LOG_TAG, "Downloading and parsing vulnerability chunk " + vulnerabilityChunk + " failed");
+                    try {
+                        chunkFile = api.downloadVulnerabilityChunk(context, vulnerabilityChunk);
+                    }catch(IOException | IllegalStateException e){
+                        Log.e(Constants.LOG_TAG, "Exception when downloading and parsing vulnerability chunk " + vulnerabilityChunk,e);
                         throw new IOException("Failed downloading and parsing vulnerability chunk: "+vulnerabilityChunk);
                         //FIXME repeat download process?!
                     }
