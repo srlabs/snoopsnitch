@@ -103,6 +103,10 @@ public class SharedPrefsHelper {
 
     }
 
+    public static void saveStickyErrorMessageNonPersistent(String stickyErrorMessage) {
+        cachedStickyErrorMessage = stickyErrorMessage;
+    }
+
     public static void clearSavedStickyErrorMessage(ContextWrapper context) {
         cachedStickyErrorMessage = null;
 

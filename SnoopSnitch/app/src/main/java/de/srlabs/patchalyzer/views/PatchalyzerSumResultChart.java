@@ -72,7 +72,7 @@ public class PatchalyzerSumResultChart extends View {
         parts.put("notClaimed", new ResultPart(0, Constants.COLOR_NOTCLAIMED));
     }
 
-    public void setAnalysisRunning(boolean running){
+    public static void setAnalysisRunning(boolean running){
         isAnalysisRunning = running;
     }
 
@@ -306,6 +306,7 @@ public class PatchalyzerSumResultChart extends View {
      * @param analysisResult
      */
     public void loadValuesFromJSONResult(JSONObject analysisResult) {
+        setAnalysisRunning(false);
         if (analysisResult == null) {
             resetCounts();
             return;

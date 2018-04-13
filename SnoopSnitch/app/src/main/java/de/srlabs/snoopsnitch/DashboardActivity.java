@@ -1,19 +1,19 @@
 package de.srlabs.snoopsnitch;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
-
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,14 +26,25 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
+
+import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.ITestExecutorDashboardCallbacks;
+import de.srlabs.patchalyzer.ITestExecutorServiceInterface;
+import de.srlabs.patchalyzer.PatchalyzerMainActivity;
+import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import de.srlabs.patchalyzer.analysis.TestUtils;
+import de.srlabs.patchalyzer.helpers.ServiceConnectionHelper;
+import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
 import de.srlabs.snoopsnitch.analysis.Risk;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
-import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
@@ -78,6 +89,61 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     Vector<TextView> threatImsiCounts;
     private ActiveTestHelper activeTestHelper;
     private boolean unknownOperator = false;
+    private ITestExecutorServiceInterface mITestExecutorService;
+    private ITestExecutorDashboardCallbacks callbacks = new TestExecutorDashboardCallbacks();
+    private boolean isServiceBound = false;
+    private boolean isActivityActive = false;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        // Called when the connection with the service is established
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // Following the example above for an AIDL interface,
+            // this gets an instance of the IRemoteInterface, which we can use to call on the service
+            mITestExecutorService = ITestExecutorServiceInterface.Stub.asInterface(service);
+            try{
+                mITestExecutorService.updateDashboardCallback(callbacks);
+                if (mITestExecutorService.isAnalysisRunning()) {
+                    PatchalyzerSumResultChart.setAnalysisRunning(true);
+                }
+            } catch (RemoteException e) {
+                Log.e(Constants.LOG_TAG, "RemoteException in onServiceConnected():", e);
+            }
+            Log.d(Constants.LOG_TAG,"Service connected!");
+            isServiceBound = true;
+        }
+
+        // Called when the connection with the service disconnects unexpectedly
+        public void onServiceDisconnected(ComponentName className) {
+            Log.e(Constants.LOG_TAG, "Service has unexpectedly disconnected");
+            isServiceBound = false;
+            mITestExecutorService = null;
+        }
+    };
+
+    class TestExecutorDashboardCallbacks extends ITestExecutorDashboardCallbacks.Stub{
+        @Override
+        public void finished(final String analysisResultString, final boolean isBuildCertified,
+                             final long currentAnalysisTimestamp) throws RemoteException {
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received finished()");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ServiceConnectionHelper.executeFinishedOncePerAnalysis(analysisResultString,
+                            isBuildCertified, currentAnalysisTimestamp);
+                }
+            });
+        }
+        @Override
+        public void handleFatalError(final String stickyErrorMessage, final long currentAnalysisTimestamp) throws RemoteException {
+            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received handleFatalError()");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ServiceConnectionHelper.executeCancelledOncePerAnalysis(stickyErrorMessage, currentAnalysisTimestamp);
+                }
+            });
+        }
+    }
 
     // Methods
     @Override
@@ -218,8 +284,20 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     }
 
     @Override
+    protected void onPause(){
+        super.onPause();
+        isActivityActive = false;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        isActivityActive = true;
+        if(!TestUtils.isTooOldAndroidAPIVersion()) {
+            Intent intent = new Intent(this, PatchalyzerService.class);
+            intent.setAction(ITestExecutorServiceInterface.class.getName());
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        }
 
         // Get provider data
         this.providerList = msdServiceHelperCreator.getMsdServiceHelper().getData().getScores().getServerData();
@@ -231,7 +309,6 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         // Update RAT
         updateInterseptionImpersonation();
         updateLastAnalysis();
-
     }
 
     public void openDetailView(View view) {
