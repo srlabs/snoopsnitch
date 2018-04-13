@@ -57,7 +57,9 @@ import de.srlabs.patchalyzer.helpers.database.PASQLiteOpenHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.views.PatchlevelDateOverviewChart;
+import de.srlabs.snoopsnitch.DashboardActivity;
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.StartupActivity;
 
 
 public class PatchalyzerMainActivity extends FragmentActivity {
@@ -333,7 +335,13 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                Intent upIntent;
+                if (StartupActivity.isAppInitialized()) {
+                    upIntent = NavUtils.getParentActivityIntent(this);
+                } else {
+                    // StartupActivity needs to run before we can start DashboardActivity
+                    upIntent = new Intent(this, StartupActivity.class);
+                }
                 upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(upIntent);
                 finish();

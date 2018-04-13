@@ -39,6 +39,7 @@ public class StartupActivity extends Activity {
     private boolean alreadyClicked = false;
     private ProgressDialog progressDialog;
     private static boolean isSNSNCompatible = false;
+    private static boolean isAppInitialized = false;
     public static String snsnIncompatibilityReason;
 
     @Override
@@ -54,9 +55,13 @@ public class StartupActivity extends Activity {
             //disable starting MsdService by BootCompletedIntentReceiver on next boot
             MsdConfig.setStartOnBoot(this,false);
         }
-
+        isAppInitialized = true;
         proceedAppFlow();
 
+    }
+
+    public static boolean isAppInitialized() {
+        return isAppInitialized;
     }
 
     private void proceedAppFlow() {
@@ -72,6 +77,7 @@ public class StartupActivity extends Activity {
     }
 
 
+    // BEWARE: The return value from this is only sane if isAppInitialized() returns true
     public static boolean isSNSNCompatible(){
         return isSNSNCompatible;
     }
