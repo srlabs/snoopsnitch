@@ -38,6 +38,13 @@
             android:defaultValue="vibrate+ring"
             android:entries="@array/sms_notification_strings"
             android:entryValues="@array/notification_options_internal"/>
+        <ListPreference
+            android:key="settings_patch_analysis_event"
+            android:title="@string/settings_patch_analysis_event"
+            android:summary="@string/settings_patch_analysis_event_notification_summary"
+            android:defaultValue="vibrate+ring"
+            android:entries="@array/patch_analysis_notification_strings"
+            android:entryValues="@array/notification_options_internal"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="cat_cleanup"

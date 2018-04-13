@@ -9,7 +9,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import de.srlabs.patchalyzer.analysis.TestUtils;
+import de.srlabs.patchalyzer.util.CertifiedBuildChecker;
 
 /**
  * Handles interaction with SharedPreferences
@@ -28,6 +30,10 @@ public class SharedPrefsHelper {
     public static final String KEY_BUILD_FINGERPRINT = "KEY_BUILD_FINGERPRINT";
     public static final String KEY_BUILD_DISPLAY_NAME = "KEY_BUILD_DISPLAY_NAME";
     public static final String KEY_BUILD_APPVERSION = "KEY_BUILD_APPVERSION";
+
+    //SafetyNet responses
+    private static final String KEY_BUILD_CERTIFIED_CTSPROFILE_MATCH = "KEY_CERTIFIED_BUILD_CTSMATCHPROFILE_RESPONSE";
+    private static final String KEY_BUILD_CERTIFIED_BASICINTEGRITY_MATCH = "KEY_CERTIFIED_BUILD_BASICINTEGRITY_RESPONSE";
 
     // To be stored in SHAREDPREFS_FILE_KEEP_ON_UPGRADE
     public static final String KEY_BUILD_DATE_LAST_ANALYSIS = "KEY_BUILD_DATE_LAST_ANALYSIS";
@@ -150,7 +156,7 @@ public class SharedPrefsHelper {
             return cachedResultJSON;
         }
 
-        Log.d(Constants.LOG_TAG,"Reading analysisResult from sharedPrefs");
+        Log.d(Constants.LOG_TAG, "Reading analysisResult from sharedPrefs");
         SharedPreferences settings = getSharedPrefs(context);
 
         String analysisResultString = settings.getString(KEY_ANALYSIS_RESULT, "");
@@ -162,7 +168,7 @@ public class SharedPrefsHelper {
             cachedResultJSON = new JSONObject(analysisResultString);
             return cachedResultJSON;
         } catch (JSONException e) {
-            Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
+            Log.d(Constants.LOG_TAG, "Could not parse JSON from SharedPrefs. Returning null");
             return null;
         }
     }
@@ -199,4 +205,45 @@ public class SharedPrefsHelper {
         return analysisResultJSON.toString();
     }
 
+    public static Boolean getCtsProfileMatchResponse(Context context) {
+        Log.d(Constants.LOG_TAG,"Getting ctsProfileMatchResponse from sharedPrefs");
+        String response = getSharedPrefs(context).getString(KEY_BUILD_CERTIFIED_CTSPROFILE_MATCH,null);
+        if(response == null)
+            return null;
+        return new Boolean(response);
+    }
+
+    public static boolean hasCtsProfileMatchResponse(Context context) {
+        Log.d(Constants.LOG_TAG,"Checking if ctsProfileMatchResponse is in sharedPrefs");
+        SharedPreferences settings = getSharedPrefs(context);
+        return settings.contains(KEY_BUILD_CERTIFIED_CTSPROFILE_MATCH);
+    }
+
+    public static void setCtsProfileMatchResponse(Context context, Boolean ctsProfileMatch) {
+        Log.d(Constants.LOG_TAG,"Writing ctsProfileMatchResponse to sharedPrefs");
+        SharedPreferences.Editor editor = getSharedPrefsEditor(context);
+        editor.putString(KEY_BUILD_CERTIFIED_CTSPROFILE_MATCH, ""+ctsProfileMatch);
+        editor.commit();
+    }
+
+    public static boolean hasBasicIntegrityResponse(Context context) {
+        Log.d(Constants.LOG_TAG,"Checking if ctsProfileMatchResponse is in sharedPrefs");
+        SharedPreferences settings = getSharedPrefs(context);
+        return settings.contains(KEY_BUILD_CERTIFIED_BASICINTEGRITY_MATCH);
+    }
+
+    public static Boolean getBasicIntegrityResponse(Context context) {
+        Log.d(Constants.LOG_TAG,"Getting ctsProfileMatchResponse from sharedPrefs");
+        String response = getSharedPrefs(context).getString(KEY_BUILD_CERTIFIED_BASICINTEGRITY_MATCH,null);
+        if(response == null)
+            return null;
+        return new Boolean(response);
+    }
+
+    public static void setBasicIntegrityResponse(Context context, Boolean basicIntegrity) {
+        Log.d(Constants.LOG_TAG,"Writing ctsProfileMatchResponse to sharedPrefs");
+        SharedPreferences.Editor editor = getSharedPrefsEditor(context);
+        editor.putString(KEY_BUILD_CERTIFIED_BASICINTEGRITY_MATCH, ""+basicIntegrity);
+        editor.commit();
+    }
 }

@@ -225,4 +225,8 @@ public class MsdConfig {
         edit.putString("firmware_info", firmwareInfo);
         edit.commit();
     }
+
+    public static String getPatchAnalysisNotificationSetting(Context context) {
+        return sharedPrefs(context).getString("settings_patch_analysis_event", "vibrate+ring");
+    }
 }
