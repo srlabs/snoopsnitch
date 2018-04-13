@@ -3,6 +3,9 @@ package de.srlabs.patchalyzer.analysis;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -23,6 +26,9 @@ import java.util.Vector;
 import de.srlabs.patchalyzer.Constants;
 import de.srlabs.patchalyzer.ITestExecutorCallbacks;
 import de.srlabs.patchalyzer.ITestExecutorServiceInterface;
+import de.srlabs.patchalyzer.PatchalyzerMainActivity;
+import de.srlabs.patchalyzer.helpers.database.PADatabaseManager;
+import de.srlabs.patchalyzer.helpers.database.PASQLiteOpenHelper;
 import de.srlabs.patchalyzer.util.CertifiedBuildChecker;
 import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.util.ServerApi;
@@ -55,6 +61,32 @@ public class PatchalyzerService extends Service {
 
         handler = new Handler();
         api = new ServerApi();
+
+        initDatabase();
+    }
+
+    private void initDatabase(){
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Log.d(Constants.LOG_TAG,"Creating SQLite database...");
+                    PADatabaseManager.initializeInstance(new PASQLiteOpenHelper(PatchalyzerService.this));
+                    PADatabaseManager paDatabaseManager = PADatabaseManager.getInstance();
+                    SQLiteDatabase db = paDatabaseManager.openDatabaseReadOnly();
+                    //testing DB init
+                    Cursor cursor = db.rawQuery("SELECT * FROM basictests", null);
+                    Log.d(Constants.LOG_TAG,"Got "+cursor.getCount()+" test entries!");
+                    cursor.close();
+                    paDatabaseManager.closeDatabase();
+
+                }catch(SQLException e){
+                    // Testing if the DB creation worked successfully failed
+                    Log.e(Constants.LOG_TAG,"DB creation failed, maybe App assets are corrupted: "+ e.getMessage());
+                }
+            }
+        };
+        t.start();
     }
 
     private void doWorkAsync() {

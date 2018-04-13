@@ -132,9 +132,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             progressBox.setVisibility(View.GONE);
             showMetaInformation(this.getResources().getString(R.string.patchalyzer_too_old_android_api_level),null);
         }
-        else {
-            initDatabase();
-        }
     }
 
     private void showErrorMessageInMetaInformation(String errorMessage) {
@@ -348,30 +345,6 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void initDatabase(){
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Log.d(Constants.LOG_TAG,"Creating SQLite database...");
-                    PADatabaseManager.initializeInstance(new PASQLiteOpenHelper(PatchalyzerMainActivity.this));
-                    PADatabaseManager paDatabaseManager = PADatabaseManager.getInstance();
-                    SQLiteDatabase db = paDatabaseManager.openDatabase();
-                    //testing DB init
-                    Cursor cursor = db.rawQuery("SELECT * FROM basictests", null);
-                    Log.d(Constants.LOG_TAG,"Got "+cursor.getCount()+" test entries!");
-                    cursor.close();
-                    paDatabaseManager.closeDatabase();
-
-                }catch(SQLException e){
-                    // Testing if the DB creation worked successfully failed
-                    Log.e(Constants.LOG_TAG,"DB creation failed, maybe App assets are corrupted: "+ e.getMessage());
-                }
-            }
-        };
-        t.start();
     }
 
     @Override
