@@ -42,10 +42,6 @@ public class NotificationHelper {
         boolean didShowAlready = sharedPrefs.getBoolean(SharedPrefsHelper.KEY_DID_SHOW_NEW_FEATURE,false);
 
         if(!didShowAlready) {
-
-            String notificationSetting = "vibrate+ring";
-            triggerSenseableNotification(notificationSetting,context);
-
             Intent notificationIntent = new Intent(context, StartupActivity.class);
             PendingIntent pendingIntent =
                     PendingIntent.getActivity(context, 0, notificationIntent, 0);
