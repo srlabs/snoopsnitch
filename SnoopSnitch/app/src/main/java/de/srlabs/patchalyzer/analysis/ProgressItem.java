@@ -14,7 +14,7 @@ class ProgressItem{
     public void update(double progress){
         this.progress = progress;
         if(service != null)
-            service.updateProgress(true);
+            service.updateProgress();
     }
     public double getWeight(){
         return weight;

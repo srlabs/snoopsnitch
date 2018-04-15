@@ -188,9 +188,11 @@ public class PatchalyzerService extends Service {
         public void updateCallback(final ITestExecutorCallbacks callback){
             Log.d(Constants.LOG_TAG,"Updating callbacks.");
             PatchalyzerService.patchalyzerMainActivityCallback = callback;
+
             if (isAnalysisRunning) {
-                updateProgress(false);
+                updateProgress();
             }
+
         }
 
         @Override
@@ -347,7 +349,7 @@ public class PatchalyzerService extends Service {
             }
 
             clearProgress();
-            updateProgress(true);
+            updateProgress();
 
             final CertifiedBuildChecker certifiedBuildChecker = CertifiedBuildChecker.getInstance();
 
@@ -384,7 +386,7 @@ public class PatchalyzerService extends Service {
                 parseTestSuiteProgress = null;
             }
 
-            updateProgress(true);
+            updateProgress();
 
             ProgressItem downloadRequestsProgress = addProgressItem("downloadRequests", 0.5);
             Thread requestsThread = new RequestsThread(downloadRequestsProgress, certifiedBuildChecker);
@@ -531,11 +533,11 @@ public class PatchalyzerService extends Service {
         return totalProgress;
     }
 
-    public void updateProgress(boolean showFinishedNotification) {
+    public void updateProgress() {
         double totalProgress = getTotalProgress();
         sendProgressToCallback(totalProgress);
         if(totalProgress == 1.0) {
-            onFinishedAnalysis(showFinishedNotification);
+            onFinishedAnalysis();
         }
     }
 
@@ -546,7 +548,7 @@ public class PatchalyzerService extends Service {
         return basicIntegrity == Boolean.TRUE && ctsProfileMatch == Boolean.TRUE;
     }
 
-    private void onFinishedAnalysis(boolean showFinishedNotification) {
+    private void onFinishedAnalysis() {
         String analysisResultString = null;
         try {
             analysisResultString = mBinder.evaluateVulnerabilitiesTests();
@@ -556,8 +558,7 @@ public class PatchalyzerService extends Service {
         isAnalysisRunning = false;
         sendFinishedToCallback(analysisResultString, isBuildCertified());
 
-        if(showFinishedNotification)
-            NotificationHelper.showAnalysisFinishedNotification(this);
+        NotificationHelper.showAnalysisFinishedNotification(this);
 
         stopForeground(true);
         stopSelf();
@@ -772,7 +773,7 @@ public class PatchalyzerService extends Service {
                     Log.i(Constants.LOG_TAG, "Adding progress item for request " + i);
                     requestProgress.add(addProgressItem("Request_" + i, 1.0));
                 }
-                updateProgress(true);
+                updateProgress();
                 for(int i=0;i<requestsJson.length();i++){
                     JSONObject request = requestsJson.getJSONObject(i);
                     String requestType = request.getString("requestType");
@@ -787,11 +788,11 @@ public class PatchalyzerService extends Service {
                         api.reportFile(filename, TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(),
                                 Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse());
                         requestProgress.get(i).update(1.0);
-                        updateProgress(true);
+                        updateProgress();
                     } else{
                         Log.e(Constants.LOG_TAG, "Received invalid request type " + requestType);
                         requestProgress.get(i).update(1.0);
-                        updateProgress(true);
+                        updateProgress();
                     }
                 }
                 Log.i(Constants.LOG_TAG,"Reporting files to server finished...");
@@ -805,7 +806,7 @@ public class PatchalyzerService extends Service {
                 for(ProgressItem x:requestProgress){
                     x.update(1.0);
                 }
-                updateProgress(true);
+                updateProgress();
             }
         }
     }
