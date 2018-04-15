@@ -229,4 +229,8 @@ public class MsdConfig {
     public static String getPatchAnalysisNotificationSetting(Context context) {
         return sharedPrefs(context).getString("settings_patch_analysis_event", "vibrate+ring");
     }
+
+    public static boolean getShowInconclusivePatchAnalysisTestResults(Context context) {
+        return sharedPrefs(context).getBoolean("settings_patch_analysis_show_inconclusive", false);
+    }
 }

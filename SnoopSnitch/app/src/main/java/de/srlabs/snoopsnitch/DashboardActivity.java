@@ -120,6 +120,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         }
     };
 
+
     class TestExecutorDashboardCallbacks extends ITestExecutorDashboardCallbacks.Stub{
         @Override
         public void finished(final String analysisResultString, final boolean isBuildCertified,
@@ -369,6 +370,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
     private void refreshPatchalyzerResultSum() {
         // TODO: Maybe call resultChart.loadValuesFromSharedPrefs(this); here?
+        resultChart.loadValuesFromCachedResult(this);
         resultChart.invalidate();
     }
 

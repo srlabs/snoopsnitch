@@ -22,6 +22,14 @@
             android:title="@string/settings_active_test_disable_upload_title" />
     </PreferenceCategory>
     <PreferenceCategory
+        android:key="cat_patch_analysis"
+        android:title="@string/settings_patch_analysis_category">
+        <CheckBoxPreference android:key="settings_patch_analysis_show_inconclusive"
+            android:title="@string/settings_patch_analysis_show_inconclusive_title"
+            android:summary="@string/settings_patch_analysis_show_inconclusive_summary"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory
         android:key="cat_notifications"
         android:title="@string/settings_cat_notifications">
         <ListPreference

@@ -170,7 +170,7 @@ https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
     <string name="detailChart_title_hour">Last hour</string>
 
     <!-- Preferences Screen -->
-    <string name="settings_actionBar_title">Network test settings</string>
+    <string name="settings_actionBar_title">Settings</string>
 
     <string name="settings_start_on_boot_title">Start on boot</string>
     <string name="settings_start_on_boot_summary">Start the SnoopSnitch background service automatically when the device is booted</string>
@@ -528,5 +528,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="patchalyzer_new_version_available_instructions">This app version is out of date. Please update to the latest version of SnoopSnitch.</string>
     <string name="settings_patch_analysis_event">Patch analysis events</string>
     <string name="settings_patch_analysis_event_notification_summary">You can choose how you want to get alarmed, when a Patch Analysis event occurs</string>
+    <string name="settings_patch_analysis_category">Patch analysis</string>
+    <string name="settings_patch_analysis_show_inconclusive_title">Show inconclusive test results</string>
+    <string name="settings_patch_analysis_show_inconclusive_summary">Show inconclusive test results in the Patch analysis results</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package de.srlabs.snoopsnitch;
 
+import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -125,6 +126,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                 msdServiceHelper.stopRecording();
                 msdServiceHelper.startRecording();
             }
+
             settingsChanged = false;
         }
         super.onDestroyView();

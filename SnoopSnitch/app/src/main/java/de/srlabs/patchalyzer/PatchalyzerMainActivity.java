@@ -55,6 +55,7 @@ import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.views.PatchlevelDateOverviewChart;
 import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.StartupActivity;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 
 
 public class PatchalyzerMainActivity extends FragmentActivity {
@@ -275,7 +276,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         wv.loadData(html, "text/html; charset=utf-8","utf-8");
         metaInfoTextScrollView.addView(wv);
     }
-    public void displayCutline(HashMap<String,PatchalyzerSumResultChart.ResultPart> results){
+    public void displayCutline(HashMap<PatchalyzerSumResultChart.Result,PatchalyzerSumResultChart.ResultPart> results){
+        boolean showInconclusive = MsdConfig.getShowInconclusivePatchAnalysisTestResults(this);
         String html = "<html>" + getWebViewFontStyle() + "<body>\n" +
                 "<table style=\"border:0px collapse;float:right;\">";
         if(results == null) {
@@ -285,25 +287,28 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_MISSING) + "\">" + this.getResources().getString(R.string.patchalyzer_patch_missing) +
                             "</span></td><td></td></tr>" +
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTCLAIMED) + "\">" + this.getResources().getString(R.string.patchalyzer_after_claimed_patchlevel) +
-                            "</span></td><td></td></tr>" +
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + this.getResources().getString(R.string.patchalyzer_inconclusive) +
-                            "</span></td><td></td></tr>" +
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + this.getResources().getString(R.string.patchalyzer_not_affected) +
                             "</span></td><td></td></tr>";
-        }else if(results.size() == 5 && results.containsKey("patched") && results.containsKey("missing") && results.containsKey("notClaimed") &&
-                results.containsKey("inconclusive") && results.containsKey("notAffected")){
+            if(showInconclusive)
+                html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + this.getResources().getString(R.string.patchalyzer_inconclusive) +
+                    "</span></td><td></td></tr>";
+
+            html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + this.getResources().getString(R.string.patchalyzer_not_affected) +
+                            "</span></td><td></td></tr>";
+        }else if((results.size() == 5 || results.size() == 4) && results.containsKey(PatchalyzerSumResultChart.Result.PATCHED) && results.containsKey(PatchalyzerSumResultChart.Result.MISSING) && results.containsKey(PatchalyzerSumResultChart.Result.NOTCLAIMED) &&
+                results.containsKey(PatchalyzerSumResultChart.Result.NOTAFFECTED)){
             //display number of results for each category
             html +=
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + this.getResources().getString(R.string.patchalyzer_patched) +
-                    "</span></td><td style=\"text-align:right;\">"+results.get("patched").getCount()+"</td></tr>" +
+                    "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.PATCHED).getCount()+"</td></tr>" +
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_MISSING) + "\">" + this.getResources().getString(R.string.patchalyzer_patch_missing) +
-                    "</span></td><td style=\"text-align:right;\">"+results.get("missing").getCount()+"</td></tr>" +
+                    "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.MISSING).getCount()+"</td></tr>" +
                     "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTCLAIMED) + "\">" + this.getResources().getString(R.string.patchalyzer_after_claimed_patchlevel) +
-                    "</span></td><td style=\"text-align:right;\">"+results.get("notClaimed").getCount()+"</td></tr>" +
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + this.getResources().getString(R.string.patchalyzer_inconclusive) +
-                    "</span></td><td style=\"text-align:right;\">"+results.get("inconclusive").getCount()+"</td></tr>" +
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + this.getResources().getString(R.string.patchalyzer_not_affected) +
-                    "</span></td><td style=\"text-align:right;\">"+results.get("notAffected").getCount()+"</td></tr>";
+                    "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.NOTCLAIMED).getCount()+"</td></tr>";
+            if(showInconclusive)
+                    html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + this.getResources().getString(R.string.patchalyzer_inconclusive) +
+                    "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.INCONCLUSIVE).getCount()+"</td></tr>";
+            html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + this.getResources().getString(R.string.patchalyzer_not_affected) +
+                    "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.NOTAFFECTED).getCount()+"</td></tr>";
         }
         else{
             Log.e(Constants.LOG_TAG,"displayCutline: Result information missing!");
@@ -572,6 +577,10 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     JSONObject vulnerability = vulnerabilitiesForCategory.getJSONObject(i);
 
                     int color = getVulnerabilityIndicatorColor(vulnerability, category);
+
+                    if(!MsdConfig.getShowInconclusivePatchAnalysisTestResults(this) && (color == Constants.COLOR_INCONCLUSIVE)) //only show inconclusive in PatchalyzerDateOverviewChart if enabled in settings
+                        continue;
+
                     statusColors.add(color);
                     switch(color){
                         case Constants.COLOR_PATCHED:
@@ -645,8 +654,13 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
             for(int i=0;i<vulnerabilitiesForPatchlevelDate.length();i++) {
                 JSONObject vulnerability = vulnerabilitiesForPatchlevelDate.getJSONObject(i);
+                int resultColor = getVulnerabilityIndicatorColor(vulnerability, category);
+
+                if(!MsdConfig.getShowInconclusivePatchAnalysisTestResults(this) && resultColor == Constants.COLOR_INCONCLUSIVE) // do not show and count inconclusive results, if disabled in settings
+                    continue;
+
                 String identifier = vulnerability.getString("identifier");
-                String identifierColor = toColorString(getVulnerabilityIndicatorColor(vulnerability, category));
+                String identifierColor = toColorString(resultColor);
                 String description = vulnerability.getString("title");
                 html.append("<tr>");
 

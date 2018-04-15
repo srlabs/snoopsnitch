@@ -26,6 +26,7 @@ import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.util.MsdConfig;
 
 /**This UI element visually summarizes the patchalyzer test results in a horizontal,rectangular bar chart
  * Created by jonas on 20.02.18.
@@ -37,12 +38,20 @@ public class PatchalyzerSumResultChart extends View {
     private boolean showNumbers = false;
     private boolean isSmall = false;
     private boolean drawBorder = true;
-    static HashMap<String, ResultPart> parts = new HashMap<String, ResultPart>();
+    static HashMap<Result, ResultPart> parts = new HashMap<Result, ResultPart>();
     private static boolean isAnalysisRunning = false;
     private static JSONObject resultToDrawFrom = null;
     private final boolean PAINT_DEBUG = false; //set to true to e.g. see center of drawn parts
 
-    private static final String[] drawOrder = {"patched", "missing", "notClaimed", "inconclusive", "notAffected"};
+    public enum Result{
+        PATCHED,
+        MISSING,
+        NOTCLAIMED,
+        INCONCLUSIVE,
+        NOTAFFECTED
+    }
+
+    private static final Result[] drawOrder = {Result.PATCHED, Result.MISSING, Result.NOTCLAIMED, Result.INCONCLUSIVE, Result.NOTAFFECTED};
 
     public PatchalyzerSumResultChart(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -65,11 +74,11 @@ public class PatchalyzerSumResultChart extends View {
             a.recycle();
         }
 
-        parts.put("patched", new ResultPart(0, Constants.COLOR_PATCHED));
-        parts.put("inconclusive", new ResultPart(0, Constants.COLOR_INCONCLUSIVE));
-        parts.put("missing", new ResultPart(0, Constants.COLOR_MISSING));
-        parts.put("notAffected", new ResultPart(0, Constants.COLOR_NOTAFFECTED));
-        parts.put("notClaimed", new ResultPart(0, Constants.COLOR_NOTCLAIMED));
+        parts.put(Result.PATCHED, new ResultPart(0, Constants.COLOR_PATCHED));
+        parts.put(Result.INCONCLUSIVE, new ResultPart(0, Constants.COLOR_INCONCLUSIVE));
+        parts.put(Result.MISSING, new ResultPart(0, Constants.COLOR_MISSING));
+        parts.put(Result.NOTAFFECTED, new ResultPart(0, Constants.COLOR_NOTAFFECTED));
+        parts.put(Result.NOTCLAIMED, new ResultPart(0, Constants.COLOR_NOTCLAIMED));
     }
 
     public static void setAnalysisRunning(boolean running){
@@ -77,28 +86,33 @@ public class PatchalyzerSumResultChart extends View {
     }
 
     public void increasePatched(int addition) {
-        ResultPart part = parts.get("patched");
-        part.addCount(addition);
+        ResultPart part = parts.get(Result.PATCHED);
+        if(part != null)
+            part.addCount(addition);
     }
 
     public void increaseInconclusive(int addition) {
-        ResultPart part = parts.get("inconclusive");
-        part.addCount(addition);
+        ResultPart part = parts.get(Result.INCONCLUSIVE);
+        if(part != null)
+            part.addCount(addition);
     }
 
     public void increaseMissing(int addition) {
-        ResultPart part = parts.get("missing");
-        part.addCount(addition);
+        ResultPart part = parts.get(Result.MISSING);
+        if(part != null)
+            part.addCount(addition);
     }
 
     public void increaseNotAffected(int addition) {
-        ResultPart part = parts.get("notAffected");
-        part.addCount(addition);
+        ResultPart part = parts.get(Result.NOTAFFECTED);
+        if(part != null)
+            part.addCount(addition);
     }
 
     public void increaseNotClaimed(int addition) {
-        ResultPart part = parts.get("notClaimed");
-        part.addCount(addition);
+        ResultPart part = parts.get(Result.NOTCLAIMED);
+        if(part != null)
+            part.addCount(addition);
     }
 
     public static void setResultToDrawFromOnNextUpdate(JSONObject newResultToDrawFrom) {
@@ -127,6 +141,11 @@ public class PatchalyzerSumResultChart extends View {
         }
 
         float borderWidth = chartHeight * 0.025f;
+
+        // do not show inconclusive test results, if disabled in settings (-> default is disabled)
+        if(!MsdConfig.getShowInconclusivePatchAnalysisTestResults(getContext())){
+            parts.remove(Result.INCONCLUSIVE);
+        }
 
         int sumCVEs = 0;
         //calculate sum of CVE tests
@@ -212,8 +231,11 @@ public class PatchalyzerSumResultChart extends View {
 
         if (sumCVEs > 0) {
             //draw parts in list order
-            for (String key : drawOrder) {
+            for (Result key : drawOrder) {
                 ResultPart part = parts.get(key);
+                if(part == null) //inconclusive might not be in there
+                    continue;
+
                 partWidth = startX + chartWidth * (1f * part.getCount() / sumCVEs);
                 paint.setColor(part.getColor());
                 paint.setTextSize(textSize);
@@ -299,6 +321,10 @@ public class PatchalyzerSumResultChart extends View {
         for (ResultPart part : parts.values()) {
             part.setCount(0);
         }
+        // add inconclusive again, so that it can be set
+        if(!parts.containsKey(Result.INCONCLUSIVE)){
+            parts.put(Result.INCONCLUSIVE, new ResultPart(0, Constants.COLOR_INCONCLUSIVE));
+        }
     }
 
     /**
@@ -363,7 +389,7 @@ public class PatchalyzerSumResultChart extends View {
         loadValuesFromJSONResult(SharedPrefsHelper.getAnalysisResult(context));
     }
 
-    public HashMap<String, ResultPart> getParts(){
+    public HashMap<Result, ResultPart> getParts(){
         return parts;
     }
 
