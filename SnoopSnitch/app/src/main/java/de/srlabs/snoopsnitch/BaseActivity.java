@@ -192,6 +192,7 @@ public class BaseActivity extends FragmentActivity {
                 if (!StartupActivity.isSNSNCompatible()){
                     //no MSdService, so we do the work here
                     if(uploadThread != null && !uploadThread.isAlive()) {
+                        uploadThread = new FileUploadThread(this);
                         uploadThread.requestUploadRound();
                         uploadThread.start();
                     }
