@@ -613,6 +613,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                     tmp[i] = statusColors.get(i);
                 }
                 PatchlevelDateOverviewChart chart = new PatchlevelDateOverviewChart(this, tmp);
+                chart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showDetailsNoTable(category);
+                    }
+                });
                 row.addView(chart);
                 rows.addView(row);
             }
