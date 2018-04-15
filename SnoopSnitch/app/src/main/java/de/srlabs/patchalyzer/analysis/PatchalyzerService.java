@@ -623,7 +623,7 @@ public class PatchalyzerService extends Service {
                         patchalyzerMainActivityCallback.updateProgress(totalProgress);
                     }
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "PatchalyzerService.updateProgress() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService.updateProgress() RemoteException: "+ e.getClass());
                 }
             }
         });
@@ -638,7 +638,7 @@ public class PatchalyzerService extends Service {
                         patchalyzerMainActivityCallback.reloadViewState();
                     }
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "PatchalyzerService.sendReloadViewStateToCallback() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService.sendReloadViewStateToCallback() RemoteException: "+ e.getClass());
                 }
             }
         });
@@ -653,7 +653,7 @@ public class PatchalyzerService extends Service {
                         patchalyzerMainActivityCallback.showErrorMessage(error);
                     }
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "PatchalyzerService.reportError() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService.reportError() RemoteException: " + e.getClass());
                 }
             }
         });
@@ -668,7 +668,7 @@ public class PatchalyzerService extends Service {
                         patchalyzerMainActivityCallback.showNoCVETestsForApiLevel(message);
                     }
                 } catch (RemoteException e) {
-                    Log.e(Constants.LOG_TAG, "PatchalyzerService.showNoCVETestsForApiLevel() RemoteException", e);
+                    Log.e(Constants.LOG_TAG, "PatchalyzerService.showNoCVETestsForApiLevel() RemoteException: " + e.getClass());
                 }
             }
         });
