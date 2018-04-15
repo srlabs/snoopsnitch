@@ -182,7 +182,9 @@ public class PatchalyzerService extends Service {
         public void updateCallback(final ITestExecutorCallbacks callback){
             Log.d(Constants.LOG_TAG,"Updating callbacks.");
             PatchalyzerService.patchalyzerMainActivityCallback = callback;
-            updateProgress();
+            if (isAnalysisRunning) {
+                updateProgress();
+            }
         }
 
         @Override
@@ -818,6 +820,8 @@ public class PatchalyzerService extends Service {
             return START_NOT_STICKY;
         }
 
+        SharedPrefsHelper.clearSavedAnalysisResult(this);
+        SharedPrefsHelper.clearSavedStickyErrorMessage(this);
         isAnalysisRunning = true;
         currentAnalysisTimestamp = System.currentTimeMillis();
 

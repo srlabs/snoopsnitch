@@ -120,6 +120,11 @@ public class SharedPrefsHelper {
         putString(KEY_STICKY_ERROR_MESSAGE, "", context);
     }
 
+    public static void clearSavedStickyErrorMessageNonPersistent() {
+        cachedStickyErrorMessage = null;
+        Log.d(Constants.LOG_TAG,"Deleting cached stickyErrorMessage");
+    }
+
     public static String getStickyErrorMessage(ContextWrapper context) {
         if (cachedStickyErrorMessage != null) {
             return cachedStickyErrorMessage;
@@ -143,6 +148,13 @@ public class SharedPrefsHelper {
         Log.d(Constants.LOG_TAG,"Deleting analysisResult from sharedPrefs");
         putString(KEY_ANALYSIS_RESULT, "", context);
     }
+
+    public static void clearSavedAnalysisResultNonPersistent() {
+        cachedResultJSON = null;
+        isBuildFromLastAnalysisCertified = null;
+        Log.d(Constants.LOG_TAG,"Deleting cached analysisResult");
+    }
+
 
     public static boolean isBuildFromLastAnalysisCertified(Context context) {
         if (isBuildFromLastAnalysisCertified == null) {

@@ -471,8 +471,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
     private void startTest(){
         if(!TestUtils.isTooOldAndroidAPIVersion()) {
-            SharedPrefsHelper.clearSavedAnalysisResult(this);
-            SharedPrefsHelper.clearSavedStickyErrorMessage(this);
+            SharedPrefsHelper.clearSavedAnalysisResultNonPersistent();
+            SharedPrefsHelper.clearSavedStickyErrorMessageNonPersistent();
             resultChart.resetCounts();
             PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(null);
             resultChart.invalidate();
