@@ -27,6 +27,7 @@ import de.srlabs.patchalyzer.Constants;
 import de.srlabs.patchalyzer.ITestExecutorCallbacks;
 import de.srlabs.patchalyzer.ITestExecutorDashboardCallbacks;
 import de.srlabs.patchalyzer.ITestExecutorServiceInterface;
+import de.srlabs.patchalyzer.helpers.database.DBHelper;
 import de.srlabs.patchalyzer.helpers.database.PADatabaseManager;
 import de.srlabs.patchalyzer.helpers.database.PASQLiteOpenHelper;
 import de.srlabs.patchalyzer.util.CertifiedBuildChecker;
@@ -116,6 +117,11 @@ public class PatchalyzerService extends Service {
 
     protected void cancelAnalysis() {
         Log.d(Constants.LOG_TAG,"PatchalyzerService.cancelAnalysis called");
+
+        //close DB
+        DBHelper dbHelper = new DBHelper(this);
+        dbHelper.closeDB();
+
         stopForeground(true);
         stopSelf();
         System.exit(0);

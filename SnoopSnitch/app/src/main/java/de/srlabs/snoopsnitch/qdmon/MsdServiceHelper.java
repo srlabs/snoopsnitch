@@ -183,6 +183,10 @@ public class MsdServiceHelper {
     }
 
     public void triggerUploading() {
+        if (!connected) {
+            Log.i(TAG, "MsdServiceHelper.triggerUploading(): Not connected!");
+            return;
+        }
         try {
             mIMsdService.triggerUploading();
         } catch (RemoteException e) {
@@ -191,6 +195,7 @@ public class MsdServiceHelper {
     }
 
     public long reopenAndUploadDebugLog() {
+
         try {
             return mIMsdService.reopenAndUploadDebugLog();
         } catch (RemoteException e) {
