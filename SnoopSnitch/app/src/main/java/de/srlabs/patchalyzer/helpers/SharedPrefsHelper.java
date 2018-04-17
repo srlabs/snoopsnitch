@@ -258,4 +258,5 @@ public class SharedPrefsHelper {
         editor.putString(KEY_BUILD_CERTIFIED_BASICINTEGRITY_MATCH, ""+basicIntegrity);
         editor.commit();
     }
+
 }

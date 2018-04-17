@@ -28,7 +28,7 @@ public class ServiceConnectionHelper {
         try {
             resultJSON = new JSONObject(analysisResultString);
         } catch (JSONException e) {
-            Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs. Returning null");
+            Log.d(Constants.LOG_TAG,"Could not parse JSON from SharedPrefs", e);
         }
         PatchalyzerSumResultChart.setAnalysisRunning(false);
         PatchalyzerSumResultChart.setResultToDrawFromOnNextUpdate(resultJSON);

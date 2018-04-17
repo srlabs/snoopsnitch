@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -337,6 +339,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(upIntent);
                 finish();
+                return true;
+            case R.id.menu_action_pa_inconclusive:
+                boolean showInconclusive = !item.isChecked();
+                item.setChecked(showInconclusive);
+                MsdConfig.setShowInconclusiveResults(this, showInconclusive);
+                restoreState();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -824,4 +832,28 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             }
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.patch_analysis, menu);
+
+        resetMenuEntryStates(menu);
+
+        return true;
+    }
+
+    private void resetMenuEntryStates(Menu menu) {
+        if(menu != null) {
+            //set "show inconclusive results" checkbox to current state
+            MenuItem showInconclusiveMenuItem = menu.findItem(R.id.menu_action_pa_inconclusive);
+            showInconclusiveMenuItem.setChecked(MsdConfig.getShowInconclusivePatchAnalysisTestResults(this));
+        }
+    }
+
+    private void refreshPatchalyzerResultSum() {
+        resultChart.loadValuesFromCachedResult(this);
+        resultChart.invalidate();
+    }
+
 }

@@ -153,7 +153,7 @@ public class PatchalyzerSumResultChart extends View {
             sumCVEs += part.getCount();
         }
 
-        if(sumCVEs > 0 && !TestUtils.isTooOldAndroidAPIVersion()) {
+        if(sumCVEs > 0 && !TestUtils.isTooOldAndroidAPIVersion() && !isAnalysisRunning) {
             drawResults(sumCVEs, chartHeight, marginleftright);
         }
         else{

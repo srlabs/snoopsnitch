@@ -200,15 +200,15 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
 
         resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
-        LinearLayout patch_analysis_box = (LinearLayout) findViewById(R.id.patchalyzer_summary);
+        LinearLayout patchAnalysisBox = (LinearLayout) findViewById(R.id.patchalyzer_summary);
         if(!TestUtils.isTooOldAndroidAPIVersion()) {
-            patch_analysis_box.setOnClickListener(new View.OnClickListener() {
+            patchAnalysisBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showPatchalyzer();
                 }
             });
-            resultChart.loadValuesFromCachedResult(this);
+            refreshPatchalyzerResultSum();
         }
 
         checkCompatibilityAndDisableFunctions();
@@ -369,9 +369,18 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     }
 
     private void refreshPatchalyzerResultSum() {
-        // TODO: Maybe call resultChart.loadValuesFromSharedPrefs(this); here?
-        resultChart.loadValuesFromCachedResult(this);
-        resultChart.invalidate();
+        boolean isAnalysisRunning = false;
+        if(mITestExecutorService != null){
+            try{
+                isAnalysisRunning = mITestExecutorService.isAnalysisRunning();
+            } catch(RemoteException e){
+                //ignore
+            }
+        }
+        if(!isAnalysisRunning) {
+            resultChart.loadValuesFromCachedResult(this);
+            resultChart.invalidate();
+        }
     }
 
     private void checkOperator() {

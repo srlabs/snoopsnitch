@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Environment;
 
+import de.srlabs.patchalyzer.PatchalyzerMainActivity;
+
 
 /**
  * This class contains a set of static methods for accessing the App configuration.
@@ -226,11 +228,18 @@ public class MsdConfig {
         edit.commit();
     }
 
+    //-- Patch analysis related
     public static String getPatchAnalysisNotificationSetting(Context context) {
         return sharedPrefs(context).getString("settings_patch_analysis_event", "vibrate+ring");
     }
 
     public static boolean getShowInconclusivePatchAnalysisTestResults(Context context) {
         return sharedPrefs(context).getBoolean("settings_patch_analysis_show_inconclusive", false);
+    }
+
+    public static void setShowInconclusiveResults(Context context, boolean showInconclusive) {
+        SharedPreferences.Editor edit = sharedPrefs(context).edit();
+        edit.putBoolean("settings_patch_analysis_show_inconclusive", showInconclusive);
+        edit.commit();
     }
 }

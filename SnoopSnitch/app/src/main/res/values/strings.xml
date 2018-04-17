@@ -531,5 +531,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="settings_patch_analysis_category">Patch analysis</string>
     <string name="settings_patch_analysis_show_inconclusive_title">Show inconclusive test results</string>
     <string name="settings_patch_analysis_show_inconclusive_summary">Show inconclusive test results in the Patch analysis results</string>
+    <string name="patchalyzer_menu_show_inconclusive">Show inconclusive results</string>
+    <string name="patchalyzer_menu_show_inconclusive_short">inconclusive results</string>
 
 </resources>
