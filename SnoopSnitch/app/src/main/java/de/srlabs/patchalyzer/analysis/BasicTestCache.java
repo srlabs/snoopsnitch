@@ -181,7 +181,7 @@ public class BasicTestCache {
                     try {
                         BasicTestResult testResult = resultQueue.take();
                         if (testResult.getException() != null) {
-                            //Log.d(Constants.LOG_TAG,"TestResult: "+testResult.getBasicTestUUID()+" exception:"+testResult.getException());
+                            Log.d(Constants.LOG_TAG,"TestResult: "+testResult.getBasicTestUUID()+" exception:"+testResult.getException());
                             database.addTestExceptionToDB(testResult.getBasicTestUUID(), testResult.getException());
                         } else {
                             //Log.d(Constants.LOG_TAG,"TestResult: "+testResult.getBasicTestUUID()+" result:"+testResult.getResult());

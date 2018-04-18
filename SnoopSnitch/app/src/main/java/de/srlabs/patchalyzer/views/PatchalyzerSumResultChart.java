@@ -19,14 +19,11 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Vector;
 
 import de.srlabs.patchalyzer.Constants;
 import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
-import de.srlabs.snoopsnitch.R;
-import de.srlabs.snoopsnitch.util.MsdConfig;
 
 /**This UI element visually summarizes the patchalyzer test results in a horizontal,rectangular bar chart
  * Created by jonas on 20.02.18.
@@ -61,13 +58,13 @@ public class PatchalyzerSumResultChart extends View {
         // Read attribute from XML, so we can reuse the same view in SNSN overview and PA details
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.PatchalyzerSumResultChart,
+                getResultChartStyleables(),
                 0, 0);
 
         try {
-            showNumbers = a.getBoolean(R.styleable.PatchalyzerSumResultChart_shownumbers, false);
-            isSmall = a.getBoolean(R.styleable.PatchalyzerSumResultChart_small, false);
-            drawBorder = a.getBoolean(R.styleable.PatchalyzerSumResultChart_drawborder, true);
+            showNumbers = a.getBoolean(getStyleableId("PatchalyzerSumResultChart_shownumbers"), false);
+            isSmall = a.getBoolean(getStyleableId("PatchalyzerSumResultChart_small"), false);
+            drawBorder = a.getBoolean(getStyleableId("PatchalyzerSumResultChart_drawborder"), true);
 
             //Log.d(Constants.LOG_TAG, "PatchalyzerSumResultChart created: " + (showNumbers ? "showing numbers" : "not showing numbers") + ";" + (isSmall ? "small" : "large"));
         } finally {
@@ -79,6 +76,14 @@ public class PatchalyzerSumResultChart extends View {
         parts.put(Result.MISSING, new ResultPart(0, Constants.COLOR_MISSING));
         parts.put(Result.NOTAFFECTED, new ResultPart(0, Constants.COLOR_NOTAFFECTED));
         parts.put(Result.NOTCLAIMED, new ResultPart(0, Constants.COLOR_NOTCLAIMED));
+    }
+
+    private int[] getResultChartStyleables(){
+        return Constants.getAppFlavor().getStyleIdResultChart();
+    }
+
+    private int getStyleableId(String styleableId) {
+        return Constants.getAppFlavor().getStyleResultChart(styleableId);
     }
 
     public static void setAnalysisRunning(boolean running){
@@ -143,7 +148,7 @@ public class PatchalyzerSumResultChart extends View {
         float borderWidth = chartHeight * 0.025f;
 
         // do not show inconclusive test results, if disabled in settings (-> default is disabled)
-        if(!MsdConfig.getShowInconclusivePatchAnalysisTestResults(getContext())){
+        if(!getShowInconclusivePatchAnalysisTestResults(getContext())){
             parts.remove(Result.INCONCLUSIVE);
         }
 
@@ -179,18 +184,18 @@ public class PatchalyzerSumResultChart extends View {
         float textSize = chartHeight * 0.35f;
 
         //draw chart with gray background
-        paint.setColor(this.getResources().getColor(R.color.common_button_state_default));
+        paint.setColor(getColor(this.getContext(), "common_button_state_default"));
         canvas.drawRect(new RectF(startX, chartOffsetTopBottom, startX + chartWidth, chartOffsetTopBottom + chartHeight), paint);
 
         String text = null;
         if(TestUtils.isTooOldAndroidAPIVersion()){
-            text = this.getResources().getString(R.string.patchalyzer_too_old_android_api_level_result_chart);
+            text = getString(this,"patchalyzer_too_old_android_api_level_result_chart");
         }
         else if(isAnalysisRunning){
-            text = this.getResources().getString(R.string.patchalyzer_analysis_in_progress);
+            text = getString(this,"patchalyzer_analysis_in_progress");
         }
         else {
-            text = this.getResources().getString(R.string.patchalyzer_no_test_result);
+            text = getString(this, "patchalyzer_no_test_result");
         }
 
         //calculate centered text position
@@ -283,7 +288,7 @@ public class PatchalyzerSumResultChart extends View {
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(getResources().getColor(R.color.common_sectionSeparator));
+        paint.setColor(getColor(this.getContext(), "common_sectionSeparator"));
         paint.setStrokeWidth(borderWidth);
 
         canvas.drawRect(left, top, right, bottom, paint);
@@ -422,4 +427,15 @@ public class PatchalyzerSumResultChart extends View {
         }
     }
 
+    private boolean getShowInconclusivePatchAnalysisTestResults(Context context) {
+        return Constants.getAppFlavor().getShowInconclusivePatchAnalysisTestResults(context);
+    }
+
+    private int getColor(Context context, String colorId) {
+        return Constants.getAppFlavor().getColor(context, colorId);
+    }
+
+    private String getString(View view, String stringId) {
+        return Constants.getAppFlavor().getString(view.getContext(),stringId);
+    }
 }

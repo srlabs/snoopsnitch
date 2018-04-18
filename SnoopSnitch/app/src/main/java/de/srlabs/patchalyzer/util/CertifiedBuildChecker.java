@@ -21,7 +21,6 @@ import java.util.Random;
 
 import de.srlabs.patchalyzer.Constants;
 
-import de.srlabs.patchalyzer.PatchalyzerMainActivity;
 import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;

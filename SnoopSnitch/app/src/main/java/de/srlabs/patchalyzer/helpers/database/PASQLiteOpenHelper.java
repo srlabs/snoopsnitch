@@ -7,15 +7,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.PowerManager;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import de.srlabs.snoopsnitch.qdmon.MsdService;
-import de.srlabs.snoopsnitch.util.Utils;
+import java.io.InputStream;
 
 public class PASQLiteOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = "PASQLiteOpenHelper";
     private static final String DATABASE_NAME = "pa.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     private static final boolean verbose = false;
     private Context context;
 
@@ -35,7 +34,7 @@ public class PASQLiteOpenHelper extends SQLiteOpenHelper {
         try {
             wl.acquire();
             db.beginTransaction();
-            String sql = Utils.readFromAssets(context, file);
+            String sql = readFromAssets(context, file);
             if (verbose) {
                 Log.i(TAG, "PASQLiteOpenHelper.readSQLAsset(" + file + "): " + sql);
             }
@@ -78,5 +77,23 @@ public class PASQLiteOpenHelper extends SQLiteOpenHelper {
         }catch(Exception e){
             Log.e(TAG,"Failed to upgrade Patchalyzer basic tests tables",e);
         }
+    }
+
+    private static String readFromAssets(Context context, String file) throws IOException{
+        String mTAG = "readFromAssets";
+        InputStream inputStream = context.getAssets().open(file);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        int i;
+        try {
+            i = inputStream.read();
+            while (i != -1) {
+                byteArrayOutputStream.write(i);
+                i = inputStream.read();
+            }
+            inputStream.close();
+        } catch (IOException ee) {
+            Log.e(TAG, mTAG + ": IOException in readFromAssets():\n" + ee.toString());
+        }
+        return byteArrayOutputStream.toString();
     }
 }

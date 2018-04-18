@@ -19,7 +19,6 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,9 +54,6 @@ import de.srlabs.patchalyzer.helpers.ServiceConnectionHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
 import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.views.PatchlevelDateOverviewChart;
-import de.srlabs.snoopsnitch.R;
-import de.srlabs.snoopsnitch.StartupActivity;
-import de.srlabs.snoopsnitch.util.MsdConfig;
 
 
 public class PatchalyzerMainActivity extends FragmentActivity {
@@ -88,26 +84,28 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Constants.setAppFlavor(new AppFlavorStandalone()); is default ; Replace this with other implementation when integrating somewhere else
+
         this.callbacks = new TestCallbacks();
         Log.d(Constants.LOG_TAG, "onCreate() called");
         handler = new Handler(Looper.getMainLooper());
-        setContentView(R.layout.activity_patchalyzer);
-        startTestButton = (Button) findViewById(R.id.btnDoIt);
-        webViewContent = (ScrollView) findViewById(R.id.scrollViewTable);
-        errorTextView = (TextView) findViewById(R.id.errorText);
-        percentageText = (TextView) findViewById(R.id.textPercentage);
-        legendView = (WebView) findViewById(R.id.legend);
-        metaInfoTextScrollView = (ScrollView) findViewById(R.id.scrollViewText);
+        setContentView(gePatchalyzerLayoutId());
+        startTestButton = (Button) findViewById(getTestButtonId());
+        webViewContent = (ScrollView) findViewById(getWebViewLayoutId());
+        errorTextView = (TextView) findViewById(getErrorTextId());
+        percentageText = (TextView) findViewById(getPercentageTextId());
+        legendView = (WebView) findViewById(getLegendWebViewId());
+        metaInfoTextScrollView = (ScrollView) findViewById(getMetaInfoViewId());
         //metaInfoTextScrollView.setBackgroundColor(Color.TRANSPARENT);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
-        progressBox = (LinearLayout) findViewById(R.id.progress_box);
+        progressBar = (ProgressBar) findViewById(getProgressBarId());
+        resultChart = (PatchalyzerSumResultChart) findViewById(getResultChartId());
+        progressBox = (LinearLayout) findViewById(getProgressBoxId());
         errorTextView.setText("");
         percentageText.setText("");
         ActionBar actionBar = getActionBar();
 
 
-        String title = this.getResources().getString(R.string.patchalyzer_label_long);
+        String title = getString(this, "patchalyzer_label_long");
         if(!Constants.IS_TEST_MODE) {
             actionBar.setSubtitle("\nApp ID: "+ TestUtils.getAppId(this));
         }else{
@@ -128,12 +126,12 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         if(TestUtils.isTooOldAndroidAPIVersion()){
             startTestButton.setEnabled(false);
             progressBox.setVisibility(View.GONE);
-            showMetaInformation(this.getResources().getString(R.string.patchalyzer_too_old_android_api_level),null);
+            showMetaInformation(getString(this,"patchalyzer_too_old_android_api_level"),null);
         }
     }
 
     private void showErrorMessageInMetaInformation(String errorMessage) {
-        String html = "<p style=\"font-weight:bold;\">" + getResources().getString(R.string.patchalyzer_sticky_error_message_start)
+        String html = "<p style=\"font-weight:bold;\">" + getString(this, "patchalyzer_sticky_error_message_start")
                 + "</p>";
         showMetaInformation(html,errorMessage);
     }
@@ -279,37 +277,37 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         metaInfoTextScrollView.addView(wv);
     }
     public void displayCutline(HashMap<PatchalyzerSumResultChart.Result,PatchalyzerSumResultChart.ResultPart> results){
-        boolean showInconclusive = MsdConfig.getShowInconclusivePatchAnalysisTestResults(this);
+        boolean showInconclusive = getShowInconclusivePatchAnalysisTestResults(this);
         String html = "<html>" + getWebViewFontStyle() + "<body>\n" +
                 "<table style=\"border:0px collapse;float:right;\">";
         if(results == null) {
             html +=
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + this.getResources().getString(R.string.patchalyzer_patched) +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + getString(this,"patchalyzer_patched") +
                             "</span></td><td></td></tr>" +
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_MISSING) + "\">" + this.getResources().getString(R.string.patchalyzer_patch_missing) +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_MISSING) + "\">" + getString(this,"patchalyzer_patch_missing") +
                             "</span></td><td></td></tr>" +
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTCLAIMED) + "\">" + this.getResources().getString(R.string.patchalyzer_after_claimed_patchlevel) +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTCLAIMED) + "\">" + getString(this, "patchalyzer_after_claimed_patchlevel") +
                             "</span></td><td></td></tr>";
             if(showInconclusive)
-                html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + this.getResources().getString(R.string.patchalyzer_inconclusive) +
+                html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + getString(this, "patchalyzer_inconclusive") +
                     "</span></td><td></td></tr>";
 
-            html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + this.getResources().getString(R.string.patchalyzer_not_affected) +
+            html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + getString(this, "patchalyzer_not_affected") +
                             "</span></td><td></td></tr>";
         }else if((results.size() == 5 || results.size() == 4) && results.containsKey(PatchalyzerSumResultChart.Result.PATCHED) && results.containsKey(PatchalyzerSumResultChart.Result.MISSING) && results.containsKey(PatchalyzerSumResultChart.Result.NOTCLAIMED) &&
                 results.containsKey(PatchalyzerSumResultChart.Result.NOTAFFECTED)){
             //display number of results for each category
             html +=
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + this.getResources().getString(R.string.patchalyzer_patched) +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_PATCHED) + "\">" + getString(this,"patchalyzer_patched") +
                     "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.PATCHED).getCount()+"</td></tr>" +
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_MISSING) + "\">" + this.getResources().getString(R.string.patchalyzer_patch_missing) +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_MISSING) + "\">" + getString(this, "patchalyzer_patch_missing") +
                     "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.MISSING).getCount()+"</td></tr>" +
-                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTCLAIMED) + "\">" + this.getResources().getString(R.string.patchalyzer_after_claimed_patchlevel) +
+                    "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTCLAIMED) + "\">" + getString(this, "patchalyzer_after_claimed_patchlevel") +
                     "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.NOTCLAIMED).getCount()+"</td></tr>";
             if(showInconclusive)
-                    html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + this.getResources().getString(R.string.patchalyzer_inconclusive) +
+                    html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_INCONCLUSIVE) + "\">" + getString(this, "patchalyzer_inconclusive") +
                     "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.INCONCLUSIVE).getCount()+"</td></tr>";
-            html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + this.getResources().getString(R.string.patchalyzer_not_affected) +
+            html += "\t<tr><td style=\"padding-right:10px\"><span style=\"color:" + toColorString(Constants.COLOR_NOTAFFECTED) + "\">" + getString(this,"patchalyzer_not_affected") +
                     "</span></td><td style=\"text-align:right;\">"+results.get(PatchalyzerSumResultChart.Result.NOTAFFECTED).getCount()+"</td></tr>";
         }
         else{
@@ -324,31 +322,9 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         //legendView.reload();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                Intent upIntent;
-                if (StartupActivity.isAppInitialized()) {
-                    upIntent = NavUtils.getParentActivityIntent(this);
-                } else {
-                    // StartupActivity needs to run before we can start DashboardActivity
-                    upIntent = new Intent(this, StartupActivity.class);
-                }
-                upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(upIntent);
-                finish();
-                return true;
-            case R.id.menu_action_pa_inconclusive:
-                boolean showInconclusive = !item.isChecked();
-                item.setChecked(showInconclusive);
-                MsdConfig.setShowInconclusiveResults(this, showInconclusive);
-                restoreState();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
+
+
 
     @Override
     protected void onResume(){
@@ -403,7 +379,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 resultChart.setAnalysisRunning(true);
                 webViewContent.setVisibility(View.INVISIBLE);
                 displayCutline(null);
-                showMetaInformation(getResources().getString(R.string.patchalyzer_sum_result_chart_analysis_in_progress), getResources().getString(R.string.patchalyzer_meta_info_analysis_in_progress));
+                showMetaInformation(getString(this, "patchalyzer_sum_result_chart_analysis_in_progress"), getString(this,"patchalyzer_meta_info_analysis_in_progress"));
             } else {
                 // Analysis is not running
                 resultChart.setAnalysisRunning(false);
@@ -420,8 +396,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                         PatchalyzerMainActivity.this.showErrorMessageInMetaInformation(stickyErrorMessage);
                     } else {
                         // No analysis executed yet, show no error message
-                        showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": "
-                                + TestUtils.getPatchlevelDate(),this.getResources().getString(R.string.patchalyzer_no_results_yet));
+                        showMetaInformation(getString(this, "patchalyzer_claimed_patchlevel_date")+": "
+                                + TestUtils.getPatchlevelDate(),getString(this,"patchalyzer_no_results_yet"));
                     }
 
                 } else {
@@ -448,7 +424,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 startTest();
             }
         });
-        startTestButton.setText(getResources().getString(R.string.patchalyzer_button_start_analysis));
+        startTestButton.setText(getString(this, "patchalyzer_button_start_analysis"));
         startTestButton.setEnabled(true);
     }
 
@@ -459,7 +435,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 triggerCancelAnalysis();
             }
         });
-        startTestButton.setText(getResources().getString(R.string.patchalyzer_button_cancel_analysis));
+        startTestButton.setText(getString(this, "patchalyzer_button_cancel_analysis"));
         startTestButton.setEnabled(true);
     }
 
@@ -535,14 +511,14 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         //Log.i(Constants.LOG_TAG, "showPatchlevelDateNoTable(): w=" + webViewContent.getWidth() + "  h=" + webViewContent.getHeight() + "  innerW=" + webViewContent.getChildAt(0).getWidth() + "  innerH=" + webViewContent.getChildAt(0).getHeight());
         try{
             JSONObject testResults = SharedPrefsHelper.getAnalysisResult(this);
-            String metaInfo = this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": <b>" + refPatchlevelDate +"</b>";
+            String metaInfo = getString(this,"patchalyzer_claimed_patchlevel_date")+": <b>" + refPatchlevelDate +"</b>";
             if(SharedPrefsHelper.getAnalysisResult(this) == null) {
                 showMetaInformation(metaInfo,null);
                 displayCutline(null);
                 return;
             }
             if (SharedPrefsHelper.isBuildFromLastAnalysisCertified(this)) {
-                metaInfo += " " + this.getResources().getString(R.string.patchalyzer_certified_build);
+                metaInfo += " " + getString(this, "patchalyzer_certified_build");
             }
             showMetaInformation(metaInfo,null);
             Vector<String> categories = new Vector<String>();
@@ -558,7 +534,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             for (final String category : categories) {
                 LinearLayout row = new LinearLayout(this);
                 row.setGravity(Gravity.CENTER_VERTICAL);
-                Button button = (Button) getLayoutInflater().inflate(R.layout.custom_button, null);
+                Button button = (Button) getLayoutInflater().inflate(getCustomButtonLayoutId(), null);
                 String truncatedCategory = category;
                 if (category.startsWith("201")) {
                     truncatedCategory = category.substring(0, 7);
@@ -586,7 +562,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
                     int color = getVulnerabilityIndicatorColor(vulnerability, category);
 
-                    if(!MsdConfig.getShowInconclusivePatchAnalysisTestResults(this) && (color == Constants.COLOR_INCONCLUSIVE)) //only show inconclusive in PatchalyzerDateOverviewChart if enabled in settings
+                    if(!getShowInconclusivePatchAnalysisTestResults(this) && (color == Constants.COLOR_INCONCLUSIVE)) //only show inconclusive in PatchalyzerDateOverviewChart if enabled in settings
                         continue;
 
                     statusColors.add(color);
@@ -649,6 +625,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             Log.e(Constants.LOG_TAG, "showPatchlevelDateTable Exception", e);
         }
     }
+
     private void showDetailsNoTable(String category){
 
         String refPatchlevelDate = TestUtils.getPatchlevelDate();
@@ -657,7 +634,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
         try{
             JSONObject testResults = SharedPrefsHelper.getAnalysisResult(this);
             if(testResults == null){
-                showMetaInformation(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": " + refPatchlevelDate,this.getResources().getString(R.string.patchalyzer_no_test_result)+"!");
+                showMetaInformation(getString(this, "patchalyzer_claimed_patchlevel_date")+": " + refPatchlevelDate,getString(this, "patchalyzer_no_test_result")+"!");
                 return;
             }
             JSONArray vulnerabilitiesForPatchlevelDate = testResults.getJSONArray(category);
@@ -670,7 +647,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
                 JSONObject vulnerability = vulnerabilitiesForPatchlevelDate.getJSONObject(i);
                 int resultColor = getVulnerabilityIndicatorColor(vulnerability, category);
 
-                if(!MsdConfig.getShowInconclusivePatchAnalysisTestResults(this) && resultColor == Constants.COLOR_INCONCLUSIVE) // do not show and count inconclusive results, if disabled in settings
+                if(!getShowInconclusivePatchAnalysisTestResults(this) && resultColor == Constants.COLOR_INCONCLUSIVE) // do not show and count inconclusive results, if disabled in settings
                     continue;
 
                 String identifier = vulnerability.getString("identifier");
@@ -716,7 +693,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
             infoText.append("<span style=\"font-weight:bold;\">" + category);
             infoText.append("</span><span>: " + numCVEs + " CVEs total</span>");
         }else{
-            infoText.append("<span style=\"font-weight:bold;\">"+this.getResources().getString(R.string.patchalyzer_general_tests));
+            infoText.append("<span style=\"font-weight:bold;\">"+getString(this, "patchalyzer_general_tests"));
             infoText.append("</span><span>: " + numCVEs + " tests total</span>");
         }
         showMetaInformation(infoText.toString(),null);
@@ -773,8 +750,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(PatchalyzerMainActivity.this);
 
-            builder.setTitle(this.getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_title));
-            builder.setMessage(this.getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+            builder.setTitle(getString(this, "patchalyzer_dialog_no_internet_connection_title"));
+            builder.setMessage(getString(this, "patchalyzer_dialog_no_internet_connection_text"));
             builder.setIcon(android.R.drawable.ic_dialog_alert);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
@@ -793,8 +770,8 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private void showNoCVETestsForApiLevelDialog(String message){
         String refPatchlevelDate = TestUtils.getPatchlevelDate();
         StringBuilder information = new StringBuilder();
-        information.append(this.getResources().getString(R.string.patchalyzer_claimed_patchlevel_date)+": <b>" + refPatchlevelDate +"</b></br>");
-        information.append("<b><u>"+this.getResources().getString(R.string.patchalyzer_dialog_note_title)+"</u></b></br>");
+        information.append(getString(this, "patchalyzer_claimed_patchlevel_date")+": <b>" + refPatchlevelDate +"</b></br>");
+        information.append("<b><u>"+getString(this, "patchalyzer_dialog_note_title")+"</u></b></br>");
         information.append(message+"</br>");
         information.append("Android OS version: "+ Build.VERSION.RELEASE);
         showMetaInformation(information.toString(),null);
@@ -836,7 +813,7 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.patch_analysis, menu);
+        inflater.inflate(getPatchAnalysisMenuId(), menu);
 
         resetMenuEntryStates(menu);
 
@@ -846,14 +823,90 @@ public class PatchalyzerMainActivity extends FragmentActivity {
     private void resetMenuEntryStates(Menu menu) {
         if(menu != null) {
             //set "show inconclusive results" checkbox to current state
-            MenuItem showInconclusiveMenuItem = menu.findItem(R.id.menu_action_pa_inconclusive);
-            showInconclusiveMenuItem.setChecked(MsdConfig.getShowInconclusivePatchAnalysisTestResults(this));
+            MenuItem showInconclusiveMenuItem = menu.findItem(getShowInconclusiveMenuItemId());
+            showInconclusiveMenuItem.setChecked(getShowInconclusivePatchAnalysisTestResults(this));
         }
     }
 
-    private void refreshPatchalyzerResultSum() {
-        resultChart.loadValuesFromCachedResult(this);
-        resultChart.invalidate();
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Respond to the action bar's Up/Home button
+        if(item.getItemId() ==  android.R.id.home) {
+            Constants.getAppFlavor().homeUpButtonMainActivitiyCallback(this, item);
+            return true;
+        }
+        else if(item.getItemId() == getShowInconclusiveMenuItemId()) {
+            boolean showInconclusive = !item.isChecked();
+            item.setChecked(showInconclusive);
+            setShowInconclusiveResults(this, showInconclusive);
+            restoreState();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setShowInconclusiveResults(Context context, boolean showInconclusive) {
+        Constants.getAppFlavor().setShowInconclusiveResults(context, showInconclusive);
+    }
+    private boolean getShowInconclusivePatchAnalysisTestResults(Context context) {
+        return Constants.getAppFlavor().getShowInconclusivePatchAnalysisTestResults(context);
+    }
+
+    private String getString(Context activity, String key) {
+        return Constants.getAppFlavor().getString(activity, key);
+    }
+
+    public int getShowInconclusiveMenuItemId() {
+        return Constants.getAppFlavor().getShowInconclusiveMenuItemID();
+    }
+
+    private int gePatchalyzerLayoutId() {
+        return Constants.getAppFlavor().getPatchalyzerLayoutId();
+    }
+
+    public int getPatchAnalysisMenuId() {
+        return Constants.getAppFlavor().getPatchAnalysisMenuId();
+    }
+
+    public int getCustomButtonLayoutId() {
+        return Constants.getAppFlavor().getCustomButtonLayoutId();
+    }
+
+    public int getTestButtonId() {
+        return Constants.getAppFlavor().getTestButtonId();
+    }
+
+    public int getWebViewLayoutId() {
+        return Constants.getAppFlavor().getWebViewLayoutId();
+    }
+
+    public int getErrorTextId() {
+        return Constants.getAppFlavor().getErrorTextId();
+    }
+
+    public int getPercentageTextId() {
+        return Constants.getAppFlavor().getPercentagTextId();
+    }
+
+    public int getLegendWebViewId() {
+        return Constants.getAppFlavor().getLegendWebViewId();
+    }
+
+    public int getMetaInfoViewId() {
+        return Constants.getAppFlavor().getMetaInfoViewId();
+    }
+
+    public int getProgressBarId() {
+        return Constants.getAppFlavor().getProgressBarId();
+    }
+
+    public int getResultChartId() {
+        return Constants.getAppFlavor().getResultChartId();
+    }
+
+    public int getProgressBoxId() {
+        return Constants.getAppFlavor().getProgressBoxId();
     }
 
 }

@@ -50,10 +50,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.analysis.DirectoryTreeLister;
+import de.srlabs.patchalyzer.analysis.ProgressItem;
 import de.srlabs.patchalyzer.helpers.ProcessHelper;
 import de.srlabs.patchalyzer.analysis.signatures.Section;
 import de.srlabs.patchalyzer.analysis.signatures.SymbolInformation;
-import de.srlabs.snoopsnitch.BaseActivity;
 
 public class TestUtils {
     public static HashMap<String,String> buildProperties = null;
@@ -96,7 +97,7 @@ public class TestUtils {
         }
         return manifest;
     }
-    private static JSONObject readAllManifests(Context context) throws JSONException {
+    protected static JSONObject readAllManifests(Context context) throws JSONException {
         try{
             JSONObject result = new JSONObject();
             JSONObject cookies = new JSONObject();
@@ -212,7 +213,7 @@ public class TestUtils {
         }
         return protectedBroadcasts;
     }
-    private static boolean readBuildProperties(){
+    protected static boolean readBuildProperties(){
         HashMap<String, String> tempBuildProperties = new HashMap<>();
         try{
             Log.w("TestUtils", "Running getprop");
@@ -331,57 +332,8 @@ public class TestUtils {
         }
         return stdoutData;
     }
-    public static JSONObject makeDeviceinfoJson(Context context, final ProgressItem progressItem) {
-        try {
-            JSONObject devinfo = new JSONObject();
-            if (buildProperties == null)
-                readBuildProperties();
-            JSONObject buildProps = new JSONObject(buildProperties);
-            devinfo.put("buildProperties", buildProps);
-            devinfo.put("appId", getAppId(context));
-            devinfo.put("androidApiLevel", Build.VERSION.SDK_INT);
-            devinfo.put("chipVendor", getChipVendor());
-            devinfo.put("proc_version", readFileForDeviceinfo("/proc/version", 4096));
-            devinfo.put("proc_cpuinfo", readFileForDeviceinfo("/proc/cpuinfo", 16384));
-            devinfo.put("proc_cmdline", readFileForDeviceinfo("/proc/cmdline", 4096));
-            devinfo.put("proc_mounts", readFileForDeviceinfo("/proc/mounts", 4096));
-            devinfo.put("proc_filesystems", readFileForDeviceinfo("/proc/filesystems", 4096));
-            devinfo.put("proc_mtd", readFileForDeviceinfo("/proc/mtd", 4096));
-            devinfo.put("proc_devices", readFileForDeviceinfo("/proc/devices", 4096));
-            devinfo.put("proc_modules", readFileForDeviceinfo("/proc/modules", 4096));
-            devinfo.put("proc_sys_kernel_randomize_va_space", readFileForDeviceinfo("/proc/sys/kernel/randomize_va_space", 4096));
-            devinfo.put("aslrTest1", readProcSelfMaps());
-            devinfo.put("aslrTest2", readProcSelfMaps());
-            devinfo.put("aslrTest3", readProcSelfMaps());
-            progressItem.update(0.1); // 10% progress for build properties and basic system info
-            // devinfo.put("PROTECTED_BROADCASTS", getProtectedBroadcasts(context));
-            long filelistStartTime = System.currentTimeMillis();
-            devinfo.put("systemPartition", DirectoryTreeLister.makeFilelist(new File("/system/"), new DirectoryTreeLister.ProgressCallback() {
-                @Override
-                public void reportProgress(double progress) {
-                    progressItem.update(0.1 + 0.6*progress); // 60% progress for filesystem listing/hashing
-                }
-            }));
-            long filelistDuration = System.currentTimeMillis() - filelistStartTime;
-            Log.i(Constants.LOG_TAG, "Generating filelist took " + filelistDuration + " ms");
-            progressItem.update(0.7);
-            Log.i(Constants.LOG_TAG,"Reading all manifests...");
-            JSONObject manifests = readAllManifests(context);
-            devinfo.put("manifests", manifests.getJSONObject("manifests"));
-            devinfo.put("manifestCookies", manifests.getJSONObject("manifestCookies"));
-            /*File f = new File("/sdcard/deviceinfo.json");
-            FileOutputStream fos = new FileOutputStream(f);
-            fos.write(devinfo.toString(4).getBytes());
-            fos.close();*/
-            progressItem.update(1.0); // Final 30% progress for Android manifests of system applications
-            Log.i(Constants.LOG_TAG,"Finished reading all manifests.");
-            return devinfo;
-        } catch(Exception e){
-            Log.e(Constants.LOG_TAG, "Exception in makeDeviceinfoJson", e);
-            return null;
-        }
-    }
-    private static String readFileForDeviceinfo(String filename, int maxLen){
+
+    protected static String readFileForDeviceinfo(String filename, int maxLen){
         try{
             File f = new File(filename);
             BufferedInputStream is = new BufferedInputStream(new FileInputStream(f));
@@ -481,14 +433,9 @@ public class TestUtils {
             return "UNKNOWN";
     }
 
-    public static String getAppId(Context context)
-    {
-        return BaseActivity.setAppId(context);
-    }
-
     public static void validateFilename(String filename){
         if (Constants.IS_TEST_MODE && !filename.startsWith(Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/")){
-                throw new IllegalArgumentException("Filename " + filename + " doesn't start with '"+Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/'");
+                throw new IllegalArgumentException("Filename " + filename + " doesn't start with '"+ Constants.TEST_MODE_BASIC_TEST_FILE_PREFIX+"/system/'");
         }
         else if (!Constants.IS_TEST_MODE && !filename.startsWith("/system/")) {
                 throw new IllegalArgumentException("Filename " + filename + " doesn't start with '/system/'");
@@ -716,10 +663,67 @@ public class TestUtils {
         }
     }
 
-
-
     public static boolean isTooOldAndroidAPIVersion() {
         return Build.VERSION.SDK_INT < 21;
+    }
+
+    public static String getAppId(Context context) {
+        return setAppId(context);
+    }
+
+    public static String setAppId(Context context) {
+        return Constants.getAppFlavor().setAppId(context);
+    }
+
+    public static JSONObject makeDeviceinfoJson(Context context, final ProgressItem progressItem) {
+        try {
+            JSONObject devinfo = new JSONObject();
+            if (buildProperties == null)
+                readBuildProperties();
+            JSONObject buildProps = new JSONObject(buildProperties);
+            devinfo.put("buildProperties", buildProps);
+            devinfo.put("appId", getAppId(context));
+            devinfo.put("androidApiLevel", Build.VERSION.SDK_INT);
+            devinfo.put("chipVendor", getChipVendor());
+            devinfo.put("proc_version", readFileForDeviceinfo("/proc/version", 4096));
+            devinfo.put("proc_cpuinfo", readFileForDeviceinfo("/proc/cpuinfo", 16384));
+            devinfo.put("proc_cmdline", readFileForDeviceinfo("/proc/cmdline", 4096));
+            devinfo.put("proc_mounts", readFileForDeviceinfo("/proc/mounts", 4096));
+            devinfo.put("proc_filesystems", readFileForDeviceinfo("/proc/filesystems", 4096));
+            devinfo.put("proc_mtd", readFileForDeviceinfo("/proc/mtd", 4096));
+            devinfo.put("proc_devices", readFileForDeviceinfo("/proc/devices", 4096));
+            devinfo.put("proc_modules", readFileForDeviceinfo("/proc/modules", 4096));
+            devinfo.put("proc_sys_kernel_randomize_va_space", readFileForDeviceinfo("/proc/sys/kernel/randomize_va_space", 4096));
+            devinfo.put("aslrTest1", readProcSelfMaps());
+            devinfo.put("aslrTest2", readProcSelfMaps());
+            devinfo.put("aslrTest3", readProcSelfMaps());
+            progressItem.update(0.1); // 10% progress for build properties and basic system info
+            // devinfo.put("PROTECTED_BROADCASTS", getProtectedBroadcasts(context));
+            long filelistStartTime = System.currentTimeMillis();
+            devinfo.put("systemPartition", DirectoryTreeLister.makeFilelist(new File("/system/"), new DirectoryTreeLister.ProgressCallback() {
+                @Override
+                public void reportProgress(double progress) {
+                    progressItem.update(0.1 + 0.6*progress); // 60% progress for filesystem listing/hashing
+                }
+            }));
+            long filelistDuration = System.currentTimeMillis() - filelistStartTime;
+            Log.i(Constants.LOG_TAG, "Generating filelist took " + filelistDuration + " ms");
+            progressItem.update(0.7);
+            Log.i(Constants.LOG_TAG,"Reading all manifests...");
+            JSONObject manifests = readAllManifests(context);
+            devinfo.put("manifests", manifests.getJSONObject("manifests"));
+            devinfo.put("manifestCookies", manifests.getJSONObject("manifestCookies"));
+            /*File f = new File("/sdcard/deviceinfo.json");
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(devinfo.toString(4).getBytes());
+            fos.close();*/
+            progressItem.update(1.0); // Final 30% progress for Android manifests of system applications
+            Log.i(Constants.LOG_TAG,"Finished reading all manifests.");
+            return devinfo;
+        } catch(Exception e){
+            Log.e(Constants.LOG_TAG, "Exception in makeDeviceinfoJson", e);
+            return null;
+        }
     }
 
 

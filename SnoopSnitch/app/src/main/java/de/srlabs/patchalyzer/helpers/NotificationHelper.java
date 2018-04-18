@@ -13,10 +13,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.PatchalyzerMainActivity;
-import de.srlabs.snoopsnitch.R;
-import de.srlabs.snoopsnitch.StartupActivity;
-import de.srlabs.snoopsnitch.util.MsdConfig;
 
 /**
  * Handles creation of all notifications displayed by the Patchalyzer
@@ -28,6 +24,7 @@ public class NotificationHelper {
     public static final int ONGOING_NOTIFICATION_ID = 1147;
     public static final int FINISHED_NOTIFICATION_ID = 1148;
     public static final int FAILED_NOTIFICATION_ID = 1149;
+
 
     public static void cancelNonStickyNotifications(Context context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -42,14 +39,14 @@ public class NotificationHelper {
         boolean didShowAlready = sharedPrefs.getBoolean(SharedPrefsHelper.KEY_DID_SHOW_NEW_FEATURE,false);
 
         if(!didShowAlready) {
-            Intent notificationIntent = new Intent(context, StartupActivity.class);
+            Intent notificationIntent = new Intent(context, Constants.getAppFlavor().getMainActivityClass());
             PendingIntent pendingIntent =
                     PendingIntent.getActivity(context, 0, notificationIntent, 0);
             Notification notification =
                     new Notification.Builder(context)
-                            .setContentTitle(context.getText(R.string.patchalyzer_notification_new_feature_title))
-                            .setContentText(context.getText(R.string.patchalyzer_notification_new_feature_text))
-                            .setSmallIcon(R.drawable.ic_patchalyzer)
+                            .setContentTitle(getString(context, "patchalyzer_notification_new_feature_title"))
+                            .setContentText(getString(context, "patchalyzer_notification_new_feature_text"))
+                            .setSmallIcon(getPatchalyzerLogoId())
                             .setContentIntent(pendingIntent)
                             .setAutoCancel(true)
                             .build();
@@ -64,17 +61,17 @@ public class NotificationHelper {
     }
 
     public static void showBuildVersionChangedNotification(Context context) {
-        String notificationSetting = MsdConfig.getPatchAnalysisNotificationSetting(context);
+        String notificationSetting = Constants.getAppFlavor().getPatchAnalysisNotificationSetting(context);
         triggerSenseableNotification(notificationSetting,context);
 
-        Intent notificationIntent = new Intent(context, PatchalyzerMainActivity.class);
+        Intent notificationIntent = new Intent(context, Constants.getAppFlavor().getPatchAnalysisActivityClass());
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
         Notification notification =
                 new Notification.Builder(context)
-                        .setContentTitle(context.getText(R.string.patchalyzer_notification_build_changed_title))
-                        .setContentText(context.getText(R.string.patchalyzer_notification_build_changed_text))
-                        .setSmallIcon(R.drawable.ic_patchalyzer)
+                        .setContentTitle(getString(context, "patchalyzer_notification_build_changed_title"))
+                        .setContentText(getString(context, "patchalyzer_notification_build_changed_text"))
+                        .setSmallIcon(getPatchalyzerLogoId())
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
                         .build();
@@ -83,19 +80,21 @@ public class NotificationHelper {
 
     }
 
+
+
     public static void showAnalysisFinishedNotification(Context context) {
-        String notificationSetting = MsdConfig.getPatchAnalysisNotificationSetting(context);
+        String notificationSetting = Constants.getAppFlavor().getPatchAnalysisNotificationSetting(context);
         Log.d(Constants.LOG_TAG,"notification setting for fininished notification: "+notificationSetting);
         triggerSenseableNotification(notificationSetting,context);
 
-        Intent notificationIntent = new Intent(context, PatchalyzerMainActivity.class);
+        Intent notificationIntent = new Intent(context, Constants.getAppFlavor().getPatchAnalysisActivityClass());
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
         Notification notification =
                 new Notification.Builder(context)
-                        .setContentTitle(context.getText(R.string.patchalyzer_notification_finished_title))
-                        .setContentText(context.getText(R.string.patchalyzer_notification_finished_text))
-                        .setSmallIcon(R.drawable.ic_patchalyzer)
+                        .setContentTitle(getString(context, "patchalyzer_notification_finished_title"))
+                        .setContentText(getString(context, "patchalyzer_notification_finished_text"))
+                        .setSmallIcon(getPatchalyzerLogoId())
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
                         .build();
@@ -108,14 +107,14 @@ public class NotificationHelper {
         triggerSenseableNotification(notificationSetting,context);
 
         Log.d(Constants.LOG_TAG, "TestExeCutorService.showAnalysisFailedNotification called");
-        Intent notificationIntent = new Intent(context, PatchalyzerMainActivity.class);
+        Intent notificationIntent = new Intent(context, Constants.getAppFlavor().getPatchAnalysisActivityClass());
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
         Notification notification =
                 new Notification.Builder(context)
-                        .setContentTitle(context.getText(R.string.patchalyzer_notification_failed_title))
-                        .setContentText(context.getText(R.string.patchalyzer_notification_failed_text))
-                        .setSmallIcon(R.drawable.ic_patchalyzer)
+                        .setContentTitle(getString(context, "patchalyzer_notification_failed_title"))
+                        .setContentText(getString(context, "patchalyzer_notification_failed_text"))
+                        .setSmallIcon(getPatchalyzerLogoId())
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
                         .build();
@@ -125,14 +124,14 @@ public class NotificationHelper {
 
     // Displayed via Service.startForeground
     public static Notification getAnalysisOngoingNotification(Context context) {
-        Intent notificationIntent = new Intent(context, PatchalyzerMainActivity.class);
+        Intent notificationIntent = new Intent(context, Constants.getAppFlavor().getPatchAnalysisActivityClass());
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
         Notification notification =
                 new Notification.Builder(context)
-                        .setContentTitle(context.getText(R.string.patchalyzer_notification_running_title))
-                        .setContentText(context.getText(R.string.patchalyzer_notification_running_text))
-                        .setSmallIcon(R.drawable.ic_patchalyzer)
+                        .setContentTitle(getString(context, "patchalyzer_notification_running_title"))
+                        .setContentText(getString(context, "patchalyzer_notification_running_text"))
+                        .setSmallIcon(getPatchalyzerLogoId())
                         .setContentIntent(pendingIntent)
                         .build();
         return notification;
@@ -186,5 +185,13 @@ public class NotificationHelper {
         if (v.hasVibrator()) {
             v.vibrate(pattern, -1);          // "-1" = vibrate exactly as pattern, no repeat
         }
+    }
+
+    private static String getString(Context activity, String key) {
+        return Constants.getAppFlavor().getString(activity, key);
+    }
+
+    public static int getPatchalyzerLogoId() {
+        return Constants.getAppFlavor().getPatchalyzerLogoId();
     }
 }

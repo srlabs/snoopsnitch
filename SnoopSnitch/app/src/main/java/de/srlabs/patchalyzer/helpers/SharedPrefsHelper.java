@@ -9,9 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.analysis.PatchalyzerService;
 import de.srlabs.patchalyzer.analysis.TestUtils;
-import de.srlabs.patchalyzer.util.CertifiedBuildChecker;
 
 /**
  * Handles interaction with SharedPreferences
@@ -258,5 +256,6 @@ public class SharedPrefsHelper {
         editor.putString(KEY_BUILD_CERTIFIED_BASICINTEGRITY_MATCH, ""+basicIntegrity);
         editor.commit();
     }
+
 
 }

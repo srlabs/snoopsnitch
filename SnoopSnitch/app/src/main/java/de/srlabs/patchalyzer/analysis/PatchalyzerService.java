@@ -2,6 +2,7 @@ package de.srlabs.patchalyzer.analysis;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -35,7 +36,6 @@ import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 import de.srlabs.patchalyzer.util.ServerApi;
 import de.srlabs.patchalyzer.helpers.NotificationHelper;
 import de.srlabs.patchalyzer.helpers.SharedPrefsHelper;
-import de.srlabs.snoopsnitch.R;
 
 public class PatchalyzerService extends Service {
     private JSONObject deviceInfoJson = null;
@@ -171,8 +171,8 @@ public class PatchalyzerService extends Service {
                 } else {
                     upgradeUrlTmp = Constants.DEFAULT_APK_UPGRADE_URL;
                 }*/
-                String errorMessage = "<p style=\"font-weight:bold;\">"+getResources().getString(R.string.patchalyzer_new_version_available_heading)
-                        +"</p>"+ getResources().getString(R.string.patchalyzer_new_version_available_instructions);
+                String errorMessage = "<p style=\"font-weight:bold;\">"+getString(PatchalyzerService.this,"patchalyzer_new_version_available_heading")
+                        +"</p>"+ getString(PatchalyzerService.this, "patchalyzer_new_version_available_instructions");
                         //+": <a href=\"" + upgradeUrlTmp + "\">" + upgradeUrlTmp + "</a>";
                 handleFatalErrorViaCallback(errorMessage);
             }
@@ -255,7 +255,7 @@ public class PatchalyzerService extends Service {
                     vulnerabilities = testSuite.getVulnerabilities();
                 } catch(IOException e){
                     Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
-                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                    handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                     return e.toString();
                 }
                 Iterator<String> identifierIterator = vulnerabilities.keys();
@@ -310,7 +310,7 @@ public class PatchalyzerService extends Service {
 
             } catch (Exception e) {
                 Log.e(Constants.LOG_TAG, "Exception in evaluateVulnerabilitiesTests", e);
-                handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_error_creating_result_overview));
+                handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_error_creating_result_overview"));
                 return e.toString();
             }
         }
@@ -401,11 +401,11 @@ public class PatchalyzerService extends Service {
                         if(uploadTestResults){
                             apiRunning = true;
                             if(!isConnectedToInternet()){
-                                handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                                handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                                 return;
                             }
                             Log.i(Constants.LOG_TAG,"Reporting test results to server...");
-                            api.reportTest(basicTestCache.toJson(), TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(),
+                            api.reportTest(basicTestCache.toJson(), getAppId(), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(),
                                     TestUtils.getBuildDateUtc(), Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse());
                             Log.i(Constants.LOG_TAG,"Uploading test results finished...");
                             uploadTestResultsProgress.update(1.0);
@@ -413,17 +413,17 @@ public class PatchalyzerService extends Service {
                         }
                     } catch(IOException | IllegalStateException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
-                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                        handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                         Log.e(Constants.LOG_TAG, "Exception in pendingTestResultsUploadRunnable", e);
                         apiRunning = false;
                     } catch( JSONException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
                         Log.e(Constants.LOG_TAG,"JSONException in pendingTestResultsUploadRunnable: "+e.getMessage());
-                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                        handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                         apiRunning = false;
                     } catch(OutOfMemoryError e) {
                         Log.e(Constants.LOG_TAG,"OutOfMemoryError in pendingTestResultsUploadRunnable: "+e.getMessage());
-                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_error_out_of_memory));
+                        handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_error_out_of_memory"));
                     }
                 }
             };
@@ -437,10 +437,10 @@ public class PatchalyzerService extends Service {
                             apiRunning = true;
                             if (deviceInfoJson != null) {
                                 if(!isConnectedToInternet()){
-                                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                                    handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                                     return;
                                 }
-                                api.reportSys(deviceInfoJson, TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(),
+                                api.reportSys(deviceInfoJson, getAppId(), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(),
                                         TestUtils.getBuildDateUtc(), Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse());
                             }
                             Log.i(Constants.LOG_TAG,"Uploading device info finished...");
@@ -450,7 +450,7 @@ public class PatchalyzerService extends Service {
                     } catch(IllegalStateException | IOException e){
                         reportError(NO_INTERNET_CONNECTION_ERROR);
                         Log.e(Constants.LOG_TAG, "Exception in pendingDeviceInfoUploadRunnable()", e);
-                        handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                        handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                         apiRunning = false;
                     }
                 }
@@ -558,7 +558,7 @@ public class PatchalyzerService extends Service {
         isAnalysisRunning = false;
         sendFinishedToCallback(analysisResultString, isBuildCertified());
 
-        NotificationHelper.showAnalysisFinishedNotification(this);
+        NotificationHelper.showAnalysisFinishedNotification(PatchalyzerService.this);
 
         stopForeground(true);
         stopSelf();
@@ -695,12 +695,12 @@ public class PatchalyzerService extends Service {
                 Log.i(Constants.LOG_TAG, "Starting to download testsuite");
                 apiRunning = true;
                 if(!isConnectedToInternet()){
-                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                    handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                     return;
                 }
                 downloadingTestSuite = true;
                 Log.d(Constants.LOG_TAG,"Downloading testsuite from server...");
-                File f = api.downloadTestSuite("newtestsuite",PatchalyzerService.this,TestUtils.getAppId(PatchalyzerService.this), Build.VERSION.SDK_INT,"0", Constants.APP_VERSION);
+                File f = api.downloadTestSuite("newtestsuite",PatchalyzerService.this, getAppId(), Build.VERSION.SDK_INT,"0", Constants.APP_VERSION);
                 Log.i(Constants.LOG_TAG,"Downloading testsuite finished. Fetching additional data chunks...");
                 downloadProgress.update(1.0);
                 Log.d(Constants.LOG_TAG,"Finished downloading testsuite JSON to file:"+f.getAbsolutePath());
@@ -714,7 +714,7 @@ public class PatchalyzerService extends Service {
             } catch (IllegalStateException | IOException e) {
                 Log.e(Constants.LOG_TAG, "Exception in DownloadThread", e);
                 reportError(NO_INTERNET_CONNECTION_ERROR);
-                handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                 return;
             } finally{
                 apiRunning = false;
@@ -742,7 +742,7 @@ public class PatchalyzerService extends Service {
 
         @Override
         public void run() {
-            deviceInfoJson = TestUtils.makeDeviceinfoJson(PatchalyzerService.this, progress);
+            deviceInfoJson = makeDeviceinfoJson(PatchalyzerService.this, progress);
             deviceInfoThread = null;
             deviceInfoRunning = false;
             if(onFinishedRunnable != null) {
@@ -750,6 +750,8 @@ public class PatchalyzerService extends Service {
             }
         }
     }
+
+
 
     private class RequestsThread extends Thread{
         private ProgressItem downloadRequestsProgress;
@@ -763,10 +765,10 @@ public class PatchalyzerService extends Service {
             Vector<ProgressItem> requestProgress = new Vector<>();
             try {
                 if(!isConnectedToInternet()){
-                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                    handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                     return;
                 }
-                JSONArray requestsJson = api.getRequests(TestUtils.getAppId(PatchalyzerService.this), Build.VERSION.SDK_INT, TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
+                JSONArray requestsJson = api.getRequests(getAppId(), Build.VERSION.SDK_INT, TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(), Constants.APP_VERSION);
                 downloadRequestsProgress.update(1.0);
                 Log.i(Constants.LOG_TAG,"Downloading requests finished...");
                 for(int i=0;i<requestsJson.length();i++){
@@ -782,10 +784,10 @@ public class PatchalyzerService extends Service {
                         TestUtils.validateFilename(filename);
                         Log.d(Constants.LOG_TAG,"Uploading file: "+filename);
                         if(!isConnectedToInternet()){
-                            handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                            handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                             return;
                         }
-                        api.reportFile(filename, TestUtils.getAppId(PatchalyzerService.this), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(),
+                        api.reportFile(filename, getAppId(), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(), TestUtils.getBuildDateUtc(),
                                 Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse());
                         requestProgress.get(i).update(1.0);
                         updateProgress();
@@ -800,7 +802,7 @@ public class PatchalyzerService extends Service {
                 Log.e(Constants.LOG_TAG, "RequestsThread.run() exception", e);
                 if(e instanceof IOException || e instanceof IllegalStateException) {
                     reportError(NO_INTERNET_CONNECTION_ERROR);
-                    handleFatalErrorViaCallback(getResources().getString(R.string.patchalyzer_dialog_no_internet_connection_text));
+                    handleFatalErrorViaCallback(getString(PatchalyzerService.this, "patchalyzer_dialog_no_internet_connection_text"));
                 }
                 downloadRequestsProgress.update(1.0);
                 for(ProgressItem x:requestProgress){
@@ -833,7 +835,7 @@ public class PatchalyzerService extends Service {
         isAnalysisRunning = true;
         currentAnalysisTimestamp = System.currentTimeMillis();
 
-        Notification notification = NotificationHelper.getAnalysisOngoingNotification(this);
+        Notification notification = NotificationHelper.getAnalysisOngoingNotification(PatchalyzerService.this);
         startForeground(NotificationHelper.ONGOING_NOTIFICATION_ID, notification);
 
         sendReloadViewStateToCallback();
@@ -855,6 +857,18 @@ public class PatchalyzerService extends Service {
     public void finishCertifiedBuildCheck(){
         Log.d(Constants.LOG_TAG,"CertifiedBuildChecker is finished testing!");
         doWorkAsync();
+    }
+
+    public String getAppId(){
+        return TestUtils.getAppId(PatchalyzerService.this);
+    }
+
+    private JSONObject makeDeviceinfoJson(Context context, ProgressItem progressItem) {
+        return TestUtils.makeDeviceinfoJson(context, progressItem);
+    }
+
+    private static String getString(Context activity, String key) {
+        return Constants.getAppFlavor().getString(activity, key);
     }
 
 }

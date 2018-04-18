@@ -17,6 +17,7 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.srlabs.patchalyzer.Constants;
 import de.srlabs.patchalyzer.helpers.NotificationHelper;
 import de.srlabs.patchalyzer.analysis.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
@@ -45,6 +46,8 @@ public class StartupActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Constants.setAppFlavor(new PAAppFlavorSNSN());
 
         snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
 

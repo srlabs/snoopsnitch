@@ -30,16 +30,16 @@ public class PatchlevelDateOverviewChart extends View {
             h = 50;
         if(h < 50 && MeasureSpec.getMode(heightMeasureSpec) != MeasureSpec.AT_MOST)
             h = 50;
-        //Log.i(Constants.LOG_TAG, "PatchlevelDateOverviewChart.onMeasure: w=" + w + "  h=" + h);
+        //Log.i(ConstantsStandalone.LOG_TAG, "PatchlevelDateOverviewChart.onMeasure: w=" + w + "  h=" + h);
         setMeasuredDimension(w, h);
         onSizeChanged(w,h,0,0);
     }
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        //Log.i(Constants.LOG_TAG, "PatchlevelDateOverviewChart.onSizeChanged(" + w + ", " + h + ", " + oldw + ", " + oldh + ")");
+        //Log.i(ConstantsStandalone.LOG_TAG, "PatchlevelDateOverviewChart.onSizeChanged(" + w + ", " + h + ", " + oldw + ", " + oldh + ")");
         float xpad = (float)(getPaddingLeft() + getPaddingRight());
         float ypad = (float)(getPaddingTop() + getPaddingBottom());
-        //Log.i(Constants.LOG_TAG, "getPaddingLeft() = " + getPaddingLeft() + ", getPaddingRight()=" + getPaddingRight() + ", getPaddingTop()=" + getPaddingTop() + ", getPaddingBottom()=" + getPaddingBottom());
+        //Log.i(ConstantsStandalone.LOG_TAG, "getPaddingLeft() = " + getPaddingLeft() + ", getPaddingRight()=" + getPaddingRight() + ", getPaddingTop()=" + getPaddingTop() + ", getPaddingBottom()=" + getPaddingBottom());
        float ww = (float)w - xpad;
         float hh = (float)h - ypad;
         paddingLeft = getPaddingLeft();
@@ -47,19 +47,19 @@ public class PatchlevelDateOverviewChart extends View {
         float unscaledElementWidth = 1.0f;
         float unscaledGapWidth = 0.4f;
         float scalingFactor = ww / (nElems * unscaledElementWidth + (nElems-1.0f) * unscaledGapWidth);
-        // Log.i(Constants.LOG_TAG, "scalingFactor = " + scalingFactor);
+        // Log.i(ConstantsStandalone.LOG_TAG, "scalingFactor = " + scalingFactor);
         elementWidth = scalingFactor * unscaledElementWidth;
         gapWidth = scalingFactor * unscaledGapWidth;
         elementHeight = hh;
-        //Log.i(Constants.LOG_TAG, "elementWidth=" + elementWidth + "   gapWidth=" + gapWidth + "   elementHeight=" + elementHeight);
+        //Log.i(ConstantsStandalone.LOG_TAG, "elementWidth=" + elementWidth + "   gapWidth=" + gapWidth + "   elementHeight=" + elementHeight);
     }
     public void onDraw(Canvas canvas) {
-        //Log.i(Constants.LOG_TAG, "PatchlevelDateOverviewChart.onDraw()");
+        //Log.i(ConstantsStandalone.LOG_TAG, "PatchlevelDateOverviewChart.onDraw()");
         float x = paddingLeft;
         for (int i = 0; i < nElems; i++) {
             // Draw element
             myPaint.setColor(colors[i]);
-            //Log.i(Constants.LOG_TAG, "PatchlevelDateOverviewChart.onDraw() => drawRect(" + x + ", " + paddingTop + ", " + (x + elementWidth) + ", " + (paddingTop + elementHeight) + ", "+ colors[i] + ")");
+            //Log.i(ConstantsStandalone.LOG_TAG, "PatchlevelDateOverviewChart.onDraw() => drawRect(" + x + ", " + paddingTop + ", " + (x + elementWidth) + ", " + (paddingTop + elementHeight) + ", "+ colors[i] + ")");
             canvas.drawRect(x, paddingTop, x + elementWidth, paddingTop + elementHeight, myPaint);
             x = x + elementWidth + gapWidth;
         }

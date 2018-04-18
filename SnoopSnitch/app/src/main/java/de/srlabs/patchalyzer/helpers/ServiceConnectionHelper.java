@@ -11,7 +11,7 @@ import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
 /**
  * This class ensures that for every Patch analysis, only one of the methods executeFinishedOncePerAnalysis
  * and executeCancelledOncePerAnalysis gets executed. These methods can be called safely via the handler
- * from within PatchalyzerMainActivity and DashboardActivity's service callbacks.
+ * from within PatchalyzerMainStandaloneActivity and DashboardActivity's service callbacks.
  */
 public class ServiceConnectionHelper {
     private static long lastProcessedAnalysisTimestamp = -1;

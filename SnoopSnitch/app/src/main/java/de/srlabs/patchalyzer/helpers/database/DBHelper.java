@@ -18,8 +18,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
-import de.srlabs.patchalyzer.util.BasicTestParser;
 import de.srlabs.patchalyzer.Constants;
+import de.srlabs.patchalyzer.util.BasicTestParser;
 
 /**This class acts as a helper to query the SQLite DB
  * Created by jonas on 04.04.18.

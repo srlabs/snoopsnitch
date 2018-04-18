@@ -1,6 +1,6 @@
 package de.srlabs.patchalyzer.analysis;
 
-class ProgressItem{
+public class ProgressItem{
     private PatchalyzerService service;
     private String name = "";
     private double progress = 0;

@@ -1,7 +1,6 @@
 package de.srlabs.patchalyzer.helpers;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import de.srlabs.patchalyzer.AppFlavor;
 import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.analysis.signatures.Signature;
 
 /**This class contains all the helper methods for calling subprocess like e.g. objdump
  * Created by jonas on 15.12.17.
@@ -26,10 +25,8 @@ import de.srlabs.patchalyzer.analysis.signatures.Signature;
 
 public class ProcessHelper {
 
-
-    public static final String BIN_PATH = "/data/data/de.srlabs.snoopsnitch/lib/";
-    public static final String OBJDUMP_PATH = BIN_PATH + "libobjdump.so";
-    public static final String SIGTOOL_PATH = BIN_PATH +"libsigtool.so";
+    public static final String OBJDUMP_PATH = Constants.getAppFlavor().getBinaryPath() + "libobjdump.so";
+    public static final String SIGTOOL_PATH = Constants.getAppFlavor().getBinaryPath() + "libsigtool.so";
 
     public static Vector<String> execProcessAndGetStdout(String[] cmd) throws Exception {
         //Log.d(Constants.LOG_TAG, "ProcessHelper: running command: " + Arrays.toString(cmd));
