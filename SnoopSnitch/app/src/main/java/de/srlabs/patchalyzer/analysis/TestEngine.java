@@ -143,9 +143,8 @@ public class TestEngine {
             case "CHIPSET_VENDOR_OR_UNKNOWN":
                 String vendor = TestUtils.getChipVendor();
                 return vendor.equals("UNKNOWN") || vendor.equals(test.getString("vendor"));
-            case "ANDROID_VERSION_LESS_EQUAL":
-                return true; // TODO
-
+            case "ANDROID_VERSION_EQUALS":
+                return TestUtils.getBuildVersionRelease().equals(test.getString("androidVersion"));
             case "FILE_EXISTS": {
                 String filename = test.getString("filename");
                 if (Constants.IS_TEST_MODE)

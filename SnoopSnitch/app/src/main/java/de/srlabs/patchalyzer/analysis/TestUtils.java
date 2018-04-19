@@ -371,6 +371,10 @@ public class TestUtils {
         }
     }
 
+    public static String getBuildVersionRelease() {
+        return Build.VERSION.RELEASE;
+    }
+
     public static boolean isPatchDateClaimed(String patchReleaseDate) {
         // Prevent NPE in some rare cases
         if (getPatchlevelDate() == null) {
