@@ -208,12 +208,12 @@ public class ServerApi {
         connection.disconnect();
         throw new IllegalStateException("reportSys(): The server returned an invalid response code " + code + "  Response contents: " + errorResponse);
     }
-    public void reportTest(JSONObject testData, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion,Boolean ctsProfileMatch, Boolean basicIntegrity, String safetyNetApiResponse, String safetyNetApiNonce) throws IllegalStateException, IOException {
+    public void reportTest(JSONObject testData, String appid, String phoneModel, String romBuildFingerprint, String romDisplayName, long romBuildDate, int appVersion,Boolean ctsProfileMatch, Boolean basicIntegrity) throws IllegalStateException, IOException {
         Log.i(Constants.LOG_TAG, "reportTest(appid=" + appid + ", phoneModel=" + phoneModel + ", romBuildFingerprint=" + romBuildFingerprint + ", romDisplayName=" + romDisplayName + ", romBuildDate=" + romBuildDate);
         URL url = new URL(API_URL + "report/test?appId=" + URLEncoder.encode(appid,"UTF-8") +
                 "&phoneModel=" + URLEncoder.encode(phoneModel, "UTF-8") + "&romBuildFingerprint=" + URLEncoder.encode(romBuildFingerprint, "UTF-8") +
                 "&romDisplayName=" + URLEncoder.encode(romDisplayName, "UTF-8") + "&romBuildDate=" + romBuildDate + "&appVersion=" + appVersion +
-                "&ctsProfileMatch="+ ctsProfileMatch + "&basicIntegrity="+basicIntegrity + "&safetyNetApiNonce="+safetyNetApiNonce);
+                "&ctsProfileMatch="+ ctsProfileMatch + "&basicIntegrity="+basicIntegrity);
         Log.i(Constants.LOG_TAG, "reportTest() URL: " + url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
@@ -228,12 +228,6 @@ public class ServerApi {
         request.writeBytes("Content-Disposition: form-data; name=\"testData\"; filename=\"testData\"\r\n\r\n");
         request.writeBytes(testData.toString() + "\r\n");
         request.writeBytes("--" + boundary + "--\r\n");
-        // SafetyNet API JWT
-        if (safetyNetApiResponse != null) {
-            request.writeBytes("Content-Disposition: form-data; name=\"safetyNetApiResponse\"\r\n\r\n");
-            request.writeBytes(safetyNetApiResponse + "\r\n");
-            request.writeBytes("--" + boundary + "--\r\n");
-        }
         request.flush();
         request.close();
         Log.i(Constants.LOG_TAG, "reportTest(): Finished writing request");

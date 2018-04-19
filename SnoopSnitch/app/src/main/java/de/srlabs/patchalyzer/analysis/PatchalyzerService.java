@@ -406,7 +406,7 @@ public class PatchalyzerService extends Service {
                             }
                             Log.i(Constants.LOG_TAG,"Reporting test results to server...");
                             api.reportTest(basicTestCache.toJson(), getAppId(), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(),
-                                    TestUtils.getBuildDateUtc(), Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse(), certifiedBuildChecker.getResult(), certifiedBuildChecker.getNonceBase64());
+                                    TestUtils.getBuildDateUtc(), Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse());
                             Log.i(Constants.LOG_TAG,"Uploading test results finished...");
                             uploadTestResultsProgress.update(1.0);
                             apiRunning = false;
@@ -864,7 +864,15 @@ public class PatchalyzerService extends Service {
     }
 
     private JSONObject makeDeviceinfoJson(Context context, ProgressItem progressItem) {
-        return TestUtils.makeDeviceinfoJson(context, progressItem);
+        JSONObject info = TestUtils.makeDeviceinfoJson(context, progressItem);
+        // TODO: Move this into TestUtils.makeDeviceinfoJson
+        try {
+            info.put("safetyNetApiNonce", CertifiedBuildChecker.getInstance().getNonceBase64());
+            info.put("safetyNetApiResponse", CertifiedBuildChecker.getInstance().getResult());
+        } catch (JSONException e) {
+            Log.e(Constants.LOG_TAG, "Failed to add SafetyNet API result to device info", e);
+        }
+        return info;
     }
 
     private static String getString(Context activity, String key) {
