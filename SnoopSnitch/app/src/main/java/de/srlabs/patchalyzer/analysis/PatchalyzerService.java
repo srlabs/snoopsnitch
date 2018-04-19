@@ -406,7 +406,7 @@ public class PatchalyzerService extends Service {
                             }
                             Log.i(Constants.LOG_TAG,"Reporting test results to server...");
                             api.reportTest(basicTestCache.toJson(), getAppId(), TestUtils.getDeviceModel(), TestUtils.getBuildFingerprint(), TestUtils.getBuildDisplayName(),
-                                    TestUtils.getBuildDateUtc(), Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse());
+                                    TestUtils.getBuildDateUtc(), Constants.APP_VERSION, certifiedBuildChecker.getCtsProfileMatchResponse(), certifiedBuildChecker.getBasicIntegrityResponse(), certifiedBuildChecker.getResult(), certifiedBuildChecker.getNonceBase64());
                             Log.i(Constants.LOG_TAG,"Uploading test results finished...");
                             uploadTestResultsProgress.update(1.0);
                             apiRunning = false;

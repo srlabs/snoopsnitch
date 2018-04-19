@@ -1,6 +1,7 @@
 package de.srlabs.patchalyzer.util;
 
 import android.support.annotation.NonNull;
+import android.util.Base64;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -22,6 +23,7 @@ import java.util.Random;
 import de.srlabs.patchalyzer.Constants;
 
 import de.srlabs.patchalyzer.analysis.PatchalyzerService;
+import de.srlabs.patchalyzer.analysis.TestUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
@@ -38,9 +40,10 @@ import io.jsonwebtoken.Jwts;
  */
 
 public class CertifiedBuildChecker {
-    public static final String API_KEY= "AIzaSyAmgMRmYWCQpEkOLeIXeHU36V9J-nYFwwQ";
+    private static final String API_KEY= "AIzaSyAmgMRmYWCQpEkOLeIXeHU36V9J-nYFwwQ";
     private final Random secureRandom = new SecureRandom();
     private static String result;
+    private static byte[] nonce;
     private static boolean ctsProfileMatch=false;
     private static boolean basicIntegrity=false;
     private static CertifiedBuildChecker instance;
@@ -64,8 +67,8 @@ public class CertifiedBuildChecker {
                 if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
                         == ConnectionResult.SUCCESS) {
                     // we can do the test
-                    String nonceData = "Noncenoncenonce: " + System.currentTimeMillis();
-                    byte[] nonce = getRequestNonce(nonceData);
+                    String nonceData = TestUtils.getAppId(context) + ":" + System.currentTimeMillis();
+                    nonce = getRequestNonce(nonceData);
 
                     SafetyNetClient client = SafetyNet.getClient(context);
                     Task<SafetyNetApi.AttestationResponse> task = client.attest(nonce, API_KEY);
@@ -82,6 +85,14 @@ public class CertifiedBuildChecker {
             }
         };
         checkThread.start();
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public String getNonceBase64() {
+        return Base64.encodeToString(nonce, Base64.DEFAULT);
     }
 
     private byte[] getRequestNonce(String data) {
