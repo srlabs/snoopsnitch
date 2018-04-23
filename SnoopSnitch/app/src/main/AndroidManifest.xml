@@ -33,6 +33,7 @@
     <supports-screens android:xlargeScreens="false"/>
 
     <application
+        android:name="de.srlabs.snoopsnitch.App"
         android:allowBackup="true"
         android:extractNativeLibs="true"
         android:icon="@drawable/ic_content_imsi_event"

@@ -90,12 +90,5 @@
        	</attr>
    	</declare-styleable>
 
-	<!-- Patchalyzer result overview chart -->
-	 <declare-styleable name="PatchalyzerSumResultChart">
-		<attr name="small" format="boolean" />
-		<attr name="shownumbers" format="boolean" />
-		<attr name="drawborder" format="boolean" />
-	</declare-styleable>
-
 
 </resources>
