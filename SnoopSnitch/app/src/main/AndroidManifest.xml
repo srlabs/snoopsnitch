@@ -34,7 +34,6 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
 
 
-    <supports-screens android:xlargeScreens="false"/>
 
     <application
         android:name="de.srlabs.snoopsnitch.App"
