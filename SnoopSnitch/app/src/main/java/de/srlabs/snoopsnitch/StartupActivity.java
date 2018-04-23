@@ -47,8 +47,6 @@ public class StartupActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Constants.setAppFlavor(new PAAppFlavorSNSN());
-
         snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
 
         if(snsnIncompatibilityReason == null){
