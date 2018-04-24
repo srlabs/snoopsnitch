@@ -21,8 +21,9 @@ allprojects {
     }
 }
 
-task build << {
+task build doLast {
 }
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir
@@ -30,6 +31,8 @@ task clean(type: Delete) {
 
 //execute copy.sh before the app module is being built
 task copyLibrariesAndAssets(type: Exec) {
+    description = "Copy files"
+    println "Copying binary dependecies and assets..."
     commandLine 'sh', './copy.sh'
 }
 
