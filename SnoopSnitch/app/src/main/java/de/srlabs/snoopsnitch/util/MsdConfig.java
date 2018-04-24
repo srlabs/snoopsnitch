@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Environment;
 
-import de.srlabs.patchalyzer.PatchalyzerMainActivity;
-
 
 /**
  * This class contains a set of static methods for accessing the App configuration.

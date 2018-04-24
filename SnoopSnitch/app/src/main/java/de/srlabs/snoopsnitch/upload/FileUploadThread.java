@@ -13,7 +13,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
-import de.srlabs.snoopsnitch.qdmon.MsdService;
 import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;

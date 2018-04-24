@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
-import de.srlabs.patchalyzer.AppFlavor;
-import de.srlabs.patchalyzer.PatchalyzerMainActivity;
+import de.srlabs.patchalyzer_module.AppFlavor;
+import de.srlabs.patchalyzer_module.PatchalyzerMainActivity;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.Utils;
 

@@ -1,7 +1,6 @@
 package de.srlabs.snoopsnitch.views;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.Vector;
 
 import android.content.Context;

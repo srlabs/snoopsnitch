@@ -54,7 +54,7 @@
 
             </LinearLayout>
 
-            <de.srlabs.patchalyzer.views.PatchalyzerSumResultChart
+            <de.srlabs.patchalyzer_module.views.PatchalyzerSumResultChart
                 android:id="@+id/sumResultChart"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"

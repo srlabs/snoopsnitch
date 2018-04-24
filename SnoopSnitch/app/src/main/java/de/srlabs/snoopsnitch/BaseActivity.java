@@ -19,8 +19,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import de.srlabs.patchalyzer.PatchalyzerMainActivity;
-import de.srlabs.patchalyzer.analysis.TestUtils;
+import de.srlabs.patchalyzer_module.PatchalyzerMainActivity;
+import de.srlabs.patchalyzer_module.analysis.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.upload.FileUploadThread;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;

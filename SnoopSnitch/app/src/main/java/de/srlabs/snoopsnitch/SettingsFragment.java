@@ -1,7 +1,5 @@
 package de.srlabs.snoopsnitch;
 
-import de.srlabs.patchalyzer.views.PatchalyzerSumResultChart;
-import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;

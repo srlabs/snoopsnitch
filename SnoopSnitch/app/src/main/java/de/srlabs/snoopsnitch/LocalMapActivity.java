@@ -5,8 +5,6 @@ import de.srlabs.snoopsnitch.R;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 public class LocalMapActivity extends BaseActivity {
     @Override

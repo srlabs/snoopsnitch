@@ -17,9 +17,9 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.srlabs.patchalyzer.Constants;
-import de.srlabs.patchalyzer.helpers.NotificationHelper;
-import de.srlabs.patchalyzer.analysis.TestUtils;
+import de.srlabs.patchalyzer_module.AppFlavor;
+import de.srlabs.patchalyzer_module.analysis.TestUtils;
+import de.srlabs.patchalyzer_module.helpers.NotificationHelper;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -67,7 +67,7 @@ public class StartupActivity extends Activity {
 
     private void proceedAppFlow() {
         if(!TestUtils.isTooOldAndroidAPIVersion()) //do not show notification, if users can not use it anyway
-            NotificationHelper.showNewPatchalyzerFeatureOnce(this);
+            NotificationHelper.showNewPatchalyzerFeatureOnce(AppFlavor.getAppFlavor(), this);
 
         //continue with normal startup
         if (MsdConfig.getFirstRun(this)) {

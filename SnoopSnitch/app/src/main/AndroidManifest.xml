@@ -146,7 +146,7 @@
         </activity>
 
         <activity
-            android:name="de.srlabs.patchalyzer.PatchalyzerMainActivity"
+            android:name="de.srlabs.patchalyzer_module.PatchalyzerMainActivity"
             android:label="@string/patchalyzer_label_long"
             android:icon="@drawable/ic_patchalyzer"
             android:screenOrientation="portrait"
@@ -155,7 +155,7 @@
         </activity>
 
         <service
-            android:name="de.srlabs.patchalyzer.analysis.PatchalyzerService"
+            android:name="de.srlabs.patchalyzer_module.analysis.PatchalyzerService"
             android:exported="false"
             android:process=".PatchalyzerService" />
 
@@ -163,7 +163,7 @@
         <service android:name="de.srlabs.snoopsnitch.qdmon.MsdService" android:exported="false" android:process=".SnoopSnitchService" />
     	<service android:name="de.srlabs.snoopsnitch.active_test.ActiveTestService" android:exported="false" />
 
-        <receiver android:name="de.srlabs.patchalyzer.BootCompletedBroadcastReceiver">
+        <receiver android:name="de.srlabs.patchalyzer_module.BootCompletedBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

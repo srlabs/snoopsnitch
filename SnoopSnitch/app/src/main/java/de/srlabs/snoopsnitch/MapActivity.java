@@ -6,7 +6,6 @@ import de.srlabs.snoopsnitch.qdmon.Operator;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 public class MapActivity extends BaseActivity {
     @Override
