@@ -28,7 +28,6 @@ cp ../contrib/prebuilt/mcc.sql $ASSETS_DIR
 cp ../contrib/prebuilt/mnc.sql $ASSETS_DIR
 cp ../contrib/prebuilt/hlr_info.sql $ASSETS_DIR
 cp ../contrib/prebuilt/sm.sql $ASSETS_DIR
-cp ../contrib/prebuilt/basictests.sql $ASSETS_DIR
 cp ../contrib/sql/files.sql $ASSETS_DIR
 cp ../analysis/prebuilt/catcher_analysis.sql $ASSETS_DIR
 cp ../analysis/prebuilt/config.sql $ASSETS_DIR
