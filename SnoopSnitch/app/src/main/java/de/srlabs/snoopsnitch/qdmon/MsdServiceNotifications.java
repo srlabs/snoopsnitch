@@ -47,7 +47,6 @@ public class MsdServiceNotifications {
                 .setOngoing(true)
                 .setContentIntent(pendingIntent)
                 .build();
-        // TODO: Allow the user to open the UI from the Notification
         // TODO: Allow the user to stop recording from the Notification
         return n;
     }
@@ -114,7 +113,6 @@ public class MsdServiceNotifications {
     }
 
     public void showInternalErrorNotification(String msg, Long debugLogFileId) {
-        // TODO: Maybe directly start the error reporting activity if the app was on top when the error occured
         if(StartupActivity.isSNSNCompatible()) {
             Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_event);
             Log.i("MsdServiceNotifications", "showInternalErrorNotification(" + msg + "  debugLogFileId=" + debugLogFileId + ")");

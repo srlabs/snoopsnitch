@@ -167,7 +167,7 @@ public class Utils {
             return 3;
         else if (networkType == TelephonyManager.NETWORK_TYPE_IWLAN    // API >24
                 || networkType == TelephonyManager.NETWORK_TYPE_LTE)     // API >11
-            // ToDo: ?? IWLAN may be considered prone to other type of MiTM attack and might
+            // ToDo: IWLAN may be considered prone to other type of MiTM attack and might
             //          need to be treated differently...
             return 4;
         else {
@@ -213,7 +213,6 @@ public class Utils {
 
     public static String readFromFileOrAssets(Context context, String fileName) throws IOException {
         String jsonData;
-        //  FIXME: Check for file existence - do not use exception for control flow
         try {
             jsonData = readFromFileInput(context, fileName);
         } catch (FileNotFoundException e) {

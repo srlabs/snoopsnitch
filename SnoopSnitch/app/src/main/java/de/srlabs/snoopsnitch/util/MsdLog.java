@@ -20,8 +20,6 @@ public class MsdLog {
 
     private static final String TAG = "SNSN";
     private static final String mTAG = "MsdLog";
-
-    // TODO: We should use .getApplicationContext() when something points to a context
     private static MsdServiceHelper msdServiceHelper;
     private static MsdService msd;
 

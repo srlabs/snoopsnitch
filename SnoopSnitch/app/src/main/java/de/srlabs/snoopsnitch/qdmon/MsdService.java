@@ -665,7 +665,7 @@ public class MsdService extends Service {
             readyForStartRecording.set(false);//FIXME: not really neccessary here, or?
             return false;
         } else {
-            readyForStartRecording.set(true); //FIXME: careful here! Is this ok?
+            readyForStartRecording.set(true);
         }
 
         if (!readyForStartRecording.compareAndSet(true, false)) {
@@ -2101,8 +2101,7 @@ public class MsdService extends Service {
             pendingSqlStatementsEmptyTimestamp = System.currentTimeMillis();
 
         if (System.currentTimeMillis() > pendingSqlStatementsEmptyTimestamp + 60 * 1000) {
-            // TODO: The issue of the stuck analysis is not fixed and we will not have
-            // time to do this until version 0.9. Do not throw an exception for now.
+            // TODO: check if issues with stuck analysis might still happen here
             warn("SQL Statements are waiting for more than one minute, current queue size: " + pendingSqlStatements.size());
         }
         // Terminate extra file recording if the ActiveTestService doesn't terminate it (e.g. because it disappears)

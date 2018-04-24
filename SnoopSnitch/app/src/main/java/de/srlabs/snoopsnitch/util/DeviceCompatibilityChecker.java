@@ -76,7 +76,7 @@ public class DeviceCompatibilityChecker {
             }
         }
 
-        MsdConfig.setLastFirmwareInformation(context, currentFirmwareInfo); //TODO needed here again?
+        MsdConfig.setLastFirmwareInformation(context, currentFirmwareInfo);
 
         suBinary = getSuBinary();
         if (suBinary == null) {

@@ -237,7 +237,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback {
         try {
             ((BaseActivity) currentActivity).stateChanged(reason);
         } catch (Exception e) {
-            // TODO: Log output...
+            // TODO: Log output here?
         }
     }
 
