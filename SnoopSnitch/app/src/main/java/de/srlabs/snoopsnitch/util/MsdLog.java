@@ -13,7 +13,6 @@ import android.util.Log;
 
 import de.srlabs.snoopsnitch.BuildConfig;
 import de.srlabs.snoopsnitch.EncryptedFileWriterError;
-import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdService;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 
@@ -21,8 +20,6 @@ public class MsdLog {
 
     private static final String TAG = "SNSN";
     private static final String mTAG = "MsdLog";
-
-    // TODO: We should use .getApplicationContext() when something points to a context
     private static MsdServiceHelper msdServiceHelper;
     private static MsdService msd;
 
@@ -44,6 +41,11 @@ public class MsdLog {
     public static void e(String tag, String msg) {
         Log.e(tag, msg);
         printlnToLog(getTimePrefix() + tag + ": ERROR: " + msg);
+    }
+
+    public static void e(String tag, String msg, Exception e){
+        Log.e(tag, msg, e);
+        printlnToLog(getTimePrefix() + tag + ": ERROR: " + msg + " exception:"+ e.toString());
     }
 
     public static void v(String tag, String msg) {

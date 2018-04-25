@@ -1,7 +1,6 @@
 package de.srlabs.snoopsnitch;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -24,7 +23,6 @@ import java.util.List;
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
-import de.srlabs.snoopsnitch.qdmon.Operator;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;

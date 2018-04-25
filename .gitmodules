@@ -10,3 +10,6 @@
 	path = contrib/gsm-parser
 	url = http://opensource.srlabs.de/git/gsm-parser.git
 	ignore = dirty
+[submodule "SnoopSnitch/patchanalysis"]
+	path = SnoopSnitch/patchanalysis
+	url = https://opensource.srlabs.de/git/patchanalysis-module

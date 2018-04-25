@@ -6,11 +6,9 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -19,15 +17,15 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.srlabs.snoopsnitch.R;
+import de.srlabs.patchanalysis_module.AppFlavor;
+import de.srlabs.patchanalysis_module.analysis.TestUtils;
+import de.srlabs.patchanalysis_module.helpers.NotificationHelper;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdDialog;
-import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.PermissionChecker;
-import de.srlabs.snoopsnitch.util.Utils;
 
 /**
  * This class is launched when starting the App. It will display a dialog if the
@@ -41,67 +39,48 @@ public class StartupActivity extends Activity {
     private MsdSQLiteOpenHelper helper;
     private boolean alreadyClicked = false;
     private ProgressDialog progressDialog;
+    private static boolean isSNSNCompatible = false;
+    private static boolean isAppInitialized = false;
+    public static String snsnIncompatibilityReason;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String incompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
-        if (incompatibilityReason == null) {
-            if (MsdConfig.getFirstRun(this)) {
-                showFirstRunDialog();
-            } else {
-                createDatabaseAndStartDashboard();
-            }
+        snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
+
+        if(snsnIncompatibilityReason == null){
+            isSNSNCompatible = true;
+        }
+        else{
+            //disable starting MsdService by BootCompletedIntentReceiver on next boot
+            MsdConfig.setStartOnBoot(this,false);
+        }
+        isAppInitialized = true;
+        proceedAppFlow();
+
+    }
+
+    public static boolean isAppInitialized() {
+        return isAppInitialized;
+    }
+
+    private void proceedAppFlow() {
+        //continue with normal startup
+        if (MsdConfig.getFirstRun(this)) {
+            showFirstRunDialog();
         } else {
-            if(incompatibilityReason.equals(getResources().getString(R.string.compat_no_baseband_messages_in_active_test))){
-                showDialogWarningNoBasebandMessages();
-            }
-            else {
-                showDeviceIncompatibleDialog(incompatibilityReason);
-            }
+            createDatabaseAndStartDashboard();
         }
     }
 
-    private void showDialogWarningNoBasebandMessages(){
-        MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.compat_no_baseband_messages_warning),
-                new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //continue normal startup
-                        if (MsdConfig.getFirstRun(StartupActivity.this)) {
-                            showFirstRunDialog();
-                        } else {
-                            createDatabaseAndStartDashboard();
-                        }
-                    }
-                },
-                new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        quitApplication();
-                    }
-                },
-                new OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        quitApplication();
-                    }
-                },
-                getResources().getString(R.string.warning_button_proceed_anyway),
-                getResources().getString(R.string.warning_button_quit),
-                false
-        ).show();
+
+    // BEWARE: The return value from this is only sane if isAppInitialized() returns true
+    public static boolean isSNSNCompatible(){
+        return isSNSNCompatible;
     }
 
-    private void showDeviceIncompatibleDialog(String incompatibilityReason) {
-        Utils.showDeviceIncompatibleDialog(this, incompatibilityReason, new Runnable() {
-            @Override
-            public void run() {
-                quitApplication();
-            }
-        });
-    }
+
 
     private void showFirstRunDialog() {
         MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.alert_first_app_start_message),
@@ -153,6 +132,9 @@ public class StartupActivity extends Activity {
                     MsdDatabaseManager msdDatabaseManager = MsdDatabaseManager.getInstance();
                     SQLiteDatabase db = msdDatabaseManager.openDatabase();
                     //testing DB init
+                    if(db == null)
+                        throw new SQLException("Failed to create instance of database object");
+
                     db.rawQuery("SELECT * FROM config", null).close();
                     msdDatabaseManager.closeDatabase();
 
@@ -163,8 +145,12 @@ public class StartupActivity extends Activity {
                                 progressDialog.dismiss ();
                             }
 
-                            //Check for ACCESS_COARSE_PERMISSION neccessary for Recoding in MsdService to function
-                            if (PermissionChecker.checkAndRequestPermissionForMsdService(StartupActivity.this)) {
+                            if(isSNSNCompatible) {
+                                //Check for ACCESS_COARSE_PERMISSION neccessary for Recoding in MsdService to function
+                                if (PermissionChecker.checkAndRequestPermissionForMsdService(StartupActivity.this)) {
+                                    startDashboard();
+                                }
+                            }else{
                                 startDashboard();
                             }
 

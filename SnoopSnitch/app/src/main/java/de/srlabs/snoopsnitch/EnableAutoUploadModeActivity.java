@@ -55,7 +55,6 @@ public class EnableAutoUploadModeActivity extends BaseActivity {
 
     private void enableAutoUploadMode() {
         SharedPreferences sharedPrefs = this.getSharedPreferences("de.srlabs.snoopsnitch_preferences", Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
-        ;
         Editor editor = sharedPrefs.edit();
         editor.putBoolean("settings_auto_upload_mode", true);
         editor.commit();

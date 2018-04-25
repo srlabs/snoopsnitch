@@ -10,20 +10,18 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
 
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.StartupActivity;
 import de.srlabs.snoopsnitch.qdmon.MsdService;
-import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDialog;
 import de.srlabs.snoopsnitch.util.MsdLog;
@@ -52,14 +50,14 @@ public class ActiveTestHelper {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            MsdLog.i(MsdService.TAG, "MsdServiceHelper.MyServiceConnection.onServiceConnected()");
+            MsdLog.i(MsdService.TAG, "ActiveTestHelper.MyServiceConnection.onServiceConnected()");
             mIActiveTestService = IActiveTestService.Stub.asInterface(service);
             try {
                 mIActiveTestService.registerCallback(myActiveTestCallback);
                 boolean testRunning = mIActiveTestService.isTestRunning();
                 MsdLog.i(TAG, "Initial recording = " + testRunning);
             } catch (RemoteException e) {
-                handleFatalError("RemoteException while calling mIMsdService.registerCallback(msdCallback) or mIMsdService.isRecording() in MsdServiceHelper.MyServiceConnection.onServiceConnected()", e);
+                handleFatalError("RemoteException while calling mIMsdService.registerCallback(msdCallback) or mIMsdService.isRecording() in ActiveTestHelper.MyServiceConnection.onServiceConnected()", e);
             }
             connected = true;
             callback.testStateChanged();
@@ -67,7 +65,7 @@ public class ActiveTestHelper {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            MsdLog.i(TAG, "MsdServiceHelper.MyServiceConnection.onServiceDisconnected() called");
+            MsdLog.i(TAG, "ActiveTestHelper.MyServiceConnection.onServiceDisconnected() called");
             context.unbindService(this);
             mIActiveTestService = null;
             connected = false;
@@ -77,7 +75,6 @@ public class ActiveTestHelper {
         }
     }
 
-    ;
 
     class MyActiveTestCallback extends IActiveTestCallback.Stub {
         @Override
@@ -106,7 +103,8 @@ public class ActiveTestHelper {
     public ActiveTestHelper(Activity activity, ActiveTestCallback callback) {
         this.context = activity;
         this.callback = callback;
-        startService();
+        if(StartupActivity.isSNSNCompatible())
+            startService();
     }
 
     private void startService() {
@@ -115,6 +113,8 @@ public class ActiveTestHelper {
     }
 
     public boolean startActiveTest(String ownNumber) {
+        if(!isConnected())
+            return false;
         try {
             return mIActiveTestService.startTest(ownNumber);
         } catch (Exception e) {
@@ -124,6 +124,8 @@ public class ActiveTestHelper {
     }
 
     public void stopActiveTest() {
+        if(!isConnected())
+            return;
         try {
             mIActiveTestService.stopTest();
         } catch (Exception e) {
@@ -156,6 +158,8 @@ public class ActiveTestHelper {
     }
 
     public void clearCurrentFails() {
+        if(!isConnected())
+            return;
         try {
             mIActiveTestService.clearCurrentFails();
         } catch (Exception e) {
@@ -164,6 +168,8 @@ public class ActiveTestHelper {
     }
 
     public void clearCurrentResults() {
+        if(!isConnected())
+            return;
         try {
             mIActiveTestService.clearCurrentResults();
         } catch (Exception e) {
@@ -172,6 +178,8 @@ public class ActiveTestHelper {
     }
 
     public void clearResults() {
+        if(!isConnected())
+            return;
         try {
             mIActiveTestService.clearResults();
         } catch (Exception e) {
@@ -268,6 +276,10 @@ public class ActiveTestHelper {
     }
 
     public void showConfirmDialogAndStart(final boolean clearResults) {
+        if(!isConnected()){
+            Log.e(TAG,"showConfirmDialogAndStart(): ActiveTestService is not connected yet!");
+            return;
+        }
 
         if(!Utils.isSIMCardReady(context)){
             MsdDialog.makeNotificationDialog(context,context.getResources().getString(R.string.error_sim_card_not_ready), null, false).show();

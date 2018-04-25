@@ -76,7 +76,7 @@ import de.srlabs.snoopsnitch.analysis.GSMmap;
 import de.srlabs.snoopsnitch.analysis.ImsiCatcher;
 import de.srlabs.snoopsnitch.upload.DumpFile;
 import de.srlabs.snoopsnitch.upload.FileState;
-import de.srlabs.snoopsnitch.upload.MsdServiceUploadThread;
+import de.srlabs.snoopsnitch.upload.FileUploadThread;
 import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -87,6 +87,10 @@ import de.srlabs.snoopsnitch.util.Utils;
 
 public class MsdService extends Service {
     public static final String TAG = "msd-service";
+
+    //to improve battery consumption caused through location information, by finetuning these parameters:
+    private static final long LOCATION_MIN_MS_OFFSET = 60000;//request location update once a minute
+    private static final long LOCATION_MIN_METERS_OFFSET = 10; //request location update for a mininum distance of meters (from last info)
 
     // TODO: Watch storage utilisation and stop recording if limits are exceeded
     // TODO: Watch battery level and stop recording if battery level goes below configured limit
@@ -237,7 +241,6 @@ public class MsdService extends Service {
         }
     }
 
-    ;
     AtomicBoolean shuttingDown = new AtomicBoolean(false);
 
     Process helper;
@@ -295,7 +298,7 @@ public class MsdService extends Service {
     private EncryptedFileWriter extraRecordingRawFileWriter;
     private long extraRecordingFileId = 0;
 
-    private MsdServiceUploadThread uploadThread = null;
+    private FileUploadThread uploadThread = null;
     private DownloadDataJsThread downloadDataJsThread = null;
 
     public int parserRatGeneration = 0;
@@ -350,7 +353,7 @@ public class MsdService extends Service {
         if (uploadThread != null && uploadThread.isAlive())
             uploadThread.requestUploadRound();
         if (uploadThread == null || !uploadThread.isAlive()) {
-            uploadThread = new MsdServiceUploadThread(this);
+            uploadThread = new FileUploadThread(this);
             uploadThread.requestUploadRound();
             info("MsdService.triggerUploading() calling uploadThread.start()");
             uploadThread.start();
@@ -472,14 +475,14 @@ public class MsdService extends Service {
         try {
             openOrReopenDebugLog(false, false);
         } catch (EncryptedFileWriterError e1) {
-            handleFatalError("Exception when opening debug logs", e1);
+            handleFatalError("Exception when opening debug logs", e1); //TODO check if CrashUploadActivity runs into problems in upload(), cause service is not connected yet
         }
         mainThreadHandler.post(new ExceptionHandlingRunnable(periodicFlushRunnable));
         Thread.setDefaultUncaughtExceptionHandler(
                 new Thread.UncaughtExceptionHandler() {
                     @Override
                     public void uncaughtException(Thread t, Throwable e) {
-                        handleFatalError("Uncaught Exception in MsdService Thread " + t.getClass(), e);
+                        handleFatalError("Uncaught Exception in MsdService Thread " + t.getClass(), e);//TODO check if CrashUploadActivity runs into problems in upload()
                     }
                 });
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -520,14 +523,14 @@ public class MsdService extends Service {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (MsdConfig.gpsRecordingEnabled(MsdService.this) && PermissionChecker.isAccessingFineLocationAllowed(MsdService.this)) {
             try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, myLocationListener);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_MIN_MS_OFFSET, LOCATION_MIN_METERS_OFFSET, myLocationListener);
             } catch (IllegalArgumentException e) {
                 info("GPS location recording not available");
             }
         }
         if (MsdConfig.networkLocationRecordingEnabled(MsdService.this) && PermissionChecker.isAccessingCoarseLocationAllowed(MsdService.this)) {
             try {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, myLocationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_MIN_MS_OFFSET, LOCATION_MIN_METERS_OFFSET, myLocationListener);
             } catch (IllegalArgumentException e) {
                 info("Network location recording not available");
             }
@@ -562,7 +565,7 @@ public class MsdService extends Service {
                 info("getAndUploadGpsLocation(): Requesting GPS location");
                 final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 try {
-                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, new LocationListener() {
+                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_MIN_MS_OFFSET, LOCATION_MIN_METERS_OFFSET, new LocationListener() {
                         @Override
                         public void onStatusChanged(String provider, int status, Bundle extras) {
                         }
@@ -662,7 +665,7 @@ public class MsdService extends Service {
             readyForStartRecording.set(false);//FIXME: not really neccessary here, or?
             return false;
         } else {
-            readyForStartRecording.set(true); //FIXME: careful here! Is this ok?
+            readyForStartRecording.set(true);
         }
 
         if (!readyForStartRecording.compareAndSet(true, false)) {
@@ -778,7 +781,6 @@ public class MsdService extends Service {
                         }
                     }
 
-                    ;
                 };
                 t.start();
                 t.join(3000);
@@ -821,7 +823,6 @@ public class MsdService extends Service {
                         }
                     }
 
-                    ;
                 };
                 t.start();
                 t.join(3000);
@@ -1073,16 +1074,22 @@ public class MsdService extends Service {
                     } else if (line.startsWith("RAT:")) {
                         String parserRat = line.substring("RAT:".length()).trim();
                         info(parserLogging, "Parser RAT: " + parserRat);
-                        if (parserRat.equals("GSM")) {
-                            parserRatGeneration = 2;
-                        } else if (parserRat.equals("3G")) {
-                            parserRatGeneration = 3;
-                        } else if (parserRat.equals("LTE")) {
-                            parserRatGeneration = 4;
-                        } else if (parserRat.equals("UNKNOWN")) {
-                            parserRatGeneration = 0;
-                        } else {
-                            handleFatalError("Invalid RAT: output from parser: " + line);
+                        switch (parserRat) {
+                            case "GSM":
+                                parserRatGeneration = 2;
+                                break;
+                            case "3G":
+                                parserRatGeneration = 3;
+                                break;
+                            case "LTE":
+                                parserRatGeneration = 4;
+                                break;
+                            case "UNKNOWN":
+                                parserRatGeneration = 0;
+                                break;
+                            default:
+                                handleFatalError("Invalid RAT: output from parser: " + line);
+                                break;
                         }
                     } else {
                         info("Parser: " + line);
@@ -1153,6 +1160,7 @@ public class MsdService extends Service {
                 try {
                     if (shuttingDown && pendingSqlStatements.isEmpty()) {
                         info("SqliteThread shutting down due to shuttingDown && pendingSqlStatements.isEmpty()");
+                        MsdDatabaseManager.getInstance().closeDatabase();
                         return;
                     }
                     if (pendingSqlStatements.isEmpty())
@@ -1170,6 +1178,7 @@ public class MsdService extends Service {
                         sql.postRunHook();
                     } catch (SQLException e) {
                         handleFatalError("SQLException " + e.getMessage() + " while running: " + sql);
+                        MsdDatabaseManager.getInstance().closeDatabase();
                         return;
                     }
                     if (System.currentTimeMillis() - lastAnalysisTime > Constants.ANALYSIS_INTERVAL_MS && !MsdService.this.shuttingDown.get()) {
@@ -1229,7 +1238,6 @@ public class MsdService extends Service {
                                     }
                                 }
                             }
-                            ;
 
                             int numEvents = MsdServiceAnalysis.runEventAnalysis(MsdService.this, db);
                             if (numEvents > 0) {
@@ -1246,11 +1254,9 @@ public class MsdService extends Service {
                                     }
                                 }
                             }
-                            ;
                             if (MsdServiceAnalysis.runSecurityAnalysis(MsdService.this, db)) {
                                 sendStateChanged(StateChangedReason.SEC_METRICS_CHANGED);
                             }
-                            ;
                             lastAnalysisTime = System.currentTimeMillis();
                             lastAnalysisTimeMs = System.currentTimeMillis();
 
@@ -1276,6 +1282,7 @@ public class MsdService extends Service {
                         handleFatalError("SqliteThread received InterruptedException but pendingSqlStatements is not empty!");
                     }
                     info("SqliteThread terminating due to InterruptedException");
+                    MsdDatabaseManager.getInstance().closeDatabase();
                     return;
                 }
             }
@@ -1722,12 +1729,12 @@ public class MsdService extends Service {
             info("Parser handshake OK");
         } else {
             this.parser = null;
-            String stderrMsg = "";
+            StringBuilder stderrMsg = new StringBuilder();
             for (int i = 0; i < 100; i++) {
                 String line = this.parserStderr.readLine();
                 if (line == null)
                     break;
-                stderrMsg += line + "\n";
+                stderrMsg.append(line).append("\n");
             }
             this.parserStdout = null;
             this.parserStdin = null;
@@ -1773,6 +1780,8 @@ public class MsdService extends Service {
         } catch (SQLException e) {
             handleFatalError("SQLException in getNextRowId(" + tableName + "): ", e);
             return 0;
+        } finally {
+            MsdDatabaseManager.getInstance().closeDatabase();
         }
     }
 
@@ -1797,6 +1806,8 @@ public class MsdService extends Service {
         } catch (SQLException e) {
             handleFatalError("SQLException in getNextRowId(" + tableName + "): ", e);
             return 0;
+        } finally {
+            MsdDatabaseManager.getInstance().closeDatabase();
         }
     }
 
@@ -1955,7 +1966,6 @@ public class MsdService extends Service {
                     shutdownDueToError(finalMsg, e);
                 }
 
-                ;
             }));
         } else {
             // Only send the first fatal error to the UI
@@ -2091,8 +2101,7 @@ public class MsdService extends Service {
             pendingSqlStatementsEmptyTimestamp = System.currentTimeMillis();
 
         if (System.currentTimeMillis() > pendingSqlStatementsEmptyTimestamp + 60 * 1000) {
-            // TODO: The issue of the stuck analysis is not fixed and we will not have
-            // time to do this until version 0.9. Do not throw an exception for now.
+            // TODO: check if issues with stuck analysis might still happen here
             warn("SQL Statements are waiting for more than one minute, current queue size: " + pendingSqlStatements.size());
         }
         // Terminate extra file recording if the ActiveTestService doesn't terminate it (e.g. because it disappears)
@@ -2136,7 +2145,6 @@ public class MsdService extends Service {
                     int posSpace = line.indexOf(" ");
                     BigInteger startAddr = new BigInteger(line.substring(0, posMinus), 16);
                     BigInteger endAddr = new BigInteger(line.substring(posMinus + 1, posSpace), 16);
-                    ;
                     long mappingSize = endAddr.subtract(startAddr).longValue();
                     if (line.contains("[heap]")) {
                         heapSize += mappingSize;
@@ -2217,18 +2225,22 @@ public class MsdService extends Service {
         String encryptedFilename = null;
         String plaintextFilename = null;
         for (int i = 0; i < 300; i++) {
-            plaintextFilename = baseFilename + (i > 0 ? "." + i : "") + ".gz";
-            encryptedFilename = plaintextFilename + ".smime";
-            Cursor cur = db.query("files", null, "filename='" + encryptedFilename + "'", null, null, null, "_id");
-            boolean existingInDb = cur.moveToFirst();
-            cur.close();
-            if (existingInDb ||
-                    (new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() ||
-                    (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists()) {
-                plaintextFilename = null;
-                encryptedFilename = null;
-            } else {
-                break;
+            try{
+                plaintextFilename = baseFilename + (i > 0 ? "." + i : "") + ".gz";
+                encryptedFilename = plaintextFilename + ".smime";
+                Cursor cur = db.query("files", null, "filename='" + encryptedFilename + "'", null, null, null, "_id");
+                boolean existingInDb = cur.moveToFirst();
+                cur.close();
+                if (existingInDb ||
+                        (new File(getFilesDir().toString() + "/" + plaintextFilename)).exists() ||
+                        (new File(getFilesDir().toString() + "/" + encryptedFilename)).exists()) {
+                    plaintextFilename = null;
+                    encryptedFilename = null;
+                } else {
+                    break;
+                }
+            }catch(SQLException e){
+                Log.e(TAG,"SQLException when checking if debug log file '"+encryptedFilename+"' exists in DB: "+ e.getMessage());
             }
         }
         if (encryptedFilename == null) {

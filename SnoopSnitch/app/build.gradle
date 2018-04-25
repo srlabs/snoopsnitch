@@ -7,8 +7,8 @@ android {
         applicationId "de.srlabs.snoopsnitch"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 17
-        versionName "1.0.3"
+        versionCode 31
+        versionName "2.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -34,20 +34,27 @@ android {
 	    }
         }
     }
+
     lintOptions {
         disable 'MissingTranslation'
-	disable 'ExtraTranslation'
-	disable 'ValidFragment'
-	abortOnError false
+        disable 'ExtraTranslation'
+	    disable 'ValidFragment'
+        checkReleaseBuilds false
+	    abortOnError false
     }
     useLibrary 'org.apache.http.legacy'
+
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':patchanalysis_module')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.0'
+    implementation 'com.android.support:appcompat-v7:25.2.0'
+    //adding safetynet dependency here
+    implementation 'com.google.android.gms:play-services-safetynet:11.0.0'
+    implementation 'io.jsonwebtoken:jjwt:0.7.0'
     testCompile 'junit:junit:4.12'
 }

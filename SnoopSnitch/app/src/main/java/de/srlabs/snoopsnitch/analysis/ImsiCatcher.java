@@ -4,23 +4,15 @@ import java.io.IOException;
 import java.util.Vector;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
-import android.util.Log;
 
 import de.srlabs.snoopsnitch.EncryptedFileWriterError;
-import de.srlabs.snoopsnitch.qdmon.EncryptedFileWriter;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.upload.DumpFile;
 import de.srlabs.snoopsnitch.upload.FileState;
-import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
-import de.srlabs.snoopsnitch.util.MsdLog;
 import de.srlabs.snoopsnitch.util.Utils;
-import de.srlabs.snoopsnitch.R;
 
 
 public class ImsiCatcher implements AnalysisEvent {

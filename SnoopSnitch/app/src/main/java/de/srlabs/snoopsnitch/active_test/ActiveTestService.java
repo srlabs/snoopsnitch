@@ -12,23 +12,16 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
-import android.telephony.CellLocation;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
-import android.telephony.cdma.CdmaCellLocation;
-import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 
 import com.android.internal.telephony.ITelephony;
@@ -95,8 +88,6 @@ public class ActiveTestService extends Service {
 
         }
     }
-
-    ;
 
     class MySmsReceiver extends SmsReceiver {
         @Override
@@ -670,7 +661,7 @@ public class ActiveTestService extends Service {
                     }
                 });
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        msdServiceHelper = MSDServiceHelperCreator.getInstance(this, true).getMsdServiceHelper();
+        msdServiceHelper = MSDServiceHelperCreator.getInstance(this).getMsdServiceHelper();
         updateNetworkOperatorAndRat();
         applySettings(true);
         broadcastTestResults();
@@ -708,7 +699,7 @@ public class ActiveTestService extends Service {
     @Override
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
         final String action = intent.getAction();
-        if (ACTION_SMS_SENT.equals(action)) {
+        if (action != null && ACTION_SMS_SENT.equals(action)) {
             if (stateMachine != null)
                 stateMachine.handleSmsSent();
         }

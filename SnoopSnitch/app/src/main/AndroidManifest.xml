@@ -5,10 +5,13 @@
 
     <uses-sdk />
 
-    <!-- Permissions -->
+    <!-- Permissions and features -->
     <!-- Location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-feature android:name="android.hardware.location" android:required="false" />
+    <uses-feature android:name="android.hardware.location.network" android:required="false" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
 
 
     <!-- Connections -->
@@ -18,6 +21,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <!-- Storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -30,9 +34,9 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
 
 
-    <supports-screens android:xlargeScreens="false"/>
 
     <application
+        android:name="de.srlabs.snoopsnitch.App"
         android:allowBackup="true"
         android:extractNativeLibs="true"
         android:icon="@drawable/ic_content_imsi_event"
@@ -49,7 +53,7 @@
             android:name="de.srlabs.snoopsnitch.StartupActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop" >
+            android:launchMode="singleInstance" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -83,15 +87,7 @@
              android:screenOrientation="portrait"
              android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">     
         </activity>
-        
-        <!-- Test Activity -->
-        <activity
-            android:name="de.srlabs.snoopsnitch.MsdServiceHelperTest"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" 
-            android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">
-        </activity>
-        
+
         <!-- Settings Activity -->
         <activity
             android:name="de.srlabs.snoopsnitch.SettingsActivity"
@@ -149,7 +145,29 @@
             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
         </activity>
 
-        <service android:name="de.srlabs.snoopsnitch.qdmon.MsdService" android:exported="false" android:process=".snoopsnitch_service" />
+        <activity
+            android:name="de.srlabs.patchanalysis_module.PatchanalysisMainActivity"
+            android:label="@string/patchanalysis_label"
+            android:icon="@drawable/ic_patchanalysis"
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
+            android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">
+        </activity>
+
+        <service
+            android:name="de.srlabs.patchanalysis_module.analysis.PatchanalysisService"
+            android:exported="false"
+            android:process=".PatchanalysisService" />
+
+
+        <service android:name="de.srlabs.snoopsnitch.qdmon.MsdService" android:exported="false" android:process=".SnoopSnitchService" />
     	<service android:name="de.srlabs.snoopsnitch.active_test.ActiveTestService" android:exported="false" />
+
+        <receiver android:name="de.srlabs.patchanalysis_module.BootCompletedBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>

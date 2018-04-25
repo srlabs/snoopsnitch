@@ -68,11 +68,40 @@ public class MsdDatabaseManager {
         return mDatabase;
     }
 
+    public synchronized SQLiteDatabase openDatabaseReadOnly() throws IllegalStateException {
+        if (mOpenCounter.incrementAndGet() == 1) {
+            // Opening new database
+            try {
+                mDatabase = mDatabaseHelper.getReadableDatabase();
+            }
+            catch (SQLException e){
+                Log.e(TAG,"SQLException when trying to retrieve readable DB object: "+e.getMessage());
+
+                numFailedDBRetrievingTries++;
+                if(numFailedDBRetrievingTries <= MAX_FAILED_DB_RETRV_TRIES){
+                    // try again after a predefined delay
+                    try {
+                        Thread.sleep(1000L * SECONDS_DELAY_BETWEEN_DB_RETRV_TRY);
+                    } catch (InterruptedException e1) {
+                        Log.w(TAG,"Sleeping before retrying to access DB again was interrupted: " + e1.getMessage());
+                    }
+
+                    Log.w(TAG,"Trying to retrieve readable DB object again.");
+                    return openDatabaseReadOnly();
+                }
+                else{
+                    // cause App crash
+                    throw new IllegalStateException("Retrieving writeable DB object not possible.");
+                }
+            }
+        }
+        return mDatabase;
+    }
+
     public synchronized void closeDatabase() {
         if (mOpenCounter.decrementAndGet() == 0) {
             // Closing database
             mDatabase.close();
-
         }
     }
 }

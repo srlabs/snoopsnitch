@@ -20,6 +20,7 @@ import de.srlabs.snoopsnitch.CrashUploadActivity;
 import de.srlabs.snoopsnitch.DashboardActivity;
 import de.srlabs.snoopsnitch.EnableAutoUploadModeActivity;
 import de.srlabs.snoopsnitch.R;
+import de.srlabs.snoopsnitch.StartupActivity;
 import de.srlabs.snoopsnitch.util.Constants;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 
@@ -46,7 +47,6 @@ public class MsdServiceNotifications {
                 .setOngoing(true)
                 .setContentIntent(pendingIntent)
                 .build();
-        // TODO: Allow the user to open the UI from the Notification
         // TODO: Allow the user to stop recording from the Notification
         return n;
     }
@@ -113,44 +113,46 @@ public class MsdServiceNotifications {
     }
 
     public void showInternalErrorNotification(String msg, Long debugLogFileId) {
-        // TODO: Maybe directly start the error reporting activity if the app was on top when the error occured
-        Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_event);
-        Log.i("MsdServiceNotifications", "showInternalErrorNotification(" + msg + "  debugLogFileId=" + debugLogFileId + ")");
-        Intent intent = new Intent(service, CrashUploadActivity.class);
-        intent.putExtra(CrashUploadActivity.EXTRA_ERROR_ID, debugLogFileId == null ? 0 : (long) debugLogFileId);
-        intent.putExtra(CrashUploadActivity.EXTRA_ERROR_TEXT, msg);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        // TODO: Make this notification pretty
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(service)
-                        .setSmallIcon(R.drawable.ic_content_imsi_event)
-                        .setLargeIcon(icon)
-                        .setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title))
-                        .setContentText(service.getString(R.string.error_notification_text))
-                        .setAutoCancel(true)
-                        .setContentIntent(pendingIntent);
-        Notification n = notificationBuilder.build();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
-        notificationManager.notify(Constants.NOTIFICATION_ID_INTERNAL_ERROR, n);
+        if(StartupActivity.isSNSNCompatible()) {
+            Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_event);
+            Log.i("MsdServiceNotifications", "showInternalErrorNotification(" + msg + "  debugLogFileId=" + debugLogFileId + ")");
+            Intent intent = new Intent(service, CrashUploadActivity.class);
+            intent.putExtra(CrashUploadActivity.EXTRA_ERROR_ID, debugLogFileId == null ? 0 : (long) debugLogFileId);
+            intent.putExtra(CrashUploadActivity.EXTRA_ERROR_TEXT, msg);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(service, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            // TODO: Make this notification pretty
+            NotificationCompat.Builder notificationBuilder =
+                    new NotificationCompat.Builder(service)
+                            .setSmallIcon(R.drawable.ic_content_imsi_event)
+                            .setLargeIcon(icon)
+                            .setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title))
+                            .setContentText(service.getString(R.string.error_notification_text))
+                            .setAutoCancel(true)
+                            .setContentIntent(pendingIntent);
+            Notification n = notificationBuilder.build();
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
+            notificationManager.notify(Constants.NOTIFICATION_ID_INTERNAL_ERROR, n);
+        }
     }
 
     public void showExpectedErrorNotification(int errorId) {
-        Log.i("MsdServiceNotifications", "showExpectedErrorNotification(" + errorId + ")");
-        Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_event);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(service)
-                        .setSmallIcon(R.drawable.ic_content_imsi_event)
-                        .setLargeIcon(icon)
-                        // .setAutoCancel(true)
-                        .setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title));
-        ;
-        if (errorId == ERROR_ROOT_PRIVILEGES_DENIED) {
-            notificationBuilder.setContentText(service.getString(R.string.error_root_privileges_denied));
+        if(StartupActivity.isSNSNCompatible()) {
+            Log.i("MsdServiceNotifications", "showExpectedErrorNotification(" + errorId + ")");
+            Bitmap icon = BitmapFactory.decodeResource(service.getResources(), R.drawable.ic_content_imsi_event);
+            NotificationCompat.Builder notificationBuilder =
+                    new NotificationCompat.Builder(service)
+                            .setSmallIcon(R.drawable.ic_content_imsi_event)
+                            .setLargeIcon(icon)
+                            // .setAutoCancel(true)
+                            .setContentTitle(service.getString(R.string.app_name) + " " + service.getString(R.string.error_notification_title));
+            if (errorId == ERROR_ROOT_PRIVILEGES_DENIED) {
+                notificationBuilder.setContentText(service.getString(R.string.error_root_privileges_denied));
+            }
+            Notification n = notificationBuilder.build();
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
+            notificationManager.notify(Constants.NOTIFICATION_ID_EXPECTED_ERROR, n);
         }
-        Notification n = notificationBuilder.build();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(service);
-        notificationManager.notify(Constants.NOTIFICATION_ID_EXPECTED_ERROR, n);
     }
 
 

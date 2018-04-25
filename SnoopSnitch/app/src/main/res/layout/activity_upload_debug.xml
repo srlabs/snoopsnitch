@@ -55,16 +55,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text" >
+        android:hint="Email"
+        android:inputType="textEmailAddress" >
 
         <requestFocus />
     </EditText>
+
+
 
     <TextView
         android:id="@+id/txtUploadDebugWhatToReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/debug_what_to_report" />
+
 
     <EditText
         android:id="@+id/editTextUploadDebugWhatToReport"

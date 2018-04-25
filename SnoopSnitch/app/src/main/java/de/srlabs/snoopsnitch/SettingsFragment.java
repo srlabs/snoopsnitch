@@ -1,6 +1,5 @@
 package de.srlabs.snoopsnitch;
 
-import de.srlabs.snoopsnitch.R;
 import de.srlabs.snoopsnitch.qdmon.MsdServiceHelper;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
@@ -17,7 +16,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
-import android.widget.Toast;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
     private final String TAG = "SNSN:Settings";
@@ -118,7 +116,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     public void onDestroyView() {
         super.onDestroyView();
 
-        MSDServiceHelperCreator msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(getActivity(), true);
+        MSDServiceHelperCreator msdServiceHelperCreator = MSDServiceHelperCreator.getInstance(getActivity());
         MsdServiceHelper msdServiceHelper = msdServiceHelperCreator.getMsdServiceHelper();
 
         if (settingsChanged) {
@@ -126,6 +124,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                 msdServiceHelper.stopRecording();
                 msdServiceHelper.startRecording();
             }
+
             settingsChanged = false;
         }
         super.onDestroyView();

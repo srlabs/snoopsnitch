@@ -32,8 +32,6 @@ public class DetailChartActivity extends BaseActivity {
     private TextView _txtThreatTypeSilentSmsCount;
     private LinearLayout _llThreatTypeImsiCatcher;
     private LinearLayout _llThreatTypeSms;
-    private LinearLayout _llSpinnerDetailChart;
-    private DetailChartGalleryAdapter mPagerAdapter;
     private ViewPager mPager;
     private int _threatType;
 
@@ -48,13 +46,13 @@ public class DetailChartActivity extends BaseActivity {
         _txtThreatTypeSilentSmsCount = (TextView) findViewById(R.id.txtDetailChartThreatTypeSilentSmsCount);
         _llThreatTypeImsiCatcher = (LinearLayout) findViewById(R.id.llThreatTypeImsiCatcher);
         _llThreatTypeSms = (LinearLayout) findViewById(R.id.llThreatTypeSms);
-        _llSpinnerDetailChart = (LinearLayout) findViewById(R.id.llSpinnerDetailChart);
+        LinearLayout _llSpinnerDetailChart = (LinearLayout) findViewById(R.id.llSpinnerDetailChart);
 
         _threatType = getIntent().getIntExtra("ThreatType", R.id.IMSICatcherCharts);
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.vpDetailCharts);
-        mPagerAdapter = new DetailChartGalleryAdapter(getSupportFragmentManager(), this,
+        DetailChartGalleryAdapter mPagerAdapter = new DetailChartGalleryAdapter(getSupportFragmentManager(), this,
                 getIntent().getIntExtra("ThreatType", R.id.IMSICatcherCharts));
         mPager.setAdapter(mPagerAdapter);
 
@@ -69,14 +67,10 @@ public class DetailChartActivity extends BaseActivity {
 
             @Override
             public void onPageScrollStateChanged(int arg0) {
-                // TODO Auto-generated method stub
-
             }
 
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
-                // TODO Auto-generated method stub
-
             }
         });
 

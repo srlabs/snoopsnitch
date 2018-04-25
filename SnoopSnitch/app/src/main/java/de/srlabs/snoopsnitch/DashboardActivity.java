@@ -1,28 +1,44 @@
 package de.srlabs.snoopsnitch;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
-import android.content.pm.PackageManager;
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-
+import de.srlabs.patchanalysis_module.Constants;
+import de.srlabs.patchanalysis_module.ITestExecutorDashboardCallbacks;
+import de.srlabs.patchanalysis_module.ITestExecutorServiceInterface;
+import de.srlabs.patchanalysis_module.analysis.PatchanalysisService;
+import de.srlabs.patchanalysis_module.analysis.TestUtils;
+import de.srlabs.patchanalysis_module.helpers.ServiceConnectionHelper;
+import de.srlabs.patchanalysis_module.views.PatchanalysisSumResultChart;
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
@@ -66,11 +82,68 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     private TextView txtDashboardImpersonation2g;
     private ListView lstDashboardProviderList;
     private Button btnDashboardNetworkTest;
+    private PatchanalysisSumResultChart resultChart;
     private Vector<Risk> providerList;
     Vector<TextView> threatSmsCounts;
     Vector<TextView> threatImsiCounts;
     private ActiveTestHelper activeTestHelper;
     private boolean unknownOperator = false;
+    private ITestExecutorServiceInterface mITestExecutorService;
+    private ITestExecutorDashboardCallbacks callbacks = new TestExecutorDashboardCallbacks();
+    private boolean isServiceBound = false;
+    private boolean isActivityActive = false;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        // Called when the connection with the service is established
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // Following the example above for an AIDL interface,
+            // this gets an instance of the IRemoteInterface, which we can use to call on the service
+            mITestExecutorService = ITestExecutorServiceInterface.Stub.asInterface(service);
+            try{
+                mITestExecutorService.updateDashboardCallback(callbacks);
+                if (mITestExecutorService.isAnalysisRunning()) {
+                    PatchanalysisSumResultChart.setAnalysisRunning(true);
+                }
+            } catch (RemoteException e) {
+                Log.e(Constants.LOG_TAG, "RemoteException in onServiceConnected():", e);
+            }
+            Log.d(Constants.LOG_TAG,"Service connected!");
+            isServiceBound = true;
+        }
+
+        // Called when the connection with the service disconnects unexpectedly
+        public void onServiceDisconnected(ComponentName className) {
+            Log.e(Constants.LOG_TAG, "Service has unexpectedly disconnected");
+            isServiceBound = false;
+            mITestExecutorService = null;
+        }
+    };
+
+
+    class TestExecutorDashboardCallbacks extends ITestExecutorDashboardCallbacks.Stub{
+        @Override
+        public void finished(final String analysisResultString, final boolean isBuildCertified,
+                             final long currentAnalysisTimestamp) throws RemoteException {
+            Log.i(Constants.LOG_TAG, "PatchanalysisMainActivity received finished()");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ServiceConnectionHelper.executeFinishedOncePerAnalysis(analysisResultString,
+                            isBuildCertified, currentAnalysisTimestamp);
+                }
+            });
+        }
+        @Override
+        public void handleFatalError(final String stickyErrorMessage, final long currentAnalysisTimestamp) throws RemoteException {
+            Log.i(Constants.LOG_TAG, "PatchanalysisMainActivity received handleFatalError()");
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ServiceConnectionHelper.executeCancelledOncePerAnalysis(stickyErrorMessage, currentAnalysisTimestamp);
+                }
+            });
+        }
+    }
 
     // Methods
     @Override
@@ -123,6 +196,60 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         threatImsiCounts.add(txtImsiDayCount);
         threatImsiCounts.add(txtImsiWeekCount);
         threatImsiCounts.add(txtImsiMonthCount);
+
+
+        resultChart = (PatchanalysisSumResultChart) findViewById(R.id.sumResultChart);
+        LinearLayout patchAnalysisBox = (LinearLayout) findViewById(R.id.patchanalysis_summary);
+        if(!TestUtils.isTooOldAndroidAPIVersion()) {
+            patchAnalysisBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showPatchanalysis();
+                }
+            });
+            refreshPatchanalysisResultSum();
+        }
+
+        checkCompatibilityAndDisableFunctions();
+
+    }
+
+    private void checkCompatibilityAndDisableFunctions(){
+        LinearLayout dashboardEventCharts = (LinearLayout) findViewById(R.id.dashboardChartSection);
+        final String reason = StartupActivity.snsnIncompatibilityReason;
+        if(reason != null){
+            txtLastAnalysisTime.setText(getString(R.string.compat_snsn_features_not_working_short));
+            //SNSN features not fully accessible ; phone not compatible
+            setViewAndChildrenEnabled(btnDashboardNetworkTest,false);
+            setViewAndChildrenEnabled(dashboardEventCharts,false);
+
+            disableSNSNSpecificFunctionality(reason);
+        }
+        else{ //TODO necessary?
+            setViewAndChildrenEnabled(btnDashboardNetworkTest,true);
+            setViewAndChildrenEnabled(dashboardEventCharts,true);
+
+            enableSNSNSpecificFunctionality();
+        }
+    }
+
+
+
+    private static void setViewAndChildrenEnabled(View view, boolean enabled) {
+        if(view == null)
+            return;
+        //view.setEnabled(enabled);
+        if(enabled)
+            view.setAlpha(1.0f);
+        else
+            view.setAlpha(0.8f);
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                setViewAndChildrenEnabled(child, enabled);
+            }
+        }
     }
 
     @Override
@@ -132,10 +259,11 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
+        MenuItem menuItem = menu.findItem(R.id.menu_action_scan);
         if (msdServiceHelperCreator.getMsdServiceHelper().isRecording()) {
-            menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_record_disable, null));
+            menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_record_disable, null));
         } else {
-            menu.getItem(0).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notrecord_disable, null));
+            menuItem.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu_notrecord_disable, null));
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -144,7 +272,6 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     @Override
     protected void onStart() {
         super.onStart();
-
 
         layout = (DashboardThreatChart) findViewById(R.id.SilentSMSChartMonth);
         vto = layout.getViewTreeObserver();
@@ -157,8 +284,20 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     }
 
     @Override
+    protected void onPause(){
+        super.onPause();
+        isActivityActive = false;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        isActivityActive = true;
+        if(!TestUtils.isTooOldAndroidAPIVersion()) {
+            Intent intent = new Intent(this, PatchanalysisService.class);
+            intent.setAction(ITestExecutorServiceInterface.class.getName());
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        }
 
         // Get provider data
         this.providerList = msdServiceHelperCreator.getMsdServiceHelper().getData().getScores().getServerData();
@@ -170,10 +309,13 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         // Update RAT
         updateInterseptionImpersonation();
         updateLastAnalysis();
-
     }
 
     public void openDetailView(View view) {
+        if(snsnIncompatibilityReason != null){
+            showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
+            return;
+        }
         if (view.equals(findViewById(R.id.SilentSMSCharts)) || view.equals(findViewById(R.id.IMSICatcherCharts))) {
             Intent myIntent = new Intent(this, DetailChartActivity.class);
             myIntent.putExtra("ThreatType", view.getId());
@@ -219,8 +361,25 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
         refreshProviderList();
 
+        refreshPatchanalysisResultSum();
+
         // Set texts
         resetThreatCounts();
+    }
+
+    private void refreshPatchanalysisResultSum() {
+        boolean isAnalysisRunning = false;
+        if(mITestExecutorService != null){
+            try{
+                isAnalysisRunning = mITestExecutorService.isAnalysisRunning();
+            } catch(RemoteException e){
+                //ignore
+            }
+        }
+        if(!isAnalysisRunning) {
+            resultChart.loadValuesFromCachedResult(this);
+            resultChart.invalidate();
+        }
     }
 
     private void checkOperator() {
@@ -349,11 +508,16 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     }
 
     public void toggleNetworkTest(View view) {
-        if (activeTestHelper.isActiveTestRunning()) {
-            activeTestHelper.stopActiveTest();
-        } else {
-            if (PermissionChecker.checkAndRequestPermissionsForActiveTest(this)) {
-                activeTestHelper.showConfirmDialogAndStart(true);
+        if(snsnIncompatibilityReason != null){
+            showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
+        }
+        else {
+            if (activeTestHelper.isActiveTestRunning()) {
+                activeTestHelper.stopActiveTest();
+            } else {
+                if (PermissionChecker.checkAndRequestPermissionsForActiveTest(this)) {
+                    activeTestHelper.showConfirmDialogAndStart(true);
+                }
             }
         }
     }
@@ -451,7 +615,8 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
                 if (notGrantedPermissions.isEmpty()) {
                     //Success: All neccessary permissions granted
-                    startRecording();
+                    if(snsnIncompatibilityReason == null)
+                        startRecording();
                 } else {
 
                     //ask again for all not granted permissions
@@ -538,5 +703,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
                     }
                 }, false).show();
     }
+
+
 
 }

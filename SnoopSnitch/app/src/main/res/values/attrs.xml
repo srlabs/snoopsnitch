@@ -89,5 +89,6 @@
            	<enum name="impersonation" value="1"/>
        	</attr>
    	</declare-styleable>
-	
+
+
 </resources>

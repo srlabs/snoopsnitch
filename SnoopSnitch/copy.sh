@@ -14,6 +14,8 @@ cp ../contrib/prebuilt/libosmocore.so $JNI_DIR
 cp ../contrib/prebuilt/libosmogsm.so $JNI_DIR
 cp ../contrib/prebuilt/libsmime_crt.so $JNI_DIR
 cp ../contrib/prebuilt/libdiag-helper.so $JNI_DIR
+cp ../contrib/prebuilt/libbusybox.so $JNI_DIR
+cp ../contrib/prebuilt/libobjdump.so $JNI_DIR
 
 cp ../contrib/prebuilt/anonymize.sql $ASSETS_DIR
 cp ../contrib/prebuilt/si.sql $ASSETS_DIR

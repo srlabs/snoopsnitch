@@ -26,9 +26,9 @@ import javax.net.ssl.TrustManagerFactory;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -38,7 +38,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
+import android.widget.TextView;
 
 import de.srlabs.snoopsnitch.BuildConfig;
 import de.srlabs.snoopsnitch.EncryptedFileWriterError;
@@ -163,7 +167,7 @@ public class Utils {
             return 3;
         else if (networkType == TelephonyManager.NETWORK_TYPE_IWLAN    // API >24
                 || networkType == TelephonyManager.NETWORK_TYPE_LTE)     // API >11
-            // ToDo: ?? IWLAN may be considered prone to other type of MiTM attack and might
+            // ToDo: IWLAN may be considered prone to other type of MiTM attack and might
             //          need to be treated differently...
             return 4;
         else {
@@ -209,7 +213,6 @@ public class Utils {
 
     public static String readFromFileOrAssets(Context context, String fileName) throws IOException {
         String jsonData;
-        //  FIXME: Check for file existence - do not use exception for control flow
         try {
             jsonData = readFromFileInput(context, fileName);
         } catch (FileNotFoundException e) {
@@ -220,22 +223,18 @@ public class Utils {
 
     public static void showDeviceIncompatibleDialog(Activity activity, String incompatibilityReason, final Runnable callback) {
         String dialogMessage =
-                activity.getResources().getString(R.string.alert_deviceCompatibility_header) + " " + incompatibilityReason + " " +
-                        activity.getResources().getString(R.string.alert_deviceCompatibility_message);
+                activity.getResources().getString(R.string.alert_deviceCompatibility_header) + " " + incompatibilityReason + " " + activity.getResources().getString(R.string.alert_deviceCompatibility_message);
+        final SpannableString spannableString = new SpannableString(dialogMessage);
+        Linkify.addLinks(spannableString,Linkify.ALL);
 
-        MsdDialog.makeFatalConditionDialog(activity, dialogMessage, new OnClickListener() {
+        Dialog dialog = MsdDialog.makeOKButtonOnlyConfirmationDialog(activity, spannableString, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         callback.run();
                     }
-                }, null,
-                new OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        callback.run();
-                    }
-                }, false
-        ).show();
+                });
+        dialog.show();
+        ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private static String dumpRow(Cursor c) {
@@ -557,9 +556,7 @@ public class Utils {
 
         //check default SIM card
         int simState = telMgr.getSimState();
-        if (simState == TelephonyManager.SIM_STATE_READY)
-            return true;
-        return false;
+        return simState == TelephonyManager.SIM_STATE_READY;
     }
 
     // http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android

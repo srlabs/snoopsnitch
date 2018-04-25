@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashSet;
 
 import android.content.Context;
-import android.preference.PreferenceManager;
 
 import de.srlabs.snoopsnitch.R;
 
@@ -146,9 +146,7 @@ public class DeviceCompatibilityChecker {
         // Always consider the default paths /system/bin/ and /system/xbin/ in case $PATH is incomplete
         pathDirs.add("/system/bin/");
         pathDirs.add("/system/xbin/");
-        for (String pathEntry : path.split(":")) {
-            pathDirs.add(pathEntry);
-        }
+        Collections.addAll(pathDirs, path.split(":"));
 
         int suBinariesTried = 0;
 

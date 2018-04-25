@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Vector;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 
@@ -21,7 +20,6 @@ public class ActiveTestResults implements Serializable {
 
     enum State {API_RUNNING, WAITING, TEST_RUNNING, SUCCESS, FAILED_TIMEOUT, FAILED_API_ERROR, FAILED_API_TIMEOUT, FAILED}
 
-    ;
     private HashMap<String, NetworkOperatorTestResults> networkOperators = new HashMap<String, ActiveTestResults.NetworkOperatorTestResults>();
     private String currentMccMnc = null;
     private SingleTestState currentTest;

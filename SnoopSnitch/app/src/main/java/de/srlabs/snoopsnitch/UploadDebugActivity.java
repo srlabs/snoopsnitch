@@ -8,6 +8,7 @@ import java.util.Vector;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 
 import de.srlabs.snoopsnitch.qdmon.EncryptedFileWriter;
 import de.srlabs.snoopsnitch.upload.DumpFile;
+import de.srlabs.snoopsnitch.upload.FileUploadThread;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
 import de.srlabs.snoopsnitch.util.MsdDialog;
@@ -43,6 +45,17 @@ public class UploadDebugActivity extends BaseActivity {
         this.checkDebugUploadDatabaseMetadata = (CheckBox) findViewById(R.id.checkDebugUploadDatabaseMetadata);
         this.checkDebugUploadRadioTraces = (CheckBox) findViewById(R.id.checkDebugUploadRadioTraces);
         this.checkDebugUploadSnoopsnitchDebugLogs = (CheckBox) findViewById(R.id.checkDebugUploadSnoopsnitchDebugLogs);
+
+        if(!StartupActivity.isSNSNCompatible()){
+            //disable checkboxes
+            checkDebugUploadDatabaseMetadata.setChecked(false);
+            checkDebugUploadDatabaseMetadata.setEnabled(false);
+            checkDebugUploadRadioTraces.setChecked(false);
+            checkDebugUploadRadioTraces.setEnabled(false);
+            checkDebugUploadSnoopsnitchDebugLogs.setChecked(false);
+            checkDebugUploadSnoopsnitchDebugLogs.setEnabled(false);
+        }
+
         this.btnDebugCancel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,13 +76,13 @@ public class UploadDebugActivity extends BaseActivity {
         boolean uploadDatabaseMetadata = checkDebugUploadDatabaseMetadata.isChecked();
         boolean uploadRadioTraces = checkDebugUploadRadioTraces.isChecked();
         boolean uploadSnoopsnitchDebugLogs = checkDebugUploadSnoopsnitchDebugLogs.isChecked();
-        if (!uploadDatabaseMetadata && !uploadRadioTraces && !uploadSnoopsnitchDebugLogs) {
+        /*if (!uploadDatabaseMetadata && !uploadRadioTraces && !uploadSnoopsnitchDebugLogs) {
             MsdDialog.makeNotificationDialog(this, getString(R.string.upload_debug_please_select), null, true).show();
             return;
-        }
+        }*/
         String whatToReport = this.editTextUploadDebugWhatToReport.getText().toString().trim();
         String contactInfo = this.editTextUploadDebugContactInfo.getText().toString().trim();
-        if (!noContactInfoConfirmed && (contactInfo.length() < 5 || !contactInfo.contains("@"))) {
+        if (!noContactInfoConfirmed && !isValidEmail(contactInfo)) {
             MsdDialog.makeConfirmationDialog(this, getString(R.string.upload_debug_confirm_no_contact), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -93,19 +106,26 @@ public class UploadDebugActivity extends BaseActivity {
         try {
             SQLiteDatabase db = MsdDatabaseManager.getInstance().openDatabase();
             if (uploadRadioTraces) {
-                for (DumpFile df : DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, System.currentTimeMillis() - 3600 * 1000L, System.currentTimeMillis(), 0)) {
-                    files.add(df);
-                    df.markForUpload(db);
+                Vector<DumpFile> dumpFiles = DumpFile.getFiles(db, DumpFile.TYPE_ENCRYPTED_QDMON, System.currentTimeMillis() - 3600 * 1000L, System.currentTimeMillis(), 0);
+                if(dumpFiles != null && dumpFiles.size() > 0) {
+                    for (DumpFile df : dumpFiles) {
+                        files.add(df);
+                        df.markForUpload(db);
+                    }
                 }
             }
             if (uploadSnoopsnitchDebugLogs) {
                 long debugLogId = getMsdServiceHelperCreator().getMsdServiceHelper().reopenAndUploadDebugLog();
                 DumpFile df = DumpFile.get(db, debugLogId);
-                df.markForUpload(db);
-                files.add(df);
+                if(df != null) {
+                    df.markForUpload(db);
+                    files.add(df);
+                }
             }
             if (uploadDatabaseMetadata) {
-                files.add(Utils.uploadMetadata(this, db, null, System.currentTimeMillis(), System.currentTimeMillis(), "meta-suspicious-"));
+                DumpFile dbMetaData = Utils.uploadMetadata(this, db, null, System.currentTimeMillis(), System.currentTimeMillis(), "meta-suspicious-");
+                if(dbMetaData != null)
+                    files.add(dbMetaData);
             }
             String json = "{\n\"APPID\":\"" + MsdConfig.getAppId(this) + "\",\n";
             json += "\"REPORT_CONTACT\":" + escape(contactInfo) + ",\n";
@@ -133,7 +153,16 @@ public class UploadDebugActivity extends BaseActivity {
             df.recordingStopped();
             df.insert(db);
             df.markForUpload(db);
-            getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
+            if(StartupActivity.isSNSNCompatible()) {
+                //let MsdService do the uploading
+                getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
+            }
+            else{
+                //no MSdService, so we do the work here
+                FileUploadThread uploadThread = new FileUploadThread(this);
+                uploadThread.requestUploadRound();
+                uploadThread.start();
+            }
             String reportId = df.getReportId();
             MsdDialog.makeNotificationDialog(this, String.format(getString(R.string.upload_debug_confirmation_msg), reportId), new DialogInterface.OnClickListener() {
                 @Override
@@ -153,6 +182,10 @@ public class UploadDebugActivity extends BaseActivity {
         if (input == null)
             return "undefined";
         return "\"" + input.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n") + "\"";
+    }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
 }

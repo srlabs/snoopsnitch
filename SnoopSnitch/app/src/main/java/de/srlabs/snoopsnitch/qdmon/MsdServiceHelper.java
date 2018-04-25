@@ -1,8 +1,8 @@
 package de.srlabs.snoopsnitch.qdmon;
 
+import de.srlabs.snoopsnitch.StartupActivity;
 import de.srlabs.snoopsnitch.qdmon.IMsdService;
 import de.srlabs.snoopsnitch.qdmon.IMsdServiceCallback;
-import de.srlabs.snoopsnitch.util.PermissionChecker;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,7 +30,6 @@ public class MsdServiceHelper {
                     callback.stateChanged(StateChangedReason.valueOf(reason));
                 }
 
-                ;
             });
         }
 
@@ -48,13 +47,19 @@ public class MsdServiceHelper {
     public MsdServiceHelper(Context context, MsdServiceCallback callback) {
         this.context = context;
         this.callback = callback;
-        startService();
+        bootstrap();
+    }
+
+    private void bootstrap(){
+        if(StartupActivity.isSNSNCompatible()){ //only start MsdService if we think that this device is compatible
+            startService();
+        }
+        data = new AnalysisEventData(context);
     }
 
     private void startService() {
         context.startService(new Intent(context, MsdService.class));
         context.bindService(new Intent(context, MsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
-        data = new AnalysisEventData(context);
     }
 
     public boolean isConnected() {
@@ -68,6 +73,10 @@ public class MsdServiceHelper {
             Log.w(TAG,"MsdServiceHelper.startRecording() not allowed - User did not grant ACCESS_COARSE_LOCATION permission");
 			return false;
 		}*/
+		if(!connected) {
+            Log.i(TAG, "MsdServiceHelper.isRecording(): Not connected => false");
+            return false;
+        }
 
         boolean result = false;
         try {
@@ -81,6 +90,10 @@ public class MsdServiceHelper {
 
     public boolean stopRecording() {
         Log.i(TAG, "MsdServiceHelper.stopRecording() called");
+        if(!connected) {
+            Log.i(TAG, "MsdServiceHelper.isRecording(): Not connected => false");
+            return false;
+        }
         boolean result = false;
         try {
             result = mIMsdService.stopRecording();
@@ -143,8 +156,6 @@ public class MsdServiceHelper {
         }
     }
 
-    ;
-
     private void handleFatalError(String errorMsg, Exception e) {
         String msg = errorMsg;
         if (e != null)
@@ -172,6 +183,10 @@ public class MsdServiceHelper {
     }
 
     public void triggerUploading() {
+        if (!connected) {
+            Log.i(TAG, "MsdServiceHelper.triggerUploading(): Not connected!");
+            return;
+        }
         try {
             mIMsdService.triggerUploading();
         } catch (RemoteException e) {
@@ -180,6 +195,7 @@ public class MsdServiceHelper {
     }
 
     public long reopenAndUploadDebugLog() {
+
         try {
             return mIMsdService.reopenAndUploadDebugLog();
         } catch (RemoteException e) {

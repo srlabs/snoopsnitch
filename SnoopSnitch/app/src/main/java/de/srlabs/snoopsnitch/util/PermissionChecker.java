@@ -3,7 +3,6 @@ package de.srlabs.snoopsnitch.util;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -13,8 +12,6 @@ import android.support.v4.content.ContextCompat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.srlabs.snoopsnitch.DashboardActivity;
 
 /**
  * This class helps handling the dynamic user granted permissions introduced with API >= 23

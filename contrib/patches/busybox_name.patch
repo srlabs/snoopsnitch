@@ -1,0 +1,15 @@
+diff --git a/libbb/appletlib.c b/libbb/appletlib.c
+index 7f0d620..29dbaa3 100644
+--- a/libbb/appletlib.c
++++ b/libbb/appletlib.c
+@@ -911,8 +911,8 @@ void FAST_FUNC run_applet_no_and_exit(int applet_no, char **argv)
+ static NORETURN void run_applet_and_exit(const char *name, char **argv)
+ {
+ #  if ENABLE_BUSYBOX
+-	if (is_prefixed_with(name, "busybox"))
+-		exit(busybox_main(argv));
++  if (is_prefixed_with(name, "busybox")|| is_prefixed_with(name, "libbusybox"))
++    exit(busybox_main(argv));
+ #  endif
+ #  if NUM_APPLETS > 0
+ 	/* find_applet_by_name() search is more expensive, so goes second */
