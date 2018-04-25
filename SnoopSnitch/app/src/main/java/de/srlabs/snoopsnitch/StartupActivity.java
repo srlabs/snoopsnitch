@@ -66,9 +66,6 @@ public class StartupActivity extends Activity {
     }
 
     private void proceedAppFlow() {
-        if(!TestUtils.isTooOldAndroidAPIVersion()) //do not show notification, if users can not use it anyway
-            NotificationHelper.showNewPatchalyzerFeatureOnce(AppFlavor.getAppFlavor(), this);
-
         //continue with normal startup
         if (MsdConfig.getFirstRun(this)) {
             showFirstRunDialog();
