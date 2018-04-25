@@ -19,8 +19,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import de.srlabs.patchalyzer_module.PatchalyzerMainActivity;
-import de.srlabs.patchalyzer_module.analysis.TestUtils;
+import de.srlabs.patchanalysis_module.PatchanalysisMainActivity;
+import de.srlabs.patchanalysis_module.analysis.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
 import de.srlabs.snoopsnitch.upload.FileUploadThread;
 import de.srlabs.snoopsnitch.util.MSDServiceHelperCreator;
@@ -40,7 +40,7 @@ public class BaseActivity extends FragmentActivity {
     protected Menu menu;
     protected Boolean isInForeground = false;
     protected Handler handler;
-    private Intent patchalyzerIntent;
+    private Intent patchanalysisIntent;
     protected final int refresh_intervall = 1000;
     // Static variable so that it is common to all Activities of the App
     private static boolean exitFlag = false;
@@ -149,9 +149,9 @@ public class BaseActivity extends FragmentActivity {
         return msdServiceHelperCreator;
     }
 
-    public void showPatchalyzer(){
-        patchalyzerIntent = new Intent(this, PatchalyzerMainActivity.class);
-        startActivity(patchalyzerIntent);
+    public void showPatchanalysis(){
+        patchanalysisIntent = new Intent(this, PatchanalysisMainActivity.class);
+        startActivity(patchanalysisIntent);
     }
 
     public void disableSNSNSpecificFunctionality(String snsnIncompatibilityReason){
@@ -167,7 +167,7 @@ public class BaseActivity extends FragmentActivity {
         switch (item.getItemId()) {
             case R.id.label_patch_analysis_long:
                 if (!TestUtils.isTooOldAndroidAPIVersion()) {
-                    showPatchalyzer();
+                    showPatchanalysis();
                 }
                 break;
             case R.id.menu_action_scan:

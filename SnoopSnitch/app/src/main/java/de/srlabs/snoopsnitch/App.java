@@ -3,8 +3,8 @@ package de.srlabs.snoopsnitch;
 import android.app.Application;
 import android.util.Log;
 
-import de.srlabs.patchalyzer_module.AppFlavor;
-import de.srlabs.patchalyzer_module.Constants;
+import de.srlabs.patchanalysis_module.AppFlavor;
+import de.srlabs.patchanalysis_module.Constants;
 
 public class App extends Application {
     @Override public void onCreate() {

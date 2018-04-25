@@ -17,9 +17,9 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.srlabs.patchalyzer_module.AppFlavor;
-import de.srlabs.patchalyzer_module.analysis.TestUtils;
-import de.srlabs.patchalyzer_module.helpers.NotificationHelper;
+import de.srlabs.patchanalysis_module.AppFlavor;
+import de.srlabs.patchanalysis_module.analysis.TestUtils;
+import de.srlabs.patchanalysis_module.helpers.NotificationHelper;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;

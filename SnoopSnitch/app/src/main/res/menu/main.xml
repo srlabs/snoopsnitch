@@ -12,7 +12,7 @@
     
     <!-- Items of the more menu -->
 	<item android:id="@+id/label_patch_analysis_long"
-		android:icon="@drawable/ic_patchalyzer"
+		android:icon="@drawable/ic_patchanalysis"
 		android:title="@string/patchanalysis_label"
 		android:showAsAction="ifRoom" />
   	<item

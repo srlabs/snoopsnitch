@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
-import de.srlabs.patchalyzer_module.AppFlavor;
-import de.srlabs.patchalyzer_module.PatchalyzerMainActivity;
+import de.srlabs.patchanalysis_module.AppFlavor;
+import de.srlabs.patchanalysis_module.PatchanalysisMainActivity;
 import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.Utils;
 
@@ -55,7 +55,7 @@ public class PAAppFlavorSNSN extends AppFlavor {
 
     @Override
     public Class<?> getPatchAnalysisActivityClass() {
-        return PatchalyzerMainActivity.class;
+        return PatchanalysisMainActivity.class;
     }
 
     @Override

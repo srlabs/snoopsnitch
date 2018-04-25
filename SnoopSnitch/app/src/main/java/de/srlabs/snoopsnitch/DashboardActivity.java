@@ -32,13 +32,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-import de.srlabs.patchalyzer_module.Constants;
-import de.srlabs.patchalyzer_module.ITestExecutorDashboardCallbacks;
-import de.srlabs.patchalyzer_module.ITestExecutorServiceInterface;
-import de.srlabs.patchalyzer_module.analysis.PatchalyzerService;
-import de.srlabs.patchalyzer_module.analysis.TestUtils;
-import de.srlabs.patchalyzer_module.helpers.ServiceConnectionHelper;
-import de.srlabs.patchalyzer_module.views.PatchalyzerSumResultChart;
+import de.srlabs.patchanalysis_module.Constants;
+import de.srlabs.patchanalysis_module.ITestExecutorDashboardCallbacks;
+import de.srlabs.patchanalysis_module.ITestExecutorServiceInterface;
+import de.srlabs.patchanalysis_module.analysis.PatchanalysisService;
+import de.srlabs.patchanalysis_module.analysis.TestUtils;
+import de.srlabs.patchanalysis_module.helpers.ServiceConnectionHelper;
+import de.srlabs.patchanalysis_module.views.PatchanalysisSumResultChart;
 import de.srlabs.snoopsnitch.active_test.ActiveTestCallback;
 import de.srlabs.snoopsnitch.active_test.ActiveTestHelper;
 import de.srlabs.snoopsnitch.active_test.ActiveTestResults;
@@ -82,7 +82,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     private TextView txtDashboardImpersonation2g;
     private ListView lstDashboardProviderList;
     private Button btnDashboardNetworkTest;
-    private PatchalyzerSumResultChart resultChart;
+    private PatchanalysisSumResultChart resultChart;
     private Vector<Risk> providerList;
     Vector<TextView> threatSmsCounts;
     Vector<TextView> threatImsiCounts;
@@ -102,7 +102,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
             try{
                 mITestExecutorService.updateDashboardCallback(callbacks);
                 if (mITestExecutorService.isAnalysisRunning()) {
-                    PatchalyzerSumResultChart.setAnalysisRunning(true);
+                    PatchanalysisSumResultChart.setAnalysisRunning(true);
                 }
             } catch (RemoteException e) {
                 Log.e(Constants.LOG_TAG, "RemoteException in onServiceConnected():", e);
@@ -124,7 +124,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         @Override
         public void finished(final String analysisResultString, final boolean isBuildCertified,
                              final long currentAnalysisTimestamp) throws RemoteException {
-            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received finished()");
+            Log.i(Constants.LOG_TAG, "PatchanalysisMainActivity received finished()");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -135,7 +135,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         }
         @Override
         public void handleFatalError(final String stickyErrorMessage, final long currentAnalysisTimestamp) throws RemoteException {
-            Log.i(Constants.LOG_TAG, "PatchalyzerMainActivity received handleFatalError()");
+            Log.i(Constants.LOG_TAG, "PatchanalysisMainActivity received handleFatalError()");
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -198,16 +198,16 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         threatImsiCounts.add(txtImsiMonthCount);
 
 
-        resultChart = (PatchalyzerSumResultChart) findViewById(R.id.sumResultChart);
-        LinearLayout patchAnalysisBox = (LinearLayout) findViewById(R.id.patchalyzer_summary);
+        resultChart = (PatchanalysisSumResultChart) findViewById(R.id.sumResultChart);
+        LinearLayout patchAnalysisBox = (LinearLayout) findViewById(R.id.patchanalysis_summary);
         if(!TestUtils.isTooOldAndroidAPIVersion()) {
             patchAnalysisBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showPatchalyzer();
+                    showPatchanalysis();
                 }
             });
-            refreshPatchalyzerResultSum();
+            refreshPatchanalysisResultSum();
         }
 
         checkCompatibilityAndDisableFunctions();
@@ -294,7 +294,7 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
         super.onResume();
         isActivityActive = true;
         if(!TestUtils.isTooOldAndroidAPIVersion()) {
-            Intent intent = new Intent(this, PatchalyzerService.class);
+            Intent intent = new Intent(this, PatchanalysisService.class);
             intent.setAction(ITestExecutorServiceInterface.class.getName());
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
@@ -361,13 +361,13 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
 
         refreshProviderList();
 
-        refreshPatchalyzerResultSum();
+        refreshPatchanalysisResultSum();
 
         // Set texts
         resetThreatCounts();
     }
 
-    private void refreshPatchalyzerResultSum() {
+    private void refreshPatchanalysisResultSum() {
         boolean isAnalysisRunning = false;
         if(mITestExecutorService != null){
             try{
