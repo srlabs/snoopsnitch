@@ -73,10 +73,4 @@ public class PAAppFlavorSNSN extends AppFlavor {
             activity.finish();
         }
     }
-
-    @Override
-    public String getPatchalyzerActivityLabel() {
-        return "Android patch level analysis";
-    }
-
 }
