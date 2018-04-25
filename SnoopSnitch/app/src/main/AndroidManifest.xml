@@ -147,7 +147,7 @@
 
         <activity
             android:name="de.srlabs.patchalyzer_module.PatchalyzerMainActivity"
-            android:label="@string/patchalyzer_label_long"
+            android:label="@string/patchanalysis_label"
             android:icon="@drawable/ic_patchalyzer"
             android:screenOrientation="portrait"
             android:launchMode="singleInstance"

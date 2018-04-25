@@ -13,7 +13,7 @@
     <!-- Items of the more menu -->
 	<item android:id="@+id/label_patch_analysis_long"
 		android:icon="@drawable/ic_patchalyzer"
-		android:title="@string/patchalyzer_label_long"
+		android:title="@string/patchanalysis_label"
 		android:showAsAction="ifRoom" />
   	<item
         android:id="@+id/menu_action_active_test_advanced"
