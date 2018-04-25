@@ -121,30 +121,23 @@ Please turn the Airplane Mode off and retry this test.
 </string>
 
     <string name="about_text">
-SnoopSnitch collects and analyzes mobile data to make you aware
-of your mobile security and to warn you about threats like fake base
-stations (IMSI catchers) and user tracking.\n
-\n
-This application uses data contributed by other users. By choosing to upload your
-measurement results or security events, you can help improve this data and
-support future research.\n
-\n
-SnoopSnitch will ask for confirmation whenever any of your information is uploaded to
-our servers. All uploads are encrypted. Note that uploaded radio traces may contain
-private information as a side-effect.\n
-\n
-If you have questions or want to contribute to SnoopSnitch, please contact
-our mailing list https://lists.srlabs.de/cgi-bin/mailman/listinfo/gsmmap. For a
-private conversion with the SnoopSnitch team, please contact snoopsnitch@srlabs.de
-(PGP fingerprint 9728 A7F9 D457 1FBB 746F  5381 D52C AC10 634A 9561).\n
-\n
-Visit our  project website for source code and further information:\n
-\n
-https://opensource.srlabs.de/projects/snoopsnitch\n
-\n
-You can consult our privacy policy at\n
-\n
-https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy\n
+SnoopSnitch is an open source Android app that offers you the opportunity to test the security of your mobile device as well as of the mobile networks to which your device connects.\n
+
+SnoopSnitch offers two core security testing features:\n\n
+
+*Android patch level analysis*\n
+
+SnoopSnitch\'s latest feature are tests to analyze whether a device’s build of Android OS is missing security patches that should be included relative to the device’s current security patch level date.\n
+NOTE: These tests will work on all Android devices.\n\n
+
+*Mobile network security tests*\n
+
+SnoopSnitch\'s original security tests focus identifying potential attacks or surveillance against an individual device from the mobile network. SnoopSnitch collects and analyzes mobile radio data to make you aware of the overall security of the mobile network to which your device is connected and to warn you about threats like fake base stations (IMSI catchers) and user tracking.\n
+NOTE: These tests will only work on Android devices with root access and a Qualcomm chipset.\n
+
+For additional information, including an FAQ, privacy policy, and app source code, please visit our SnoopSnitch project website at:\n
+
+https://opensource.srlabs.de/projects/snoopsnitch
 </string>
 
     <!-- Dashboard Screen -->
@@ -457,8 +450,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="notification_vibrate">Vibration</string>
     <string name="notification_ring">Sound notification</string>
     <string name="notification_vibrate_and_ring">Vibration and Sound notification</string>
-    <string name="settings_imsi_catcher_notification_summary">You can choose how you want to get alarmed, when an IMSI catcher is detected.</string>
-    <string name="settings_sms_event_notification_summary">You can choose how you want to get alarmed, when a SMS/SS7 attack is detected.</string>
+    <string name="settings_imsi_catcher_notification_summary">You can choose how you want to get notified, when an IMSI catcher is detected.</string>
+    <string name="settings_sms_event_notification_summary">You can choose how you want to get notified, when a SMS/SS7 attack is detected.</string>
     <string name="alert_active_test_permissions_not_granted">Please grant ALL requested permissions to run an Active network Test.</string>
     <string name="alert_active_test_permissions_not_granted_persistent"> You have to grant ALL requested permissions to be able to run an Active network Test with SnoopSnitch</string>
     <string name="alert_msdservice_permissions_not_granted">Please grant ALL requested permissions to enable running SnoopSnitch\'s background service.</string>
