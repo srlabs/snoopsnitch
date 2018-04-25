@@ -9,6 +9,7 @@ import java.util.Vector;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -19,6 +20,8 @@ import de.srlabs.snoopsnitch.util.Utils;
  * This class provides some manual object relational mapping to entries of the database table files.
  */
 public class DumpFile {
+    private static final String TAG = "DumpFile";
+
     private long id = -1;
     private String filename;
     private long start_time;
@@ -174,9 +177,14 @@ public class DumpFile {
         if (id != -1)
             throw new IllegalStateException("Dumpfile " + filename + " already exists in database, please use update() instead of insert()");
         ContentValues values = this.makeContentValues();
-        id = db.insertOrThrow("files", null, values);
-        if (id == -1)
-            throw new IllegalStateException("Failed to insert file " + filename + " into database");
+        try {
+            id = db.insertOrThrow("files", null, values);
+            if (id == -1)
+                throw new IllegalStateException("Failed to insert file " + filename + " into database");
+        }
+        catch(SQLException e){
+            MsdLog.e(TAG,"SQLException when trying to insert file "+ filename + " into database: "+ e.getMessage());
+        }
     }
 
     private ContentValues makeContentValues() {
@@ -340,7 +348,7 @@ public class DumpFile {
             // in files with a period of several days (according to start_time
             // and end_time), which then confuses the detection whether an Event
             // is already uploaded or not.
-            MsdLog.w("DumpFile", "Discarding dumpfile " + filename + " because the duration " + duration + " is negative or larger than the specified maximum of " + maxDurationMillis + " millis");
+            MsdLog.w(TAG, "Discarding dumpfile " + filename + " because the duration " + duration + " is negative or larger than the specified maximum of " + maxDurationMillis + " millis");
             ctx.deleteFile(filename);
             db.delete("files", "_id=" + this.id, null);
             return;
