@@ -472,5 +472,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="device_never_compatible">Your device does not have a MSM Qualcomm chip, and is therefore not able to run SnoopSnitch main features.</string>
     <string name="device_not_compatible_now_no_diag">Your device is not compatible currently. This might change with an upcoming firmware update.</string>
 
+    <!-- Android patch level analysis -->
+    <!-- General -->
+    <string name="patchalyzer_label_long">Android patch level analysis</string>
+    <string name="patchalyzer_label_short">Patch analysis</string>
 
 </resources>
