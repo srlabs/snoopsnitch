@@ -1,2 +1,2 @@
-include ':app', ':patchalyzer_module'
-project(':patchalyzer_module').projectDir = new File('patchanalysis/patchalyzer_module')
+include ':app', ':patchanalysis_module'
+project(':patchanalysis_module').projectDir = new File('patchanalysis/patchanalysis_module')
