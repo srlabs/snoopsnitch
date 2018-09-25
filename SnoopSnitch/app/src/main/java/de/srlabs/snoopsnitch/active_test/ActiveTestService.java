@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Vector;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.telecom.TelecomManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -449,11 +451,9 @@ public class ActiveTestService extends Service {
                 iterate();
             } else if (state == State.CALL_MO_ACTIVE) {
                 stateInfo("Aborting outgoing call in CALL_MO_ACTIVE");
-                try {
-                    telephonyService.endCall();
-                } catch (RemoteException e) {
-                    stateInfo("RemoteException in telephonyService.endCall: "+e);
-                }
+
+                endCall();
+
             } else if (state == State.CALL_MT_API) {
                 if (api != null)
                     api.abort();
@@ -624,6 +624,16 @@ public class ActiveTestService extends Service {
         }
     }
 
+    private void endCall() {
+        Boolean success = null;
+        if(Build.VERSION.SDK_INT < 28){
+            success = endCallBelowAPILevel28();
+        }
+        else{
+            success = endCallFromAPILevel28();
+        }
+        stateInfo("Tried to end call, result: "+success);
+    }
 
     /**
      * This method set the tests running to use the Online API,if switchToOnline is true and there is an Internet connection.
@@ -711,18 +721,6 @@ public class ActiveTestService extends Service {
         this.ownNumber = ownNumber;
         this.numSuccessfulTests = 0;
         this.msdServiceHelper.startActiveTest();
-        // http://stackoverflow.com/questions/599443/how-to-hang-up-outgoing-call-in-android
-        try {
-            // Java reflection to gain access to TelephonyManager's
-            // ITelephony getter
-            Log.v(TAG, "Get getTeleService...");
-            Class<?> c = Class.forName(telephonyManager.getClass().getName());
-            Method m = c.getDeclaredMethod("getITelephony");
-            m.setAccessible(true);
-            telephonyService = (ITelephony) m.invoke(telephonyManager);
-        } catch (Exception e) {
-            handleFatalError("Could not get telephonyService", e);
-        }
         stateMachine = new StateMachine();
         applySettings(true);
         results.isOnlineMode();
@@ -743,6 +741,41 @@ public class ActiveTestService extends Service {
         broadcastTestStateChanged();
         broadcastTestResults();
         return true;
+    }
+
+    @TargetApi(16)
+    private boolean endCallBelowAPILevel28(){
+        try {
+            // http://stackoverflow.com/questions/599443/how-to-hang-up-outgoing-call-in-android
+            // Java reflection to gain access to TelephonyManager's
+            // ITelephony getter
+            Log.v(TAG, "Get getTeleService...");
+            Class<?> c = Class.forName(telephonyManager.getClass().getName());
+            Method m = c.getDeclaredMethod("getITelephony");
+            m.setAccessible(true);
+            telephonyService = (ITelephony) m.invoke(telephonyManager);
+            Log.v(TAG,"Stopping active calls...");
+            return telephonyService.endCall();
+
+        } catch (Exception e) {
+            handleFatalError("Could not get telephonyService. Can not stop call.", e);
+        }
+        return false;
+    }
+
+    @TargetApi(28)
+    private boolean endCallFromAPILevel28(){
+        // From Android 9 on, we use this to stop calls: https://stackoverflow.com/a/50735559
+        Log.v(TAG,"Get TelecomManager...");
+        TelecomManager tm = (TelecomManager) this.getSystemService(Context.TELECOM_SERVICE);
+        if(tm != null){
+            Log.v(TAG,"Stopping active calls...");
+            return tm.endCall();
+        }
+        else{
+            Log.e(TAG,"TelecomManager is null! Can not end call.");
+        }
+        return false;
     }
 
     private void stopTest() {

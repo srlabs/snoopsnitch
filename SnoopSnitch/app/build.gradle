@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "de.srlabs.snoopsnitch"
         minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 33
-        versionName "2.0.5"
+        targetSdkVersion 26
+        versionCode 35
+        versionName "2.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -44,6 +44,16 @@ android {
     }
     useLibrary 'org.apache.http.legacy'
 
+    flavorDimensions "certifiedBuildCheck"
+    productFlavors {
+        safetynet {
+            dimension "certifiedBuildCheck"
+        }
+        nobuildcheck {
+            dimension "certifiedBuildCheck"
+            versionNameSuffix "-nbc"
+	    }
+    }
 }
 
 dependencies {
@@ -53,8 +63,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.android.support:appcompat-v7:25.2.0'
-    //adding safetynet dependency here
-    implementation 'com.google.android.gms:play-services-safetynet:11.0.0'
-    implementation 'io.jsonwebtoken:jjwt:0.7.0'
     testCompile 'junit:junit:4.12'
 }

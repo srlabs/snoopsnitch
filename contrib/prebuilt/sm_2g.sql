@@ -21,7 +21,7 @@ insert into valid_op
  and ((t_locupd and (lu_acc or cipher > 1 or rat > 0)) or
       (t_sms and (t_release or cipher > 1 or rat > 0)) or
       (t_call and (assign or cipher > 1 or rat > 0)))
- and (duration > 350 or cipher > 0 or rat > 0)
+ and domain = 0 and (duration > 350 or cipher > 0 or rat > 0)
  group by session_info.mcc, session_info.mnc
  order by session_info.mcc, session_info.mnc;
 
@@ -88,7 +88,7 @@ insert into call_avg
   avg(t_tmsi_realloc) as tmsi,
   avg(iden_imsi_bc) as imsi
   from session_info as s left outer join rand_check as r on (s.id = r.sid and r.sid < 8000000)
-  where rat = 0 and ((t_call or (mobile_term and t_sms = 0)) and
+  where rat = 0 and domain = 0 and ((t_call or (mobile_term and t_sms = 0)) and
  (call_presence or (cipher=1 and cracked=0) or cipher>1)) and
  (cipher > 0 or duration > 350)
   group by mcc, mnc, lac, month, cipher
@@ -111,7 +111,7 @@ insert into sms_avg
   avg(t_tmsi_realloc) as tmsi,
   avg(iden_imsi_bc) as imsi
   from session_info as s left outer join rand_check as r on (s.id = r.sid and r.sid < 8000000)
-  where rat = 0 and (t_sms and (sms_presence or (cipher=1 and cracked=0) or cipher>1))
+  where rat = 0 and domain = 0 and (t_sms and (sms_presence or (cipher=1 and cracked=0) or cipher>1))
   group by mcc, mnc, lac, month, cipher
   order by mcc, mnc, lac, month, cipher;
 
@@ -132,7 +132,7 @@ insert into loc_avg
   avg(t_tmsi_realloc) as tmsi,
   avg(iden_imsi_bc) as imsi
   from session_info as s left outer join rand_check as r on (s.id = r.sid and r.sid < 8000000)
-  where rat = 0 and t_locupd and (lu_acc or cipher > 1)
+  where rat = 0 and domain = 0 and t_locupd and (lu_acc or cipher > 1)
   group by mcc, mnc, lac, month, cipher
   order by mcc, mnc, lac, month, cipher;
 
@@ -147,7 +147,7 @@ insert into entropy_cell
  ((sum((a_timeslot/8)*(a_timeslot/8)) - (sum(a_timeslot/8) * sum(a_timeslot/8)) / count(a_timeslot/8)) / count(a_timeslot/8)) as v_ts,
  ((sum((a_tsc/8)*(a_tsc/8)) - (sum(a_tsc/8) * sum(a_tsc/8)) / count(a_tsc/8)) / count(a_tsc/8)) as v_tsc
   from session_info
-  where rat = 0 and (assign or handover) and
+  where rat = 0 and domain = 0 and (assign or handover) and
   (cipher > 0 or duration > 350)
   group by mcc, mnc, lac, cid, month, cipher;
 

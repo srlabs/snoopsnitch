@@ -12,13 +12,10 @@ import de.srlabs.snoopsnitch.util.MsdConfig;
 import de.srlabs.snoopsnitch.util.Utils;
 
 public class PAAppFlavorSNSN extends AppFlavor {
-
-    public static final String BINARIES_PATH = "/data/data/de.srlabs.snoopsnitch/lib/";
     private static final String PACKAGE_NAME = "de.srlabs.snoopsnitch";
 
-    @Override
-    public String getBinaryPath() {
-        return BINARIES_PATH;
+    public PAAppFlavorSNSN(Context context) {
+        super(context);
     }
 
     @Override

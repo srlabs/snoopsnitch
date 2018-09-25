@@ -10,6 +10,6 @@ public class App extends Application {
     @Override public void onCreate() {
         super.onCreate();
         Log.d(Constants.LOG_TAG,"app run...");
-        AppFlavor.setAppFlavor(new PAAppFlavorSNSN());
+        AppFlavor.setAppFlavor(new PAAppFlavorSNSN(this));
     }
 }

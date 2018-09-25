@@ -31,6 +31,6 @@ CREATE TABLE sms_meta (
   length smallint NOT NULL,		-- User data length
   udh_length smallint NOT NULL,		-- User data header length
   real_length smallint NOT NULL,	-- Received data length
-  data BINARY(255) NOT NULL,		-- User data in binary form
+  data BINARY(255),			-- User data in binary form
   PRIMARY KEY(id, sequence)
 );
