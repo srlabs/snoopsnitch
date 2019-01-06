@@ -41,6 +41,17 @@ public class PAAppFlavorSNSN extends AppFlavor {
     }
 
     @Override
+    public void setShowOptionalCVEs(Context context, boolean showOptionalCVEs) {
+        //TODO: do nothing for now
+    }
+
+    @Override
+    public boolean getShowOptionalCVES(Context context) {
+        //TODO: read from config
+        return false;
+    }
+
+    @Override
     public String getPatchAnalysisNotificationSetting(Context context) {
         return MsdConfig.getPatchAnalysisNotificationSetting(context);
     }

@@ -240,4 +240,16 @@ public class MsdConfig {
         edit.putBoolean("settings_patch_analysis_show_inconclusive", showInconclusive);
         edit.commit();
     }
+
+    public static boolean getShowOptionalCVEs(Context context) {
+        return sharedPrefs(context).getBoolean("settings_patch_analysis_show_optional_cves", false);
+    }
+
+    public static void setShowOptionalCVEs(Context context, boolean showOptionalCVEs) {
+        SharedPreferences.Editor edit = sharedPrefs(context).edit();
+        edit.putBoolean("settings_patch_analysis_show_optional_cves", showOptionalCVEs);
+        edit.commit();
+    }
+
+
 }
