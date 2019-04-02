@@ -150,7 +150,7 @@ https://opensource.srlabs.de/projects/snoopsnitch
     <string name="dashboard_timeline_lasthour">last hour</string>
     <string name="dashboard_timeline_today">24 hours</string>
     <string name="dashboard_network_security_title">Network Security</string>
-    <string name="dashboard_network_security_provider_scrollview_header">Provider comparison</string>
+    <string name="dashboard_network_security_provider_scrollview_header">Comparison</string>
     <string name="dashboard_network_security_interception_title">Intercept</string>
     <string name="dashboard_network_security_impersonation_title">Impersonation</string>
     <string name="dashboard_network_security_protectionLevel_high">higher\nprotection</string>
