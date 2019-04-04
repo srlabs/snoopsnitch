@@ -2,6 +2,7 @@ package de.srlabs.snoopsnitch.qdmon;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 public class Operator {
     int mcc;
@@ -34,9 +35,15 @@ public class Operator {
             networkOperator = networkOperator.substring(0, networkOperator.indexOf(','));
         }
 
-        mcc = Integer.parseInt(networkOperator.substring(0, 3));
-        mnc = Integer.parseInt(networkOperator.substring(3));
-        valid = true;
+        try {
+            mcc = Integer.parseInt(networkOperator.substring(0, 3));
+            mnc = Integer.parseInt(networkOperator.substring(3));
+            valid = true;
+        }catch(NumberFormatException e){
+            Log.e("SnoopSnitch", "Error while parsing MCC/MNC", e);
+            valid = false;
+        }
+
     }
 
     public Operator(int currentMcc, int currentMnc) {

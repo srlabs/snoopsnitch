@@ -282,7 +282,7 @@ public class MsdService extends Service {
     private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
     private boolean fatalErrorOccured = false;
 
-    private MsdServiceNotifications msdServiceNotifications = new MsdServiceNotifications(this);
+    private MsdServiceNotifications msdServiceNotifications;
 
     private EncryptedFileWriter rawWriter;
     private long rawLogFileId = 0;
@@ -470,6 +470,8 @@ public class MsdService extends Service {
         super.onCreate();
         MsdLog.init(this);
 
+        msdServiceNotifications = new MsdServiceNotifications(this);
+
         MsdDatabaseManager.initializeInstance(new MsdSQLiteOpenHelper(MsdService.this));
         cleanupIncompleteOldFiles();
         try {
@@ -494,6 +496,7 @@ public class MsdService extends Service {
     private void doStartForeground() {
         Notification notification = msdServiceNotifications.getForegroundNotification();
         startForeground(Constants.NOTIFICATION_ID_FOREGROUND_SERVICE, notification);
+
     }
 
     private void doStopForeground() {

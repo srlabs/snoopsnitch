@@ -46,7 +46,7 @@ public class UploadDebugActivity extends BaseActivity {
         this.checkDebugUploadRadioTraces = (CheckBox) findViewById(R.id.checkDebugUploadRadioTraces);
         this.checkDebugUploadSnoopsnitchDebugLogs = (CheckBox) findViewById(R.id.checkDebugUploadSnoopsnitchDebugLogs);
 
-        if(!StartupActivity.isSNSNCompatible()){
+        if(!StartupActivity.isSNSNCompatible(this.getApplicationContext())){
             //disable checkboxes
             checkDebugUploadDatabaseMetadata.setChecked(false);
             checkDebugUploadDatabaseMetadata.setEnabled(false);
@@ -153,7 +153,7 @@ public class UploadDebugActivity extends BaseActivity {
             df.recordingStopped();
             df.insert(db);
             df.markForUpload(db);
-            if(StartupActivity.isSNSNCompatible()) {
+            if(StartupActivity.isSNSNCompatible(this.getApplicationContext())) {
                 //let MsdService do the uploading
                 getMsdServiceHelperCreator().getMsdServiceHelper().triggerUploading();
             }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.srlabs.snoopsnitch"
     xmlns:tools="http://schemas.android.com/tools"
+    package="de.srlabs.snoopsnitch"
     android:installLocation="auto"> <!-- allow installing/moving app to sdcard, too -->
 
     <uses-sdk />
@@ -17,12 +17,12 @@
 
     <!-- Connections -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" tools:node="remove"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" tools:node="remove"/>
+    <uses-permission android:name="android.permission.SEND_SMS" tools:node="remove"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS" tools:node="remove"/>
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <!-- Storage -->
@@ -61,33 +61,33 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
         <activity
             android:name="de.srlabs.snoopsnitch.DashboardActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" >
         </activity>
-        
+
         <!-- Detail Chart Activity -->
         <activity
              android:name="de.srlabs.snoopsnitch.DetailChartActivity"
              android:screenOrientation="portrait"
-             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">     
+             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">
         </activity>
-        
+
         <!-- Map Activity -->
         <activity
              android:name="de.srlabs.snoopsnitch.MapActivity"
              android:screenOrientation="portrait"
-             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">     
+             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">
         </activity>
-        
+
         <!-- Local Map Activity -->
         <activity
              android:name="de.srlabs.snoopsnitch.LocalMapActivity"
              android:screenOrientation="portrait"
-             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">     
+             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity">
         </activity>
 
         <!-- Settings Activity -->
@@ -96,7 +96,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
-        
+
         <!-- About Activity -->
         <activity
             android:name="de.srlabs.snoopsnitch.AboutActivity"
@@ -104,7 +104,7 @@
             android:screenOrientation="portrait"
             android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
         </activity>
-        
+
         <!-- Network Info Activity -->
         <activity
             android:name="de.srlabs.snoopsnitch.NetworkInfoActivity"
@@ -127,16 +127,16 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
-    		android:taskAffinity=""
-    		android:excludeFromRecents="true">
+            android:taskAffinity=""
+            android:excludeFromRecents="true">
         </activity>
-              
+
         <!-- Active Test Advanced Mode -->
         <activity
             android:name="de.srlabs.snoopsnitch.ActiveTestAdvanced"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
+            android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" tools:node="remove">
         </activity>
 
         <!-- Dialog for enabling Auto-Upload Mode from Notification -->
@@ -163,7 +163,7 @@
 
 
         <service android:name="de.srlabs.snoopsnitch.qdmon.MsdService" android:exported="false" android:process=".SnoopSnitchService" />
-    	<service android:name="de.srlabs.snoopsnitch.active_test.ActiveTestService" android:exported="false" />
+        <service android:name="de.srlabs.snoopsnitch.active_test.ActiveTestService" android:exported="false" tools:node="remove"/>
 
         <receiver android:name="de.srlabs.patchanalysis_module.BootCompletedBroadcastReceiver">
             <intent-filter>

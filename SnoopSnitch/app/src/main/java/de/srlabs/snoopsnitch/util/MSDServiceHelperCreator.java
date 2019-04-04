@@ -31,7 +31,7 @@ public class MSDServiceHelperCreator implements MsdServiceCallback {
 
     public static MSDServiceHelperCreator getInstance(Context context) {
         if (_instance == null) {
-            boolean autostartRecording = StartupActivity.isSNSNCompatible() && (PermissionChecker.isAccessingFineLocationAllowed(context) || PermissionChecker.isAccessingCoarseLocationAllowed(context));
+            boolean autostartRecording = StartupActivity.isSNSNCompatible(context.getApplicationContext()) && (PermissionChecker.isAccessingFineLocationAllowed(context) || PermissionChecker.isAccessingCoarseLocationAllowed(context));
             _instance = new MSDServiceHelperCreator(context, autostartRecording);
         }
 

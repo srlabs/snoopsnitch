@@ -24,7 +24,7 @@ Resources
 Project website:       https://opensource.srlabs.de/projects/snoopsnitch
 Public Git repository: https://opensource.srlabs.de/git/snoopsnitch.git
 Mailing list:          https://lists.srlabs.de/cgi-bin/mailman/listinfo/gsmmap
-Email:			       snoopsnitch@srlabs.de 
+Email:			       snoopsnitch@srlabs.de
                        (PGP: 9728 A7F9 D457 1FBB 746F  5381 D52C AC10 634A 9561)
 
 Building from source
@@ -60,12 +60,24 @@ In the SnoopSnitch source directory do the following (make sure you are using th
 	$ cd contrib/
 	$ ./compile.sh -t android -g -u
 
+
+
 To build the app, in the SnoopSnitch source directory, run the gradle wrapper like this:
 
 	$ cd SnoopSnitch
-	$ ./gradlew build
 
-The compiled apk file can be found under: SnoopSnitch/app/build/outputs/apk
+If you want to build the Google Play version (which e.g. has a dependency to the Google SafetyNet API and the active mobile network security test feature is disabled due to Google Play sensitive permission policy changes) you need to run
+
+  $ ./gradlew assembleSafetynet
+
+If you want to build the F-Droid or website version, which comes without the Google SafetyNet API dependency and comes with the active mobile network security test feature, then you need to run:
+
+  $ ./gradlew assembleNobuildcheck
+
+
+gradlew build will not work anymore, as the sources for our internal testing build flavor 'stage' are not included in the public git repository. 
+
+The compiled apk files can be found under: SnoopSnitch/app/build/outputs/apk/
 
 
 Please consult the Android documentation on how to set up the tools and

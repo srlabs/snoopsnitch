@@ -2,6 +2,7 @@ package de.srlabs.snoopsnitch;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
@@ -16,10 +17,6 @@ import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import de.srlabs.patchanalysis_module.AppFlavor;
-import de.srlabs.patchanalysis_module.analysis.TestUtils;
-import de.srlabs.patchanalysis_module.helpers.NotificationHelper;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -47,18 +44,22 @@ public class StartupActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(this.getApplicationContext());
+        checkCompatibility(this.getApplicationContext());
+        isAppInitialized = true;
+        proceedAppFlow();
+
+    }
+
+    private static void checkCompatibility(Context context){
+        snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(context);
 
         if(snsnIncompatibilityReason == null){
             isSNSNCompatible = true;
         }
         else{
             //disable starting MsdService by BootCompletedIntentReceiver on next boot
-            MsdConfig.setStartOnBoot(this,false);
+            MsdConfig.setStartOnBoot(context,false);
         }
-        isAppInitialized = true;
-        proceedAppFlow();
-
     }
 
     public static boolean isAppInitialized() {
@@ -74,13 +75,11 @@ public class StartupActivity extends Activity {
         }
     }
 
-
-    // BEWARE: The return value from this is only sane if isAppInitialized() returns true
-    public static boolean isSNSNCompatible(){
+    public static boolean isSNSNCompatible(Context context){
+        if(!isAppInitialized())
+            checkCompatibility(context);
         return isSNSNCompatible;
     }
-
-
 
     private void showFirstRunDialog() {
         MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.alert_first_app_start_message),

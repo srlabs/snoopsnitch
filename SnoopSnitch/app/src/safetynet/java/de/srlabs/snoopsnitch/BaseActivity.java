@@ -1,12 +1,14 @@
 package de.srlabs.snoopsnitch;
 
 import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.res.ResourcesCompat;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import de.srlabs.patchanalysis_module.ITestExecutorServiceInterface;
 import de.srlabs.patchanalysis_module.PatchanalysisMainActivity;
 import de.srlabs.patchanalysis_module.analysis.TestUtils;
 import de.srlabs.snoopsnitch.qdmon.StateChangedReason;
@@ -46,6 +49,8 @@ public class BaseActivity extends FragmentActivity {
     private static boolean exitFlag = false;
     protected String snsnIncompatibilityReason=null;
     private FileUploadThread uploadThread = null;
+
+    public ITestExecutorServiceInterface mITestExecutorService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,16 +185,8 @@ public class BaseActivity extends FragmentActivity {
             case R.id.menu_action_map:
                 showMap();
                 break;
-            case R.id.menu_action_active_test_advanced:
-                if (snsnIncompatibilityReason == null) {
-                    Intent intent = new Intent(this, ActiveTestAdvanced.class);
-                    startActivity(intent);
-                } else {
-                    showSNSNFeaturesNotWorkingDialog(snsnIncompatibilityReason);
-                }
-                break;
             case R.id.menu_action_upload_pending_files:
-                if (!StartupActivity.isSNSNCompatible()){
+                if (!StartupActivity.isSNSNCompatible(this.getApplicationContext())){
                     //no MSdService, so we do the work here
                     if(uploadThread != null && !uploadThread.isAlive()) {
                         uploadThread = new FileUploadThread(this);
@@ -224,6 +221,9 @@ public class BaseActivity extends FragmentActivity {
                 break;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
+                break;
+            case R.id.menu_action_active_test_advanced:
+                showActiveTestFeatureDisabledDialog();
                 break;
             default:
                 MsdLog.e("BaseActivity", "Invalid menu entry pressed,  id=" + item.getItemId());
@@ -300,9 +300,16 @@ public class BaseActivity extends FragmentActivity {
 
     protected void quitApplication() {
         MsdLog.i("MSD", "BaseActivity.quitApplication() called");
-        if (StartupActivity.isAppInitialized() && StartupActivity.isSNSNCompatible()) {
+        if (msdServiceHelperCreator.getMsdServiceHelper().isConnected()) {
             msdServiceHelperCreator.getMsdServiceHelper().stopRecording();
             msdServiceHelperCreator.getMsdServiceHelper().stopService();
+        }
+        if(mITestExecutorService != null){
+            try {
+                mITestExecutorService.requestCancelAnalysis();
+            } catch(RemoteException e){
+                MsdLog.d("MSD","Remote exception when trying to stop PatchAnalysis service",e);
+            }
         }
         // If we call System.exit() here from an activity launched by
         // DashboardActivity, the Android system will restart the App to resume
@@ -354,6 +361,19 @@ public class BaseActivity extends FragmentActivity {
                 //do nothing here
             }
         });
+    }
+
+    public void showActiveTestFeatureDisabledDialog() {
+            String dialogMessage =
+                    this.getResources().getString(R.string.active_test_deactivated_in_version);
+
+            Dialog dialog = MsdDialog.makeNotificationDialog(this, dialogMessage, new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //do nothing here
+                }
+            }, false);
+            dialog.show();
     }
 
 }

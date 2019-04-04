@@ -26,7 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,7 +90,6 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
     Vector<TextView> threatImsiCounts;
     private ActiveTestHelper activeTestHelper;
     private boolean unknownOperator = false;
-    private ITestExecutorServiceInterface mITestExecutorService;
     private ITestExecutorDashboardCallbacks callbacks = new TestExecutorDashboardCallbacks();
     private boolean isServiceBound = false;
     private boolean isActivityActive = false;
@@ -703,7 +704,5 @@ public class DashboardActivity extends BaseActivity implements ActiveTestCallbac
                     }
                 }, false).show();
     }
-
-
-
+    
 }

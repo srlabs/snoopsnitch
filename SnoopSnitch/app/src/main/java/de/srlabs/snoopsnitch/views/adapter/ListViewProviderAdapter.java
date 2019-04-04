@@ -75,7 +75,7 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk> {
         View rowView;
 
         // Skip own test results
-        if (!StartupActivity.isSNSNCompatible()) {
+        if (!StartupActivity.isSNSNCompatible(context.getApplicationContext())) {
             position++;
         }
 
@@ -118,7 +118,7 @@ public class ListViewProviderAdapter extends ArrayAdapter<Risk> {
 
     @Override
     public int getCount() {
-        if (StartupActivity.isSNSNCompatible()) {
+        if (StartupActivity.isSNSNCompatible(context.getApplicationContext())) {
             return values.size();
         } else {
             return Math.max(values.size() - 1, 0);

@@ -7,8 +7,8 @@ android {
         applicationId "de.srlabs.snoopsnitch"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 37
-        versionName "2.0.8"
+        versionCode 38
+        versionName "2.0.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -52,7 +52,12 @@ android {
         nobuildcheck {
             dimension "certifiedBuildCheck"
             versionNameSuffix "-nbc"
-	    }
+        }
+        stage {
+            dimension "certifiedBuildCheck"
+            versionNameSuffix "-test"
+        }
+
     }
 }
 
@@ -62,6 +67,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:25.2.0'
+    implementation 'com.android.support:appcompat-v7:26.0.0'
+
     testCompile 'junit:junit:4.12'
 }

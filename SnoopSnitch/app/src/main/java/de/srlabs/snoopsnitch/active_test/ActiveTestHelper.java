@@ -103,7 +103,7 @@ public class ActiveTestHelper {
     public ActiveTestHelper(Activity activity, ActiveTestCallback callback) {
         this.context = activity;
         this.callback = callback;
-        if(StartupActivity.isSNSNCompatible())
+        if(StartupActivity.isSNSNCompatible(activity.getApplicationContext()))
             startService();
     }
 

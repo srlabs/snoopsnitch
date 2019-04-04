@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -51,15 +52,26 @@ public class MsdServiceHelper {
     }
 
     private void bootstrap(){
-        if(StartupActivity.isSNSNCompatible()){ //only start MsdService if we think that this device is compatible
+        if(StartupActivity.isSNSNCompatible(context.getApplicationContext())){ //only start MsdService if we think that this device is compatible
             startService();
         }
         data = new AnalysisEventData(context);
     }
 
     private void startService() {
-        context.startService(new Intent(context, MsdService.class));
-        context.bindService(new Intent(context, MsdService.class), this.serviceConnection, Context.BIND_AUTO_CREATE);
+        Intent intent = new Intent(context, MsdService.class);
+        if (Build.VERSION.SDK_INT >= 26) {
+            Log.d(TAG,"starting service in foreground...");
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+        bindService();
+    }
+
+    private void bindService(){
+        Intent intent = new Intent(context, MsdService.class);
+        context.bindService(intent, this.serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     public boolean isConnected() {
@@ -256,8 +268,10 @@ public class MsdServiceHelper {
 
     public void stopService() {
         try {
-            mIMsdService.exitService();
-            context.unbindService(serviceConnection);
+            if(connected) {
+                mIMsdService.exitService();
+                context.unbindService(serviceConnection);
+            }
         } catch (Exception e) {
             handleFatalError("Exception in MsdServiceHelper.stopService()", e);
         }

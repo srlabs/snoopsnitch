@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="active_test_deactivated_in_version">The active mobile network security test is deactivated in this app version due to Google Permission policy changes.\nTo use this feature please install the SnoopSnitch version from our website or download it from F-Droid.</string>
+    <string name="active_test_button_disabled">N/A</string>
+    <string name="action_active_test_advanced_disabled">Advanced active network test (disabled)</string>
+</resources>
