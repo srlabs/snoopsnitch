@@ -13,3 +13,6 @@
 [submodule "SnoopSnitch/patchanalysis"]
 	path = SnoopSnitch/patchanalysis
 	url = https://opensource.srlabs.de/git/patchanalysis-module
+[submodule "contrib/openssl"]
+	path = contrib/openssl
+	url = https://github.com/openssl/openssl

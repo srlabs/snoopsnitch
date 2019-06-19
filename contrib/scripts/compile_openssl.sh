@@ -1,14 +1,17 @@
-#! /bin/sh
+#!/bin/bash
 
-# The openssl build system does not add a minus between ${CROSS_COMPILE} and the tool to call (e.g. gcc).
-export CROSS_COMPILE=${CROSS_COMPILE}-
-export CROSS_SYSROOT="$NDK_DIR/platforms/android-19/arch-arm"
-export CC="gcc --sysroot=${SYSROOT}"
+set -e
+set -x
 
-echo "CROSS_COMPILE: $CROSS_COMPILE"
-echo "CROSS_SYSROOT: $CROSS_SYSROOT"
+# The OpenSSL build system requires CC="clang", not the full path with version
+#export CC="clang"
+# Overwrite
+export CFLAGS="--sysroot=${SYSROOT}"
 
-tar xzf $BASE_DIR/openssl-1.1.0f.tar.gz
-cd openssl-1.1.0f
-./Configure android no-shared -fPIE 
+cd ${BASE_DIR}/openssl
+# Make sure all artefacts from previous compilation runs are deleted
+# Required when switching between different architectures (host, arm, aarch64)
+git reset --hard
+git clean -d -f -x
+./Configure android-arm no-shared -fPIE -D__ANDROID_API__=28
 make LDFLAGS="-fPIE -pie"

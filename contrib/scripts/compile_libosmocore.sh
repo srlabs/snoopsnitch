@@ -1,8 +1,13 @@
-#! /bin/bash -eux
+#!/bin/bash
+
+set -e
+set -x
 
 cd ${BASE_DIR}/libosmocore
+# Make sure all artefacts from previous compilation runs are deleted
+# Required when switching between different architectures (host, arm, aarch64)
 git reset --hard
-git clean -f
+git clean -d -f -x
 patch -p1 < ${BASE_DIR}/patches/osmocore_luca.patch
 patch -p1 < ${BASE_DIR}/patches/osmocore_jakob.patch
 

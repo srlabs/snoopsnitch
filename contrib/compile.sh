@@ -86,19 +86,23 @@ cd ${BUILD_DIR}
 OUTPUT_DIR=`pwd`
 
 export MSD_DESTDIR="${OUTPUT_DIR}/out"
+export ANDROID_NDK_HOME="$NDK_DIR"
 
 case ${target} in
 	android)
-		export SYSROOT="${NDK_DIR}/platforms/android-19/arch-arm"
+		export SYSROOT="${NDK_DIR}/platforms/android-28/arch-arm/"
 		export MSD_CONFIGURE_OPTS="--host arm-linux-androideabi --prefix=${MSD_DESTDIR}"
 		export PATH=${PATH}:${NDK_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/${HOST}/bin/
+		# Make sure that "clang" points to NDK clang, not to /usr/bin/clang of the host system
+		export PATH=${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/bin/:${PATH}
 		export CROSS_COMPILE=arm-linux-androideabi
 		export RANLIB=arm-linux-androideabi-ranlib
-		export CFLAGS="--sysroot=${SYSROOT} -nostdlib"
-		export CPPFLAGS="-I${NDK_DIR}/platforms/android-19/arch-arm/usr/include/"
-		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/,-L${NDK_DIR}/platforms/android-19/arch-arm/usr/lib/"
+		export CC=armv7a-linux-androideabi28-clang
+		export CFLAGS="--sysroot=${SYSROOT} -nostdlib -I${NDK_DIR}/sysroot/usr/include/  -I${NDK_DIR}/sysroot/usr/include/arm-linux-androideabi/ -DANDROID_ABI=armeabi-v7a"
+		export CPPFLAGS="-I${NDK_DIR}/sysroot/usr/include/  -I${NDK_DIR}/sysroot/usr/include/arm-linux-androideabi/"
+		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/,-L${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/"
 		export LIBS="-lc -lm"
-		export GSM_PARSER_MAKE_ARGS="TARGET=android PCAP=1 PREFIX=${MSD_DESTDIR} DESTDIR=${MSD_DESTDIR}/gsm-parser SYSROOT=${SYSROOT} install"
+		export GSM_PARSER_MAKE_ARGS="TARGET=android PCAP=1 PREFIX=${MSD_DESTDIR} DESTDIR=${MSD_DESTDIR}/gsm-parser SYSROOT=${SYSROOT} CC=armv7a-linux-androideabi28-clang"
 		;;
 	host)
 		export MSD_CONFIGURE_OPTS="--prefix=${MSD_DESTDIR}"
@@ -169,8 +173,8 @@ then
 	# system and therefore can only be used from the Android java code but not from 
 	# native binaries.
 
-	install -m 755 openssl-1.1.0f/apps/openssl                 ${PARSER_DIR}/libopenssl.so
-	install -m 755 $BASE_DIR/smime.crt                         ${PARSER_DIR}/libsmime_crt.so
+	install -m 755 ${BASE_DIR}/openssl/apps/openssl               ${PARSER_DIR}/libopenssl.so
+	install -m 755 ${BASE_DIR}/smime.crt                         ${PARSER_DIR}/libsmime_crt.so
 
 	# Really dirty hack: The Android build system and package installer require 
 	# all files in the native library dir to have a filename like libXXX.so. If
