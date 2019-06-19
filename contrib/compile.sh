@@ -2,7 +2,7 @@
 
 usage()
 {
-	echo >&2 "Usage: $0 -t {android|host} [-f] [-h]"
+    echo >&2 "Usage: $0 -t {android|android64|host} [-f] [-h]"
     echo >&2 "   -t <target>   Target to build for"
     echo >&2 "   -f            Fast mode - only build parser"
     echo >&2 "   -g            init git submodules"
@@ -27,7 +27,7 @@ done
 shift $(($OPTIND-1))
 
 case ${target} in
-        android|host) ;;
+        android|android64|host) ;;
         *)             usage;
 esac;
 
@@ -103,6 +103,21 @@ case ${target} in
 		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/,-L${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/"
 		export LIBS="-lc -lm"
 		export GSM_PARSER_MAKE_ARGS="TARGET=android PCAP=1 PREFIX=${MSD_DESTDIR} DESTDIR=${MSD_DESTDIR}/gsm-parser SYSROOT=${SYSROOT} CC=armv7a-linux-androideabi28-clang"
+		;;
+	android64)
+		export SYSROOT="${NDK_DIR}/platforms/android-28/arch-arm64/"
+		export MSD_CONFIGURE_OPTS="--host aarch64-linux-android --prefix=${MSD_DESTDIR}"
+		export PATH=${PATH}:${NDK_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/${HOST}/bin/
+		# Make sure that "clang" points to NDK clang, not to /usr/bin/clang of the host system
+		export PATH=${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/bin/:${PATH}
+		export CROSS_COMPILE=aarch64-linux-android
+		export RANLIB=aarch64-linux-android-ranlib
+		export CC=aarch64-linux-android28-clang
+		export CFLAGS="--sysroot=${SYSROOT} -nostdlib"
+		export CPPFLAGS="-I${NDK_DIR}/sysroot/usr/include/  -I${NDK_DIR}/sysroot/usr/include/aarch64-linux-android/"
+		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${SYSROOT}/usr/lib/arm-linux-androideabi/,-L${SYSROOT}/usr/lib/arm-linux-androideabi/,-L${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/"
+		export LIBS="-lc -lm"
+		export GSM_PARSER_MAKE_ARGS="TARGET=android PCAP=1 PREFIX=${MSD_DESTDIR} DESTDIR=${MSD_DESTDIR}/gsm-parser SYSROOT=${SYSROOT} install"
 		;;
 	host)
 		export MSD_CONFIGURE_OPTS="--prefix=${MSD_DESTDIR}"
