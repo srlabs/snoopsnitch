@@ -103,6 +103,7 @@ case ${target} in
 		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/,-L${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/"
 		export LIBS="-lc -lm"
 		export GSM_PARSER_MAKE_ARGS="TARGET=android PCAP=1 PREFIX=${MSD_DESTDIR} DESTDIR=${MSD_DESTDIR}/gsm-parser SYSROOT=${SYSROOT} CC=armv7a-linux-androideabi28-clang"
+		export OPENSSL_TARGET="android-arm"
 		;;
 	android64)
 		export SYSROOT="${NDK_DIR}/platforms/android-28/arch-arm64/"
@@ -113,11 +114,12 @@ case ${target} in
 		export CROSS_COMPILE=aarch64-linux-android
 		export RANLIB=aarch64-linux-android-ranlib
 		export CC=aarch64-linux-android28-clang
-		export CFLAGS="--sysroot=${SYSROOT} -nostdlib"
+		export CFLAGS="--sysroot=${SYSROOT} -nostdlib -I${NDK_DIR}/sysroot/usr/include/  -I${NDK_DIR}/sysroot/usr/include/aarch64-linux-android/ -DANDROID_ABI=arm64-v8a"
 		export CPPFLAGS="-I${NDK_DIR}/sysroot/usr/include/  -I${NDK_DIR}/sysroot/usr/include/aarch64-linux-android/"
-		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${SYSROOT}/usr/lib/arm-linux-androideabi/,-L${SYSROOT}/usr/lib/arm-linux-androideabi/,-L${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/"
+		export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/aarch64-linux-android/,-L${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/aarch64-linux-android/"
 		export LIBS="-lc -lm"
 		export GSM_PARSER_MAKE_ARGS="TARGET=android PCAP=1 PREFIX=${MSD_DESTDIR} DESTDIR=${MSD_DESTDIR}/gsm-parser SYSROOT=${SYSROOT} install"
+		export OPENSSL_TARGET="android-arm64"
 		;;
 	host)
 		export MSD_CONFIGURE_OPTS="--prefix=${MSD_DESTDIR}"
