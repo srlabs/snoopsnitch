@@ -68,6 +68,11 @@ if [ -n "${do_git}" ];then
     then
 	(cd .. && git submodule init contrib/gsm-parser)
     fi
+
+    if [ ! "$(ls -A openssl)" -a "x${fast}" = "x" ];
+    then
+    (cd .. && git submodule init contrib/openssl)
+    fi
 fi
 
 if [ -n "${do_git}" ];then
@@ -76,7 +81,8 @@ if [ -n "${do_git}" ];then
 	(cd .. && \
 	    git submodule update contrib/libasn1c && \
 	    git submodule update contrib/libosmocore && \
-	    git submodule update contrib/gsm-parser)
+	    git submodule update contrib/gsm-parser && \
+	    git submodule update contrib/openssl)
     fi
 fi
 
@@ -140,7 +146,7 @@ then
 fi
 
 # Build OpenSSL and diag helper only for Android
-if [ "x${target}" = "xandroid" -a "x${fast}" = "x" ];
+if [ "x${target}" = "xandroid" -o "x${target}" = "xandroid64" ] && [ "x${fast}" = "x" ];
 then
 	TARGETS="${TARGETS} openssl diag_helper"
 fi
@@ -161,7 +167,7 @@ done
 
 PARSER_DIR=${OUTPUT_DIR}/parser
 
-if [ "x${target}" = "xandroid" ];
+if [ "x${target}" = "xandroid" ] || [ "x${target}" = "xandroid64" ];
 then
 	# Install parser
 	install -d ${PARSER_DIR}
@@ -207,8 +213,23 @@ ln -sf ${BUILD_DIR} ../${LATEST}
 # Update prebuilt dir
 if [ "x${update}" = "x1" ];
 then
-	cp ${PARSER_DIR}/* ${BASE_DIR}/prebuilt/
-	cp ${BASE_DIR}/diag_helper/libs/armeabi/libdiag-helper.so ${BASE_DIR}/prebuilt/
+    DST=${BASE_DIR}/prebuilt
+    if [ "x${target}" = "xandroid" ];
+    then
+       DST=${DST}/32/
+	   mkdir -p ${DST}
+       cp ${BASE_DIR}/diag_helper/libs/armeabi-v7a/libdiag-helper.so ${DST}
+    elif [ "x${target}" = "xandroid64" ];
+    then
+       DST=${DST}/64/
+	   mkdir -p ${DST}
+       cp ${BASE_DIR}/diag_helper/libs/arm64-v8a/libdiag-helper.so ${DST}
+    else
+       cp ${BASE_DIR}/diag_helper/libs/armeabi/libdiag-helper.so ${BASE_DIR}/prebuilt/
+    fi
+
+	cp ${PARSER_DIR}/*.so ${DST}
+	cp ${PARSER_DIR}/*.sql ${BASE_DIR}/prebuilt
 fi
 
 echo DONE
