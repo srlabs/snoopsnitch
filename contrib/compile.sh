@@ -67,14 +67,17 @@ function buildForTarget() {
 
 	case ${target} in
 		android)
-			export SYSROOT="${NDK_DIR}/platforms/android-28/arch-arm/"
+			# Intentionally use old sysroot for 32-bit since older phones (up to Android 5.1) lack the
+			# symbol "__register_atfork" in the C library => The binaries fail to start on older phones
+			# https://github.com/android/ndk/issues/964#issuecomment-485182237
+			export SYSROOT="${NDK_DIR}/platforms/android-22/arch-arm/"
 			export MSD_CONFIGURE_OPTS="--host arm-linux-androideabi --prefix=${MSD_DESTDIR}"
 			export PATH=${PATH}:${NDK_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/${HOST}/bin/
 			# Make sure that "clang" points to NDK clang, not to /usr/bin/clang of the host system
 			export PATH=${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/bin/:${PATH}
 			export CROSS_COMPILE=arm-linux-androideabi
 			export RANLIB=arm-linux-androideabi-ranlib
-			export CC=armv7a-linux-androideabi28-clang
+			export CC=armv7a-linux-androideabi22-clang
 			export CFLAGS="--sysroot=${SYSROOT} -nostdlib -I${NDK_DIR}/sysroot/usr/include/  -I${NDK_DIR}/sysroot/usr/include/arm-linux-androideabi/ -DANDROID_ABI=armeabi-v7a"
 			export CPPFLAGS="-I${NDK_DIR}/sysroot/usr/include/  -I${NDK_DIR}/sysroot/usr/include/arm-linux-androideabi/"
 			export LDFLAGS="--sysroot=${SYSROOT} -Wl,-rpath-link=${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/,-L${NDK_DIR}/toolchains/llvm/prebuilt/${HOST}/sysroot/usr/lib/arm-linux-androideabi/"

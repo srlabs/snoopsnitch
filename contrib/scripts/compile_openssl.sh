@@ -13,5 +13,5 @@ cd ${BASE_DIR}/openssl
 # Required when switching between different architectures (host, arm, aarch64)
 git reset --hard
 git clean -d -f -x
-./Configure "$OPENSSL_TARGET" no-shared -fPIE -D__ANDROID_API__=28
+./Configure "$OPENSSL_TARGET" no-shared -fPIE -D__ANDROID_API__=22
 make LDFLAGS="-fPIE -pie"
