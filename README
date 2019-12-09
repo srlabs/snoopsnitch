@@ -58,7 +58,7 @@ To build the parser binary from source, first install:
 In the SnoopSnitch source directory do the following (make sure you are using the version 14.1 of the NDK, as newer version of the NDK build tools are not supported yet):
 
 	$ cd contrib/
-	$ ./compile.sh -t android -g -u
+	$ ./compile.sh -a -g -u
 
 
 

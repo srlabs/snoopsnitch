@@ -1,6 +1,6 @@
 To rebuild everything in ./prebuilt from source invoke the compile.sh script:
 
-$ ./compile.sh -t android -u -g
+$ ./compile.sh -a -u -g
 
 The script will update the Git sub-modules, build from source and copy the
 resulting binaries to the ./prebuilt directory. See ./compile.sh -h for details.

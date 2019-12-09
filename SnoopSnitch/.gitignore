@@ -7,5 +7,3 @@
 /captures
 .externalNativeBuild
 patchanalysis/
-app/src/main/jniLibs/arm64-v8a/
-app/src/main/jniLibs/armeabi-v7a/
