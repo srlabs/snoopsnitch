@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,6 +18,10 @@ import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import de.srlabs.patchanalysis_module.Constants;
+import de.srlabs.patchanalysis_module.analysis.TestUtils;
+import de.srlabs.patchanalysis_module.helpers.SharedPrefsHelper;
 import de.srlabs.snoopsnitch.qdmon.MsdSQLiteOpenHelper;
 import de.srlabs.snoopsnitch.util.DeviceCompatibilityChecker;
 import de.srlabs.snoopsnitch.util.MsdConfig;
@@ -44,10 +49,32 @@ public class StartupActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Set firmware information, which is needed to check if firmware was upgraded
+        Context context = getApplicationContext();
+        SharedPreferences sharedPrefs = SharedPrefsHelper.getPersistentSharedPrefs(context);
+        String previousBuildFingerprint = sharedPrefs.getString(SharedPrefsHelper.KEY_BUILD_FINGERPRINT, "not_set");
+
+        if (previousBuildFingerprint == "not_set") {
+            long buildDate = TestUtils.getBuildDateUtc();
+            String SPL = TestUtils.getPatchlevelDate();
+            String buildFingerprint = TestUtils.getBuildFingerprint();
+
+            if (SPL == null) {
+                SPL = "NULL";
+                Log.d(Constants.LOG_TAG,"Found invalid patchlevel date");
+            }
+            if (buildFingerprint == "NULL") {
+                Log.d(Constants.LOG_TAG,"Found invalid build fingerprint");
+            }
+
+            SharedPrefsHelper.putLongPersistent(SharedPrefsHelper.KEY_BUILD_DATE, buildDate, context);
+            SharedPrefsHelper.putStringPersistent(SharedPrefsHelper.KEY_BUILD_FINGERPRINT, buildFingerprint, context);
+            SharedPrefsHelper.putStringPersistent(SharedPrefsHelper.KEY_BUILD_SPL, SPL, context);
+        }
+
         checkCompatibility(this.getApplicationContext());
         isAppInitialized = true;
         proceedAppFlow();
-
     }
 
     private static void checkCompatibility(Context context){
