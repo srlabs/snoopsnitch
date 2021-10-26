@@ -25,6 +25,7 @@
     <string name="action_network_info">Mobile network info</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
+    <string name="action_privacy_policy">Privacy Policy</string>
     <string name="action_exit">Exit</string>
 
     <!-- Common Buttons -->
@@ -96,22 +97,64 @@ contain private data and location information as a side effect.\n
 </string>
 
     <string name="alert_first_app_start_message">
-Welcome! This is your first time running SnoopSnitch.\n
-\n
-SnoopSnitch analyzes Android patch information and collects
-and analyzes mobile radio data to make you aware of your mobile network
-security and to warn you about threats like fake base
-stations (IMSI catchers), user tracking and over-the-air updates.\n
-\n
-This application uses data contributed by other users. By choosing to upload your
-measurement results or security events, you can help improve this data and
-support future research.\n
-\n
-SnoopSnitch will ask for confirmation whenever any of your mobile network information is uploaded to
-our servers. All uploads are encrypted. Note that uploaded radio traces may contain
-private information as a side-effect.\n
-\n
-Thank you for using SnoopSnitch.
+ <![CDATA[
+
+ <h1> Welcome to SnoopSnitch </h1>
+
+ Before you can use the app you have to understand what information SnoopSnitch is sending off your device.
+ Read our  <a href="https://opensource.srlabs.de/projects/snoopsnitch/wiki/Privacy_Policy">Privacy Policy</a> and tap on "OK" to consent to uploading and processing your data as specified in the policy and summarized below.
+
+
+        <h2>What information is collected</h2>
+
+        For Android security patch analysis:
+            <ul>
+            <li>SnoopSnitch application version</li>
+                <li>Detailed information about the device’s firmware build</li>
+                <li>Vendor Phone numbers. The build.prop file contains the detailed information about your device\'s firmware build. This file might contain vendor phone numbers, which will be sent to our servers. In a future SnoopSnitch release those phone numbers will be stripped out and not uploaded to our server</li>
+                <li>Pre-installed System Application information. We collect information about all the system applications which come with your firmware pre-installed (not the apps you have installed). We use this information in our patch analysis heuristics</li>
+                <li>Patch test results</li>
+            </ul>
+
+        For mobile network security tests:
+            <ul>
+            <li>Information provided directly by the user. This may include: </li>
+                <li>Personal data such as: phone number and email.</li>
+                <li>Information provided indirectly by the user. This may include: </li>
+                <li>Hardware details: phone model and processor information. </li>
+                <li>software details: detailed AOS, Kernel and SnoopSnitch application versions.</li>
+                <li>GPS locations, IMEI, IMSI and other mobile network data (LAC,CID, encryption status etc.)</li>
+                <li>Complete radio network (signalling) traces related to detection events</li>
+                <li>We may also collect other information intentionally provided to us by the user, for example through the Send Feedback feature. Transfer of these data is not mandatory.</li>
+                <li> SnoopSnitch does not use cookies.</li>
+            </ul>
+
+
+	    <a name="Why-is-this-data-collected-and-how-is-it-used"></a>
+
+        <h2>Why is this data collected and how is it used?</h2>
+
+        For Android security patch analysis:
+            <ul>
+            <li>Efficiently pre-select relevant patch tests for a given device</li>
+                <li>Improving the SnoopSnitch application and individual patch tests</li>
+                <li>Provide a fact-based incentive to device vendors to further improve their patching processes</li>
+            </ul>
+
+        For mobile network security tests:
+            <ul>
+            <li>Providing and improving the SnoopSnitch application </li>
+                <li>Analyzing and securing mobile networks and services, worldwide</li>
+                <li>Provide mobile network statistics (through GSMMap) that help us understand how secure various Mobile Network Operators (MNOs) are</li>
+                <li>Provide statistics of how, where, and when mobile networks are being attacked</li>
+                <li>Provide a warning to users when their phones and network is being attacked by IMSI catchers and user tracking by SS7 or Silent SMS</li>
+            </ul>
+
+        <h2>Information sharing</h2>
+	    <p>Anonymously collected analytics are kept safe on a database while personal data provided by e-mail are used only for users support purposes and nothing else.
+	    No data are sold or shared with third party entities or companies.</p>
+	]]>
+
 </string>
 
     <string name="alert_airplanemode_on">
@@ -427,7 +470,7 @@ https://opensource.srlabs.de/projects/snoopsnitch
     <string name="upload_debug_confirmation_msg">Your report ID is %s. Feel free to send additional information to snoopsnitch@srlabs.de</string>
 
     <string name="copyright_text">
-Copyright © 2014 - 2018  Security Research Labs\n
+Copyright © 2014 - 2021  Security Research Labs\n
 \n
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -469,6 +512,169 @@ along with this program.  If not, see http://www.gnu.org/licenses/.\n
     <string name="snsn_notification_channel_title">Mobile Network Security</string>
     <string name="snsn_notification_channel_desc">Main and network security test notifications</string>
 
+    <string name="privacy_policy">
+        <![CDATA[
+        <h1> Privacy Policy </h1>
+        <h2> Introduction </h2>
+	    <p> This document is the privacy policy for the <strong>SnoopSnitch</strong> Android security application.</p>
+	    <p> SnoopSnitch offers users several tests they can use to assess the overall security of their mobile devices. These tests are focused on two areas:</p>
+	    <p>First, SnoopSnitch offers analysis on whether the testing device’s build of the Android mobile operating system is missing security patches.
+	    The <strong>primary</strong> goal of this test is to identify if any patches are missing relative to the device’s current security patch level date.
+	    Our <strong>secondary</strong> goal is to provide a fact-based incentive to device vendors to further improve their patching processes.</p>
 
+	    <p>Second, SnoopSnitch offers tests to assess whether a device is exposed to attacks or surveillance from the mobile network.
+	    Here, the <strong>primary</strong> goal is to help mobile users detect network originated attacks, such as via SS7, SMS, or ISMI catchers.
+	    Our <strong>secondary</strong> goal is to provide a fact-based incentive to Mobile Network Operators to better improve the security of their networks.
+	    In doing this we also respect your privacy concerns from using the app itself.</p>
+
+	    <p>Please note that the dual feature nature of SnoopSnitch results in different types of action, information collected, and permissions requested, depending on the security tests selected.
+	    The Android patch level analysis will work on devices running Android version 5.0 or higher. The mobile network tests will only work on a smaller set of devices
+	    (See <a class="wiki-page" href="/projects/snoopsnitch/wiki/DeviceList">DeviceList</a>) and requires root permission using Superuser (SU) access.</p>
+	    <p>Here, we specify what kind of information SnoopSnitch is collecting while in operation, and how this information is treated.</p>
+
+        <h2>Privacy Summary</h2>
+	    <p>By default, we do not collect or transmit any personally identifiable information.</p>
+	    <p>After manually triggering the Android security patch analysis, anonymous results and firmware build details are collected and uploaded to our server.</p>
+	    <p>For mobile network security tests, the user may choose to upload detailed event logs, which are encrypted by default.
+	    These logs may contain some personally identifiable information, such as phone numbers, GPS locations, IMEI, IMSI or other mobile network data, even though we have implemented methods to remove such information.</p>
+	    <p>We do not share any personally identifiable data with anyone and do not use any advertisements or any other 3rd-party plug-ins that could do so.</p>
+
+
+        <a name="Google-Privacy-Ambiguity"></a>
+        <h2>Google Privacy Ambiguity</h2>
+
+	    <p>Even though SnoopSnitch does not collect any personally identifiable data, we cannot guarantee that Google does not.
+	    As SnoopSnitch is provided by Google on the Google Play store, we do not know what kind of information is collected from this acquisition and subsequent app installation when using their services.
+	    We do know that they provide our Play Store developer account with detailed hardware information about the devices that SnoopSnitch has been installed on.
+	    This also includes some crash and error logs. For example, ANR ("Application Not Responding") and FC ("Forced Closed") logs are provided by the Android Operating System. <br />
+	    Alternatively, the pre-compiled APK can be downloaded from the SnoopSnitch open source page
+	    <a class="external" href="https://opensource.srlabs.de/projects/snoopsnitch">https://opensource.srlabs.de/projects/snoopsnitch</a>, you may compile and install the app by yourself following the instructions available on the same web page.</p>
+
+        <h2>Logging of ANR and FC Events</h2>
+	    <p>If you experience an ANR or FC event while using SnoopSnitch, you may be asked for permission to upload a crash report.
+	    If you agree, some information about the crash will be uploaded. This information is designed to not contain any personally identifiable information,
+	    but may include information such as the stack trace of what the program was trying to do when it crashed, as well as limited information about your phone\'s software (such as which version of SnoopSnitch you are using) and the hardware.</p>
+
+        <h2>What information is collected</h2>
+
+        For Android security patch analysis:
+            <ul>
+            <li>SnoopSnitch application version</li>
+                <li>Detailed information about the device’s firmware build</li>
+                <li>Vendor Phone numbers. The build.prop file contains the detailed information about your device\'s firmware build. This file might contain vendor phone numbers, which will be sent to our servers. In a future SnoopSnitch release those phone numbers will be stripped out and not uploaded to our server</li>
+                <li>Pre-installed System Application information. We collect information about all the system applications which come with your firmware pre-installed (not the apps you have installed). We use this information in our patch analysis heuristics</li>
+                <li>Patch test results</li>
+            </ul>
+
+        For mobile network security tests:
+            <ul>
+            <li>Information provided directly by the user. This may include: </li>
+                <li>Personal data such as: phone number and email.</li>
+                <li>Information provided indirectly by the user. This may include: </li>
+                <li>Hardware details: phone model and processor information. </li>
+                <li>Software details: detailed AOS, Kernel and SnoopSnitch application versions.</li>
+                <li>GPS locations, IMEI, IMSI and other mobile network data (LAC,CID, encryption status etc.)</li>
+                <li>Complete radio network (signalling) traces related to detection events</li>
+                <li>We may also collect other information intentionally provided to us by the user, for example through the Send Feedback feature. Transfer of these data is not mandatory.</li>
+                <li> SnoopSnitch does not use cookies.</li>
+            </ul>
+
+
+	    <a name="Why-is-this-data-collected-and-how-is-it-used"></a>
+
+        <h2>Why is this data collected and how is it used?</h2>
+
+        For Android security patch analysis:
+            <ul>
+            <li>Efficiently pre-select relevant patch tests for a given device</li>
+                <li>Improving the SnoopSnitch application and individual patch tests</li>
+                <li>Provide a fact-based incentive to device vendors to further improve their patching processes</li>
+            </ul>
+
+        For mobile network security tests:
+            <ul>
+            <li>Providing and improving the SnoopSnitch application </li>
+                <li>Analyzing and securing mobile networks and services, worldwide</li>
+                <li>Provide mobile network statistics (through GSMMap) that help us understand how secure various Mobile Network Operators (MNOs) are</li>
+                <li>Provide statistics of how, where, and when mobile networks are being attacked</li>
+                <li>Provide a warning to users when their phones and network is being attacked by IMSI catchers and user tracking by SS7 or Silent SMS</li>
+            </ul>
+
+
+        <h2>Information sharing</h2>
+	    <p>Anonymously collected analytics are kept safe on a database while personal data provided by e-mail are used only for users support purposes and nothing else.
+	    No data are sold or shared with third party entities or companies.</p>
+
+        <h2>Application Permissions</h2>
+	    <p>SnoopSnitch requests different levels of permissions depending on the types of security tests being conducted.</p>
+
+        For Android security patch analysis, the level of permissions requested are:
+            <ul>
+            <li>ACCESS_NETWORK_STATE: To check for available network</li>
+                <li>INTERNET: To download patch tests and upload test results</li>
+                <li>RECEIVE_BOOT_COMPLETED: To check whether build version has changed since last test</li>
+            </ul>
+
+
+        For mobile network security tests, the level of permissions requested are:
+            <ul>
+            <li>ACCESS_FINE_LOCATION / ACCESS_COARSE_LOCATION: Allow you to record your location when IMSI catchers and security events are detected</li>
+                <li>ACCESS_NETWORK_STATE: Is used to check for available network so that up or downloads can proceed</li>
+                <li>ACCESS_SUPERUSER: To use the non API supported Qualcomm diagnosis interface to capture radio data, you need root access. See below.</li>
+                <li>CALL_PHONE/ SEND_SMS / RECEIVE_SMS: Needed to make the test calls used to generate the network traffic to be analyzed</li>
+                <li>GET_TASKS: Retrieve state of helper processes interacting with diagnostic interface</li>
+                <li>INTERNET: Is used to download new data from gsmmap.org and to upload radio traces and debug logs upon user request</li>
+                <li>READ/WRITE_EXTERNAL_STORAGE: To allow saving debug/trace logs to your SD card</li>
+                <li>READ_PHONE_STATE: Used to detect what kind of network you are currently using (GSM,UMTS,LTE etc)</li>
+                <li>RECEIVE_BOOT_COMPLETED: To start app automatically when phone is restarted </li>
+                <li>GET_TASKS: Retrieve state of helper processes interacting with diagnostic interface</li>
+                <li>WAKE_LOCK: Stop phone from falling asleep during long-running analysis steps</li>
+            </ul>
+
+
+        <h2>Root and Superuser access</h2>
+	    <p>Some SnoopSnitch security tests require root and superuser access to function.
+	    However, the app can still be installed and some security tests will function without that level of access.</p>
+
+	    <p>Android security patch analysis <strong>does not require root access</strong> to function.</p>
+	    <p>Mobile network security tests <strong>require root access</strong> to function.
+	    These tests collect data directly from the radio diagnostics interface, they require your phone to be rooted and ask for root permission using Superuser (SU) access.
+	    This is required for the mobile security tests to function as the Android API does not provide enough network details for the analysis to be performed.
+	    This permission is not a standard Android system permission and is ignored by normal Android devices.
+	    It is an informal standard developed by the Android developer community. It allows a program to indicate that it would like to acquire super-user permission.
+	    SnoopSnitch does nothing else with this permission. It simply asks for the permission in order to allow command-line tools to run as root.
+	    The "su" command is an example of a command that will use this permission.</p>
+
+
+        <h2>What are my opt-out rights?</h2>
+	    <p>You can easily stop all collection of information by either deleting the application, or disabling the app from the Android OS settings. <br />
+	    You can also limit the scope of uploaded data in the app’s settings.</p>
+
+        <h2>Data Retention Policy</h2>
+	    <p>We will retain user provided data for as long as you use the application and for a reasonable time thereafter.
+	    We will retain (user approved) collected information for up to 24 months and thereafter may store it in aggregate (in backups).
+	    If you would like us to delete any data provided by you, please contact us at the email below.</p>
+
+        <h2>Children</h2>
+	    <p>We do not use the application to knowingly solicit data from or market to children under the age of 13.
+	    If a parent or guardian becomes aware that his or her child has provided us with information without their consent, he or she should contact us at the email provided below and we will remove that information from our servers within a reasonable time.</p>
+
+        <h2>Security</h2>
+	    <p>We are concerned about safeguarding the confidentiality of your information.
+	    We provide electronic safeguards to protect information we process and maintain.
+	    For example, we limit access to this information to authorized persons who need to know that information in order to operate, develop, or improve our application.
+	    Please be aware that, although we seek to provide reasonable security for the information we process and maintain, no security system can prevent all potential security breaches.</p>
+
+    <h2>Your Consent</h2>
+	<p>By using the application, you are consenting to our processing of your information as set forth in this Privacy Policy now and as amended by us.</p>
+
+    <h2>Changes</h2>
+	<p>This Privacy Policy may be updated from time to time for any reason.
+	You are advised to consult this Privacy Policy regularly for any changes, as continued use is deemed approval of all changes.</p>
+
+    <h2>Contact</h2>
+	<p>If you have questions or concerns regarding this policy, please contact us via email at snoopsnitch @srlabs.de</p>
+	]]>
+    </string>
 
 </resources>

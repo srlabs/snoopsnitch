@@ -1,6 +1,7 @@
 package de.srlabs.snoopsnitch;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +45,7 @@ public class StartupActivity extends Activity {
     private static boolean isSNSNCompatible = false;
     private static boolean isAppInitialized = false;
     public static String snsnIncompatibilityReason;
+    private static final int prominentDisclosureRequestCode = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,10 +63,10 @@ public class StartupActivity extends Activity {
 
             if (SPL == null) {
                 SPL = "NULL";
-                Log.d(Constants.LOG_TAG,"Found invalid patchlevel date");
+                Log.d(Constants.LOG_TAG, "Found invalid patchlevel date");
             }
             if (buildFingerprint == "NULL") {
-                Log.d(Constants.LOG_TAG,"Found invalid build fingerprint");
+                Log.d(Constants.LOG_TAG, "Found invalid build fingerprint");
             }
 
             SharedPrefsHelper.putLongPersistent(SharedPrefsHelper.KEY_BUILD_DATE, buildDate, context);
@@ -77,15 +79,14 @@ public class StartupActivity extends Activity {
         proceedAppFlow();
     }
 
-    private static void checkCompatibility(Context context){
+    private static void checkCompatibility(Context context) {
         snsnIncompatibilityReason = DeviceCompatibilityChecker.checkDeviceCompatibility(context);
 
-        if(snsnIncompatibilityReason == null){
+        if (snsnIncompatibilityReason == null) {
             isSNSNCompatible = true;
-        }
-        else{
+        } else {
             //disable starting MsdService by BootCompletedIntentReceiver on next boot
-            MsdConfig.setStartOnBoot(context,false);
+            MsdConfig.setStartOnBoot(context, false);
         }
     }
 
@@ -96,20 +97,47 @@ public class StartupActivity extends Activity {
     private void proceedAppFlow() {
         //continue with normal startup
         if (MsdConfig.getFirstRun(this)) {
-            showFirstRunDialog();
+            showFirstRunActivity();
         } else {
             createDatabaseAndStartDashboard();
         }
     }
 
-    public static boolean isSNSNCompatible(Context context){
-        if(!isAppInitialized())
+    public static boolean isSNSNCompatible(Context context) {
+        if (!isAppInitialized())
             checkCompatibility(context);
         return isSNSNCompatible;
     }
 
+    private void showFirstRunActivity() {
+
+        if (alreadyClicked)
+            return;
+
+        Intent i = new Intent(StartupActivity.this, ProminentDisclosureActivity.class);
+        startActivityForResult(i, prominentDisclosureRequestCode);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == prominentDisclosureRequestCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                alreadyClicked = true;
+                // record the fact that the app has been started at least once
+                MsdConfig.setFirstRun(StartupActivity.this, false);
+                createDatabaseAndStartDashboard();
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                finish();
+            } else {
+                quitApplication();
+            }
+        }
+    }
+
     private void showFirstRunDialog() {
-        MsdDialog.makeConfirmationDialog(this, getResources().getString(R.string.alert_first_app_start_message),
+        Dialog firstRunDialog = MsdDialog.makeConfirmationDialog(this, R.string.alert_first_app_start_message,
                 new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -137,7 +165,9 @@ public class StartupActivity extends Activity {
                         quitApplication();
                     }
                 }, false
-        ).show();
+        );
+
+        firstRunDialog.show();
     }
 
     protected void quitApplication() {
@@ -158,7 +188,7 @@ public class StartupActivity extends Activity {
                     MsdDatabaseManager msdDatabaseManager = MsdDatabaseManager.getInstance();
                     SQLiteDatabase db = msdDatabaseManager.openDatabase();
                     //testing DB init
-                    if(db == null)
+                    if (db == null)
                         throw new SQLException("Failed to create instance of database object");
 
                     db.rawQuery("SELECT * FROM config", null).close();
@@ -167,24 +197,24 @@ public class StartupActivity extends Activity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            if (progressDialog != null && progressDialog.isShowing ()) {
-                                progressDialog.dismiss ();
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
                             }
 
-                            if(isSNSNCompatible) {
+                            if (isSNSNCompatible) {
                                 //Check for ACCESS_COARSE_PERMISSION neccessary for Recoding in MsdService to function
                                 if (PermissionChecker.checkAndRequestPermissionForMsdService(StartupActivity.this)) {
                                     startDashboard();
                                 }
-                            }else{
+                            } else {
                                 startDashboard();
                             }
 
                         }
                     });
-                }catch(SQLException e){
+                } catch (SQLException e) {
                     // Testing if the DB creation worked successfully failed
-                    Log.e(TAG,"DB creation failed, maybe App assets are corrupted: "+ e.getMessage());
+                    Log.e(TAG, "DB creation failed, maybe App assets are corrupted: " + e.getMessage());
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -295,7 +325,7 @@ public class StartupActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 quitApplication();
             }
-        },null,false).show();
+        }, null, false).show();
     }
 
 }

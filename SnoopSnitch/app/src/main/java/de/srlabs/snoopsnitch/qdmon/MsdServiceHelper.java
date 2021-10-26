@@ -58,7 +58,7 @@ public class MsdServiceHelper {
         data = new AnalysisEventData(context);
     }
 
-    private void startService() {
+    public void startService() {
         Intent intent = new Intent(context, MsdService.class);
         if (Build.VERSION.SDK_INT >= 26) {
             Log.d(TAG,"starting service in foreground...");

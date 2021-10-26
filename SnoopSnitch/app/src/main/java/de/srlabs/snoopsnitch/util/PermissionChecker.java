@@ -80,6 +80,10 @@ public class PermissionChecker {
     public static boolean isAccessingPhoneStateAllowed(Context context) {
         return isPermissionGranted(context, Manifest.permission.READ_PHONE_STATE);
     }
+
+    public static boolean isCallingAllowed(Context context) {
+        return isPermissionGranted(context, Manifest.permission.CALL_PHONE);
+    }
     // ------------------------
 
     // SMS group --------------
@@ -175,7 +179,9 @@ public class PermissionChecker {
         else
             neccessaryPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         neccessaryPermissions.add(Manifest.permission.CALL_PHONE);
+        neccessaryPermissions.add(Manifest.permission.ANSWER_PHONE_CALLS);
         neccessaryPermissions.add(Manifest.permission.SEND_SMS);
+        neccessaryPermissions.add(Manifest.permission.RECEIVE_SMS);
 
         return checkAndRequestPermissions(activity, neccessaryPermissions, REQUEST_ACTIVE_TEST_PERMISSIONS);
     }
@@ -183,6 +189,8 @@ public class PermissionChecker {
     public static boolean checkAndRequestPermissionForMsdService(Activity activity) {
         List<String> neccessaryPermissions = new LinkedList<>();
         neccessaryPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION); //neccessary for startPhoneStateRecording()
+        neccessaryPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION); //neccessary for startPhoneStateRecording()
+        neccessaryPermissions.add(Manifest.permission.READ_PHONE_STATE); // neccessary for getNetworkType()
 
         return checkAndRequestPermissions(activity, neccessaryPermissions, REQUEST_MSDSERVICE_PERMISSIONS);
     }

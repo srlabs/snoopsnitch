@@ -16,6 +16,7 @@ import de.srlabs.snoopsnitch.analysis.RAT;
 import de.srlabs.snoopsnitch.analysis.Risk;
 import de.srlabs.snoopsnitch.analysis.Event.Type;
 import de.srlabs.snoopsnitch.util.MsdDatabaseManager;
+import de.srlabs.snoopsnitch.util.PermissionChecker;
 import de.srlabs.snoopsnitch.util.Utils;
 
 public class AnalysisEventData implements AnalysisEventDataInterface {
@@ -224,7 +225,11 @@ public class AnalysisEventData implements AnalysisEventDataInterface {
     public RAT getCurrentRAT() {
         TelephonyManager mTelephonyManager = (TelephonyManager)
                 context.getSystemService(Context.TELEPHONY_SERVICE);
-        int networkType = mTelephonyManager.getNetworkType();
+
+        int networkType = 0;
+        if (PermissionChecker.isAccessingPhoneStateAllowed(this.context)) {
+            networkType = mTelephonyManager.getNetworkType();
+        }
         switch (Utils.networkTypeToNetworkGeneration(networkType)) {
             case 0:
                 return RAT.RAT_UNKNOWN;

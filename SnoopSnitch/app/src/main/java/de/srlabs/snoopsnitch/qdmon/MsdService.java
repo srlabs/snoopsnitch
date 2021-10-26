@@ -647,6 +647,8 @@ public class MsdService extends Service {
     /**
      * REQUIRED PERMISSION:
      * PhonestateListener.LISTEN_CELL_LOCATION -> ACCESS_COARSE_LOCATION
+     * Update: Now requires ACCESS_FINE_LOCATION
+     * https://developer.android.com/reference/android/telephony/PhoneStateListener#LISTEN_CELL_LOCATION
      */
     private void startPhoneStateRecording() {
         if (PermissionChecker.isAccessingCoarseLocationAllowed(MsdService.this)) {

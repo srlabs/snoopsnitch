@@ -7,6 +7,9 @@ import android.app.DialogFragment;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.util.TypedValue;
+import android.widget.TextView;
 
 import de.srlabs.snoopsnitch.R;
 
@@ -26,16 +29,17 @@ public class MsdDialog extends DialogFragment {
         return makeConfirmationDialog(activity, message, positiveOnClickListener, negativeOnClickListener, null, backButtonActive);
     }
 
-    public static Dialog makeConfirmationDialog(Activity activity, String message,
+    public static Dialog makeConfirmationDialog(Activity activity, Object message,
                                                 OnClickListener positiveOnClickListener, OnClickListener negativeOnClickListener,
                                                 OnCancelListener onCancelListener, Boolean backButtonActive) {
         return makeConfirmationDialog(activity, message, positiveOnClickListener, negativeOnClickListener, onCancelListener,
                 activity.getResources().getString(R.string.alert_button_ok), activity.getString(R.string.alert_button_cancel), backButtonActive);
     }
 
-    public static Dialog makeConfirmationDialog(Activity activity, String message,
+    public static Dialog makeConfirmationDialog(Activity activity, Object message,
                                                 OnClickListener positiveOnClickListener, OnClickListener negativeOnClickListener,
                                                 OnCancelListener onCancelListener, String positiveButtonText, String negativeButtonText, Boolean backButtonActive) {
+
         AlertDialog.Builder builder = getAlertDialogBuilder(activity,
                 activity.getResources().getString(R.string.alert_confirmation_title), message);
 
@@ -100,11 +104,20 @@ public class MsdDialog extends DialogFragment {
         return builder.create();
     }
 
-    private static AlertDialog.Builder getAlertDialogBuilder(Activity activity, String title, String message) {
+    private static AlertDialog.Builder getAlertDialogBuilder(Activity activity, String title, Object message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         builder.setTitle(title);
-        builder.setMessage(message);
+        TextView textView = new TextView(activity);
+        // Message is a normal string
+        if (message instanceof String) {
+            textView.setText((String) message);
+        // Message is an ID (reference to element in strings.xml, which can contain HTML)
+        } else if (message instanceof  Integer) {
+            textView.setText((Integer) message);
+        }
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        builder.setView(textView);
 
         return builder;
     }

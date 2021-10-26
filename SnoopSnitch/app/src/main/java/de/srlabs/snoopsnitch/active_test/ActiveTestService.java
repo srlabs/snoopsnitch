@@ -684,7 +684,11 @@ public class ActiveTestService extends Service {
         // Some combinations of phone and network operator do not return a valid newtork type in telephonyManager.getNetworkType().
         if (msdServiceHelper != null && msdServiceHelper.isConnected() && msdServiceHelper.getParserNetworkGeneration() > 0)
             fallbackNetworkGeneration = msdServiceHelper.getParserNetworkGeneration();
-        int networkGeneration = Utils.networkTypeToNetworkGeneration(telephonyManager.getNetworkType());
+
+        int networkGeneration = 0;
+        if (PermissionChecker.isAccessingPhoneStateAllowed(this.getApplicationContext())) {
+            networkGeneration = Utils.networkTypeToNetworkGeneration(telephonyManager.getNetworkType());
+        }
         if (networkGeneration == 0)
             networkGeneration = fallbackNetworkGeneration;
         return networkGeneration;
@@ -825,7 +829,13 @@ public class ActiveTestService extends Service {
             connectionType = "UNKNOWN";
         String network = telephonyManager.getNetworkOperator();
 
+        /*
+        Starting with target API level 29 getSubscriberId() requires READ_PRIVILEGED_PHONE_STATE
+        permissions, which can only be set for system apps
         String IMSI = telephonyManager.getSubscriberId();
+        */
+        String IMSI = null;
+
         String SIM_MCC_MNC = (IMSI == null || IMSI.length() < 6) ? "NOIMSI" : IMSI.substring(0, 6);
 
         String modelAndAndroidVersion = Build.MODEL.replace('.', '_') + "_Android_" + Build.VERSION.RELEASE.replace('.', '_');
@@ -882,7 +892,7 @@ public class ActiveTestService extends Service {
      * @param online
      */
     private void triggerCallMo(final boolean online) {
-        if (PermissionChecker.isAccessingPhoneStateAllowed(ActiveTestService.this)) {
+        if (PermissionChecker.isCallingAllowed(ActiveTestService.this)) {
             final Uri telUri = Uri.parse("tel:" + (online ? Constants.CALL_NUMBER : Constants.CALLBACK_NUMBER));
             MsdLog.i(TAG, "calling out to " + telUri);
             final Intent intent = new Intent(Intent.ACTION_CALL, telUri);

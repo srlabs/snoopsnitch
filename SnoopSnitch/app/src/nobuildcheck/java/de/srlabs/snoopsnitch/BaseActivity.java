@@ -116,6 +116,11 @@ public class BaseActivity extends FragmentActivity {
         startActivity(intent);
     }
 
+    protected void showPrivacyPolicy() {
+        Intent intent = new Intent(this, PrivacyPolicyActivity.class);
+        startActivity(intent);
+    }
+
     protected void showAbout() {
         Intent intent = new Intent(this, AboutActivity.class);
         startActivity(intent);
@@ -137,8 +142,12 @@ public class BaseActivity extends FragmentActivity {
         if (isRecording) {
             stopRecording();
         } else {
-            if (PermissionChecker.checkAndRequestPermissionForMsdService(this))
+            if (PermissionChecker.checkAndRequestPermissionForMsdService(this)) {
+                if (!msdServiceHelperCreator.getMsdServiceHelper().isConnected()) {
+                    msdServiceHelperCreator.getMsdServiceHelper().startService();
+                }
                 startRecording();
+            }
         }
     }
 
@@ -213,6 +222,9 @@ public class BaseActivity extends FragmentActivity {
                 break;
             case R.id.menu_action_settings:
                 showSettings();
+                break;
+            case R.id.menu_action_privacy_policy:
+                showPrivacyPolicy();
                 break;
             case R.id.menu_action_about:
                 showAbout();

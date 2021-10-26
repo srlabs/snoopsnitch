@@ -301,7 +301,13 @@ public class NetworkInfoActivity extends BaseActivity {
                         "from session_info where domain = 0 order by timestamp";
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        IMSI = telephonyManager.getSubscriberId();
+
+        /*
+        Starting with target API level 29 getSubscriberId() requires READ_PRIVILEGED_PHONE_STATE
+        permissions, which can only be set for system apps
+        String IMSI = telephonyManager.getSubscriberId();
+        */
+        IMSI = null;
 
         Cursor query = db.rawQuery(q, null);
         if (query.moveToFirst()) {

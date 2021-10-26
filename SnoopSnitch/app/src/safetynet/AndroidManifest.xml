@@ -97,6 +97,14 @@
             android:screenOrientation="portrait" >
         </activity>
 
+        <!-- Privacy Policy Activity -->
+        <activity
+            android:name="de.srlabs.snoopsnitch.PrivacyPolicyActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:parentActivityName="de.srlabs.snoopsnitch.DashboardActivity" >
+        </activity>
+
         <!-- About Activity -->
         <activity
             android:name="de.srlabs.snoopsnitch.AboutActivity"
