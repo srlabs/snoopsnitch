@@ -8,11 +8,11 @@
 	ignore = dirty
 [submodule "contrib/metagsm"]
 	path = contrib/gsm-parser
-	url = https://opensource.srlabs.de/git/gsm-parser.git
+	url = https://github.com/srlabs/gsm-parser
 	ignore = dirty
 [submodule "SnoopSnitch/patchanalysis"]
 	path = SnoopSnitch/patchanalysis
-	url = https://opensource.srlabs.de/git/patchanalysis-module
+	url = https://github.com/srlabs/patchanalysis-module
 [submodule "contrib/openssl"]
 	path = contrib/openssl
 	url = https://github.com/openssl/openssl

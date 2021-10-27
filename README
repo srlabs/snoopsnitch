@@ -9,7 +9,7 @@ over-the-air updates.
 License
 -------
 
-Copyright (C) 2014 - 2017  Security Research Labs
+Copyright (C) 2014 - 2021  Security Research Labs
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,7 @@ Resources
 ---------
 
 Project website:       https://opensource.srlabs.de/projects/snoopsnitch
-Public Git repository: https://opensource.srlabs.de/git/snoopsnitch.git
+Public Git repository: https://github.com/srlabs/snoopsnitch
 Mailing list:          https://lists.srlabs.de/cgi-bin/mailman/listinfo/gsmmap
 Email:			       snoopsnitch@srlabs.de
                        (PGP: 9728 A7F9 D457 1FBB 746F  5381 D52C AC10 634A 9561)
