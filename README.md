@@ -90,4 +90,5 @@ perform a release build.
 
 
 [1] https://developer.android.com/sdk/
+
 [2] https://developer.android.com/tools/sdk/ndk/
