@@ -531,10 +531,24 @@ public class Utils {
             result = bis.readLine();
         } catch (Exception ee) {
             Log.e(TAG, mTAG + ":getProcVersionInfo() Exception: " + ee);
-            return null;
+
+            result = "";
+
+            try {
+                Process proc = Runtime.getRuntime()
+                        .exec(new String[] { "su", "-c", "cat", infoFile, "exit" });
+                proc.waitFor();
+                java.util.Scanner s = new java.util.Scanner(proc.getInputStream()).useDelimiter("\\A");
+                String output = s.hasNext() ? s.next() : "";
+                result = output;
+            } catch(Exception e) {
+                result = "<n/a>";
+            }
+
+
         }
         Log.i(TAG, "/proc/version: " + "\"" + result + "\"");
-        return result;
+        return result.isEmpty() ? "<n/a>" : result;
     }
 
     /**
