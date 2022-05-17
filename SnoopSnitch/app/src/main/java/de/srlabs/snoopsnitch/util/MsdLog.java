@@ -157,7 +157,7 @@ public class MsdLog {
                     + "gsm.version.ril-impl:  " + osgetprop("gsm.version.ril-impl") + "\n"
                     + "ril.hw_ver:            " + osgetprop("ril.hw_ver") + "\n"
                     + "ril.modem.board:       " + osgetprop("ril.modem.board") + "\n"
-                    + "ro.arch:               " + osgetprop("ro.arch") + "\n"
+                    + "ro.arch:               " + (osgetprop("ro.arch").equals("<n/a>") ? System.getProperty("os.arch") : osgetprop("ro.arch")) + "\n"
                     + "ro.board.platform:     " + osgetprop("ro.board.platform") + "\n";
         } catch (Exception ee) {
             Log.e(TAG, mTAG + "Exception in getDeviceProps(): Unable to retrieve system properties: " + ee);
@@ -186,7 +186,7 @@ public class MsdLog {
         result.append("gsm.version.ril-impl:  " + osgetprop("gsm.version.ril-impl") + "\n");
         result.append("ril.hw_ver:            " + osgetprop("ril.hw_ver") + "\n");
         result.append("ril.modem.board:       " + osgetprop("ril.modem.board") + "\n");
-        result.append("ro.arch:               " + osgetprop("ro.arch") + "\n");
+        result.append("ro.arch:               " + (osgetprop("ro.arch").equals("<n/a>") ? System.getProperty("os.arch") : osgetprop("ro.arch")));
         result.append("ro.board.platform:     " + osgetprop("ro.board.platform") + "\n");
         result.append("/dev/diag info:\n	  " + Utils.checkDiag() + "\n");
         return result.toString();
