@@ -7,7 +7,7 @@ over-the-air updates.
 
 # License
 
-Copyright (C) 2014 - 2021  Security Research Labs
+Copyright (C) 2014 - 2022 Security Research Labs
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
